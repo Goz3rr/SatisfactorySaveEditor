@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28705.295
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveEditor", "SatisfactorySaveEditor\SatisfactorySaveEditor.csproj", "{535E0508-091E-438A-91C1-59425922DA94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveParser", "SatisfactorySaveParser\SatisfactorySaveParser.csproj", "{068DC25E-4B70-4062-9133-535F96C5CBC7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{535E0508-091E-438A-91C1-59425922DA94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535E0508-091E-438A-91C1-59425922DA94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535E0508-091E-438A-91C1-59425922DA94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535E0508-091E-438A-91C1-59425922DA94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{068DC25E-4B70-4062-9133-535F96C5CBC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{068DC25E-4B70-4062-9133-535F96C5CBC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{068DC25E-4B70-4062-9133-535F96C5CBC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{068DC25E-4B70-4062-9133-535F96C5CBC7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53932906-3C74-481A-B13C-9D592A429A2E}
+	EndGlobalSection
+EndGlobal
