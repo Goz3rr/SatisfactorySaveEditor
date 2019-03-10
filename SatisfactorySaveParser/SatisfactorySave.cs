@@ -47,7 +47,7 @@ namespace SatisfactorySaveParser
                     entry.Str2 = reader.ReadLengthPrefixedString();
                     entry.Str3 = reader.ReadLengthPrefixedString();
                     entry.Int4 = reader.ReadInt32();
-                    entry.Data5 = reader.ReadBytes(0x28);
+                    entry.Unknown5 = reader.ReadBytes(0x28);
                     entry.Int6 = reader.ReadInt32();
                     entry.Int7 = reader.ReadInt32();
 
