@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SatisfactorySaveParser.Fields
 {
@@ -25,38 +26,56 @@ namespace SatisfactorySaveParser.Fields
                 }
 
                 var fieldType = reader.ReadLengthPrefixedString();
-                //var size = reader.ReadInt32();
+                var size = reader.ReadInt32();
 
+                var unk = reader.ReadInt32();
+
+                var overhead = 0;
+                var before = reader.BaseStream.Position;
                 switch (fieldType)
                 {
                     case "ArrayProperty":
-                        result.Fields.Add(ArrayProperty.Parse(fieldName, reader));
+                        result.Fields.Add(ArrayProperty.Parse(fieldName, reader, size, out overhead));
                         break;
                     case "FloatProperty":
+                        overhead = 1;
                         result.Fields.Add(FloatProperty.Parse(fieldName, reader));
                         break;
                     case "IntProperty":
+                        overhead = 1;
                         result.Fields.Add(IntProperty.Parse(fieldName, reader));
                         break;
                     case "EnumProperty":
-                        result.Fields.Add(EnumProperty.Parse(fieldName, reader));
+                        result.Fields.Add(EnumProperty.Parse(fieldName, reader, out overhead));
                         break;
                     case "BoolProperty":
+                        overhead = 2;
                         result.Fields.Add(BoolProperty.Parse(fieldName, reader));
                         break;
                     case "StrProperty":
+                        overhead = 1;
                         result.Fields.Add(StrProperty.Parse(fieldName, reader));
                         break;
                     case "NameProperty":
+                        overhead = 1;
                         result.Fields.Add(NameProperty.Parse(fieldName, reader));
                         break;
                     case "ObjectProperty":
+                        overhead = 1;
                         result.Fields.Add(ObjectProperty.Parse(fieldName, reader));
+                        break;
+                    case "StructProperty":
+                        result.Fields.Add(StructProperty.Parse(fieldName, reader));
                         break;
                     default:
                         throw new NotImplementedException(fieldType);
                 }
+                var after = reader.BaseStream.Position;
 
+                if (before + size + overhead != after)
+                {
+                    throw new InvalidOperationException($"Expected {size} bytes read but got {after - before - overhead}");
+                }
             }
 
             var int1 = reader.ReadInt32();
@@ -64,6 +83,10 @@ namespace SatisfactorySaveParser.Fields
             //if(result.Fields.Count > 0)
             {
                 var int2 = reader.ReadInt32();
+            }
+            else if (result.Fields.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == "StructProperty"))
+            {
+                var unk = reader.ReadBytes((int)start + length - (int)reader.BaseStream.Position);
             }
             else if (start + length - reader.BaseStream.Position > 4)
             {

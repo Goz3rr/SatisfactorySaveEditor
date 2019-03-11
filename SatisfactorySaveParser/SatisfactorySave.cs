@@ -93,8 +93,7 @@ namespace SatisfactorySaveParser
 
                     if(before + len != after)
                     {
-                        //throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
-                        //reader.ReadBytes(len - (int)(after - before));
+                        throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
                     }
                 }
 

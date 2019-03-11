@@ -16,10 +16,6 @@ namespace SatisfactorySaveParser.Fields
         {
             var result = new IntProperty();
 
-            var size = reader.ReadInt32();
-            if (size != 4) throw new InvalidOperationException();
-
-            var unk2 = reader.ReadInt32();
             var unk3 = reader.ReadByte();
 
             result.Value = reader.ReadInt32();

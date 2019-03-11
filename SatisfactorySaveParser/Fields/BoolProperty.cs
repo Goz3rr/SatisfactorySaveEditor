@@ -16,12 +16,7 @@ namespace SatisfactorySaveParser.Fields
         {
             var result = new BoolProperty();
 
-            var unk2 = reader.ReadInt32();
-            var unk3 = reader.ReadByte();
-
-            result.Value = reader.ReadInt32() > 0;
-
-            var unk4 = reader.ReadByte();
+            result.Value = reader.ReadInt16() > 0;
 
             return result;
         }
