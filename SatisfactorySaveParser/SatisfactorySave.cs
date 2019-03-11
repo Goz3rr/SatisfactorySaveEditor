@@ -86,14 +86,15 @@ namespace SatisfactorySaveParser
 
                 for (int i = 0; i < entries1.Count; i++)
                 {
-                    var len = reader.ReadUInt32();
+                    var len = reader.ReadInt32();
                     var before = reader.BaseStream.Position;
                     entries1[i].ParseData(len, reader);
                     var after = reader.BaseStream.Position;
 
                     if(before + len != after)
                     {
-                        throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
+                        //throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
+                        //reader.ReadBytes(len - (int)(after - before));
                     }
                 }
 

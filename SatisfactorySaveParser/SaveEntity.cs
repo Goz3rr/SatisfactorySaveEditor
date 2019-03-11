@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using SatisfactorySaveParser.Fields;
+using System.IO;
 
 namespace SatisfactorySaveParser
 {
@@ -15,17 +16,23 @@ namespace SatisfactorySaveParser
         public string DataStr1 { get; set; }
         public string DataStr2 { get; set; }
         public int DataInt3 { get; set; }
-        public string DataStr4 { get; set; }
-        public int DataInt5 { get; set; }
+        public SerializedFields DataFields { get; set; }
 
 
-        public virtual void ParseData(uint length, BinaryReader reader)
+        public virtual void ParseData(int length, BinaryReader reader)
         {
+            var newLen = length - 12;
             DataStr1 = reader.ReadLengthPrefixedString();
+            if (DataStr1.Length > 0)
+                newLen -= DataStr1.Length + 1;
+
             DataStr2 = reader.ReadLengthPrefixedString();
+            if (DataStr2.Length > 0)
+                newLen -= DataStr2.Length + 1;
+
             DataInt3 = reader.ReadInt32();
-            DataStr4 = reader.ReadLengthPrefixedString();
-            DataInt5 = reader.ReadInt32();
+
+            DataFields = SerializedFields.Parse(newLen, reader);
         }
 
         public override string ToString()

@@ -8,11 +8,11 @@ namespace SatisfactorySaveParser.Entities.Shared
     {
         public int DataInt6 { get; set; }
 
-        public override void ParseData(uint length, BinaryReader reader)
+        public override void ParseData(int length, BinaryReader reader)
         {
             base.ParseData(length, reader);
 
-            DataInt6 = reader.ReadInt32();
+            //DataInt6 = reader.ReadInt32();
         }
     }
 }
