@@ -5,7 +5,7 @@ namespace SatisfactorySaveEditor
     public class SaveNodeItem
     {
         public ObservableCollection<SaveNodeItem> Items { get; set; } = new ObservableCollection<SaveNodeItem>();
-        
+
         public string Title { get; set; }
 
         public SaveNodeItem(string title)

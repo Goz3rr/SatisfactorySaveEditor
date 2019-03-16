@@ -43,14 +43,14 @@ namespace SatisfactorySaveEditor
 
         private void BuildNode(ObservableCollection<SaveNodeItem> items, SaveTreeNode node)
         {
-            foreach(var child in node.Children)
+            foreach (var child in node.Children)
             {
                 var childItem = new SaveNodeItem(child.Value.Name);
                 BuildNode(childItem.Items, child.Value);
                 items.Add(childItem);
             }
 
-            foreach(var entry in node.Content)
+            foreach (var entry in node.Content)
             {
                 items.Add(new SaveNodeItem(entry.Str3));
             }
