@@ -1,5 +1,4 @@
-﻿using SatisfactorySaveParser.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,10 +11,6 @@ namespace SatisfactorySaveParser
     {
         public SatisfactorySave(string file)
         {
-            var entityTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(SaveEntityAttribute), false))
-                .ToDictionary(t => ((SaveEntityAttribute)t.GetCustomAttribute(typeof(SaveEntityAttribute), false)).Name, t => t);
-
-
             file = Environment.ExpandEnvironmentVariables(file);
             using (var stream = new FileStream(file, FileMode.Open, FileAccess.ReadWrite))
             using (var reader = new BinaryReader(stream))
@@ -42,21 +37,16 @@ namespace SatisfactorySaveParser
                 var entries1 = new List<SaveEntity>();
                 while (true)
                 {
-                    var name = reader.ReadLengthPrefixedString();
-                    if (!entityTypes.TryGetValue(name, out Type type))
+                    var entry = new SaveEntity
                     {
-                        throw new NotImplementedException($"No deserializer for '{name}'");
-                    }
-
-                    var entry = (SaveEntity)Activator.CreateInstance(type);
-
-                    entry.Str1 = name;
-                    entry.Str2 = reader.ReadLengthPrefixedString();
-                    entry.Str3 = reader.ReadLengthPrefixedString();
-                    entry.Int4 = reader.ReadInt32();
-                    entry.Unknown5 = reader.ReadBytes(0x28);
-                    entry.Int6 = reader.ReadInt32();
-                    entry.Int7 = reader.ReadInt32();
+                        Str1 = reader.ReadLengthPrefixedString(),
+                        Str2 = reader.ReadLengthPrefixedString(),
+                        Str3 = reader.ReadLengthPrefixedString(),
+                        Int4 = reader.ReadInt32(),
+                        Unknown5 = reader.ReadBytes(0x28),
+                        Int6 = reader.ReadInt32(),
+                        Int7 = reader.ReadInt32()
+                    };
 
                     entries1.Add(entry);
 
@@ -77,8 +67,6 @@ namespace SatisfactorySaveParser
                         Str4 = reader.ReadLengthPrefixedString(),
                         Int5 = reader.ReadInt32()
                     };
-
-                    Trace.Assert(entry.Str3.Length > 2);
 
                     entries2.Add(entry);
 
@@ -114,26 +102,6 @@ namespace SatisfactorySaveParser
                         throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
                     }
                 }
-
-                //var entries3 = new List<SaveClass3>();
-                //int i = 0;
-                //while (reader.BaseStream.Position < reader.BaseStream.Length)
-                //{
-                //    var entry = new SaveClass3();
-
-                //    var len = reader.ReadUInt32();
-                //    entry.Data1 = reader.ReadBytes((int)len);
-
-                //    entries1[i++].Data8 = entry.Data1;
-
-                //    // 341
-                //    //if (!entry.Data1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x4E, 0x6F, 0x6E, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00 }))
-                //    //{
-
-                //    //}
-
-                //    entries3.Add(entry);
-                //}
 
                 var unk10 = reader.ReadInt32();
                 Trace.Assert(unk10 == 0);
