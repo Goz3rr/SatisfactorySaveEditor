@@ -52,7 +52,7 @@ namespace SatisfactorySaveEditor
 
             foreach(var entry in node.Content)
             {
-                items.Add(new SaveNodeItem(entry.Str1.Split('/').Last()));
+                items.Add(new SaveNodeItem(entry.Str3));
             }
         }
     }

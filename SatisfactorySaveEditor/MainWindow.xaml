@@ -10,7 +10,14 @@
         <TreeView Name="SaveNodeTreeView">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:SaveNodeItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Title}" />
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1} entries)">
+                                <Binding Path="Title"/>
+                                <Binding Path="Items.Count"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
