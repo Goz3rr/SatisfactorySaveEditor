@@ -23,9 +23,11 @@ namespace SatisfactorySaveParser.Fields
 
         public static StructProperty Parse(string fieldName, BinaryReader reader, int size, out int overhead)
         {
-            var result = new StructProperty();
+            var result = new StructProperty
+            {
+                Type = reader.ReadLengthPrefixedString()
+            };
 
-            result.Type = reader.ReadLengthPrefixedString();
             overhead = result.Type.Length + 22;
 
             result.Unk1 = reader.ReadInt32();

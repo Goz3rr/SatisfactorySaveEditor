@@ -8,6 +8,11 @@ namespace SatisfactorySaveParser.Fields
     {
         public int Value { get; set; }
 
+        public IntProperty(int value)
+        {
+            Value = value;
+        }
+
         public override string ToString()
         {
             return $"int: {Value}";
@@ -15,14 +20,10 @@ namespace SatisfactorySaveParser.Fields
 
         public static IntProperty Parse(string fieldName, BinaryReader reader)
         {
-            var result = new IntProperty();
-
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);
 
-            result.Value = reader.ReadInt32();
-
-            return result;
+            return new IntProperty(reader.ReadInt32());
         }
     }
 }

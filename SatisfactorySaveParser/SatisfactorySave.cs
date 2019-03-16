@@ -78,10 +78,13 @@ namespace SatisfactorySaveParser
                         Int5 = reader.ReadInt32()
                     };
 
+                    Trace.Assert(entry.Str3.Length > 2);
+
                     entries2.Add(entry);
 
                     if (entry.Int5 != 0)
                     {
+                        Trace.Assert(entry.Int5 == entries1.Count + entries2.Count);
                         break;
                     }
                 }
@@ -101,8 +104,15 @@ namespace SatisfactorySaveParser
 
                 for (int i = 0; i < entries2.Count; i++)
                 {
-                    var len = reader.ReadUInt32();
-                    entries2[i].Data6 = reader.ReadBytes((int)len);
+                    var len = reader.ReadInt32();
+                    var before = reader.BaseStream.Position;
+                    entries2[i].ParseData(len, reader);
+                    var after = reader.BaseStream.Position;
+
+                    if (before + len != after)
+                    {
+                        throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
+                    }
                 }
 
                 //var entries3 = new List<SaveClass3>();

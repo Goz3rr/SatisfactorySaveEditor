@@ -9,6 +9,13 @@ namespace SatisfactorySaveParser.Fields
         public string Str1 { get; set; }
         public string Str2 { get; set; }
 
+        public ObjectProperty(string str1 = null, string str2 = null)
+        {
+            Str1 = str1;
+            Str2 = str2;
+        }
+
+
         public override string ToString()
         {
             return $"obj: {Str2}";
