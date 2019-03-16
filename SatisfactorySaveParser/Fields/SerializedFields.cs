@@ -1,6 +1,6 @@
-﻿using SatisfactorySaveParser.Fields;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -29,6 +29,7 @@ namespace SatisfactorySaveParser.Fields
                 var size = reader.ReadInt32();
 
                 var unk = reader.ReadInt32();
+                Trace.Assert(unk == 0);
 
                 var overhead = 0;
                 var before = reader.BaseStream.Position;
@@ -65,7 +66,7 @@ namespace SatisfactorySaveParser.Fields
                         result.Fields.Add(ObjectProperty.Parse(fieldName, reader));
                         break;
                     case "StructProperty":
-                        result.Fields.Add(StructProperty.Parse(fieldName, reader));
+                        result.Fields.Add(StructProperty.Parse(fieldName, reader, size, out overhead));
                         break;
                     default:
                         throw new NotImplementedException(fieldType);
@@ -79,16 +80,19 @@ namespace SatisfactorySaveParser.Fields
             }
 
             var int1 = reader.ReadInt32();
-            if (start + length - reader.BaseStream.Position == 4)
+            Trace.Assert(int1 == 0);
+
+            var remainingBytes = start + length - reader.BaseStream.Position;
+            if (remainingBytes == 4)
             //if(result.Fields.Count > 0)
             {
                 var int2 = reader.ReadInt32();
             }
-            else if (result.Fields.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == "StructProperty"))
+            else if (remainingBytes > 0 && result.Fields.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == "StructProperty"))
             {
-                var unk = reader.ReadBytes((int)start + length - (int)reader.BaseStream.Position);
+                var unk = reader.ReadBytes((int)remainingBytes);
             }
-            else if (start + length - reader.BaseStream.Position > 4)
+            else if (remainingBytes > 4)
             {
                 var int2 = reader.ReadInt32();
                 var str2 = reader.ReadLengthPrefixedString();

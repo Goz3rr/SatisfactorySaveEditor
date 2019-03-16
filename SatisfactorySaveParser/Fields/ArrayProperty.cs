@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Fields
@@ -31,6 +32,8 @@ namespace SatisfactorySaveParser.Fields
             if (result.Type != "ObjectProperty") throw new NotImplementedException();
 
             byte unk2 = reader.ReadByte();
+            Trace.Assert(unk2 == 0);
+
             int count = reader.ReadInt32();
 
             for (int i = 0; i < count; i++)

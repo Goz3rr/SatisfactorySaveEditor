@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Fields
@@ -18,6 +19,7 @@ namespace SatisfactorySaveParser.Fields
             var result = new ObjectProperty();
 
             var unk3 = reader.ReadByte();
+            Trace.Assert(unk3 == 0);
 
             result.Str1 = reader.ReadLengthPrefixedString();
             result.Str2 = reader.ReadLengthPrefixedString();

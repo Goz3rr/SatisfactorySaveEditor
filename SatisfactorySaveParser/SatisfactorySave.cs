@@ -1,6 +1,7 @@
 ﻿using SatisfactorySaveParser.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -20,17 +21,23 @@ namespace SatisfactorySaveParser
             using (var reader = new BinaryReader(stream))
             {
                 var unk1 = reader.ReadInt32();
+                Trace.Assert(unk1 == 5);
                 var unk2 = reader.ReadInt32();
+                Trace.Assert(unk2 == 17);
                 var unk3 = reader.ReadInt32();
+                Trace.Assert(unk3 == 66297);
 
                 var unk4 = reader.ReadLengthPrefixedString();
                 var unk5 = reader.ReadLengthPrefixedString();
                 var unk6 = reader.ReadLengthPrefixedString();
 
                 var unk7 = reader.ReadInt32();
+                Trace.Assert(unk7 == 158);
+
                 var unk8 = reader.ReadBytes(0x9);
                 var totalEntries = reader.ReadUInt32();
                 var unk9 = reader.ReadInt32();
+                Trace.Assert(unk9 == 1);
 
                 var entries1 = new List<SaveEntity>();
                 while (true)
@@ -70,11 +77,6 @@ namespace SatisfactorySaveParser
                         Str4 = reader.ReadLengthPrefixedString(),
                         Int5 = reader.ReadInt32()
                     };
-
-                    if (entry.Int5 != 0)
-                    {
-
-                    }
 
                     entries2.Add(entry);
 
@@ -124,6 +126,7 @@ namespace SatisfactorySaveParser
                 //}
 
                 var unk10 = reader.ReadInt32();
+                Trace.Assert(unk10 == 0);
             }
         }
     }

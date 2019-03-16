@@ -1,4 +1,6 @@
 ﻿using SatisfactorySaveParser.Fields;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser
@@ -16,6 +18,8 @@ namespace SatisfactorySaveParser
         public string DataStr1 { get; set; }
         public string DataStr2 { get; set; }
         public int DataInt3 { get; set; }
+        public List<(string, string)> DataList4 { get; set; } = new List<(string, string)>();
+
         public SerializedFields DataFields { get; set; }
 
 
@@ -31,6 +35,13 @@ namespace SatisfactorySaveParser
                 newLen -= DataStr2.Length + 1;
 
             DataInt3 = reader.ReadInt32();
+            for(int i = 0; i < DataInt3; i++)
+            {
+                var str1 = reader.ReadLengthPrefixedString();
+                var str2 = reader.ReadLengthPrefixedString();
+                DataList4.Add((str1, str2));
+                newLen -= 10 + str1.Length + str2.Length;
+            }
 
             DataFields = SerializedFields.Parse(newLen, reader);
         }

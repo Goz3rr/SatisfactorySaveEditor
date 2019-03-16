@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Fields
@@ -20,7 +21,10 @@ namespace SatisfactorySaveParser.Fields
 
             result.Type = reader.ReadLengthPrefixedString();
             overhead = result.Type.Length + 6;
+
             var unk4 = reader.ReadByte();
+            Trace.Assert(unk4 == 0);
+
             result.Name = reader.ReadLengthPrefixedString();
             //result.Value = reader.ReadInt32();
 
