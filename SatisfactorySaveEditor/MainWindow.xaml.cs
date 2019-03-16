@@ -1,6 +1,7 @@
 ﻿using SatisfactorySaveParser;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,11 +27,33 @@ namespace SatisfactorySaveEditor
             InitializeComponent();
 
             var save = new SatisfactorySave(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\test_090319-140542.sav");
+
+            var rootNode = new SaveNodeItem("Root");
+            var saveTree = new SaveTreeNode("Root");
+
+            foreach (var entry in save.SaveEntries)
+            {
+                var parts = entry.Str1.TrimStart('/').Split('/');
+                saveTree.AddChild(parts, entry);
+            }
+
+            BuildNode(rootNode.Items, saveTree);
+            SaveNodeTreeView.Items.Add(rootNode);
         }
 
-        private void ButtonExit_Click(object sender, RoutedEventArgs e)
+        private void BuildNode(ObservableCollection<SaveNodeItem> items, SaveTreeNode node)
         {
-            Application.Current.Shutdown();
+            foreach(var child in node.Children)
+            {
+                var childItem = new SaveNodeItem(child.Value.Name);
+                BuildNode(childItem.Items, child.Value);
+                items.Add(childItem);
+            }
+
+            foreach(var entry in node.Content)
+            {
+                items.Add(new SaveNodeItem(entry.Str1.Split('/').Last()));
+            }
         }
     }
 }

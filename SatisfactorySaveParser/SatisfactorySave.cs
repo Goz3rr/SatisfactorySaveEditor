@@ -9,6 +9,8 @@ namespace SatisfactorySaveParser
 {
     public class SatisfactorySave
     {
+        public List<SaveEntry> SaveEntries = new List<SaveEntry>();
+
         public SatisfactorySave(string file)
         {
             file = Environment.ExpandEnvironmentVariables(file);
@@ -34,7 +36,6 @@ namespace SatisfactorySaveParser
                 var unk9 = reader.ReadInt32();
                 Trace.Assert(unk9 == 1);
 
-                var entries1 = new List<SaveEntity>();
                 while (true)
                 {
                     var entry = new SaveEntity
@@ -48,7 +49,7 @@ namespace SatisfactorySaveParser
                         Int7 = reader.ReadInt32()
                     };
 
-                    entries1.Add(entry);
+                    SaveEntries.Add(entry);
 
                     if (entry.Int7 != 1)
                     {
@@ -56,7 +57,6 @@ namespace SatisfactorySaveParser
                     }
                 }
 
-                var entries2 = new List<SaveClass2>();
                 while (true)
                 {
                     var entry = new SaveClass2
@@ -68,36 +68,23 @@ namespace SatisfactorySaveParser
                         Int5 = reader.ReadInt32()
                     };
 
-                    entries2.Add(entry);
+                    SaveEntries.Add(entry);
 
                     if (entry.Int5 != 0)
                     {
-                        Trace.Assert(entry.Int5 == entries1.Count + entries2.Count);
+                        Trace.Assert(entry.Int5 == SaveEntries.Count);
                         break;
                     }
                 }
 
-                for (int i = 0; i < entries1.Count; i++)
+                for (int i = 0; i < SaveEntries.Count; i++)
                 {
                     var len = reader.ReadInt32();
                     var before = reader.BaseStream.Position;
-                    entries1[i].ParseData(len, reader);
+                    SaveEntries[i].ParseData(len, reader);
                     var after = reader.BaseStream.Position;
 
                     if(before + len != after)
-                    {
-                        throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
-                    }
-                }
-
-                for (int i = 0; i < entries2.Count; i++)
-                {
-                    var len = reader.ReadInt32();
-                    var before = reader.BaseStream.Position;
-                    entries2[i].ParseData(len, reader);
-                    var after = reader.BaseStream.Position;
-
-                    if (before + len != after)
                     {
                         throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
                     }
