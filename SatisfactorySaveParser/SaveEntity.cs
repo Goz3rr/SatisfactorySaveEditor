@@ -29,9 +29,19 @@ namespace SatisfactorySaveParser
         /// </summary>
         public int NextObjectType { get; set; }
 
-        public string DataStr1 { get; set; }
-        public string DataStr2 { get; set; }
-        public List<(string, string)> DataList4 { get; set; } = new List<(string, string)>();
+        /// <summary>
+        ///     Unknown related (parent?) object root
+        /// </summary>
+        public string ParentObjectRoot { get; set; }
+        /// <summary>
+        /// Unknown related (parent?) object name
+        /// </summary>
+        public string ParentObjectName { get; set; }
+
+        /// <summary>
+        ///     List of SaveComponents belonging to this object
+        /// </summary>
+        public List<(string root, string name)> Components { get; set; } = new List<(string, string)>();
 
         public SaveEntity(BinaryReader reader) : base(reader)
         {
@@ -44,20 +54,20 @@ namespace SatisfactorySaveParser
         public override void ParseData(int length, BinaryReader reader)
         {
             var newLen = length - 12;
-            DataStr1 = reader.ReadLengthPrefixedString();
-            if (DataStr1.Length > 0)
-                newLen -= DataStr1.Length + 1;
+            ParentObjectRoot = reader.ReadLengthPrefixedString();
+            if (ParentObjectRoot.Length > 0)
+                newLen -= ParentObjectRoot.Length + 1;
 
-            DataStr2 = reader.ReadLengthPrefixedString();
-            if (DataStr2.Length > 0)
-                newLen -= DataStr2.Length + 1;
+            ParentObjectName = reader.ReadLengthPrefixedString();
+            if (ParentObjectName.Length > 0)
+                newLen -= ParentObjectName.Length + 1;
 
-            var count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
+            var componentCount = reader.ReadInt32();
+            for (int i = 0; i < componentCount; i++)
             {
                 var str1 = reader.ReadLengthPrefixedString();
                 var str2 = reader.ReadLengthPrefixedString();
-                DataList4.Add((str1, str2));
+                Components.Add((str1, str2));
                 newLen -= 10 + str1.Length + str2.Length;
             }
 
