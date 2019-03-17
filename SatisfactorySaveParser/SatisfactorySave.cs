@@ -90,7 +90,7 @@ namespace SatisfactorySaveParser
                 SaveName = reader.ReadLengthPrefixedString();
 
                 UnknownHeaderInt1 = reader.ReadInt32();
-                Trace.Assert(UnknownHeaderInt1 == 158);
+                //Trace.Assert(UnknownHeaderInt1 == 158);
 
                 UnknownHeaderBytes2 = reader.ReadBytes(0x9);
 
@@ -139,7 +139,11 @@ namespace SatisfactorySaveParser
                 }
 
                 var unk10 = reader.ReadInt32();
-                Trace.Assert(unk10 == 0);
+                for(int i = 0; i < unk10; i++)
+                {
+                    var str1 = reader.ReadLengthPrefixedString();
+                    var str2 = reader.ReadLengthPrefixedString();
+                }
             }
         }
     }
