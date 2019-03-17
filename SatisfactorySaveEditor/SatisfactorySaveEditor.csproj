@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Model\SaveNodeItem.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

@@ -7,11 +7,13 @@
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:model="clr-namespace:SatisfactorySaveEditor.Model"
         xmlns:util="clr-namespace:AngelNode.Util"
+        xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         mc:Ignorable="d"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
         Title="Satisfactory Save Editor" Width="1280" Height="720">
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+        <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -28,14 +30,7 @@
             </i:Interaction.Triggers>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type model:SaveNodeItem}" ItemsSource="{Binding Items}">
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0} ({1} entries)">
-                                <Binding Path="Title"/>
-                                <Binding Path="Items.Count"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                    <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
