@@ -1,8 +1,9 @@
 ﻿using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight;
 
-namespace SatisfactorySaveEditor
+namespace SatisfactorySaveEditor.Model
 {
-    public class SaveNodeItem
+    public class SaveNodeItem : ObservableObject
     {
         public ObservableCollection<SaveNodeItem> Items { get; set; } = new ObservableCollection<SaveNodeItem>();
 
