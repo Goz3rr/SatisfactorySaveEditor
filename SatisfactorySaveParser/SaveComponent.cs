@@ -4,13 +4,22 @@ namespace SatisfactorySaveParser
 {
     public class SaveComponent : SaveObject
     {
-        public string Str4 { get; set; }
-        public int Int5 { get; set; }
+        /// <summary>
+        ///     Instance name of the parent entity object
+        /// </summary>
+        public string ParentEntityName { get; set; }
+
+        /// <summary>
+        ///     Integer to keep track of amount of saved objects.
+        ///     0 when followed by another object
+        ///     Anything else is the total amount of objects in the save and indicated the end of the objects section
+        /// </summary>
+        public int SaveObjectCount { get; set; }
 
         public SaveComponent(BinaryReader reader) : base(reader)
         {
-            Str4 = reader.ReadLengthPrefixedString();
-            Int5 = reader.ReadInt32();
+            ParentEntityName = reader.ReadLengthPrefixedString();
+            SaveObjectCount = reader.ReadInt32();
         }
 
         public override string ToString()

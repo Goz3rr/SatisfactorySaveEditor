@@ -118,9 +118,9 @@ namespace SatisfactorySaveParser
                     var entry = new SaveComponent(reader);
                     Entries.Add(entry);
 
-                    if (entry.Int5 != 0)
+                    if (entry.SaveObjectCount != 0)
                     {
-                        Trace.Assert(entry.Int5 == Entries.Count);
+                        Trace.Assert(entry.SaveObjectCount == Entries.Count);
                         break;
                     }
                 }
