@@ -9,7 +9,7 @@ namespace SatisfactorySaveEditor.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is SaveNodeItem saveNodeItem)) return string.Empty;
+            if (!(value is SaveObjectModel saveNodeItem)) return string.Empty;
 
             var count = saveNodeItem.Items.Count;
             switch (count)

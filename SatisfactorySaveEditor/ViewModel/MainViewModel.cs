@@ -10,24 +10,24 @@ namespace SatisfactorySaveEditor.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private SaveNodeItem rootItem;
-        private SaveNodeItem selectedItem;
+        private SaveObjectModel rootItem;
+        private SaveObjectModel selectedItem;
 
-        public ObservableCollection<SaveNodeItem> RootItem => new ObservableCollection<SaveNodeItem> { rootItem };
+        public ObservableCollection<SaveObjectModel> RootItem => new ObservableCollection<SaveObjectModel> { rootItem };
 
-        public SaveNodeItem SelectedItem
+        public SaveObjectModel SelectedItem
         {
             get => selectedItem;
             set { Set(() => SelectedItem, ref selectedItem, value); }
         }
 
-        public RelayCommand<SaveNodeItem> TreeSelectCommand { get; }
+        public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
 
         public MainViewModel()
         {
             var save = new SatisfactorySave(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\test_090319-140542.sav");
 
-            rootItem = new SaveNodeItem("Root");
+            rootItem = new SaveObjectModel("Root");
             var saveTree = new EditorTreeNode("Root");
 
             foreach (var entry in save.Entries)
@@ -38,26 +38,34 @@ namespace SatisfactorySaveEditor.ViewModel
 
             BuildNode(rootItem.Items, saveTree);
 
-            TreeSelectCommand = new RelayCommand<SaveNodeItem>(SelectNode);
+            TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
         }
 
-        private void SelectNode(SaveNodeItem node)
+        private void SelectNode(SaveObjectModel node)
         {
             SelectedItem = node;
         }
 
-        private void BuildNode(ObservableCollection<SaveNodeItem> items, EditorTreeNode node)
+        private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)
         {
             foreach (var child in node.Children)
             {
-                var childItem = new SaveNodeItem(child.Value.Name);
+                var childItem = new SaveObjectModel(child.Value.Name);
                 BuildNode(childItem.Items, child.Value);
                 items.Add(childItem);
             }
 
             foreach (var entry in node.Content)
             {
-                items.Add(new SaveNodeItem(entry.InstanceName, entry.DataFields));
+                switch (entry)
+                {
+                    case SaveEntity se:
+                        items.Add(new SaveEntityModel(entry.InstanceName, entry.DataFields, entry.RootObject, se));
+                        break;
+                    case SaveComponent sc:
+                        items.Add(new SaveComponentModel(entry.InstanceName, entry.DataFields, entry.RootObject, sc.ParentEntityName));
+                        break;
+                }
             }
         }
     }
