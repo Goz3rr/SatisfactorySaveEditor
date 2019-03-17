@@ -8,6 +8,8 @@ using SatisfactorySaveEditor.Util;
 using System.Windows;
 using Microsoft.Win32;
 using System.Reflection;
+using SatisfactorySaveEditor.View;
+using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -26,6 +28,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
+        public RelayCommand<object> AddPropertyCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
@@ -37,8 +40,30 @@ namespace SatisfactorySaveEditor.ViewModel
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
+            AddPropertyCommand = new RelayCommand<object>(AddProperty);
 
             LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
+        }
+
+        private void AddProperty(object obj)
+        {
+            switch (obj)
+            {
+                case SaveObjectModel som:
+                    AddWindow window = new AddWindow
+                    {
+                        Owner = Application.Current.MainWindow
+                    };
+                    AddViewModel avm = (AddViewModel)window.DataContext;
+                    avm.ObjectModel = som;
+                    window.ShowDialog();
+                    break;
+                case ArrayProperty ap:
+                    ap.Elements.Add(AddViewModel.CreateProperty(AddViewModel.FromStringType(ap.Type), string.Empty));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(obj));
+            }
         }
 
         private bool CanJump(string target)
@@ -122,10 +147,10 @@ namespace SatisfactorySaveEditor.ViewModel
                 switch (entry)
                 {
                     case SaveEntity se:
-                        items.Add(new SaveEntityModel(entry.InstanceName, entry.DataFields, entry.RootObject, se));
+                        items.Add(new SaveEntityModel(se));
                         break;
                     case SaveComponent sc:
-                        items.Add(new SaveComponentModel(entry.InstanceName, entry.DataFields, entry.RootObject, sc.ParentEntityName));
+                        items.Add(new SaveComponentModel(sc));
                         break;
                 }
             }

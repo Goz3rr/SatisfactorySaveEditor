@@ -9,6 +9,7 @@
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Title="Satisfactory Save Editor" Width="1280" Height="720">
     <Window.Resources>
@@ -73,8 +74,8 @@
             </TreeView>
             
             <GridSplitter HorizontalAlignment="Center" Width="3" Grid.Column="1"/>
-            <ContentPresenter Grid.Column="2" Margin="5" Content="{Binding SelectedItem}">
-                <ContentPresenter.Resources>
+            <ContentControl Grid.Column="2" Margin="5" Content="{Binding SelectedItem}">
+                <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type model:SaveEntityModel}">
                         <DockPanel>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
@@ -86,11 +87,18 @@
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
                             <GroupBox Header="Properties">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
-                                        <ItemsControl.Resources>
-                                            <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                        </ItemsControl.Resources>
-                                    </ItemsControl>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Fields}">
+                                            <ItemsControl.Resources>
+                                                <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                            </ItemsControl.Resources>
+                                        </ItemsControl>
+                                        <Button Grid.Row="1" Content="Add property" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
+                                    </Grid>
                                 </ScrollViewer>
                             </GroupBox>
                         </DockPanel>
@@ -102,18 +110,25 @@
                             <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, FallbackValue='No item selected', StringFormat='ParentEntityName: {0}'}"/>
                             <GroupBox Header="Properties">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
-                                        <ItemsControl.Resources>
-                                            <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                        </ItemsControl.Resources>
-                                    </ItemsControl>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Fields}">
+                                            <ItemsControl.Resources>
+                                                <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                            </ItemsControl.Resources>
+                                        </ItemsControl>
+                                        <Button Grid.Row="1" Content="Add property" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
+                                    </Grid>
                                 </ScrollViewer>
                             </GroupBox>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>
-                </ContentPresenter.Resources>
-            </ContentPresenter>
+                </ContentControl.Resources>
+            </ContentControl>
         </Grid>
     </DockPanel>
 </Window>

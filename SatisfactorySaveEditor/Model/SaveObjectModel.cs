@@ -39,11 +39,14 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => IsExpanded, ref isExpanded, value); }
         }
 
-        public SaveObjectModel(string title, SerializedFields fields, string rootObject)
+        public SaveObject Model { get; }
+
+        public SaveObjectModel(SaveObject model)
         {
-            Title = title;
-            Fields = new ObservableCollection<SerializedProperty>(fields);
-            RootObject = rootObject;
+            Model = model;
+            Title = model.InstanceName;
+            Fields = new ObservableCollection<SerializedProperty>(model.DataFields);
+            RootObject = model.RootObject;
         }
 
         public SaveObjectModel(string title)

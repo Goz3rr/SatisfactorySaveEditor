@@ -41,7 +41,7 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => ParentObjectName, ref parentObjectName, value); }
         }
 
-        public SaveEntityModel(string title, SerializedFields fields, string rootObject, SaveEntity ent) : base(title, fields, rootObject)
+        public SaveEntityModel(SaveEntity ent) : base(ent)
         {
             Int4 = ent.Int4;
             Int6 = ent.Int6;
