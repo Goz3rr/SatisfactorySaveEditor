@@ -9,95 +9,111 @@
         xmlns:util="clr-namespace:AngelNode.Util"
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         mc:Ignorable="d"
-        DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
+        DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Title="Satisfactory Save Editor" Width="1280" Height="720">
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
     </Window.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
+    </Window.InputBindings>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" InputGestureText="Ctrl+O" Command="{Binding OpenCommand}"/>
+                <Separator/>
+                <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="About" Command="{Binding AboutCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
+            </MenuItem>
+        </Menu>
+        <Separator DockPanel.Dock="Top" Opacity="0.25"/>
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <TreeView Grid.Column="0" Name="SaveNodeTreeView" ItemsSource="{Binding RootItem}">
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <EventSetter Event="Selected" Handler="TreeViewSelectedItemChanged"/>
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" /> 
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectedItemChanged">
-                    <command:EventToCommand Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type model:SaveComponentModel}" ItemsSource="{Binding Items}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="[C] " Foreground="Green"/>
-                        <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectModel}" ItemsSource="{Binding Items}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="[O] " Foreground="Violet"/>
-                        <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type model:SaveEntityModel}" ItemsSource="{Binding Items}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="[E] " Foreground="Blue"/>
-                        <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.Resources>
-        </TreeView>
-        
-        <GridSplitter HorizontalAlignment="Center" Width="3" Grid.Column="1"/>
-        <ContentPresenter Grid.Column="2" Margin="5" Content="{Binding SelectedItem}">
-            <ContentPresenter.Resources>
-                <DataTemplate DataType="{x:Type model:SaveEntityModel}">
-                    <DockPanel>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Unknown5, FallbackValue='No item selected', StringFormat='Unknown5: {0}'}"/>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
-                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
-                        <GroupBox Header="Properties">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
-                                    <ItemsControl.Resources>
-                                        <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                    </ItemsControl.Resources>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </GroupBox>
-                    </DockPanel>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type model:SaveComponentModel}">
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Component name: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, FallbackValue='No item selected', StringFormat='ParentEntityName: {0}'}"/>
-                        <GroupBox Header="Properties">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
-                                    <ItemsControl.Resources>
-                                        <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                    </ItemsControl.Resources>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </GroupBox>
-                    </DockPanel>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>
-            </ContentPresenter.Resources>
-        </ContentPresenter>
-    </Grid>
+            <TreeView Grid.Column="0" Name="SaveNodeTreeView" ItemsSource="{Binding RootItem}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="Selected" Handler="TreeViewSelectedItemChanged"/>
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" /> 
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <command:EventToCommand Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type model:SaveComponentModel}" ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="[C] " Foreground="Green"/>
+                            <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectModel}" ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="[O] " Foreground="Violet"/>
+                            <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type model:SaveEntityModel}" ItemsSource="{Binding Items}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="[E] " Foreground="Blue"/>
+                            <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+            
+            <GridSplitter HorizontalAlignment="Center" Width="3" Grid.Column="1"/>
+            <ContentPresenter Grid.Column="2" Margin="5" Content="{Binding SelectedItem}">
+                <ContentPresenter.Resources>
+                    <DataTemplate DataType="{x:Type model:SaveEntityModel}">
+                        <DockPanel>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Unknown5, FallbackValue='No item selected', StringFormat='Unknown5: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
+                            <GroupBox Header="Properties">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
+                                        <ItemsControl.Resources>
+                                            <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                        </ItemsControl.Resources>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </GroupBox>
+                        </DockPanel>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type model:SaveComponentModel}">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Component name: {0}'}"/>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, FallbackValue='No item selected', StringFormat='ParentEntityName: {0}'}"/>
+                            <GroupBox Header="Properties">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
+                                        <ItemsControl.Resources>
+                                            <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                        </ItemsControl.Resources>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </GroupBox>
+                        </DockPanel>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>
+                </ContentPresenter.Resources>
+            </ContentPresenter>
+        </Grid>
+    </DockPanel>
 </Window>
