@@ -3,7 +3,6 @@ using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.CommandWpf;
-using System;
 using SatisfactorySaveEditor.Util;
 
 namespace SatisfactorySaveEditor.ViewModel
@@ -22,6 +21,7 @@ namespace SatisfactorySaveEditor.ViewModel
         }
 
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
+        public RelayCommand<string> JumpCommand { get; }
 
         public MainViewModel()
         {
@@ -39,6 +39,19 @@ namespace SatisfactorySaveEditor.ViewModel
             BuildNode(rootItem.Items, saveTree);
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
+            JumpCommand = new RelayCommand<string>(Jump);
+
+            RootItem[0].IsExpanded = true;
+            foreach (var item in RootItem[0].Items)
+            {
+                item.IsExpanded = true;
+            }
+        }
+
+        private void Jump(string target)
+        {
+            SelectedItem.IsSelected = false;
+            SelectedItem = RootItem[0].FindChild(target);
         }
 
         private void SelectNode(SaveObjectModel node)

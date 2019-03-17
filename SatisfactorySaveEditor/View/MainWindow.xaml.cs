@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 
 namespace SatisfactorySaveEditor.View
 {
@@ -10,6 +11,15 @@ namespace SatisfactorySaveEditor.View
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void TreeViewSelectedItemChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is TreeViewItem item)
+            {
+                item.BringIntoView();
+                e.Handled = true;  
+            }
         }
     }
 }

@@ -23,6 +23,13 @@
         </Grid.ColumnDefinitions>
 
         <TreeView Grid.Column="0" Name="SaveNodeTreeView" ItemsSource="{Binding RootItem}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="Selected" Handler="TreeViewSelectedItemChanged"/>
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" /> 
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectedItemChanged">
                     <command:EventToCommand Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
@@ -55,13 +62,13 @@
             <ContentPresenter.Resources>
                 <DataTemplate DataType="{x:Type model:SaveEntityModel}">
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
                         <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Unknown5, FallbackValue='No item selected', StringFormat='Unknown5: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
-                        <TextBlock DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
                         <GroupBox Header="Properties">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
