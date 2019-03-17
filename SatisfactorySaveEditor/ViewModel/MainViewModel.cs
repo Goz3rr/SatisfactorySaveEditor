@@ -33,12 +33,17 @@ namespace SatisfactorySaveEditor.ViewModel
         public MainViewModel()
         {
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
-            JumpCommand = new RelayCommand<string>(Jump);
+            JumpCommand = new RelayCommand<string>(Jump, CanJump);
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
 
             LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
+        }
+
+        private bool CanJump(string target)
+        {
+            return RootItem[0].FindChild(target, false) != null;
         }
 
         private void About()
@@ -69,7 +74,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Jump(string target)
         {
             SelectedItem.IsSelected = false;
-            SelectedItem = RootItem[0].FindChild(target);
+            SelectedItem = RootItem[0].FindChild(target, true);
         }
 
         private void SelectNode(SaveObjectModel node)
