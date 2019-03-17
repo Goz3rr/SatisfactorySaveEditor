@@ -4,6 +4,7 @@ using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.CommandWpf;
 using System;
+using SatisfactorySaveEditor.Util;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -27,7 +28,7 @@ namespace SatisfactorySaveEditor.ViewModel
             var save = new SatisfactorySave(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\test_090319-140542.sav");
 
             rootItem = new SaveNodeItem("Root");
-            var saveTree = new SaveTreeNode("Root");
+            var saveTree = new EditorTreeNode("Root");
 
             foreach (var entry in save.Entries)
             {
@@ -45,7 +46,7 @@ namespace SatisfactorySaveEditor.ViewModel
             SelectedItem = node;
         }
 
-        private void BuildNode(ObservableCollection<SaveNodeItem> items, SaveTreeNode node)
+        private void BuildNode(ObservableCollection<SaveNodeItem> items, EditorTreeNode node)
         {
             foreach (var child in node.Children)
             {

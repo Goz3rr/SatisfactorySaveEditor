@@ -72,6 +72,7 @@
     </ApplicationDefinition>
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Model\SaveNodeItem.cs" />
+    <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
