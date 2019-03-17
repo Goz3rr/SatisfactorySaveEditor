@@ -25,7 +25,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public MainViewModel()
         {
-            var save = new SatisfactorySave(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\test_090319-140542.sav");
+            var save = new SatisfactorySave(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
 
             rootItem = new SaveNodeItem("Root");
             var saveTree = new EditorTreeNode("Root");

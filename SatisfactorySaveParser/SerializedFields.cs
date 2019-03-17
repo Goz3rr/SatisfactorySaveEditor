@@ -45,6 +45,9 @@ namespace SatisfactorySaveParser
                         overhead = 1;
                         result.Add(IntProperty.Parse(propertyName, reader));
                         break;
+                    case ByteProperty.TypeName:
+                        result.Add(ByteProperty.Parse(propertyName, reader, out overhead));
+                        break;
                     case EnumProperty.TypeName:
                         result.Add(EnumProperty.Parse(propertyName, reader, out overhead));
                         break;
@@ -67,6 +70,13 @@ namespace SatisfactorySaveParser
                     case StructProperty.TypeName:
                         result.Add(StructProperty.Parse(propertyName, reader, size, out overhead));
                         break;
+                    case MapProperty.TypeName:
+                        result.Add(MapProperty.Parse(propertyName, reader, size, out overhead));
+                        break;
+                    case TextProperty.TypeName:
+                        overhead = 1;
+                        result.Add(TextProperty.Parse(propertyName, reader));
+                        break;
                     default:
                         throw new NotImplementedException(fieldType);
                 }
@@ -82,21 +92,26 @@ namespace SatisfactorySaveParser
             Trace.Assert(int1 == 0);
 
             var remainingBytes = start + length - reader.BaseStream.Position;
-            if (remainingBytes == 4)
-            //if(result.Fields.Count > 0)
-            {
-                var int2 = reader.ReadInt32();
-            }
-            else if (remainingBytes > 0 && result.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == StructProperty.TypeName))
+            if (remainingBytes > 0)
             {
                 var unk = reader.ReadBytes((int)remainingBytes);
             }
-            else if (remainingBytes > 4)
-            {
-                var int2 = reader.ReadInt32();
-                var str2 = reader.ReadLengthPrefixedString();
-                var str3 = reader.ReadLengthPrefixedString();
-            }
+
+            //if (remainingBytes == 4)
+            ////if(result.Fields.Count > 0)
+            //{
+            //    var int2 = reader.ReadInt32();
+            //}
+            //else if (remainingBytes > 0 && result.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == StructProperty.TypeName))
+            //{
+            //    var unk = reader.ReadBytes((int)remainingBytes);
+            //}
+            //else if (remainingBytes > 4)
+            //{
+            //    var int2 = reader.ReadInt32();
+            //    var str2 = reader.ReadLengthPrefixedString();
+            //    var str3 = reader.ReadLengthPrefixedString();
+            //}
 
 
             return result;

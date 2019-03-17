@@ -6,7 +6,8 @@ namespace SatisfactorySaveParser
     {
         public static char[] ReadCharArray(this BinaryReader reader)
         {
-            return reader.ReadChars(reader.ReadInt32());
+            var count = reader.ReadInt32();
+            return reader.ReadChars(count);
         }
 
         public static string ReadLengthPrefixedString(this BinaryReader reader)
