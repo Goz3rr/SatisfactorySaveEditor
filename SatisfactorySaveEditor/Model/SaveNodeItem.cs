@@ -21,7 +21,7 @@ namespace SatisfactorySaveEditor.Model
         public SaveNodeItem(string title, SerializedFields fields)
         {
             Title = title;
-            Fields = new ObservableCollection<SerializedProperty>(fields.Fields);
+            Fields = new ObservableCollection<SerializedProperty>(fields);
         }
 
         public SaveNodeItem(string title)
