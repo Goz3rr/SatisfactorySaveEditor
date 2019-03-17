@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:model="clr-namespace:SatisfactorySaveEditor.Model"
-        xmlns:util="clr-namespace:AngelNode.Util"
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
+        xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
         mc:Ignorable="d"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Title="Satisfactory Save Editor" Width="1280" Height="720">

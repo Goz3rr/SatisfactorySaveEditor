@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AngelNode.Util
+namespace SatisfactorySaveEditor.Util
 {
     public class BindingProxy : Freezable
     {
