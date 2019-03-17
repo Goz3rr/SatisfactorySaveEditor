@@ -27,6 +27,11 @@
             <CheckBox IsChecked="{Binding Value}"/>
         </GroupBox>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:ByteProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Byte)">
+            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: BYTE STUFF"/>
+        </GroupBox>
+    </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:EnumProperty}">
         <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Enum)">
             <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
@@ -40,6 +45,11 @@
     <DataTemplate DataType="{x:Type propertyTypes:IntProperty}">
         <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Integer)">
             <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:MapProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Map)">
+            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: MAP STUFF"/>
         </GroupBox>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:NameProperty}">
@@ -75,7 +85,12 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:StructProperty}">
         <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Struct)">
-            <TextBlock Text="// TODO: IMPLEMENT THIS"/>
+            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: STRUCT STUFF"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:TextProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Text)">
+            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: TEXT STUFF"/>
         </GroupBox>
     </DataTemplate>
 </ResourceDictionary>
