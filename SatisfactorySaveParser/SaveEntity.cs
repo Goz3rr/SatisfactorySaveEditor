@@ -17,6 +17,14 @@ namespace SatisfactorySaveParser
         public int DataInt3 { get; set; }
         public List<(string, string)> DataList4 { get; set; } = new List<(string, string)>();
 
+        public SaveEntity(BinaryReader reader) : base(reader)
+        {
+            Int4 = reader.ReadInt32();
+            Unknown5 = reader.ReadBytes(0x28);
+            Int6 = reader.ReadInt32();
+            Int7 = reader.ReadInt32();
+        }
+
         public override void ParseData(int length, BinaryReader reader)
         {
             var newLen = length - 12;

@@ -31,9 +31,9 @@ namespace SatisfactorySaveEditor
             var rootNode = new SaveNodeItem("Root");
             var saveTree = new SaveTreeNode("Root");
 
-            foreach (var entry in save.SaveEntries)
+            foreach (var entry in save.Entries)
             {
-                var parts = entry.Str1.TrimStart('/').Split('/');
+                var parts = entry.TypePath.TrimStart('/').Split('/');
                 saveTree.AddChild(parts, entry);
             }
 
@@ -52,7 +52,7 @@ namespace SatisfactorySaveEditor
 
             foreach (var entry in node.Content)
             {
-                items.Add(new SaveNodeItem(entry.Str3));
+                items.Add(new SaveNodeItem(entry.InstanceName));
             }
         }
     }
