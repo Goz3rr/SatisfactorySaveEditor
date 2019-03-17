@@ -1,5 +1,4 @@
-﻿using SatisfactorySaveParser.Fields;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -8,7 +7,7 @@ namespace SatisfactorySaveParser
     /// <summary>
     ///     Class representing a single saved object in a Satisfactory save
     /// </summary>
-    public abstract class SaveEntry
+    public abstract class SaveObject
     {
         /// <summary>
         ///     Forward slash separated path of the script/prefab of this object.
@@ -32,7 +31,7 @@ namespace SatisfactorySaveParser
         /// </summary>
         public SerializedFields DataFields { get; set; }
 
-        protected SaveEntry(BinaryReader reader)
+        protected SaveObject(BinaryReader reader)
         {
             TypePath = reader.ReadLengthPrefixedString();
             RootObject = reader.ReadLengthPrefixedString();

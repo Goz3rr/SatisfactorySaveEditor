@@ -1,16 +1,17 @@
-﻿using System;
+﻿using SatisfactorySaveParser.PropertyTypes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace SatisfactorySaveParser.Fields
+namespace SatisfactorySaveParser
 {
     public class SerializedFields
     {
         public static SerializedFields None = new SerializedFields();
 
-        public List<ISerializedField> Fields { get; set; } = new List<ISerializedField>();
+        public List<SerializedProperty> Fields { get; set; } = new List<SerializedProperty>();
 
         public static SerializedFields Parse(int length, BinaryReader reader)
         {
@@ -19,8 +20,8 @@ namespace SatisfactorySaveParser.Fields
 
             while (true)
             {
-                var fieldName = reader.ReadLengthPrefixedString();
-                if (fieldName == "None")
+                var propertyName = reader.ReadLengthPrefixedString();
+                if (propertyName == "None")
                 {
                     break;
                 }
@@ -36,37 +37,37 @@ namespace SatisfactorySaveParser.Fields
                 switch (fieldType)
                 {
                     case "ArrayProperty":
-                        result.Fields.Add(ArrayProperty.Parse(fieldName, reader, size, out overhead));
+                        result.Fields.Add(ArrayProperty.Parse(propertyName, reader, size, out overhead));
                         break;
                     case "FloatProperty":
                         overhead = 1;
-                        result.Fields.Add(FloatProperty.Parse(fieldName, reader));
+                        result.Fields.Add(FloatProperty.Parse(propertyName, reader));
                         break;
                     case "IntProperty":
                         overhead = 1;
-                        result.Fields.Add(IntProperty.Parse(fieldName, reader));
+                        result.Fields.Add(IntProperty.Parse(propertyName, reader));
                         break;
                     case "EnumProperty":
-                        result.Fields.Add(EnumProperty.Parse(fieldName, reader, out overhead));
+                        result.Fields.Add(EnumProperty.Parse(propertyName, reader, out overhead));
                         break;
                     case "BoolProperty":
                         overhead = 2;
-                        result.Fields.Add(BoolProperty.Parse(fieldName, reader));
+                        result.Fields.Add(BoolProperty.Parse(propertyName, reader));
                         break;
                     case "StrProperty":
                         overhead = 1;
-                        result.Fields.Add(StrProperty.Parse(fieldName, reader));
+                        result.Fields.Add(StrProperty.Parse(propertyName, reader));
                         break;
                     case "NameProperty":
                         overhead = 1;
-                        result.Fields.Add(NameProperty.Parse(fieldName, reader));
+                        result.Fields.Add(NameProperty.Parse(propertyName, reader));
                         break;
                     case "ObjectProperty":
                         overhead = 1;
-                        result.Fields.Add(ObjectProperty.Parse(fieldName, reader));
+                        result.Fields.Add(ObjectProperty.Parse(propertyName, reader));
                         break;
                     case "StructProperty":
-                        result.Fields.Add(StructProperty.Parse(fieldName, reader, size, out overhead));
+                        result.Fields.Add(StructProperty.Parse(propertyName, reader, size, out overhead));
                         break;
                     default:
                         throw new NotImplementedException(fieldType);

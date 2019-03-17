@@ -1,15 +1,14 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 
-namespace SatisfactorySaveParser.Fields
+namespace SatisfactorySaveParser.PropertyTypes
 {
-    public class ObjectProperty : ISerializedField
+    public class ObjectProperty : SerializedProperty
     {
         public string Str1 { get; set; }
         public string Str2 { get; set; }
 
-        public ObjectProperty(string str1 = null, string str2 = null)
+        public ObjectProperty(string propertyName, string str1 = null, string str2 = null) : base(propertyName)
         {
             Str1 = str1;
             Str2 = str2;
@@ -21,9 +20,9 @@ namespace SatisfactorySaveParser.Fields
             return $"obj: {Str2}";
         }
 
-        public static ObjectProperty Parse(string fieldName, BinaryReader reader)
+        public static ObjectProperty Parse(string propertyName, BinaryReader reader)
         {
-            var result = new ObjectProperty();
+            var result = new ObjectProperty(propertyName);
 
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);

@@ -1,21 +1,24 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 
-namespace SatisfactorySaveParser.Fields
+namespace SatisfactorySaveParser.PropertyTypes
 {
-    public class StrProperty : ISerializedField
+    public class StrProperty : SerializedProperty
     {
         public string Value { get; set; }
+
+        public StrProperty(string propertyName) : base(propertyName)
+        {
+        }
 
         public override string ToString()
         {
             return $"str: {Value}";
         }
 
-        public static StrProperty Parse(string fieldName, BinaryReader reader)
+        public static StrProperty Parse(string propertyName, BinaryReader reader)
         {
-            var result = new StrProperty();
+            var result = new StrProperty(propertyName);
 
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);

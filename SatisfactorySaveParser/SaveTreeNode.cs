@@ -7,7 +7,7 @@ namespace SatisfactorySaveParser
     {
         public string Name { get; set; }
 
-        public List<SaveEntry> Content { get; set; } = new List<SaveEntry>();
+        public List<SaveObject> Content { get; set; } = new List<SaveObject>();
 
         public Dictionary<string, SaveTreeNode> Children { get; set; } = new Dictionary<string, SaveTreeNode>();
 
@@ -21,7 +21,7 @@ namespace SatisfactorySaveParser
             return $"{Name} ({Children.Count})";
         }
 
-        public void AddChild(IEnumerable<string> path, SaveEntry entry)
+        public void AddChild(IEnumerable<string> path, SaveObject entry)
         {
             if(path.Count() == 0)
             {

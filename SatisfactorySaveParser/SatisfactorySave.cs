@@ -66,7 +66,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Main content of the save game
         /// </summary>
-        public List<SaveEntry> Entries = new List<SaveEntry>();
+        public List<SaveObject> Entries = new List<SaveObject>();
 
         /// <summary>
         ///     Open a savefile from disk
@@ -105,7 +105,7 @@ namespace SatisfactorySaveParser
                     var entry = new SaveEntity(reader);
                     Entries.Add(entry);
 
-                    if (entry.Int7 != 1)
+                    if (entry.NextObjectType != 1)
                     {
                         break;
                     }
@@ -113,7 +113,7 @@ namespace SatisfactorySaveParser
 
                 while (true)
                 {
-                    var entry = new SaveClass2(reader);
+                    var entry = new SaveComponent(reader);
                     Entries.Add(entry);
 
                     if (entry.Int5 != 0)

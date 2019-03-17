@@ -1,16 +1,30 @@
-﻿using SatisfactorySaveParser.Fields;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace SatisfactorySaveParser
 {
-    public class SaveEntity : SaveEntry
+    public class SaveEntity : SaveObject
     {
+        /// <summary>
+        ///     Unknown first int from definition
+        /// </summary>
         public int Int4 { get; set; }
+
+        /// <summary>
+        ///     Unknown bytes from definition
+        /// </summary>
         public byte[] Unknown5 { get; set; }
+
+        /// <summary>
+        ///     Unknown second int from definition
+        /// </summary>
         public int Int6 { get; set; }
-        public int Int7 { get; set; }
+
+        /// <summary>
+        ///     Int indicating the next object type
+        ///     Has a value of 1 when followed by a SaveEntity and a value of 0 when followed by SaveComponent
+        /// </summary>
+        public int NextObjectType { get; set; }
 
         public string DataStr1 { get; set; }
         public string DataStr2 { get; set; }
@@ -22,7 +36,7 @@ namespace SatisfactorySaveParser
             Int4 = reader.ReadInt32();
             Unknown5 = reader.ReadBytes(0x28);
             Int6 = reader.ReadInt32();
-            Int7 = reader.ReadInt32();
+            NextObjectType = reader.ReadInt32();
         }
 
         public override void ParseData(int length, BinaryReader reader)

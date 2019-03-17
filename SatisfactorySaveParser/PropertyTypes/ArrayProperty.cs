@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace SatisfactorySaveParser.Fields
+namespace SatisfactorySaveParser.PropertyTypes
 {
-    public class ArrayProperty : ISerializedField
+    public class ArrayProperty : SerializedProperty
     {
         public string Type { get; set; }
-        public List<ISerializedField> Elements { get; set; } = new List<ISerializedField>();
+        public List<SerializedProperty> Elements { get; set; } = new List<SerializedProperty>();
+
+        public ArrayProperty(string propertyName) : base(propertyName)
+        {
+        }
 
         public override string ToString()
         {
             return $"array";
         }
 
-        public static ArrayProperty Parse(string fieldName, BinaryReader reader, int size, out int overhead)
+        public static ArrayProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
         {
-            var result = new ArrayProperty
+            var result = new ArrayProperty(propertyName)
             {
                 Type = reader.ReadLengthPrefixedString()
             };
@@ -42,7 +46,7 @@ namespace SatisfactorySaveParser.Fields
                         {
                             string obj1 = reader.ReadLengthPrefixedString();
                             string obj2 = reader.ReadLengthPrefixedString();
-                            result.Elements.Add(new ObjectProperty(obj1, obj2));
+                            result.Elements.Add(new ObjectProperty(null, obj1, obj2));
                         }
                     }
                     break;
@@ -52,7 +56,7 @@ namespace SatisfactorySaveParser.Fields
                         for (int i = 0; i < count; i++)
                         {
                             int element = reader.ReadInt32();
-                            result.Elements.Add(new IntProperty(element));
+                            result.Elements.Add(new IntProperty(null, element));
                         }
                     }
                     break;

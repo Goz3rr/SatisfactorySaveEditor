@@ -1,10 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 
-namespace SatisfactorySaveParser.Fields
+namespace SatisfactorySaveParser.PropertyTypes
 {
-    public class StructProperty : ISerializedField
+    public class StructProperty : SerializedProperty
     {
 
         public string Type { get; set; }
@@ -16,14 +15,19 @@ namespace SatisfactorySaveParser.Fields
 
         public byte[] Data { get; set; }
 
+        public StructProperty(string propertyName) : base(propertyName)
+        {
+
+        }
+
         public override string ToString()
         {
             return $"";
         }
 
-        public static StructProperty Parse(string fieldName, BinaryReader reader, int size, out int overhead)
+        public static StructProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
         {
-            var result = new StructProperty
+            var result = new StructProperty(propertyName)
             {
                 Type = reader.ReadLengthPrefixedString()
             };
