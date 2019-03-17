@@ -56,7 +56,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             foreach (var entry in node.Content)
             {
-                items.Add(new SaveNodeItem(entry.InstanceName));
+                items.Add(new SaveNodeItem(entry.InstanceName, entry.DataFields));
             }
         }
     }
