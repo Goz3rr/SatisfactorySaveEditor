@@ -5,6 +5,9 @@ namespace SatisfactorySaveParser
 {
     public class SaveEntity : SaveObject
     {
+        public const int NextObjectIsEntity = 1;
+        public const int NextObjectIsComponent = 0;
+
         /// <summary>
         ///     Unknown first int from definition
         /// </summary>
@@ -28,7 +31,6 @@ namespace SatisfactorySaveParser
 
         public string DataStr1 { get; set; }
         public string DataStr2 { get; set; }
-        public int DataInt3 { get; set; }
         public List<(string, string)> DataList4 { get; set; } = new List<(string, string)>();
 
         public SaveEntity(BinaryReader reader) : base(reader)
@@ -50,8 +52,8 @@ namespace SatisfactorySaveParser
             if (DataStr2.Length > 0)
                 newLen -= DataStr2.Length + 1;
 
-            DataInt3 = reader.ReadInt32();
-            for (int i = 0; i < DataInt3; i++)
+            var count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
             {
                 var str1 = reader.ReadLengthPrefixedString();
                 var str2 = reader.ReadLengthPrefixedString();

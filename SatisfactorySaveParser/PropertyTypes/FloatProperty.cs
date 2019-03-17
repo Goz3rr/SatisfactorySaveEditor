@@ -5,6 +5,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class FloatProperty : SerializedProperty
     {
+        public const string TypeName = nameof(FloatProperty);
+
         public float Value { get; set; }
 
         public FloatProperty(string propertyName) : base(propertyName)

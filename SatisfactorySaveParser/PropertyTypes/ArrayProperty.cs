@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class ArrayProperty : SerializedProperty
     {
+        public const string TypeName = nameof(ArrayProperty);
+
         public string Type { get; set; }
         public List<SerializedProperty> Elements { get; set; } = new List<SerializedProperty>();
 
@@ -16,7 +18,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public override string ToString()
         {
-            return $"array";
+            return $"array of {Type}";
         }
 
         public static ArrayProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
@@ -33,13 +35,13 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             switch (result.Type)
             {
-                case "StructProperty":
+                case StructProperty.TypeName:
                     {
                         // TODO
                         reader.ReadBytes(size);
                     }
                     break;
-                case "ObjectProperty":
+                case ObjectProperty.TypeName:
                     {
                         int count = reader.ReadInt32();
                         for (int i = 0; i < count; i++)
@@ -50,7 +52,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                     }
                     break;
-                case "IntProperty":
+                case IntProperty.TypeName:
                     {
                         int count = reader.ReadInt32();
                         for (int i = 0; i < count; i++)

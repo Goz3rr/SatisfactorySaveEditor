@@ -5,6 +5,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class IntProperty : SerializedProperty
     {
+        public const string TypeName = nameof(IntProperty);
+
         public int Value { get; set; }
 
         public IntProperty(string propertyName, int value) : base(propertyName)

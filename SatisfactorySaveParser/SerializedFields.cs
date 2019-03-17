@@ -7,11 +7,9 @@ using System.Linq;
 
 namespace SatisfactorySaveParser
 {
-    public class SerializedFields
+    public class SerializedFields : List<SerializedProperty>
     {
         public static SerializedFields None = new SerializedFields();
-
-        public List<SerializedProperty> Fields { get; set; } = new List<SerializedProperty>();
 
         public static SerializedFields Parse(int length, BinaryReader reader)
         {
@@ -36,38 +34,38 @@ namespace SatisfactorySaveParser
                 var before = reader.BaseStream.Position;
                 switch (fieldType)
                 {
-                    case "ArrayProperty":
-                        result.Fields.Add(ArrayProperty.Parse(propertyName, reader, size, out overhead));
+                    case ArrayProperty.TypeName:
+                        result.Add(ArrayProperty.Parse(propertyName, reader, size, out overhead));
                         break;
-                    case "FloatProperty":
+                    case FloatProperty.TypeName:
                         overhead = 1;
-                        result.Fields.Add(FloatProperty.Parse(propertyName, reader));
+                        result.Add(FloatProperty.Parse(propertyName, reader));
                         break;
-                    case "IntProperty":
+                    case IntProperty.TypeName:
                         overhead = 1;
-                        result.Fields.Add(IntProperty.Parse(propertyName, reader));
+                        result.Add(IntProperty.Parse(propertyName, reader));
                         break;
-                    case "EnumProperty":
-                        result.Fields.Add(EnumProperty.Parse(propertyName, reader, out overhead));
+                    case EnumProperty.TypeName:
+                        result.Add(EnumProperty.Parse(propertyName, reader, out overhead));
                         break;
-                    case "BoolProperty":
+                    case BoolProperty.TypeName:
                         overhead = 2;
-                        result.Fields.Add(BoolProperty.Parse(propertyName, reader));
+                        result.Add(BoolProperty.Parse(propertyName, reader));
                         break;
-                    case "StrProperty":
+                    case StrProperty.TypeName:
                         overhead = 1;
-                        result.Fields.Add(StrProperty.Parse(propertyName, reader));
+                        result.Add(StrProperty.Parse(propertyName, reader));
                         break;
-                    case "NameProperty":
+                    case NameProperty.TypeName:
                         overhead = 1;
-                        result.Fields.Add(NameProperty.Parse(propertyName, reader));
+                        result.Add(NameProperty.Parse(propertyName, reader));
                         break;
-                    case "ObjectProperty":
+                    case ObjectProperty.TypeName:
                         overhead = 1;
-                        result.Fields.Add(ObjectProperty.Parse(propertyName, reader));
+                        result.Add(ObjectProperty.Parse(propertyName, reader));
                         break;
-                    case "StructProperty":
-                        result.Fields.Add(StructProperty.Parse(propertyName, reader, size, out overhead));
+                    case StructProperty.TypeName:
+                        result.Add(StructProperty.Parse(propertyName, reader, size, out overhead));
                         break;
                     default:
                         throw new NotImplementedException(fieldType);
@@ -89,7 +87,7 @@ namespace SatisfactorySaveParser
             {
                 var int2 = reader.ReadInt32();
             }
-            else if (remainingBytes > 0 && result.Fields.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == "StructProperty"))
+            else if (remainingBytes > 0 && result.Any(f => f is ArrayProperty && ((ArrayProperty)f).Type == StructProperty.TypeName))
             {
                 var unk = reader.ReadBytes((int)remainingBytes);
             }

@@ -5,6 +5,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class StructProperty : SerializedProperty
     {
+        public const string TypeName = nameof(StructProperty);
+
 
         public string Type { get; set; }
         public int Unk1 { get; set; }

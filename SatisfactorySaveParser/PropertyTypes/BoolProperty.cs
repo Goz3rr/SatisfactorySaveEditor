@@ -4,6 +4,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class BoolProperty : SerializedProperty
     {
+        public const string TypeName = nameof(BoolProperty);
+
         public bool Value { get; set; }
 
         public BoolProperty(string propertyName) : base(propertyName)

@@ -5,6 +5,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class EnumProperty : SerializedProperty
     {
+        public const string TypeName = nameof(EnumProperty);
+
         public int Value { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }

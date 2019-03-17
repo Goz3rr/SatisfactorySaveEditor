@@ -94,23 +94,25 @@ namespace SatisfactorySaveParser
 
                 UnknownHeaderBytes2 = reader.ReadBytes(0x9);
 
-                // Does not need to be a public property because it's equal to SaveEntries.Count
+                // Does not need to be a public property because it's equal to Entries.Count
                 var totalEntries = reader.ReadUInt32();
 
                 UnknownHeaderInt2 = reader.ReadInt32();
                 Trace.Assert(UnknownHeaderInt2 == 1);
 
+                // Saved entities loop
                 while (true)
                 {
                     var entry = new SaveEntity(reader);
                     Entries.Add(entry);
 
-                    if (entry.NextObjectType != 1)
+                    if (entry.NextObjectType != SaveEntity.NextObjectIsEntity)
                     {
                         break;
                     }
                 }
 
+                // Saved components loop
                 while (true)
                 {
                     var entry = new SaveComponent(reader);
