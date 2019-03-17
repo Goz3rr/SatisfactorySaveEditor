@@ -28,25 +28,69 @@
                     <command:EventToCommand Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type model:SaveNodeItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type model:SaveComponentModel}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="[C] " Foreground="Green"/>
+                        <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                    </StackPanel>
                 </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectModel}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="[O] " Foreground="Violet"/>
+                        <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type model:SaveEntityModel}" ItemsSource="{Binding Items}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="[E] " Foreground="Blue"/>
+                        <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
         </TreeView>
         
         <GridSplitter HorizontalAlignment="Center" Width="3" Grid.Column="1"/>
-        <DockPanel Grid.Column="2" Margin="5">
-            <TextBlock DockPanel.Dock="Top" Text="{Binding SelectedItem.Title, FallbackValue='No item selected'}"/>
-            <GroupBox Header="Properties">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedItem.Fields}">
-                        <ItemsControl.Resources>
-                            <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                        </ItemsControl.Resources>
-                    </ItemsControl>
-                </ScrollViewer>
-            </GroupBox>
-        </DockPanel>
+        <ContentPresenter Grid.Column="2" Margin="5" Content="{Binding SelectedItem}">
+            <ContentPresenter.Resources>
+                <DataTemplate DataType="{x:Type model:SaveEntityModel}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
+                        <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Unknown5, FallbackValue='No item selected', StringFormat='Unknown5: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
+                        <GroupBox Header="Properties">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
+                                    <ItemsControl.Resources>
+                                        <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                    </ItemsControl.Resources>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </GroupBox>
+                    </DockPanel>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type model:SaveComponentModel}">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Component name: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
+                        <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, FallbackValue='No item selected', StringFormat='ParentEntityName: {0}'}"/>
+                        <GroupBox Header="Properties">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding Fields}">
+                                    <ItemsControl.Resources>
+                                        <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                    </ItemsControl.Resources>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </GroupBox>
+                    </DockPanel>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>
+            </ContentPresenter.Resources>
+        </ContentPresenter>
     </Grid>
 </Window>

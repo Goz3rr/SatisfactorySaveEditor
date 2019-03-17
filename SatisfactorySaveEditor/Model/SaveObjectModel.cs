@@ -5,11 +5,12 @@ using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Model
 {
-    public class SaveNodeItem : ObservableObject
+    public class SaveObjectModel : ObservableObject
     {
         private string title;
+        private string rootObject;
 
-        public ObservableCollection<SaveNodeItem> Items { get; } = new ObservableCollection<SaveNodeItem>();
+        public ObservableCollection<SaveObjectModel> Items { get; } = new ObservableCollection<SaveObjectModel>();
         public ObservableCollection<SerializedProperty> Fields { get; }
 
         public string Title
@@ -18,13 +19,20 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => Title, ref title, value); }
         }
 
-        public SaveNodeItem(string title, SerializedFields fields)
+        public string RootObject
+        {
+            get => rootObject;
+            set { Set(() => RootObject, ref rootObject, value); }
+        }
+
+        public SaveObjectModel(string title, SerializedFields fields, string rootObject)
         {
             Title = title;
             Fields = new ObservableCollection<SerializedProperty>(fields);
+            RootObject = rootObject;
         }
 
-        public SaveNodeItem(string title)
+        public SaveObjectModel(string title)
         {
             Title = title;
             Fields = new ObservableCollection<SerializedProperty>();

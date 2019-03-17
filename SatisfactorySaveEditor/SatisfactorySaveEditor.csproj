@@ -71,7 +71,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
-    <Compile Include="Model\SaveNodeItem.cs" />
+    <Compile Include="Model\SaveComponentModel.cs" />
+    <Compile Include="Model\SaveEntityModel.cs" />
+    <Compile Include="Model\SaveObjectModel.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
