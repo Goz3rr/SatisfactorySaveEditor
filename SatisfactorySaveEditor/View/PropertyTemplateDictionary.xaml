@@ -1,0 +1,73 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:propertyTypes="clr-namespace:SatisfactorySaveParser.PropertyTypes;assembly=SatisfactorySaveParser">
+    <DataTemplate DataType="{x:Type propertyTypes:ArrayProperty}">
+        <GroupBox>
+            <GroupBox.Header>
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} (Array of '{1}', {2} items)">
+                            <Binding Path="PropertyName"/>
+                            <Binding Path="Type"/>
+                            <Binding Path="Elements.Count"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </GroupBox.Header>
+            <DockPanel>
+                <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Elements}"/>
+                </ScrollViewer>
+            </DockPanel>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:BoolProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Boolean)">
+            <CheckBox IsChecked="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:EnumProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Enum)">
+            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:FloatProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Float)">
+            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:IntProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Integer)">
+            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:NameProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Name)">
+            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:ObjectProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Object)">
+            <StackPanel Orientation="Vertical">
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Target="{Binding ElementName=ParentBox}" Content="Parent:"/>
+                    <TextBox DockPanel.Dock="Left" x:Name="ParentBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str1}"/>
+                </DockPanel>
+                <DockPanel>
+                    <Label DockPanel.Dock="Left" Target="{Binding ElementName=TargetBox}" Content="Target:"/>
+                    <TextBox DockPanel.Dock="Left" x:Name="TargetBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str2}"/>
+                </DockPanel>
+            </StackPanel>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:StrProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (String)">
+            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
+        </GroupBox>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type propertyTypes:StructProperty}">
+        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Struct)">
+            <TextBlock Text="// TODO: IMPLEMENT THIS"/>
+        </GroupBox>
+    </DataTemplate>
+</ResourceDictionary>

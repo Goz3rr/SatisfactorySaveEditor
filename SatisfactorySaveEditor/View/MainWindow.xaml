@@ -9,13 +9,13 @@
         xmlns:util="clr-namespace:AngelNode.Util"
         mc:Ignorable="d"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Satisfactory Save Editor" Width="1280" Height="720">
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -41,7 +41,17 @@
         </TreeView>
         
         <GridSplitter HorizontalAlignment="Center" Width="3" Grid.Column="1"/>
-
-        <ListView Grid.Column="2" ItemsSource="{}"></ListView>
+        <DockPanel Grid.Column="2" Margin="5">
+            <TextBlock DockPanel.Dock="Top" Text="{Binding SelectedItem.Title, FallbackValue='No item selected'}"/>
+            <GroupBox Header="Properties">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedItem.Fields}">
+                        <ItemsControl.Resources>
+                            <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                        </ItemsControl.Resources>
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+        </DockPanel>
     </Grid>
 </Window>
