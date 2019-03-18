@@ -59,7 +59,7 @@ namespace SatisfactorySaveEditor.ViewModel
                     window.ShowDialog();
                     break;
                 case ArrayProperty ap:
-                    ap.Elements.Add(AddViewModel.CreateProperty(AddViewModel.FromStringType(ap.Type), string.Empty));
+                    ap.Elements.Add(AddViewModel.CreateProperty(AddViewModel.FromStringType(ap.Type), $"Element {ap.Elements.Count}"));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(obj));
