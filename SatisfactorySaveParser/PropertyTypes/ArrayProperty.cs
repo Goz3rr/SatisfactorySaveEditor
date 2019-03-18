@@ -48,7 +48,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                         {
                             string obj1 = reader.ReadLengthPrefixedString();
                             string obj2 = reader.ReadLengthPrefixedString();
-                            result.Elements.Add(new ObjectProperty(null, obj1, obj2));
+                            result.Elements.Add(new ObjectProperty($"Element {i}", obj1, obj2));
                         }
                     }
                     break;
@@ -58,7 +58,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                         for (int i = 0; i < count; i++)
                         {
                             int element = reader.ReadInt32();
-                            result.Elements.Add(new IntProperty(null, element));
+                            result.Elements.Add(new IntProperty($"Element {i}", element));
                         }
                     }
                     break;
