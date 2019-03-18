@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TreeView Grid.Column="0" Name="SaveNodeTreeView" ItemsSource="{Binding RootItem}">
+            <TreeView Grid.Column="0" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" Name="SaveNodeTreeView" ItemsSource="{Binding RootItem}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <EventSetter Event="Selected" Handler="TreeViewSelectedItemChanged"/>
