@@ -7,6 +7,9 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(ByteProperty);
 
+        public string Type { get; set; }
+        public string Value { get; set; }
+
         public ByteProperty(string propertyName) : base(propertyName)
         {
         }
@@ -18,20 +21,26 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public static ByteProperty Parse(string propertyName, BinaryReader reader, out int overhead)
         {
-            var str1 = reader.ReadLengthPrefixedString();
-            var unk = reader.ReadByte();
-            if (str1 == "None")
+            var result = new ByteProperty(propertyName)
             {
-                var unk2 = reader.ReadByte();
+                Type = reader.ReadLengthPrefixedString()
+            };
+
+            var unk = reader.ReadByte();
+            Trace.Assert(unk == 0);
+
+            if (result.Type == "None")
+            {
+                result.Value = reader.ReadByte().ToString();
             }
             else
             {
-                var str2 = reader.ReadLengthPrefixedString();
+                result.Value = reader.ReadLengthPrefixedString();
             }
 
-            overhead = str1.Length + 6;
+            overhead = result.Type.Length + 6;
 
-            return new ByteProperty(propertyName);
+            return result;
         }
     }
 }
