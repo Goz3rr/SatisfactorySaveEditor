@@ -9,7 +9,14 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(ArrayProperty);
 
+        /// <summary>
+        ///     String representation of the Property type this array consists of
+        /// </summary>
         public string Type { get; set; }
+
+        /// <summary>
+        ///     Actual content of the arry
+        /// </summary>
         public List<SerializedProperty> Elements { get; set; } = new List<SerializedProperty>();
 
         public ArrayProperty(string propertyName) : base(propertyName)
