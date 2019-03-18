@@ -8,13 +8,15 @@
         xmlns:model="clr-namespace:SatisfactorySaveEditor.Model"
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
-        Title="Satisfactory Save Editor" Width="1280" Height="720">
+        Title="Satisfactory Save Editor" Width="1500" Height="720">
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
+        <converter:SerializablePropertyToTypeStringConverter x:Key="SerializablePropertyToTypeStringConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
@@ -35,7 +37,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="5"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
             <TreeView Grid.Column="0" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" Name="SaveNodeTreeView" ItemsSource="{Binding RootItem}">
@@ -86,20 +88,55 @@
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
                             <GroupBox Header="Properties">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Fields}">
-                                            <ItemsControl.Resources>
-                                                <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                            </ItemsControl.Resources>
-                                        </ItemsControl>
-                                        <Button Grid.Row="1" Content="Add property" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
-                                    </Grid>
-                                </ScrollViewer>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid ScrollViewer.CanContentScroll="False" IsReadOnly="True" SelectionUnit="Cell" GridLinesVisibility="Horizontal" ItemsSource="{Binding Fields}" RowHeight="{x:Static sys:Double.NaN}" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="True" CanUserResizeRows="False">
+                                        <DataGrid.Resources>
+                                            <ResourceDictionary>
+                                                <ResourceDictionary.MergedDictionaries>
+                                                    <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                                </ResourceDictionary.MergedDictionaries>
+
+                                                <Style TargetType="DataGridCell">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter Property="Background" Value="{x:Null}" />
+                                                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                    <Style.Setters>
+                                                        <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                                        <Setter Property="Foreground" Value="Black" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                                                    <Grid Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter Margin="3" VerticalAlignment="Center"/>
+                                                                    </Grid>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style.Setters>
+                                                </Style>
+                                            </ResourceDictionary>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Name" Width="2*" Binding="{Binding PropertyName}"/>
+                                            <DataGridTextColumn Header="Type" Width="*" Binding="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}"/>
+                                            <DataGridTemplateColumn Header="Value" Width="3*">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ContentPresenter Content="{Binding .}"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <Button Grid.Row="1" Content="Add property" Margin="0,5,0,0" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
+                                </Grid>
                             </GroupBox>
                         </DockPanel>
                     </DataTemplate>
@@ -115,11 +152,48 @@
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Fields}">
-                                            <ItemsControl.Resources>
-                                                <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                            </ItemsControl.Resources>
-                                        </ItemsControl>
+                                        <DataGrid ScrollViewer.CanContentScroll="False" IsReadOnly="True" SelectionUnit="Cell" GridLinesVisibility="Horizontal" ItemsSource="{Binding Fields}" RowHeight="{x:Static sys:Double.NaN}" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="True" CanUserResizeRows="False">
+                                            <DataGrid.Resources>
+                                                <ResourceDictionary>
+                                                    <ResourceDictionary.MergedDictionaries>
+                                                        <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
+                                                    </ResourceDictionary.MergedDictionaries>
+
+                                                    <Style TargetType="DataGridCell">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter Property="Background" Value="{x:Null}" />
+                                                                <Setter Property="BorderBrush" Value="{x:Null}" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                        <Style.Setters>
+                                                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                                            <Setter Property="Foreground" Value="Black" />
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                                                        <Grid Background="{TemplateBinding Background}">
+                                                                            <ContentPresenter Margin="3" VerticalAlignment="Center"/>
+                                                                        </Grid>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style.Setters>
+                                                    </Style>
+                                                </ResourceDictionary>
+                                            </DataGrid.Resources>
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Name" Width="2*" Binding="{Binding PropertyName}"/>
+                                                <DataGridTextColumn Header="Type" Width="*" Binding="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}"/>
+                                                <DataGridTemplateColumn Header="Value" Width="3*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ContentPresenter Content="{Binding .}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
                                         <Button Grid.Row="1" Content="Add property" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
                                     </Grid>
                                 </ScrollViewer>

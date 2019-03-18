@@ -3,101 +3,70 @@
                     xmlns:propertyTypes="clr-namespace:SatisfactorySaveParser.PropertyTypes;assembly=SatisfactorySaveParser"
                     xmlns:view="clr-namespace:SatisfactorySaveEditor.View">
     <DataTemplate DataType="{x:Type propertyTypes:ArrayProperty}">
-        <GroupBox>
-            <GroupBox.Header>
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{}{0} (Array of '{1}', {2} items)">
-                            <Binding Path="PropertyName"/>
-                            <Binding Path="Type"/>
-                            <Binding Path="Elements.Count"/>
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </GroupBox.Header>
-            <DockPanel>
-                <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}"/>
-                        <Button Grid.Row="1" Content="Add element" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.AddPropertyCommand}" CommandParameter="{Binding .}"/>
-                    </Grid>
-                </ScrollViewer>
-            </DockPanel>
-        </GroupBox>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <GroupBox Header="{Binding PropertyName}">
+                            <ContentControl Content="{Binding .}"/>
+                        </GroupBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Grid.Row="1" Content="Add element" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.AddPropertyCommand}" CommandParameter="{Binding .}"/>
+        </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:BoolProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Boolean)">
-            <CheckBox IsChecked="{Binding Value}"/>
-        </GroupBox>
+        <CheckBox IsChecked="{Binding Value}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:ByteProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Byte)">
-            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: BYTE STUFF"/>
-        </GroupBox>
+        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: BYTE STUFF"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:EnumProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Enum)">
-            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
-        </GroupBox>
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:FloatProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Float)">
-            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
-        </GroupBox>
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:IntProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Integer)">
-            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
-        </GroupBox>
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:MapProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Map)">
-            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: MAP STUFF"/>
-        </GroupBox>
+        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: MAP STUFF"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:NameProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Name)">
-            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
-        </GroupBox>
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:ObjectProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Object)">
-            <StackPanel Orientation="Vertical">
-                <DockPanel>
-                    <Label DockPanel.Dock="Left" Target="{Binding ElementName=ParentBox}" Content="Parent:"/>
-                    <TextBox DockPanel.Dock="Left" x:Name="ParentBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str1}"/>
-                </DockPanel>
-                <DockPanel>
-                    <Label DockPanel.Dock="Left" Target="{Binding ElementName=TargetBox}" Content="Target:"/>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="50"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" DockPanel.Dock="Left" x:Name="TargetBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str2}"/>
-                        <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.JumpCommand}" CommandParameter="{Binding Str2}" DockPanel.Dock="Right"  Height="20" VerticalContentAlignment="Center" Content="Jump"/>
-                    </Grid>
-                </DockPanel>
-            </StackPanel>
-        </GroupBox>
+        <StackPanel Orientation="Vertical">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=ParentBox}" Content="Parent:"/>
+                <TextBox DockPanel.Dock="Left" x:Name="ParentBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str1}"/>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=TargetBox}" Content="Target:"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" DockPanel.Dock="Left" x:Name="TargetBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str2}"/>
+                    <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.JumpCommand}" CommandParameter="{Binding Str2}" DockPanel.Dock="Right"  Height="20" VerticalContentAlignment="Center" Content="Jump"/>
+                </Grid>
+            </DockPanel>
+        </StackPanel>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:StrProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (String)">
-            <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
-        </GroupBox>
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:StructProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Struct)">
-            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: STRUCT STUFF"/>
-        </GroupBox>
+        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: STRUCT STUFF"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:TextProperty}">
-        <GroupBox Header="{Binding PropertyName}" HeaderStringFormat="{}{0} (Text)">
-            <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: TEXT STUFF"/>
-        </GroupBox>
+        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: TEXT STUFF"/>
     </DataTemplate>
 </ResourceDictionary>
