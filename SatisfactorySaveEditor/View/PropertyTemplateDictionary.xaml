@@ -17,7 +17,14 @@
             </GroupBox.Header>
             <DockPanel>
                 <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Elements}"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}"/>
+                        <Button Grid.Row="1" Content="Add element" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.AddPropertyCommand}" CommandParameter="{Binding .}"/>
+                    </Grid>
                 </ScrollViewer>
             </DockPanel>
         </GroupBox>

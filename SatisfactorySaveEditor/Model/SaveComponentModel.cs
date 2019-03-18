@@ -6,9 +6,9 @@ namespace SatisfactorySaveEditor.Model
     {
         private string parentEntityName;
 
-        public SaveComponentModel(string title, SerializedFields fields, string rootObject, string parentEntityName) : base(title, fields, rootObject)
+        public SaveComponentModel(SaveComponent sc) : base(sc)
         {
-            ParentEntityName = parentEntityName;
+            ParentEntityName = sc.ParentEntityName;
         }
 
         public string ParentEntityName

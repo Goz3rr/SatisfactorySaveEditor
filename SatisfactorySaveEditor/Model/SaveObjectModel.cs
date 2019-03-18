@@ -39,11 +39,14 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => IsExpanded, ref isExpanded, value); }
         }
 
-        public SaveObjectModel(string title, SerializedFields fields, string rootObject)
+        public SaveObject Model { get; }
+
+        public SaveObjectModel(SaveObject model)
         {
-            Title = title;
-            Fields = new ObservableCollection<SerializedProperty>(fields);
-            RootObject = rootObject;
+            Model = model;
+            Title = model.InstanceName;
+            Fields = new ObservableCollection<SerializedProperty>(model.DataFields);
+            RootObject = model.RootObject;
         }
 
         public SaveObjectModel(string title)
@@ -52,20 +55,27 @@ namespace SatisfactorySaveEditor.Model
             Fields = new ObservableCollection<SerializedProperty>();
         }
 
-        public SaveObjectModel FindChild(string name)
+        /// <summary>
+        /// Recursively walks through the save tree and finds a child node with 'name' title
+        /// Expand also opens all parent nodes on return
+        /// </summary>
+        /// <param name="name">Name of the searched node</param>
+        /// <param name="expand">Whether the parents of searched node should be expanded</param>
+        /// <returns></returns>
+        public SaveObjectModel FindChild(string name, bool expand)
         {
             if (title == name)
             {
-                IsSelected = true;
+                if (expand) IsSelected = true;
                 return this;
             }
 
             foreach (var item in Items)
             {
-                var foundChild = item.FindChild(name);
+                var foundChild = item.FindChild(name, expand);
                 if (foundChild != null)
                 {
-                    IsExpanded = true;
+                    if (expand) IsExpanded = true;
                     return foundChild;
                 }
             }
