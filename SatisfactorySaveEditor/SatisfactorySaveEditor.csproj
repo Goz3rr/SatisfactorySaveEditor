@@ -71,6 +71,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
+    <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
     <Compile Include="Model\SaveComponentModel.cs" />
     <Compile Include="Model\SaveEntityModel.cs" />
     <Compile Include="Model\SaveObjectModel.cs" />
