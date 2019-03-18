@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.PropertyTypes
@@ -6,6 +7,8 @@ namespace SatisfactorySaveParser.PropertyTypes
     public class TextProperty : SerializedProperty
     {
         public const string TypeName = nameof(TextProperty);
+
+        public List<string> Values { get; set; } = new List<string>();
 
         public TextProperty(string propertyName) : base(propertyName)
         {
@@ -29,7 +32,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             for(int i = 0; i < count; i++)
             {
-                var str = reader.ReadLengthPrefixedString();
+                result.Values.Add(reader.ReadLengthPrefixedString());
             }
 
             return result;

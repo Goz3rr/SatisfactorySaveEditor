@@ -11,7 +11,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public string KeyType { get; set; }
         public string ValueType { get; set; }
 
-        public Dictionary<int, ArrayProperty> Values = new Dictionary<int, ArrayProperty>();
+        public Dictionary<int, ArrayProperty> Values { get; set; } = new Dictionary<int, ArrayProperty>();
 
         public MapProperty(string propertyName) : base(propertyName)
         {
