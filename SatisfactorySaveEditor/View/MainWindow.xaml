@@ -20,11 +20,15 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}" CommandParameter="False"/>
+        <KeyBinding Key="F12" Command="{Binding SaveCommand}" CommandParameter="True"/>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" Command="{Binding OpenCommand}"/>
+                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}" CommandParameter="False"/>
+                <MenuItem Header="_Save as" InputGestureText="F12" Command="{Binding SaveCommand}" CommandParameter="True"/>
                 <Separator/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
             </MenuItem>

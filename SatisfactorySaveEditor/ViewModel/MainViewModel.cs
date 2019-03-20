@@ -10,11 +10,14 @@ using Microsoft.Win32;
 using System.Reflection;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
+using System.IO;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        private string _lastExportPath;
+
         private SaveObjectModel rootItem;
         private SaveObjectModel selectedItem;
 
@@ -32,6 +35,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand<bool> SaveCommand { get; }
 
         public MainViewModel()
         {
@@ -41,8 +45,36 @@ namespace SatisfactorySaveEditor.ViewModel
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
+            SaveCommand = new RelayCommand<bool>(Save);
 
             LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
+            _lastExportPath = @"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav";
+        }
+
+        private void Save(bool saveAs)
+        {
+            if (saveAs)
+            {
+                SaveFileDialog dialog = new SaveFileDialog
+                {
+                    Filter = "Satisfactory save file|*.sav",
+                    InitialDirectory = Path.GetDirectoryName(_lastExportPath),
+                    FileName = Path.GetFileName(_lastExportPath),
+                    DefaultExt = ".cpp",
+                    CheckFileExists = false,
+                    AddExtension = true
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    _lastExportPath = dialog.FileName;
+                    // TODO: Here too
+                }
+            }
+            else
+            {
+                // TODO: Save here
+            }
         }
 
         private void AddProperty(object obj)
@@ -88,6 +120,7 @@ namespace SatisfactorySaveEditor.ViewModel
             if (dialog.ShowDialog() == true)
             {
                 LoadFile(dialog.FileName);
+                _lastExportPath = dialog.FileName;
             }
         }
 
