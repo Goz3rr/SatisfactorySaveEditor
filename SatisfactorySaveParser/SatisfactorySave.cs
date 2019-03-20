@@ -13,6 +13,11 @@ namespace SatisfactorySaveParser
     public class SatisfactorySave
     {
         /// <summary>
+        ///     Path to save on disk
+        /// </summary>
+        public string FileName { get; private set; }
+
+        /// <summary>
         ///     Unknown first magic int
         ///     Seems to always be 5
         /// </summary>
@@ -74,8 +79,8 @@ namespace SatisfactorySaveParser
         /// <param name="file">Full path to the .sav file, usually found in Documents/My Games/FactoryGame/SaveGame/</param>
         public SatisfactorySave(string file)
         {
-            file = Environment.ExpandEnvironmentVariables(file);
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+            FileName = Environment.ExpandEnvironmentVariables(file);
+            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(stream))
             {
                 Magic1 = reader.ReadInt32();
@@ -139,11 +144,40 @@ namespace SatisfactorySaveParser
                 }
 
                 var unk10 = reader.ReadInt32();
-                for(int i = 0; i < unk10; i++)
+                for (int i = 0; i < unk10; i++)
                 {
                     var str1 = reader.ReadLengthPrefixedString();
                     var str2 = reader.ReadLengthPrefixedString();
                 }
+            }
+        }
+
+        public void Save()
+        {
+            Save(FileName);
+        }
+
+        public void Save(string file)
+        {
+            file = Environment.ExpandEnvironmentVariables(file);
+
+            using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var writer = new BinaryWriter(stream))
+            {
+                writer.Write(Magic1);
+                writer.Write(Magic2);
+                writer.Write(Magic3);
+
+                writer.WriteLengthPrefixedString(RootObject);
+                writer.WriteLengthPrefixedString(WorldArguments);
+                writer.WriteLengthPrefixedString(SaveName);
+
+                writer.Write(UnknownHeaderInt1);
+                writer.Write(UnknownHeaderBytes2);
+
+                writer.Write(Entries.Count);
+
+                writer.Write(UnknownHeaderInt2);
             }
         }
     }
