@@ -18,10 +18,26 @@ namespace SatisfactorySaveParser
 
         public static void WriteLengthPrefixedString(this BinaryWriter writer, string str)
         {
+            if (str == null) return;
+
             var bytes = Encoding.ASCII.GetBytes(str);
-            writer.Write(bytes.Length + 1);
-            writer.Write(bytes);
-            writer.Write((byte)0);
+            if (bytes.Length > 0)
+            {
+                writer.Write(bytes.Length + 1);
+                writer.Write(bytes);
+                writer.Write((byte)0);
+            }
+            else
+            {
+                writer.Write(0);
+            }
+        }
+
+        public static int GetSerializedLength(this string str)
+        {
+            if (str == null || str.Length == 0) return 4;
+
+            return str.Length + 5;
         }
     }
 }

@@ -51,6 +51,30 @@ namespace SatisfactorySaveParser
             NextObjectType = reader.ReadInt32();
         }
 
+        public override void SerializeHeader(BinaryWriter writer)
+        {
+            base.SerializeHeader(writer);
+
+            writer.Write(Int4);
+            writer.Write(Unknown5);
+            writer.Write(Int6);
+        }
+
+        public override void SerializeData(BinaryWriter writer)
+        {
+            writer.WriteLengthPrefixedString(ParentObjectRoot);
+            writer.WriteLengthPrefixedString(ParentObjectName);
+
+            writer.Write(Components.Count);
+            foreach(var (root, name) in Components)
+            {
+                writer.WriteLengthPrefixedString(root);
+                writer.WriteLengthPrefixedString(name);
+            }
+
+            base.SerializeData(writer);
+        }
+
         public override void ParseData(int length, BinaryReader reader)
         {
             var newLen = length - 12;
@@ -65,10 +89,10 @@ namespace SatisfactorySaveParser
             var componentCount = reader.ReadInt32();
             for (int i = 0; i < componentCount; i++)
             {
-                var str1 = reader.ReadLengthPrefixedString();
-                var str2 = reader.ReadLengthPrefixedString();
-                Components.Add((str1, str2));
-                newLen -= 10 + str1.Length + str2.Length;
+                var root = reader.ReadLengthPrefixedString();
+                var name = reader.ReadLengthPrefixedString();
+                Components.Add((root, name));
+                newLen -= 10 + root.Length + name.Length;
             }
 
             base.ParseData(newLen, reader);

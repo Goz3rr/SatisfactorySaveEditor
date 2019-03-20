@@ -6,6 +6,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     public class FloatProperty : SerializedProperty
     {
         public const string TypeName = nameof(FloatProperty);
+        public override string PropertyType => TypeName;
 
         public float Value { get; set; }
 
@@ -16,6 +17,17 @@ namespace SatisfactorySaveParser.PropertyTypes
         public override string ToString()
         {
             return $"float: {Value}";
+        }
+
+        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        {
+            base.Serialize(writer, writeHeader);
+
+            writer.Write(4);
+            writer.Write(0);
+
+            writer.Write((byte)0);
+            writer.Write(Value);
         }
 
         public static FloatProperty Parse(string propertyName, BinaryReader reader)

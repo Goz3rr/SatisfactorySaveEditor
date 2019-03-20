@@ -6,7 +6,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     public class StructProperty : SerializedProperty
     {
         public const string TypeName = nameof(StructProperty);
-
+        public override string PropertyType => TypeName;
 
         public string Type { get; set; }
         public int Unk1 { get; set; }
@@ -25,6 +25,22 @@ namespace SatisfactorySaveParser.PropertyTypes
         public override string ToString()
         {
             return $"";
+        }
+
+        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        {
+            base.Serialize(writer, writeHeader);
+
+            writer.Write(Data.Length);
+            writer.Write(0);
+
+            writer.WriteLengthPrefixedString(Type);
+            writer.Write(Unk1);
+            writer.Write(Unk2);
+            writer.Write(Unk3);
+            writer.Write(Unk4);
+            writer.Write(Unk5);
+            writer.Write(Data);
         }
 
         public static StructProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)

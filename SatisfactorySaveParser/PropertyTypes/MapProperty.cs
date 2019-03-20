@@ -7,22 +7,56 @@ namespace SatisfactorySaveParser.PropertyTypes
     public class MapProperty : SerializedProperty
     {
         public const string TypeName = nameof(MapProperty);
+        public override string PropertyType => TypeName;
 
         public string KeyType { get; set; }
         public string ValueType { get; set; }
 
-        public Dictionary<int, ArrayProperty> Values { get; set; } = new Dictionary<int, ArrayProperty>();
+        //public Dictionary<int, (string name, string type, ArrayProperty array)> Values { get; set; } = new Dictionary<int, (string, string, ArrayProperty)>();
+        public byte[] Data { get; set; }
 
         public MapProperty(string propertyName) : base(propertyName)
         {
         }
 
+        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        {
+            base.Serialize(writer);
+
+            writer.Write(Data.Length + 4); // size
+            writer.Write(0);
+
+            writer.WriteLengthPrefixedString(KeyType);
+            writer.WriteLengthPrefixedString(ValueType);
+
+            writer.Write((byte)0);
+            writer.Write(0);
+
+            writer.Write(Data);
+
+            /*
+            writer.Write(Values.Count);
+            foreach(var kv in Values)
+            {
+                writer.Write(kv.Key);
+                writer.WriteLengthPrefixedString(kv.Value.name);
+                writer.WriteLengthPrefixedString(kv.Value.type);
+
+                kv.Value.array.Serialize(writer);
+
+                writer.WriteLengthPrefixedString("None");
+            }
+            */
+        }
+
         public static MapProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
         {
-            var result = new MapProperty(propertyName);
+            var result = new MapProperty(propertyName)
+            {
+                KeyType = reader.ReadLengthPrefixedString(),
+                ValueType = reader.ReadLengthPrefixedString()
+            };
 
-            result.KeyType = reader.ReadLengthPrefixedString();
-            result.ValueType = reader.ReadLengthPrefixedString();
             overhead = result.KeyType.Length + result.ValueType.Length + 11;
 
             var unk = reader.ReadByte();
@@ -31,6 +65,9 @@ namespace SatisfactorySaveParser.PropertyTypes
             var unk1 = reader.ReadInt32();
             Trace.Assert(unk1 == 0);
 
+            result.Data = reader.ReadBytes(size - 4);
+
+            /*
             var count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
@@ -42,13 +79,14 @@ namespace SatisfactorySaveParser.PropertyTypes
                 var unk4 = reader.ReadInt32();
                 Trace.Assert(unk4 == 0);
 
-                var parsed = ArrayProperty.Parse("foo", reader, arr_size, out int _);
+                var parsed = ArrayProperty.Parse(null, reader, arr_size, out int _);
 
                 var unk5 = reader.ReadLengthPrefixedString();
                 Trace.Assert(unk5 == "None");
 
-                result.Values[key] = parsed;
+                result.Values[key] = (name, type, parsed);
             }
+            */
 
             return result;
         }

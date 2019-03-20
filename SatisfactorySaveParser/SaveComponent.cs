@@ -22,6 +22,13 @@ namespace SatisfactorySaveParser
             SaveObjectCount = reader.ReadInt32();
         }
 
+        public override void SerializeHeader(BinaryWriter writer)
+        {
+            base.SerializeHeader(writer);
+
+            writer.WriteLengthPrefixedString(ParentEntityName);
+        }
+
         public override string ToString()
         {
             return TypePath;

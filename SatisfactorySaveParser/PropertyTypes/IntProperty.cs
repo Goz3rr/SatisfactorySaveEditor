@@ -6,6 +6,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     public class IntProperty : SerializedProperty
     {
         public const string TypeName = nameof(IntProperty);
+        public override string PropertyType => TypeName;
 
         public int Value { get; set; }
 
@@ -17,6 +18,17 @@ namespace SatisfactorySaveParser.PropertyTypes
         public override string ToString()
         {
             return $"int: {Value}";
+        }
+
+        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        {
+            base.Serialize(writer, writeHeader);
+
+            writer.Write(4);
+            writer.Write(0);
+
+            writer.Write((byte)0);
+            writer.Write(Value);
         }
 
         public static IntProperty Parse(string propertyName, BinaryReader reader)

@@ -9,7 +9,21 @@ namespace SatisfactorySaveParser
 {
     public class SerializedFields : List<SerializedProperty>
     {
-        public static SerializedFields None = new SerializedFields();
+        public byte[] TrailingData { get; private set; }
+
+        public void Serialize(BinaryWriter writer)
+        {
+            foreach (var field in this)
+            {
+                field.Serialize(writer);
+            }
+
+            writer.WriteLengthPrefixedString("None");
+
+            writer.Write(0);
+            if (TrailingData != null)
+                writer.Write(TrailingData);
+        }
 
         public static SerializedFields Parse(int length, BinaryReader reader)
         {
@@ -94,7 +108,7 @@ namespace SatisfactorySaveParser
             var remainingBytes = start + length - reader.BaseStream.Position;
             if (remainingBytes > 0)
             {
-                var unk = reader.ReadBytes((int)remainingBytes);
+                result.TrailingData = reader.ReadBytes((int)remainingBytes);
             }
 
             //if (remainingBytes == 4)

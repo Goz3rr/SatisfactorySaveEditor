@@ -38,6 +38,18 @@ namespace SatisfactorySaveParser
             InstanceName = reader.ReadLengthPrefixedString();
         }
 
+        public virtual void SerializeHeader(BinaryWriter writer)
+        {
+            writer.WriteLengthPrefixedString(TypePath);
+            writer.WriteLengthPrefixedString(RootObject);
+            writer.WriteLengthPrefixedString(InstanceName);
+        }
+
+        public virtual void SerializeData(BinaryWriter writer)
+        {
+            DataFields.Serialize(writer);
+        }
+
         public virtual void ParseData(int length, BinaryReader reader)
         {
             DataFields = SerializedFields.Parse(length, reader);

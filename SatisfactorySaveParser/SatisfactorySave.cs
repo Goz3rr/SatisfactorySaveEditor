@@ -71,7 +71,12 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Main content of the save game
         /// </summary>
-        public List<SaveObject> Entries = new List<SaveObject>();
+        public List<SaveObject> Entries { get; set; } = new List<SaveObject>();
+
+        /// <summary>
+        ///     Unknown optional map of strings
+        /// </summary>
+        public List<(string, string)> UnknownMap { get; set; } = new List<(string, string)>();
 
         /// <summary>
         ///     Open a savefile from disk
@@ -148,6 +153,7 @@ namespace SatisfactorySaveParser
                 {
                     var str1 = reader.ReadLengthPrefixedString();
                     var str2 = reader.ReadLengthPrefixedString();
+                    UnknownMap.Add((str1, str2));
                 }
             }
         }
@@ -178,6 +184,54 @@ namespace SatisfactorySaveParser
                 writer.Write(Entries.Count);
 
                 writer.Write(UnknownHeaderInt2);
+
+                var entities = Entries.Where(e => e is SaveEntity).ToArray();
+                for (var i = 0; i < entities.Length; i++)
+                {
+                    entities[i].SerializeHeader(writer);
+
+                    var next = 1;
+                    if (i == entities.Length - 1)
+                    {
+                        next = 0;
+                    }
+                    writer.Write(next);
+                }
+
+                var components = Entries.Where(e => e is SaveComponent).ToArray();
+                for (var i = 0; i < components.Length; i++)
+                {
+                    components[i].SerializeHeader(writer);
+
+                    var next = 0;
+                    if (i == components.Length - 1)
+                    {
+                        next = entities.Length + components.Length;
+                    }
+                    writer.Write(next);
+                }
+
+                using (var ms = new MemoryStream())
+                using (var dataWriter = new BinaryWriter(ms))
+                {
+                    for (int i = 0; i < Entries.Count; i++)
+                    {
+                        Entries[i].SerializeData(dataWriter);
+
+                        var bytes = ms.ToArray();
+                        writer.Write(bytes.Length);
+                        writer.Write(bytes);
+
+                        ms.SetLength(0);
+                    }
+                }
+
+                writer.Write(UnknownMap.Count);
+                foreach(var unkMap in UnknownMap)
+                {
+                    writer.WriteLengthPrefixedString(unkMap.Item1);
+                    writer.WriteLengthPrefixedString(unkMap.Item2);
+                }
             }
         }
     }
