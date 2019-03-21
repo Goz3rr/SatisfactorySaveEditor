@@ -119,7 +119,8 @@ namespace SatisfactorySaveParser
                 }
 
                 var totalEntries2 = reader.ReadInt32();
-                Trace.Assert(Entries.Count == totalEntries && Entries.Count == totalEntries2);
+                Trace.Assert(Entries.Count == totalEntries);
+                Trace.Assert(Entries.Count == totalEntries2);
 
                 for (int i = 0; i < Entries.Count; i++)
                 {

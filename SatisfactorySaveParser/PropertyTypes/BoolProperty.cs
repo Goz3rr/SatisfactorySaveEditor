@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 
 namespace SatisfactorySaveParser.PropertyTypes
 {
@@ -25,14 +26,18 @@ namespace SatisfactorySaveParser.PropertyTypes
             writer.Write(0);
             writer.Write(0);
 
-            writer.Write((short)(Value ? 1 : 0));
+            writer.Write((byte)(Value ? 1 : 0));
+            writer.Write((byte)0);
         }
 
         public static BoolProperty Parse(string propertyName, BinaryReader reader)
         {
-            var result = new BoolProperty(propertyName);
+            var result = new BoolProperty(propertyName)
+            {
+                Value = reader.ReadByte() > 0
+            };
 
-            result.Value = reader.ReadInt16() > 0;
+            Trace.Assert(reader.ReadByte() == 0);
 
             return result;
         }

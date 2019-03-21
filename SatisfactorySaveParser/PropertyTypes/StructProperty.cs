@@ -19,12 +19,11 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public StructProperty(string propertyName) : base(propertyName)
         {
-
         }
 
         public override string ToString()
         {
-            return $"";
+            return $"struct {Type}";
         }
 
         public override void Serialize(BinaryWriter writer, bool writeHeader = true)
