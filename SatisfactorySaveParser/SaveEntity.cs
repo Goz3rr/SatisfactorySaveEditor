@@ -6,8 +6,7 @@ namespace SatisfactorySaveParser
 {
     public class SaveEntity : SaveObject
     {
-        public const int NextObjectIsEntity = 1;
-        public const int NextObjectIsComponent = 0;
+        public const int TypeID = 1;
 
         /// <summary>
         ///     Unknown first int from definition
@@ -35,12 +34,6 @@ namespace SatisfactorySaveParser
         public int Int6 { get; set; }
 
         /// <summary>
-        ///     Int indicating the next object type
-        ///     Has a value of 1 when followed by a SaveEntity and a value of 0 when followed by SaveComponent
-        /// </summary>
-        public int NextObjectType { get; set; }
-
-        /// <summary>
         ///     Unknown related (parent?) object root
         /// </summary>
         public string ParentObjectRoot { get; set; }
@@ -61,7 +54,6 @@ namespace SatisfactorySaveParser
             Position = reader.ReadVector3();
             Scale = reader.ReadVector3();
             Int6 = reader.ReadInt32();
-            NextObjectType = reader.ReadInt32();
         }
 
         public override void SerializeHeader(BinaryWriter writer)

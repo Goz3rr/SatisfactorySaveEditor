@@ -44,7 +44,7 @@ namespace SatisfactorySaveParser
                 var unk = reader.ReadInt32();
                 Trace.Assert(unk == 0);
 
-                var overhead = 0;
+                int overhead;
                 var before = reader.BaseStream.Position;
                 switch (fieldType)
                 {

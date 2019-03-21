@@ -147,7 +147,9 @@ namespace SatisfactorySaveEditor.ViewModel
             SelectedItem = null;
 
             var save = new SatisfactorySave(path);
-            //save.Save(path + ".saved");
+#if DEBUG
+            save.Save(path + ".saved");
+#endif
 
             rootItem = new SaveObjectModel("Root");
             var saveTree = new EditorTreeNode("Root");

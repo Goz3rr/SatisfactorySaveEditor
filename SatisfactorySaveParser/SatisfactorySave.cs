@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace SatisfactorySaveParser
 {
@@ -62,11 +61,6 @@ namespace SatisfactorySaveParser
         /// </summary>
         public byte[] UnknownHeaderBytes2 { get; private set; }
 
-        /// <summary>
-        ///     Unknown second int from the header
-        ///     Seems to always be 1
-        /// </summary>
-        public int UnknownHeaderInt2 { get; private set; }
 
         /// <summary>
         ///     Main content of the save game
@@ -107,33 +101,25 @@ namespace SatisfactorySaveParser
                 // Does not need to be a public property because it's equal to Entries.Count
                 var totalEntries = reader.ReadUInt32();
 
-                UnknownHeaderInt2 = reader.ReadInt32();
-                Trace.Assert(UnknownHeaderInt2 == 1);
-
                 // Saved entities loop
-                while (true)
+                for(int i = 0; i < totalEntries; i++)
                 {
-                    var entry = new SaveEntity(reader);
-                    Entries.Add(entry);
-
-                    if (entry.NextObjectType != SaveEntity.NextObjectIsEntity)
+                    var type = reader.ReadInt32();
+                    switch (type)
                     {
-                        break;
+                        case SaveEntity.TypeID:
+                            Entries.Add(new SaveEntity(reader));
+                            break;
+                        case SaveComponent.TypeID:
+                            Entries.Add(new SaveComponent(reader));
+                            break;
+                        default:
+                            throw new InvalidOperationException($"Unexpected type {type}");
                     }
                 }
 
-                // Saved components loop
-                while (true)
-                {
-                    var entry = new SaveComponent(reader);
-                    Entries.Add(entry);
-
-                    if (entry.SaveObjectCount != 0)
-                    {
-                        Trace.Assert(entry.SaveObjectCount == Entries.Count);
-                        break;
-                    }
-                }
+                var totalEntries2 = reader.ReadInt32();
+                Trace.Assert(Entries.Count == totalEntries && Entries.Count == totalEntries2);
 
                 for (int i = 0; i < Entries.Count; i++)
                 {
@@ -183,33 +169,21 @@ namespace SatisfactorySaveParser
 
                 writer.Write(Entries.Count);
 
-                writer.Write(UnknownHeaderInt2);
-
                 var entities = Entries.Where(e => e is SaveEntity).ToArray();
                 for (var i = 0; i < entities.Length; i++)
                 {
+                    writer.Write(SaveEntity.TypeID);
                     entities[i].SerializeHeader(writer);
-
-                    var next = 1;
-                    if (i == entities.Length - 1)
-                    {
-                        next = 0;
-                    }
-                    writer.Write(next);
                 }
 
                 var components = Entries.Where(e => e is SaveComponent).ToArray();
                 for (var i = 0; i < components.Length; i++)
                 {
+                    writer.Write(SaveComponent.TypeID);
                     components[i].SerializeHeader(writer);
-
-                    var next = 0;
-                    if (i == components.Length - 1)
-                    {
-                        next = entities.Length + components.Length;
-                    }
-                    writer.Write(next);
                 }
+
+                writer.Write(entities.Length + components.Length);
 
                 using (var ms = new MemoryStream())
                 using (var dataWriter = new BinaryWriter(ms))
