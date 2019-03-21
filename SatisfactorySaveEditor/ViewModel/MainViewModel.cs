@@ -47,8 +47,10 @@ namespace SatisfactorySaveEditor.ViewModel
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save);
 
+#if DEBUG
             LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
             _lastExportPath = @"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav";
+#endif
         }
 
         private void Save(bool saveAs)
@@ -145,7 +147,7 @@ namespace SatisfactorySaveEditor.ViewModel
             SelectedItem = null;
 
             var save = new SatisfactorySave(path);
-            save.Save(path + ".saved");
+            //save.Save(path + ".saved");
 
             rootItem = new SaveObjectModel("Root");
             var saveTree = new EditorTreeNode("Root");

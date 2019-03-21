@@ -1,5 +1,6 @@
 ﻿using System;
 using SatisfactorySaveParser;
+using SatisfactorySaveParser.Data;
 
 namespace SatisfactorySaveEditor.Model
 {
@@ -7,7 +8,9 @@ namespace SatisfactorySaveEditor.Model
     {
         private int int4;
         private int int6;
-        private string unknown5;
+        private Vector4 rotation;
+        private Vector3 position;
+        private Vector3 scale;
         private string parentObjectRoot;
         private string parentObjectName;
 
@@ -23,10 +26,21 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => Int6, ref int6, value); }
         }
 
-        public string Unknown5
+        public Vector4 Rotation
         {
-            get => unknown5;
-            set { Set(() => Unknown5, ref unknown5, value); }
+            get => rotation;
+            set { Set(() => Rotation, ref rotation, value); }
+        }
+        public Vector3 Position
+        {
+            get => position;
+            set { Set(() => Position, ref position, value); }
+        }
+
+        public Vector3 Scale
+        {
+            get => scale;
+            set { Set(() => Scale, ref scale, value); }
         }
 
         public string ParentObjectRoot
@@ -47,7 +61,10 @@ namespace SatisfactorySaveEditor.Model
             Int6 = ent.Int6;
             ParentObjectRoot = ent.ParentObjectRoot;
             ParentObjectName = ent.ParentObjectName;
-            Unknown5 = BitConverter.ToString(ent.Unknown5).Replace("-","");
+
+            Rotation = ent.Rotation;
+            Position = ent.Position;
+            Scale = ent.Scale;
         }
     }
 }

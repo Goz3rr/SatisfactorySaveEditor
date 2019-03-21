@@ -94,6 +94,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
+        private static List<SerializedProperty> available;
         public static ArrayProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
         {
             var result = new ArrayProperty(propertyName)
@@ -128,6 +129,17 @@ namespace SatisfactorySaveParser.PropertyTypes
                             string obj2 = reader.ReadLengthPrefixedString();
                             result.Elements.Add(new ObjectProperty($"Element {i}", obj1, obj2));
                         }
+
+                        if (propertyName == "mAvailableSchematics")
+                        {
+                            result.Elements.Add(new ObjectProperty("", "", "/Game/FactoryGame/Schematics/Progression/Schematic_4-3.Schematic_4-3_C"));
+                            result.Elements.Add(new ObjectProperty("", "", "/Game/FactoryGame/Schematics/Progression/Schematic_6-3.Schematic_6-3_C"));
+                            result.Elements.Add(new ObjectProperty("", "", "/Game/FactoryGame/Schematics/Progression/Schematic_7-3.Schematic_7-3_C"));
+                            result.Elements.Add(new ObjectProperty("", "", "/Game/FactoryGame/Schematics/Progression/Schematic_7-4.Schematic_7-4_C"));
+                            available = result.Elements;
+                        }
+                        else if (propertyName == "mPurchasedSchematics")
+                            result.Elements = available;
                     }
                     break;
                 case IntProperty.TypeName:

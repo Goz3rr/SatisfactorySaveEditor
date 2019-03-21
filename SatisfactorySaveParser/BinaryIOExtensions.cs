@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using SatisfactorySaveParser.Data;
+using System.IO;
 using System.Text;
 
 namespace SatisfactorySaveParser
@@ -38,6 +39,41 @@ namespace SatisfactorySaveParser
             if (str == null || str.Length == 0) return 4;
 
             return str.Length + 5;
+        }
+
+        public static Vector3 ReadVector3(this BinaryReader reader)
+        {
+            return new Vector3() {
+                X = reader.ReadSingle(),
+                Y = reader.ReadSingle(),
+                Z = reader.ReadSingle()
+            };
+        }
+
+        public static void Write(this BinaryWriter writer, Vector3 vec)
+        {
+            writer.Write(vec.X);
+            writer.Write(vec.Y);
+            writer.Write(vec.Z);
+        }
+
+        public static Vector4 ReadVector4(this BinaryReader reader)
+        {
+            return new Vector4()
+            {
+                X = reader.ReadSingle(),
+                Y = reader.ReadSingle(),
+                Z = reader.ReadSingle(),
+                W = reader.ReadSingle()
+            };
+        }
+
+        public static void Write(this BinaryWriter writer, Vector4 vec)
+        {
+            writer.Write(vec.X);
+            writer.Write(vec.Y);
+            writer.Write(vec.Z);
+            writer.Write(vec.W);
         }
     }
 }

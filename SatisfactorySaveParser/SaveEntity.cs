@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SatisfactorySaveParser.Data;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SatisfactorySaveParser
@@ -14,9 +15,19 @@ namespace SatisfactorySaveParser
         public int Int4 { get; set; }
 
         /// <summary>
-        ///     Unknown bytes from definition
+        ///     Rotation in the world
         /// </summary>
-        public byte[] Unknown5 { get; set; }
+        public Vector4 Rotation { get; set; }
+
+        /// <summary>
+        ///     Position in the world
+        /// </summary>
+        public Vector3 Position { get; set; }
+
+        /// <summary>
+        ///     Scale in the world
+        /// </summary>
+        public Vector3 Scale { get; set; }
 
         /// <summary>
         ///     Unknown second int from definition
@@ -46,7 +57,9 @@ namespace SatisfactorySaveParser
         public SaveEntity(BinaryReader reader) : base(reader)
         {
             Int4 = reader.ReadInt32();
-            Unknown5 = reader.ReadBytes(0x28);
+            Rotation = reader.ReadVector4();
+            Position = reader.ReadVector3();
+            Scale = reader.ReadVector3();
             Int6 = reader.ReadInt32();
             NextObjectType = reader.ReadInt32();
         }
@@ -56,7 +69,9 @@ namespace SatisfactorySaveParser
             base.SerializeHeader(writer);
 
             writer.Write(Int4);
-            writer.Write(Unknown5);
+            writer.Write(Rotation);
+            writer.Write(Position);
+            writer.Write(Scale);
             writer.Write(Int6);
         }
 

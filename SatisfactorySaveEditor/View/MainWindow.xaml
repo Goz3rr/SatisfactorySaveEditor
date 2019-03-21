@@ -88,7 +88,9 @@
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Unknown5, FallbackValue='No item selected', StringFormat='Unknown5: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Rotation, FallbackValue='No item selected', StringFormat='Rotation: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Position, FallbackValue='No item selected', StringFormat='Position: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Scale, FallbackValue='No item selected', StringFormat='Scale: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
                             <GroupBox Header="Properties">
