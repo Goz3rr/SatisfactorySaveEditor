@@ -88,6 +88,12 @@ namespace SatisfactorySaveEditor.Model
             return $"{Title} ({Items.Count})";
         }
 
+        public SerializedFields GetSerializedFields()
+        {
+            var fields = new SerializedFields();
+            return fields;
+        }
+
         public virtual SaveObject ToSaveObject()
         {
             return null;

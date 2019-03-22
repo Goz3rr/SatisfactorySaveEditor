@@ -83,7 +83,8 @@ namespace SatisfactorySaveEditor.Model
                 Scale = Scale,
                 Int6 = Int6,
                 ParentObjectRoot = ParentObjectRoot,
-                ParentObjectName = ParentObjectName
+                ParentObjectName = ParentObjectName,
+                DataFields = GetSerializedFields()
             };
 
             // TODO: components and fields

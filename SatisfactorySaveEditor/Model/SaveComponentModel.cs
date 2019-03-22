@@ -26,7 +26,8 @@ namespace SatisfactorySaveEditor.Model
         {
             var component = new SaveComponent(typePath, rootObject, instanceName)
             {
-                ParentEntityName = ParentEntityName
+                ParentEntityName = ParentEntityName,
+                DataFields = GetSerializedFields()
             };
 
             return component;
