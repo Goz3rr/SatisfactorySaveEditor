@@ -11,6 +11,7 @@ using System.Reflection;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
+using System.Collections.Generic;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -18,6 +19,7 @@ namespace SatisfactorySaveEditor.ViewModel
     {
         private string _lastExportPath;
 
+        private SatisfactorySave saveGame;
         private SaveObjectModel rootItem;
         private SaveObjectModel selectedItem;
 
@@ -70,12 +72,17 @@ namespace SatisfactorySaveEditor.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     _lastExportPath = dialog.FileName;
-                    // TODO: Here too
+
+                    var objects = DeconstructTree(rootItem);
+                    saveGame.Entries = objects;
+                    saveGame.Save(dialog.FileName);
                 }
             }
             else
             {
-                // TODO: Save here
+                var objects = DeconstructTree(rootItem);
+                saveGame.Entries = objects;
+                saveGame.Save();
             }
         }
 
@@ -146,15 +153,12 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             SelectedItem = null;
 
-            var save = new SatisfactorySave(path);
-#if DEBUG
-            save.Save(path + ".saved");
-#endif
+            saveGame = new SatisfactorySave(path);
 
             rootItem = new SaveObjectModel("Root");
             var saveTree = new EditorTreeNode("Root");
 
-            foreach (var entry in save.Entries)
+            foreach (var entry in saveGame.Entries)
             {
                 var parts = entry.TypePath.TrimStart('/').Split('/');
                 saveTree.AddChild(parts, entry);
@@ -192,6 +196,23 @@ namespace SatisfactorySaveEditor.ViewModel
                         break;
                 }
             }
+        }
+
+        private List<SaveObject> DeconstructTree(SaveObjectModel model)
+        {
+            var result = new List<SaveObject>();
+
+            if(model is SaveEntityModel || model is SaveComponentModel)
+            {
+                result.Add(model.ToSaveObject());
+            }
+
+            foreach (var child in model.Items)
+            {
+                result.AddRange(DeconstructTree(child));
+            }
+
+            return result;
         }
     }
 }

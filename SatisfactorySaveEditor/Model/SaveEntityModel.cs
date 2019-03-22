@@ -14,6 +14,8 @@ namespace SatisfactorySaveEditor.Model
         private string parentObjectRoot;
         private string parentObjectName;
 
+        private readonly string typePath, rootObject, instanceName;
+
         public int Int4
         { 
             get => int4;
@@ -57,6 +59,10 @@ namespace SatisfactorySaveEditor.Model
 
         public SaveEntityModel(SaveEntity ent) : base(ent)
         {
+            typePath = ent.TypePath;
+            rootObject = ent.RootObject;
+            instanceName = ent.InstanceName;
+
             Int4 = ent.Int4;
             Int6 = ent.Int6;
             ParentObjectRoot = ent.ParentObjectRoot;
@@ -65,6 +71,24 @@ namespace SatisfactorySaveEditor.Model
             Rotation = ent.Rotation;
             Position = ent.Position;
             Scale = ent.Scale;
+        }
+
+        public override SaveObject ToSaveObject()
+        {
+            var entity = new SaveEntity(typePath, rootObject, instanceName)
+            {
+                Int4 = Int4,
+                Rotation = Rotation,
+                Position = Position,
+                Scale = Scale,
+                Int6 = Int6,
+                ParentObjectRoot = ParentObjectRoot,
+                ParentObjectName = ParentObjectName
+            };
+
+            // TODO: components and fields
+
+            return entity;
         }
     }
 }

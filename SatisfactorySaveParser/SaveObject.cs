@@ -29,6 +29,13 @@ namespace SatisfactorySaveParser
         /// </summary>
         public SerializedFields DataFields { get; set; }
 
+        public SaveObject(string typePath, string rootObject, string instanceName)
+        {
+            TypePath = typePath;
+            RootObject = rootObject;
+            InstanceName = instanceName;
+        }
+
         protected SaveObject(BinaryReader reader)
         {
             TypePath = reader.ReadLengthPrefixedString();

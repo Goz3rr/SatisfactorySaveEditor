@@ -11,6 +11,10 @@ namespace SatisfactorySaveParser
         /// </summary>
         public string ParentEntityName { get; set; }
 
+        public SaveComponent(string typePath, string rootObject, string instanceName) : base(typePath, rootObject, instanceName)
+        {
+        }
+
         public SaveComponent(BinaryReader reader) : base(reader)
         {
             ParentEntityName = reader.ReadLengthPrefixedString();

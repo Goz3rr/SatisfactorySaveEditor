@@ -47,6 +47,12 @@ namespace SatisfactorySaveParser
         /// </summary>
         public List<(string root, string name)> Components { get; set; } = new List<(string, string)>();
 
+
+
+        public SaveEntity(string typePath, string rootObject, string instanceName) : base(typePath, rootObject, instanceName)
+        {
+        }
+
         public SaveEntity(BinaryReader reader) : base(reader)
         {
             Int4 = reader.ReadInt32();

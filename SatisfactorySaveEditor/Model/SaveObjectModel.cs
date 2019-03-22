@@ -87,5 +87,10 @@ namespace SatisfactorySaveEditor.Model
         {
             return $"{Title} ({Items.Count})";
         }
+
+        public virtual SaveObject ToSaveObject()
+        {
+            return null;
+        }
     }
 }
