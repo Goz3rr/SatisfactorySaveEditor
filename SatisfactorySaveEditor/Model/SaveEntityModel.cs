@@ -1,6 +1,6 @@
 ﻿using System;
 using SatisfactorySaveParser;
-using SatisfactorySaveParser.Data;
+using SatisfactorySaveParser.Structures;
 
 namespace SatisfactorySaveEditor.Model
 {

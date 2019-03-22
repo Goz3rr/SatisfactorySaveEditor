@@ -1,4 +1,4 @@
-﻿namespace SatisfactorySaveParser.Data
+﻿namespace SatisfactorySaveParser.Structures
 {
     public class Vector3
     {

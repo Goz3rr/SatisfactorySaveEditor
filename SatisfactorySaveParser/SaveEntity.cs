@@ -1,4 +1,4 @@
-﻿using SatisfactorySaveParser.Data;
+﻿using SatisfactorySaveParser.Structures;
 using System.Collections.Generic;
 using System.IO;
 
