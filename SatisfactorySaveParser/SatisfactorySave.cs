@@ -169,6 +169,8 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
             using (var writer = new BinaryWriter(stream))
             {
+                stream.SetLength(0); // Clear any original content
+
                 writer.Write(SaveVersion1);
                 writer.Write(SaveVersion2);
                 writer.Write(Magic3);
@@ -180,7 +182,7 @@ namespace SatisfactorySaveParser
                 writer.Write(UnknownHeaderInt1);
                 writer.Write(UnknownHeaderBytes2);
 
-                if (SaveVersion1 == 4)
+                if (SaveVersion1 == 5)
                     writer.Write(UnknownByte3);
 
                 writer.Write(Entries.Count);
