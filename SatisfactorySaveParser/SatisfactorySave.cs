@@ -20,13 +20,13 @@ namespace SatisfactorySaveParser
         ///     Unknown first magic int
         ///     Seems to always be 5
         /// </summary>
-        public int Magic1 { get; private set; }
+        public int SaveVersion1 { get; private set; }
 
         /// <summary>
         ///     Unknown second magic int
         ///     Seems to always be 17
         /// </summary>
-        public int Magic2 { get; private set; }
+        public int SaveVersion2 { get; private set; }
 
         /// <summary>
         ///     Unknown third magic int
@@ -61,6 +61,11 @@ namespace SatisfactorySaveParser
         /// </summary>
         public byte[] UnknownHeaderBytes2 { get; private set; }
 
+        /// <summary>
+        ///     Unknown byte from the header
+        /// </summary>
+        public byte UnknownByte3 { get; set; }
+
 
         /// <summary>
         ///     Main content of the save game
@@ -82,10 +87,14 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(stream))
             {
-                Magic1 = reader.ReadInt32();
-                Trace.Assert(Magic1 == 5);
-                Magic2 = reader.ReadInt32();
-                Trace.Assert(Magic2 == 17);
+                SaveVersion1 = reader.ReadInt32();
+                Trace.Assert(SaveVersion1 == 5 || SaveVersion1 == 4);
+                SaveVersion2 = reader.ReadInt32();
+                if(SaveVersion1 == 5)
+                    Trace.Assert(SaveVersion2 == 17);
+                else
+                    Trace.Assert(SaveVersion2 == 16);
+
                 Magic3 = reader.ReadInt32();
                 Trace.Assert(Magic3 == 66297);
 
@@ -96,7 +105,10 @@ namespace SatisfactorySaveParser
                 UnknownHeaderInt1 = reader.ReadInt32();
                 //Trace.Assert(UnknownHeaderInt1 == 158);
 
-                UnknownHeaderBytes2 = reader.ReadBytes(0x9);
+                UnknownHeaderBytes2 = reader.ReadBytes(0x8);
+
+                if(SaveVersion1 == 5)
+                    UnknownByte3 = reader.ReadByte();
 
                 // Does not need to be a public property because it's equal to Entries.Count
                 var totalEntries = reader.ReadUInt32();
@@ -157,8 +169,8 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
             using (var writer = new BinaryWriter(stream))
             {
-                writer.Write(Magic1);
-                writer.Write(Magic2);
+                writer.Write(SaveVersion1);
+                writer.Write(SaveVersion2);
                 writer.Write(Magic3);
 
                 writer.WriteLengthPrefixedString(RootObject);
@@ -167,6 +179,9 @@ namespace SatisfactorySaveParser
 
                 writer.Write(UnknownHeaderInt1);
                 writer.Write(UnknownHeaderBytes2);
+
+                if (SaveVersion1 == 4)
+                    writer.Write(UnknownByte3);
 
                 writer.Write(Entries.Count);
 
