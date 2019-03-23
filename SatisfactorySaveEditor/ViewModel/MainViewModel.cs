@@ -17,8 +17,6 @@ namespace SatisfactorySaveEditor.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        private string _lastExportPath;
-
         private SatisfactorySave saveGame;
         private SaveObjectModel rootItem;
         private SaveObjectModel selectedItem;
@@ -51,7 +49,6 @@ namespace SatisfactorySaveEditor.ViewModel
 
 #if DEBUG
             LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
-            _lastExportPath = @"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav";
 #endif
         }
 
@@ -62,17 +59,14 @@ namespace SatisfactorySaveEditor.ViewModel
                 SaveFileDialog dialog = new SaveFileDialog
                 {
                     Filter = "Satisfactory save file|*.sav",
-                    InitialDirectory = Path.GetDirectoryName(_lastExportPath),
-                    FileName = Path.GetFileName(_lastExportPath),
-                    DefaultExt = ".cpp",
+                    InitialDirectory = Path.GetDirectoryName(saveGame.FileName),
+                    DefaultExt = ".sav",
                     CheckFileExists = false,
                     AddExtension = true
                 };
 
                 if (dialog.ShowDialog() == true)
                 {
-                    _lastExportPath = dialog.FileName;
-
                     var objects = DeconstructTree(rootItem);
                     saveGame.Entries = objects;
                     saveGame.Save(dialog.FileName);
@@ -129,7 +123,6 @@ namespace SatisfactorySaveEditor.ViewModel
             if (dialog.ShowDialog() == true)
             {
                 LoadFile(dialog.FileName);
-                _lastExportPath = dialog.FileName;
             }
         }
 
