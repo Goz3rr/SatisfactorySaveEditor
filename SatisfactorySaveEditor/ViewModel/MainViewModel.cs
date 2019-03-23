@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Util;
 using System.Windows;
@@ -11,6 +12,8 @@ using System.Reflection;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
+using System.Linq;
+using SatisfactorySaveParser.Data;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -34,6 +37,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
         public MainViewModel()
@@ -45,10 +49,44 @@ namespace SatisfactorySaveEditor.ViewModel
             AboutCommand = new RelayCommand(About);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save);
+            CheatCommand = new RelayCommand<string>(Cheat);
 
 #if DEBUG
             LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
 #endif
+        }
+
+        private void Cheat(string cheatType)
+        {
+            switch (cheatType)
+            {
+                case "Research":
+                    var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.schematicManager", false);
+                    if (cheatObject == null)
+                    {
+                        MessageBox.Show("This save does not contain a schematicManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find schematicManager", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    foreach (var field in cheatObject.Fields)
+                    {
+                        if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
+                        {
+                            if (!(field is ArrayProperty arrayField))
+                            {
+                                MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+
+                            arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
+                        }
+                    }
+
+                    MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(cheatType), cheatType, null);
+            }
         }
 
         private void Save(bool saveAs)
@@ -100,7 +138,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private bool CanJump(string target)
         {
-            return RootItem[0].FindChild(target, false) != null;
+            return rootItem.FindChild(target, false) != null;
         }
 
         private void About()
@@ -131,7 +169,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Jump(string target)
         {
             SelectedItem.IsSelected = false;
-            SelectedItem = RootItem[0].FindChild(target, true);
+            SelectedItem = rootItem.FindChild(target, true);
         }
 
         private void SelectNode(SaveObjectModel node)
@@ -159,8 +197,8 @@ namespace SatisfactorySaveEditor.ViewModel
 
             BuildNode(rootItem.Items, saveTree);
 
-            RootItem[0].IsExpanded = true;
-            foreach (var item in RootItem[0].Items)
+            rootItem.IsExpanded = true;
+            foreach (var item in rootItem.Items)
             {
                 item.IsExpanded = true;
             }

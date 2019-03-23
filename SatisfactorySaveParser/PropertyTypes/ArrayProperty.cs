@@ -1,5 +1,4 @@
-﻿using SatisfactorySaveParser.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -18,7 +17,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public string Type { get; set; }
 
         /// <summary>
-        ///     Actual content of the arry
+        ///     Actual content of the array
         /// </summary>
         public List<SerializedProperty> Elements { get; set; } = new List<SerializedProperty>();
 
@@ -128,11 +127,6 @@ namespace SatisfactorySaveParser.PropertyTypes
                             string obj1 = reader.ReadLengthPrefixedString();
                             string obj2 = reader.ReadLengthPrefixedString();
                             result.Elements.Add(new ObjectProperty($"Element {i}", obj1, obj2));
-                        }
-
-                        if (propertyName == "mAvailableSchematics" || propertyName == "mPurchasedSchematics")
-                        {
-                            result.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
                         }
                     }
                     break;

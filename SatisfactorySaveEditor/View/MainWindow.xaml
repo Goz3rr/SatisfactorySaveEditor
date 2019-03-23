@@ -32,6 +32,9 @@
                 <Separator/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
             </MenuItem>
+            <MenuItem Header="_Cheats">
+                <MenuItem Header="Unlock all research" Command="{Binding CheatCommand}" CommandParameter="Research"/>
+            </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="About" Command="{Binding AboutCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
             </MenuItem>
