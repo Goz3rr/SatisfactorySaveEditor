@@ -17,7 +17,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public byte[] Data { get; set; }
 
-        public StructProperty(string propertyName) : base(propertyName)
+        public StructProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -31,7 +31,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             base.Serialize(writer, writeHeader);
 
             writer.Write(Data.Length);
-            writer.Write(0);
+            writer.Write(Index);
 
             writer.WriteLengthPrefixedString(Type);
             writer.Write(Unk1);
@@ -42,9 +42,9 @@ namespace SatisfactorySaveParser.PropertyTypes
             writer.Write(Data);
         }
 
-        public static StructProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
+        public static StructProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
         {
-            var result = new StructProperty(propertyName)
+            var result = new StructProperty(propertyName, index)
             {
                 Type = reader.ReadLengthPrefixedString()
             };

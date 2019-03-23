@@ -50,10 +50,6 @@ namespace SatisfactorySaveEditor.ViewModel
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save);
             CheatCommand = new RelayCommand<string>(Cheat);
-
-#if DEBUG
-            LoadFile(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\space war_090319-135233 - Copy.sav");
-#endif
         }
 
         private void Cheat(string cheatType)
@@ -182,9 +178,6 @@ namespace SatisfactorySaveEditor.ViewModel
             SelectedItem = null;
 
             saveGame = new SatisfactorySave(path);
-#if DEBUG
-            saveGame.Save(path + ".saved");
-#endif
 
             rootItem = new SaveObjectModel("Root");
             var saveTree = new EditorTreeNode("Root");

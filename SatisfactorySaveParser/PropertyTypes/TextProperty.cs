@@ -10,9 +10,10 @@ namespace SatisfactorySaveParser.PropertyTypes
         public const string TypeName = nameof(TextProperty);
         public override string PropertyType => TypeName;
 
-        public List<string> Values { get; set; } = new List<string>();
+        public int Unknown4 { get; set; }
+        public string Value { get; set; }
 
-        public TextProperty(string propertyName) : base(propertyName)
+        public TextProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -25,39 +26,38 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer, writeHeader);
 
-            writer.Write(4 + 5 + Values.Sum(v => v.GetSerializedLength()));
+            writer.Write(13 + Value.GetSerializedLength());
+            writer.Write(Index);
+            writer.Write((byte)0);
+
+            writer.Write(Unknown4);
+
+            writer.Write(0);
             writer.Write(0);
             writer.Write((byte)0);
 
-            writer.Write(Values.Count);
-
-            writer.Write(0);
-            writer.Write((byte)0);
-
-            foreach(var str in Values)
-            {
-                writer.WriteLengthPrefixedString(str);
-            }
+            writer.WriteLengthPrefixedString(Value);
         }
 
-        public static TextProperty Parse(string propertyName, BinaryReader reader)
+        public static TextProperty Parse(string propertyName, int index, BinaryReader reader)
         {
-            var result = new TextProperty(propertyName);
+            var result = new TextProperty(propertyName, index);
 
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);
 
-            var count = reader.ReadInt32();
+            result.Unknown4 = reader.ReadInt32();
 
-            var unk4 = reader.ReadInt32();
-            Trace.Assert(unk4 == 0);
-            var unk6 = reader.ReadByte();
+            var unk5 = reader.ReadInt32();
+            Trace.Assert(unk5 == 0);
+
+            var unk6 = reader.ReadInt32();
             Trace.Assert(unk6 == 0);
 
-            for(int i = 0; i < count; i++)
-            {
-                result.Values.Add(reader.ReadLengthPrefixedString());
-            }
+            var unk7 = reader.ReadByte();
+            Trace.Assert(unk7 == 0);
+
+            result.Value = reader.ReadLengthPrefixedString();
 
             return result;
         }

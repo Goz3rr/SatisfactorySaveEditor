@@ -10,7 +10,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public float Value { get; set; }
 
-        public FloatProperty(string propertyName) : base(propertyName)
+        public FloatProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -24,15 +24,15 @@ namespace SatisfactorySaveParser.PropertyTypes
             base.Serialize(writer, writeHeader);
 
             writer.Write(4);
-            writer.Write(0);
+            writer.Write(Index);
 
             writer.Write((byte)0);
             writer.Write(Value);
         }
 
-        public static FloatProperty Parse(string propertyName, BinaryReader reader)
+        public static FloatProperty Parse(string propertyName, int index, BinaryReader reader)
         {
-            var result = new FloatProperty(propertyName);
+            var result = new FloatProperty(propertyName, index);
 
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);

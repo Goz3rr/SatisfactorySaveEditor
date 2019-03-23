@@ -41,55 +41,54 @@ namespace SatisfactorySaveParser
                 var fieldType = reader.ReadLengthPrefixedString();
                 var size = reader.ReadInt32();
 
-                var unk = reader.ReadInt32();
-                Trace.Assert(unk == 0);
+                var index = reader.ReadInt32();
 
                 int overhead;
                 var before = reader.BaseStream.Position;
                 switch (fieldType)
                 {
                     case ArrayProperty.TypeName:
-                        result.Add(ArrayProperty.Parse(propertyName, reader, size, out overhead));
+                        result.Add(ArrayProperty.Parse(propertyName, index, reader, size, out overhead));
                         break;
                     case FloatProperty.TypeName:
                         overhead = 1;
-                        result.Add(FloatProperty.Parse(propertyName, reader));
+                        result.Add(FloatProperty.Parse(propertyName, index, reader));
                         break;
                     case IntProperty.TypeName:
                         overhead = 1;
-                        result.Add(IntProperty.Parse(propertyName, reader));
+                        result.Add(IntProperty.Parse(propertyName, index, reader));
                         break;
                     case ByteProperty.TypeName:
-                        result.Add(ByteProperty.Parse(propertyName, reader, out overhead));
+                        result.Add(ByteProperty.Parse(propertyName, index, reader, out overhead));
                         break;
                     case EnumProperty.TypeName:
-                        result.Add(EnumProperty.Parse(propertyName, reader, out overhead));
+                        result.Add(EnumProperty.Parse(propertyName, index, reader, out overhead));
                         break;
                     case BoolProperty.TypeName:
                         overhead = 2;
-                        result.Add(BoolProperty.Parse(propertyName, reader));
+                        result.Add(BoolProperty.Parse(propertyName, index, reader));
                         break;
                     case StrProperty.TypeName:
                         overhead = 1;
-                        result.Add(StrProperty.Parse(propertyName, reader));
+                        result.Add(StrProperty.Parse(propertyName, index, reader));
                         break;
                     case NameProperty.TypeName:
                         overhead = 1;
-                        result.Add(NameProperty.Parse(propertyName, reader));
+                        result.Add(NameProperty.Parse(propertyName, index, reader));
                         break;
                     case ObjectProperty.TypeName:
                         overhead = 1;
-                        result.Add(ObjectProperty.Parse(propertyName, reader));
+                        result.Add(ObjectProperty.Parse(propertyName, index, reader));
                         break;
                     case StructProperty.TypeName:
-                        result.Add(StructProperty.Parse(propertyName, reader, size, out overhead));
+                        result.Add(StructProperty.Parse(propertyName, index, reader, size, out overhead));
                         break;
                     case MapProperty.TypeName:
-                        result.Add(MapProperty.Parse(propertyName, reader, size, out overhead));
+                        result.Add(MapProperty.Parse(propertyName, index, reader, size, out overhead));
                         break;
                     case TextProperty.TypeName:
                         overhead = 1;
-                        result.Add(TextProperty.Parse(propertyName, reader));
+                        result.Add(TextProperty.Parse(propertyName, index, reader));
                         break;
                     default:
                         throw new NotImplementedException(fieldType);

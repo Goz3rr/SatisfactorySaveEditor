@@ -15,7 +15,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         //public Dictionary<int, (string name, string type, ArrayProperty array)> Values { get; set; } = new Dictionary<int, (string, string, ArrayProperty)>();
         public byte[] Data { get; set; }
 
-        public MapProperty(string propertyName) : base(propertyName)
+        public MapProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -24,7 +24,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             base.Serialize(writer);
 
             writer.Write(Data.Length + 4); // size
-            writer.Write(0);
+            writer.Write(Index);
 
             writer.WriteLengthPrefixedString(KeyType);
             writer.WriteLengthPrefixedString(ValueType);
@@ -49,9 +49,9 @@ namespace SatisfactorySaveParser.PropertyTypes
             */
         }
 
-        public static MapProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
+        public static MapProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
         {
-            var result = new MapProperty(propertyName)
+            var result = new MapProperty(propertyName, index)
             {
                 KeyType = reader.ReadLengthPrefixedString(),
                 ValueType = reader.ReadLengthPrefixedString()

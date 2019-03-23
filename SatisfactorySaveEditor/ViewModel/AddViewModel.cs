@@ -95,7 +95,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 case AddTypeEnum.Float:
                     return new FloatProperty(name);
                 case AddTypeEnum.Int:
-                    return  new IntProperty(name, 0);
+                    return  new IntProperty(name);
                 case AddTypeEnum.Map:
                     return new MapProperty(name);
                 case AddTypeEnum.Name:

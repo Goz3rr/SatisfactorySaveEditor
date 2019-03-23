@@ -12,7 +12,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public string Name { get; set; }
         public string Type { get; set; }
 
-        public EnumProperty(string propertyName) : base(propertyName)
+        public EnumProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
         public override string ToString()
@@ -25,18 +25,20 @@ namespace SatisfactorySaveParser.PropertyTypes
             base.Serialize(writer, writeHeader);
 
             writer.Write(Name.GetSerializedLength());
-            writer.Write(0);
+            writer.Write(Index);
 
             writer.WriteLengthPrefixedString(Type);
             writer.Write((byte)0);
             writer.WriteLengthPrefixedString(Name);
         }
 
-        public static EnumProperty Parse(string propertyName, BinaryReader reader, out int overhead)
+        public static EnumProperty Parse(string propertyName, int index, BinaryReader reader, out int overhead)
         {
-            var result = new EnumProperty(propertyName);
+            var result = new EnumProperty(propertyName, index)
+            {
+                Type = reader.ReadLengthPrefixedString()
+            };
 
-            result.Type = reader.ReadLengthPrefixedString();
             overhead = result.Type.Length + 6;
 
             var unk4 = reader.ReadByte();

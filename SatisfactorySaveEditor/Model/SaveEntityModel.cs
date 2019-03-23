@@ -14,8 +14,6 @@ namespace SatisfactorySaveEditor.Model
         private string parentObjectRoot;
         private string parentObjectName;
 
-        private readonly string typePath, rootObject, instanceName;
-
         public int Int4
         { 
             get => int4;
@@ -59,10 +57,6 @@ namespace SatisfactorySaveEditor.Model
 
         public SaveEntityModel(SaveEntity ent) : base(ent)
         {
-            typePath = ent.TypePath;
-            rootObject = ent.RootObject;
-            instanceName = ent.InstanceName;
-
             Int4 = ent.Int4;
             Int6 = ent.Int6;
             ParentObjectRoot = ent.ParentObjectRoot;

@@ -21,7 +21,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         /// </summary>
         public List<SerializedProperty> Elements { get; set; } = new List<SerializedProperty>();
 
-        public ArrayProperty(string propertyName) : base(propertyName)
+        public ArrayProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -57,7 +57,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 default:
                     throw new NotImplementedException();
             }
-            writer.Write(0);
+            writer.Write(Index);
 
             writer.WriteLengthPrefixedString(Type);
             writer.Write((byte)0);
@@ -94,9 +94,9 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
-        public static ArrayProperty Parse(string propertyName, BinaryReader reader, int size, out int overhead)
+        public static ArrayProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
         {
-            var result = new ArrayProperty(propertyName)
+            var result = new ArrayProperty(propertyName, index)
             {
                 Type = reader.ReadLengthPrefixedString()
             };
@@ -135,8 +135,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                         int count = reader.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
-                            int element = reader.ReadInt32();
-                            result.Elements.Add(new IntProperty($"Element {i}", element));
+                            int value = reader.ReadInt32();
+                            result.Elements.Add(new IntProperty($"Element {i}") { Value = value });
                         }
                     }
                     break;

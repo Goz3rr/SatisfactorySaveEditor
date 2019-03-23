@@ -10,7 +10,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public string Value { get; set; }
 
-        public StrProperty(string propertyName) : base(propertyName)
+        public StrProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -24,15 +24,15 @@ namespace SatisfactorySaveParser.PropertyTypes
             base.Serialize(writer, writeHeader);
 
             writer.Write(Value.GetSerializedLength());
-            writer.Write(0);
+            writer.Write(Index);
             writer.Write((byte)0);
 
             writer.WriteLengthPrefixedString(Value);
         }
 
-        public static StrProperty Parse(string propertyName, BinaryReader reader)
+        public static StrProperty Parse(string propertyName, int index, BinaryReader reader)
         {
-            var result = new StrProperty(propertyName);
+            var result = new StrProperty(propertyName, index);
 
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);

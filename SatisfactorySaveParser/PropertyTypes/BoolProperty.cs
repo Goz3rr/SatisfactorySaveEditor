@@ -10,7 +10,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public bool Value { get; set; }
 
-        public BoolProperty(string propertyName) : base(propertyName)
+        public BoolProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
@@ -24,15 +24,15 @@ namespace SatisfactorySaveParser.PropertyTypes
             base.Serialize(writer, writeHeader);
 
             writer.Write(0);
-            writer.Write(0);
+            writer.Write(Index);
 
             writer.Write((byte)(Value ? 1 : 0));
             writer.Write((byte)0);
         }
 
-        public static BoolProperty Parse(string propertyName, BinaryReader reader)
+        public static BoolProperty Parse(string propertyName, int index, BinaryReader reader)
         {
-            var result = new BoolProperty(propertyName)
+            var result = new BoolProperty(propertyName, index)
             {
                 Value = reader.ReadByte() > 0
             };

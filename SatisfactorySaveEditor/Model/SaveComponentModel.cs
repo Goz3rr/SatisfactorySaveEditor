@@ -5,7 +5,6 @@ namespace SatisfactorySaveEditor.Model
     public class SaveComponentModel : SaveObjectModel
     {
         private string parentEntityName;
-        private readonly string typePath, rootObject, instanceName;
 
         public string ParentEntityName
         {
@@ -15,10 +14,6 @@ namespace SatisfactorySaveEditor.Model
 
         public SaveComponentModel(SaveComponent sc) : base(sc)
         {
-            typePath = sc.TypePath;
-            rootObject = sc.RootObject;
-            instanceName = sc.InstanceName;
-
             ParentEntityName = sc.ParentEntityName;
         }
 

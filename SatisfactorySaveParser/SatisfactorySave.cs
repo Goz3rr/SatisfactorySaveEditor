@@ -154,6 +154,8 @@ namespace SatisfactorySaveParser
                     var str2 = reader.ReadLengthPrefixedString();
                     UnknownMap.Add((str1, str2));
                 }
+
+                Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
             }
         }
 
