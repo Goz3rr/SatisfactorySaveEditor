@@ -22,15 +22,13 @@ namespace SatisfactorySaveEditor.Model
             ParentEntityName = sc.ParentEntityName;
         }
 
-        public override SaveObject ToSaveObject()
+        public override void ApplyChanges()
         {
-            var component = new SaveComponent(typePath, rootObject, instanceName)
-            {
-                ParentEntityName = ParentEntityName,
-                DataFields = GetSerializedFields()
-            };
+            base.ApplyChanges();
 
-            return component;
+            var model = (SaveComponent) Model;
+
+            model.ParentEntityName = ParentEntityName;
         }
     }
 }

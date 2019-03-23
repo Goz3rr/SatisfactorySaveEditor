@@ -73,23 +73,19 @@ namespace SatisfactorySaveEditor.Model
             Scale = ent.Scale;
         }
 
-        public override SaveObject ToSaveObject()
+        public override void ApplyChanges()
         {
-            var entity = new SaveEntity(typePath, rootObject, instanceName)
-            {
-                Int4 = Int4,
-                Rotation = Rotation,
-                Position = Position,
-                Scale = Scale,
-                Int6 = Int6,
-                ParentObjectRoot = ParentObjectRoot,
-                ParentObjectName = ParentObjectName,
-                DataFields = GetSerializedFields()
-            };
+            base.ApplyChanges();
 
-            // TODO: components and fields
+            var model = (SaveEntity) Model;
 
-            return entity;
+            model.Int4 = Int4;
+            model.Rotation = Rotation;
+            model.Position = Position;
+            model.Scale = Scale;
+            model.Int6 = Int6;
+            model.ParentObjectRoot = ParentObjectRoot;
+            model.ParentObjectName = ParentObjectName;
         }
     }
 }

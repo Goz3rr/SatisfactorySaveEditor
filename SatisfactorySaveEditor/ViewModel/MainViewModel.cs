@@ -11,7 +11,6 @@ using System.Reflection;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
-using System.Collections.Generic;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -67,15 +66,13 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
-                    var objects = DeconstructTree(rootItem);
-                    saveGame.Entries = objects;
-                    saveGame.Save(dialog.FileName);
+                    rootItem.ApplyChanges();
+                    saveGame.Save(dialog.FileName );
                 }
             }
             else
             {
-                var objects = DeconstructTree(rootItem);
-                saveGame.Entries = objects;
+                rootItem.ApplyChanges();
                 saveGame.Save();
             }
         }
@@ -192,23 +189,6 @@ namespace SatisfactorySaveEditor.ViewModel
                         break;
                 }
             }
-        }
-
-        private List<SaveObject> DeconstructTree(SaveObjectModel model)
-        {
-            var result = new List<SaveObject>();
-
-            if(model is SaveEntityModel || model is SaveComponentModel)
-            {
-                result.Add(model.ToSaveObject());
-            }
-
-            foreach (var child in model.Items)
-            {
-                result.AddRange(DeconstructTree(child));
-            }
-
-            return result;
         }
     }
 }
