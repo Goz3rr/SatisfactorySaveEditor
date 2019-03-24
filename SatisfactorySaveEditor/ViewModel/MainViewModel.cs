@@ -40,6 +40,8 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
+        public bool hasUnsavedChanges = false; //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
+
         public MainViewModel()
         {
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
@@ -79,6 +81,7 @@ namespace SatisfactorySaveEditor.ViewModel
                             }
                         }
 
+                        hasUnsavedChanges = true;
                         MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
@@ -103,6 +106,7 @@ namespace SatisfactorySaveEditor.ViewModel
                             });
                         }
 
+                        hasUnsavedChanges = true;
                         MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
@@ -152,12 +156,14 @@ namespace SatisfactorySaveEditor.ViewModel
                 {
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName );
+                    hasUnsavedChanges = false;
                 }
             }
             else
             {
                 rootItem.ApplyChanges();
                 saveGame.Save();
+                hasUnsavedChanges = false;
             }
         }
 
@@ -209,7 +215,19 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Exit()
         {
-            Application.Current.Shutdown();
+            if (hasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved changes. Close and abandon changes?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                    Application.Current.Shutdown();
+                else
+                    return;
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+            
         }
 
         private void Jump(string target)
