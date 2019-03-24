@@ -54,6 +54,11 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Cheat(string cheatType)
         {
+            if (rootItem == null)
+            {
+                MessageBox.Show("You need to open a save before you can do this.", "No opened save", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             switch (cheatType)
             {
                 case "Research":
@@ -137,6 +142,11 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Save(bool saveAs)
         {
+            if (saveGame == null)
+            {
+                MessageBox.Show("You need to open a save before you can do this.", "No opened save", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             if (saveAs)
             {
                 SaveFileDialog dialog = new SaveFileDialog
