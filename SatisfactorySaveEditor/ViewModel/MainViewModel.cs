@@ -48,17 +48,17 @@ namespace SatisfactorySaveEditor.ViewModel
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
-            SaveCommand = new RelayCommand<bool>(Save);
-            CheatCommand = new RelayCommand<string>(Cheat);
+            SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+        }
+
+        private bool CanCheat(string target)
+        {
+            return rootItem != null;
         }
 
         private void Cheat(string cheatType)
         {
-            if (rootItem == null)
-            {
-                MessageBox.Show("You need to open a save before you can do this.", "No opened save", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             switch (cheatType)
             {
                 case "Research":
@@ -140,13 +140,13 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        private bool CanSave(bool saveAs)
+        {
+            return saveGame != null;
+        }
+
         private void Save(bool saveAs)
         {
-            if (saveGame == null)
-            {
-                MessageBox.Show("You need to open a save before you can do this.", "No opened save", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             if (saveAs)
             {
                 SaveFileDialog dialog = new SaveFileDialog
