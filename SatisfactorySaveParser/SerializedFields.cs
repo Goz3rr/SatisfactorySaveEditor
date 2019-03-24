@@ -1,13 +1,14 @@
 ﻿using SatisfactorySaveParser.PropertyTypes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 namespace SatisfactorySaveParser
 {
-    public class SerializedFields : List<SerializedProperty>
+    public class SerializedFields : ObservableCollection<SerializedProperty>
     {
         public byte[] TrailingData { get; private set; }
 

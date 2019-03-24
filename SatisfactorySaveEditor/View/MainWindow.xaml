@@ -34,6 +34,7 @@
             </MenuItem>
             <MenuItem Header="_Cheats">
                 <MenuItem Header="Unlock all research" Command="{Binding CheatCommand}" CommandParameter="Research"/>
+                <MenuItem Header="Unlock map" Command="{Binding CheatCommand}" CommandParameter="UnlockMap"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="About" Command="{Binding AboutCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>

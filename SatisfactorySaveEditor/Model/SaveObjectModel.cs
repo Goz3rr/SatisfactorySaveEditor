@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using SatisfactorySaveParser;
@@ -13,7 +14,7 @@ namespace SatisfactorySaveEditor.Model
         private bool isExpanded;
 
         public ObservableCollection<SaveObjectModel> Items { get; } = new ObservableCollection<SaveObjectModel>();
-        public ObservableCollection<SerializedProperty> Fields { get; }
+        public ObservableCollection<SerializedProperty> Fields => Model.DataFields;
 
         public string Title
         {
@@ -45,14 +46,12 @@ namespace SatisfactorySaveEditor.Model
         {
             Model = model;
             Title = model.InstanceName;
-            Fields = new ObservableCollection<SerializedProperty>(model.DataFields);
             RootObject = model.RootObject;
         }
 
         public SaveObjectModel(string title)
         {
             Title = title;
-            Fields = new ObservableCollection<SerializedProperty>();
         }
 
         /// <summary>

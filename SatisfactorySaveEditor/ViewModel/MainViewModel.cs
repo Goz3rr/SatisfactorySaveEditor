@@ -57,28 +57,54 @@ namespace SatisfactorySaveEditor.ViewModel
             switch (cheatType)
             {
                 case "Research":
-                    var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.schematicManager", false);
-                    if (cheatObject == null)
                     {
-                        MessageBox.Show("This save does not contain a schematicManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find schematicManager", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    foreach (var field in cheatObject.Fields)
-                    {
-                        if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
+                        var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.schematicManager", false);
+                        if (cheatObject == null)
                         {
-                            if (!(field is ArrayProperty arrayField))
-                            {
-                                MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
-                            }
-
-                            arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
+                            MessageBox.Show("This save does not contain a schematicManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find schematicManager", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
-                    }
 
-                    MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        foreach (var field in cheatObject.Fields)
+                        {
+                            if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
+                            {
+                                if (!(field is ArrayProperty arrayField))
+                                {
+                                    MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    return;
+                                }
+
+                                arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
+                            }
+                        }
+
+                        MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    break;
+                case "UnlockMap":
+                    {
+                        var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+                        if (cheatObject == null)
+                        {
+                            MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolProperty mapUnlocked)
+                        {
+                            mapUnlocked.Value = true;
+                        }
+                        else
+                        {
+                            cheatObject.Fields.Add(new BoolProperty("mIsMapUnlocked")
+                            {
+                                Value = true
+                            });
+                        }
+
+                        MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cheatType), cheatType, null);
