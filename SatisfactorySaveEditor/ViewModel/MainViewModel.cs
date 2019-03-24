@@ -106,6 +106,30 @@ namespace SatisfactorySaveEditor.ViewModel
                         MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
+                case "InventorySize":
+                    {
+                        var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+                        if (cheatObject == null)
+                        {
+                            MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
+                        {
+                            inventorySize.Value = 56;
+                        }
+                        else
+                        {
+                            cheatObject.Fields.Add(new IntProperty("mNumAdditionalInventorySlots")
+                            {
+                                Value = 56
+                            });
+                        }
+
+                        MessageBox.Show("Inventory enlarged", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cheatType), cheatType, null);
             }
