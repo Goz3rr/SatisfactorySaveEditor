@@ -13,7 +13,7 @@
         WindowStartupLocation="CenterScreen"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Title="Satisfactory Save Editor" Width="1500" Height="720">
-    <!--below was my attempt to bind clicking x to bringing up the 'do you really want to exit' prompt but I couldn't figure out canceling. left it here for now. -Rob B
+    <!--below was my attempt to bind clicking x to bringing up the 'do you really want to exit' prompt but I couldn't figure out canceling. left it here for now. -Rob B -->
     <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding ExitCommand}" />
