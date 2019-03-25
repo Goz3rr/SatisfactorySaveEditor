@@ -136,13 +136,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SatisfactorySaveParser\SatisfactorySaveParser.csproj">
-      <Project>{068dc25e-4b70-4062-9133-535f96c5cbc7}</Project>
-      <Name>SatisfactorySaveParser</Name>
-    </ProjectReference>
+    <Resource Include="satisfactorysaveeditorlogo_powershard.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="satisfactorysaveeditorlogo_powershard.ico" />
+    <ProjectReference Include="..\SatisfactorySaveParser\SatisfactorySaveParser.csproj">
+      <Project>{f76082b9-33c6-4e13-baaa-071ac7e53d7b}</Project>
+      <Name>SatisfactorySaveParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
