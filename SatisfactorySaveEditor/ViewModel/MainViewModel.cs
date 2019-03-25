@@ -119,18 +119,26 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
+                        
                         int oldSlots = 0;
                         int requestedSlots = 0;
                         if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
                         {
                             oldSlots = inventorySize.Value;
                         }
-                        string requestedCountString = Microsoft.VisualBasic.Interaction.InputBox("How many inventory slots do you want?\nCurrent: " + oldSlots, "Enter Count", "56");
-                        
-                        int.TryParse(requestedCountString, out requestedSlots);
-                        if (requestedSlots == 0) //TryParse didn't find a number, or cancel was clicked on the inputbox
+                        /*string requestedCountString = Microsoft.VisualBasic.Interaction.InputBox("How many inventory slots do you want?\nCurrent: " + oldSlots, "Enter Count", "56");
+                        int.TryParse(requestedCountString, out requestedSlots);*/
+
+                        CheatInventoryWindow window = new CheatInventoryWindow
                         {
-                            requestedSlots = oldSlots;
+                            Owner = Application.Current.MainWindow
+                        };
+                        CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
+                        window.ShowDialog();
+                        MessageBox.Show("picked " + cvm.NumberChosen);
+
+                        if (cvm.NumberChosen < 0) //TryParse didn't find a number, or cancel was clicked on the inputbox
+                        {
                             MessageBox.Show("Slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else //TryParse found a number to use
