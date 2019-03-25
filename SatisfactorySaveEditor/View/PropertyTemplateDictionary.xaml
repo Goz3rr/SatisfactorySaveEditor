@@ -24,7 +24,7 @@
         <CheckBox IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:ByteProperty}">
-        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: BYTE STUFF"/>
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:EnumProperty}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
@@ -67,6 +67,15 @@
         <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: STRUCT STUFF"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:TextProperty}">
-        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: TEXT STUFF"/>
+        <StackPanel Orientation="Vertical">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=ValueBox}" Content="Value:"/>
+                <TextBox DockPanel.Dock="Left" x:Name="ValueBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=Unknown4Box}" Content="Unknown4:"/>
+                <TextBox DockPanel.Dock="Left" x:Name="Unknown4Box" Margin="4" VerticalContentAlignment="Center" Text="{Binding Unknown4, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+        </StackPanel>
     </DataTemplate>
 </ResourceDictionary>
