@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:propertyTypes="clr-namespace:SatisfactorySaveParser.PropertyTypes;assembly=SatisfactorySaveParser"
-                    xmlns:view="clr-namespace:SatisfactorySaveEditor.View">
+                    xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
+                    xmlns:structs="clr-namespace:SatisfactorySaveParser.PropertyTypes.Structs;assembly=SatisfactorySaveParser">
     <DataTemplate DataType="{x:Type propertyTypes:ArrayProperty}">
         <Grid>
             <Grid.RowDefinitions>
@@ -64,7 +65,18 @@
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:StructProperty}">
-        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: STRUCT STUFF"/>
+        <StackPanel Orientation="Vertical">
+            <Label Margin="4,0,4,0" VerticalContentAlignment="Center" Content="{Binding Type, FallbackValue='OH NO'}" ContentStringFormat="Type: {0}"/>
+            <ItemsControl ItemsSource="{Binding Data.Fields}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <GroupBox Header="{Binding PropertyName}">
+                            <ContentControl Content="{Binding .}"/>
+                        </GroupBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
     </DataTemplate>
     <DataTemplate DataType="{x:Type propertyTypes:TextProperty}">
         <StackPanel Orientation="Vertical">
