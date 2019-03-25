@@ -41,7 +41,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 case StructProperty.TypeName:
                     {
-                        writer.Write(((StructProperty)Elements[0]).Data.Length);
+                        writer.Write(((StructProperty)Elements[0]).Data.SerializedLength);
                     }
                     break;
                 case ObjectProperty.TypeName:
@@ -67,7 +67,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 case StructProperty.TypeName:
                     {
                         // TODO
-                        writer.Write(((StructProperty)Elements[0]).Data);
+                        ((StructProperty)Elements[0]).Data.Serialize(writer);
                     }
                     break;
                 case ObjectProperty.TypeName:
@@ -103,39 +103,38 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             overhead = result.Type.Length + 6;
 
-            byte unk2 = reader.ReadByte();
-            Trace.Assert(unk2 == 0);
+            byte unk = reader.ReadByte();
+            Trace.Assert(unk == 0);
 
             switch (result.Type)
             {
                 case StructProperty.TypeName:
                     {
-                        // TODO
-                        var prop = new StructProperty($"Element i")
-                        {
-                            Data = reader.ReadBytes(size)
-                        };
-
-                        result.Elements.Add(prop);
+                        result.Elements.AddRange(StructProperty.ParseArray(reader));
+                        //for (var i = 0; i < count; i++)
+                        //{
+                        //    var prop = SerializedProperty.Parse(reader, out int _, out int _);
+                        //    result.Elements.Add(prop);
+                        //}
                     }
                     break;
                 case ObjectProperty.TypeName:
                     {
-                        int count = reader.ReadInt32();
-                        for (int i = 0; i < count; i++)
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
                         {
-                            string obj1 = reader.ReadLengthPrefixedString();
-                            string obj2 = reader.ReadLengthPrefixedString();
+                            var obj1 = reader.ReadLengthPrefixedString();
+                            var obj2 = reader.ReadLengthPrefixedString();
                             result.Elements.Add(new ObjectProperty($"Element {i}", obj1, obj2));
                         }
                     }
                     break;
                 case IntProperty.TypeName:
                     {
-                        int count = reader.ReadInt32();
-                        for (int i = 0; i < count; i++)
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
                         {
-                            int value = reader.ReadInt32();
+                            var value = reader.ReadInt32();
                             result.Elements.Add(new IntProperty($"Element {i}") { Value = value });
                         }
                     }

@@ -161,7 +161,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName );
+                    saveGame.Save(dialog.FileName);
                 }
             }
             else
