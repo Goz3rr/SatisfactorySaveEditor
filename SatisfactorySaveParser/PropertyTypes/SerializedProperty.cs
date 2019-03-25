@@ -9,7 +9,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public abstract string PropertyType { get; }
         public int Index { get; }
 
-        public virtual int SerializedLength => throw new NotImplementedException();
+        public abstract int SerializedLength { get; }
 
         public SerializedProperty(string propertyName, int index)
         {

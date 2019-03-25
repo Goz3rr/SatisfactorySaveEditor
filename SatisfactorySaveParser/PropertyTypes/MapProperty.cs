@@ -8,6 +8,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(MapProperty);
         public override string PropertyType => TypeName;
+        public override int SerializedLength => Data.Length + 4;
 
         public string KeyType { get; set; }
         public string ValueType { get; set; }
@@ -23,7 +24,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer);
 
-            writer.Write(Data.Length + 4); // size
+            writer.Write(SerializedLength);
             writer.Write(Index);
 
             writer.WriteLengthPrefixedString(KeyType);

@@ -7,6 +7,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(EnumProperty);
         public override string PropertyType => TypeName;
+        public override int SerializedLength => Name.GetSerializedLength();
 
         public int Value { get; set; }
         public string Name { get; set; }
@@ -24,7 +25,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer, writeHeader);
 
-            writer.Write(Name.GetSerializedLength());
+            writer.Write(SerializedLength);
             writer.Write(Index);
 
             writer.WriteLengthPrefixedString(Type);
