@@ -9,6 +9,7 @@
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
         xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
