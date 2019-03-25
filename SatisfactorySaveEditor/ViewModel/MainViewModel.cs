@@ -48,8 +48,13 @@ namespace SatisfactorySaveEditor.ViewModel
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
-            SaveCommand = new RelayCommand<bool>(Save);
-            CheatCommand = new RelayCommand<string>(Cheat);
+            SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+        }
+
+        private bool CanCheat(string target)
+        {
+            return rootItem != null;
         }
 
         private void Cheat(string cheatType)
@@ -133,6 +138,11 @@ namespace SatisfactorySaveEditor.ViewModel
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cheatType), cheatType, null);
             }
+        }
+
+        private bool CanSave(bool saveAs)
+        {
+            return saveGame != null;
         }
 
         private void Save(bool saveAs)
