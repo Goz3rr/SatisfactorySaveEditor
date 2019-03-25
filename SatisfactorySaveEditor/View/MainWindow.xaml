@@ -44,6 +44,7 @@
                 <MenuItem Header="Give more inventory slots" Command="{Binding CheatCommand}" CommandParameter="InventorySize"/>
             </MenuItem>
             <MenuItem Header="_Help">
+                <MenuItem Header="Learn about the save structure" Command="{Binding AboutSaveCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
                 <MenuItem Header="About" Command="{Binding AboutCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
             </MenuItem>
         </Menu>

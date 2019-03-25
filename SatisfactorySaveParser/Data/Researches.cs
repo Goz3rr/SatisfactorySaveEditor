@@ -6,7 +6,7 @@
         {
             "/Game/FactoryGame/Schematics/Schematic_Cheat.Schematic_Cheat_C",
             //"/Game/FactoryGame/Schematics/Schematic_SaveCompatibility.Schematic_SaveCompatibility_C",
-            //"/Game/FactoryGame/Schematics/Schematic_StartingRecipes.Schematic_StartingRecipes_C",
+            "/Game/FactoryGame/Schematics/Schematic_StartingRecipes.Schematic_StartingRecipes_C",
             /*
             "/Game/FactoryGame/Schematics/Alternate/Parts/Schematic_Alternate_Cable1.Schematic_Alternate_Cable1_C",
             "/Game/FactoryGame/Schematics/Alternate/Parts/Schematic_Alternate_Cable2.Schematic_Alternate_Cable2_C",
