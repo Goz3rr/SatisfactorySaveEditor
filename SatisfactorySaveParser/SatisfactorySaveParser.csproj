@@ -62,6 +62,7 @@
     <Compile Include="PropertyTypes\Structs\IStructData.cs" />
     <Compile Include="PropertyTypes\Structs\LinearColor.cs" />
     <Compile Include="PropertyTypes\Structs\Quat.cs" />
+    <Compile Include="PropertyTypes\Structs\RailroadTrackPosition.cs" />
     <Compile Include="PropertyTypes\Structs\Vector.cs" />
     <Compile Include="PropertyTypes\TextProperty.cs" />
     <Compile Include="SatisfactoryConstants.cs" />

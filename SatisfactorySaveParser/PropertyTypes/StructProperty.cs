@@ -51,6 +51,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 case "LinearColor":
                     return new LinearColor(reader);
+                case "Rotator":
                 case "Vector":
                     return new Vector(reader);
                 case "Box":
@@ -59,6 +60,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new Quat(reader);
                 case "InventoryItem":
                     return new InventoryItem(reader);
+                case "RailroadTrackPosition":
+                    return new RailroadTrackPosition(reader);
                 /*
                 case "InventoryStack":
                 case "InventoryItem":

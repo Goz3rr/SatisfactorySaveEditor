@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SatisfactorySaveParser.PropertyTypes.Structs
 {
@@ -8,7 +9,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
     {
         public List<SerializedProperty> Fields { get; set; } = new List<SerializedProperty>();
 
-        public int SerializedLength => throw new NotImplementedException();
+        public int SerializedLength => Fields.Sum(f => f.SerializedLength);
 
         public DynamicStructData(BinaryReader reader)
         {
@@ -21,7 +22,10 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 
         public void Serialize(BinaryWriter writer)
         {
-            throw new NotImplementedException();
+            foreach(var field in Fields)
+            {
+                field.Serialize(writer);
+            }
         }
     }
 }

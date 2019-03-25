@@ -9,7 +9,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public float Z { get; set; }
         public float W { get; set; }
 
-        public int SerializedLength => 12;
+        public int SerializedLength => 16;
 
         public Quat(BinaryReader reader)
         {

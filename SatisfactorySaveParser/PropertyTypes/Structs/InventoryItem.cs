@@ -9,7 +9,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public string Unknown2 { get; set; }
         public string Unknown3 { get; set; }
 
-        public int SerializedLength => 12 + ItemType.GetSerializedLength();
+        public int SerializedLength => 4 + ItemType.GetSerializedLength() + Unknown2.GetSerializedLength() + Unknown3.GetSerializedLength();
 
         public InventoryItem(BinaryReader reader)
         {
@@ -23,8 +23,8 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         {
             writer.Write(Unknown1);
             writer.WriteLengthPrefixedString(ItemType);
-            writer.Write(Unknown2);
-            writer.Write(Unknown3);
+            writer.WriteLengthPrefixedString(Unknown2);
+            writer.WriteLengthPrefixedString(Unknown3);
         }
     }
 }
