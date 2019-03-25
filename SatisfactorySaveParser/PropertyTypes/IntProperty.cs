@@ -8,7 +8,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public const string TypeName = nameof(IntProperty);
         public override string PropertyType => TypeName;
 
-        public override int SerializedLength => PropertyName.GetSerializedLength() + TypeName.GetSerializedLength() + 4 + 4 + 1 + 4;
+        public override int SerializedLength => 4;
 
         public int Value { get; set; }
 
@@ -25,7 +25,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer, writeHeader);
 
-            writer.Write(4);
+            writer.Write(SerializedLength);
             writer.Write(Index);
 
             writer.Write((byte)0);

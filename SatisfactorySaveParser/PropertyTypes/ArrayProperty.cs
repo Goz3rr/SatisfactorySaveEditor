@@ -10,6 +10,23 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(ArrayProperty);
         public override string PropertyType => TypeName;
+        public override int SerializedLength
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case StructProperty.TypeName:
+                        return ((StructProperty)Elements[0]).Data.SerializedLength;
+                    case ObjectProperty.TypeName:
+                        return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Str1.GetSerializedLength() + obj.Str2.GetSerializedLength());
+                    case IntProperty.TypeName:
+                        return Elements.Count * 4 + 4;
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+        }
 
         /// <summary>
         ///     String representation of the Property type this array consists of
@@ -37,26 +54,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 base.Serialize(writer, writeHeader);
             }
 
-            switch (Type)
-            {
-                case StructProperty.TypeName:
-                    {
-                        writer.Write(((StructProperty)Elements[0]).Data.SerializedLength);
-                    }
-                    break;
-                case ObjectProperty.TypeName:
-                    {
-                        writer.Write(4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Str1.GetSerializedLength() + obj.Str2.GetSerializedLength()));
-                    }
-                    break;
-                case IntProperty.TypeName:
-                    {
-                        writer.Write(Elements.Count * 4 + 4);
-                    }
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
+            writer.Write(SerializedLength);
             writer.Write(Index);
 
             writer.WriteLengthPrefixedString(Type);
@@ -73,7 +71,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 case ObjectProperty.TypeName:
                     {
                         writer.Write(Elements.Count);
-                        foreach(var prop in Elements.Cast<ObjectProperty>())
+                        foreach (var prop in Elements.Cast<ObjectProperty>())
                         {
                             writer.WriteLengthPrefixedString(prop.Str1);
                             writer.WriteLengthPrefixedString(prop.Str2);
@@ -83,7 +81,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 case IntProperty.TypeName:
                     {
                         writer.Write(Elements.Count);
-                        foreach(var prop in Elements.Cast<IntProperty>())
+                        foreach (var prop in Elements.Cast<IntProperty>())
                         {
                             writer.Write(prop.Value);
                         }
