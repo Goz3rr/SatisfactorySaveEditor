@@ -36,6 +36,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<object> AddPropertyCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
+        public RelayCommand AboutSaveCommand { get; }
         public RelayCommand AboutCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
@@ -48,10 +49,16 @@ namespace SatisfactorySaveEditor.ViewModel
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
+            AboutSaveCommand = new RelayCommand(AboutSave);
             AboutCommand = new RelayCommand(About);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
-            SaveCommand = new RelayCommand<bool>(Save);
-            CheatCommand = new RelayCommand<string>(Cheat);
+            SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+        }
+
+        private bool CanCheat(string target)
+        {
+            return rootItem != null;
         }
 
         private void Cheat(string cheatType)
@@ -80,7 +87,6 @@ namespace SatisfactorySaveEditor.ViewModel
                                 arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
                             }
                         }
-
                         HasUnsavedChanges = true;
                         MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -105,7 +111,6 @@ namespace SatisfactorySaveEditor.ViewModel
                                 Value = true
                             });
                         }
-
                         HasUnsavedChanges = true;
                         MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -119,7 +124,6 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        
                         int oldSlots = 0;
                         int requestedSlots = 0;
                         if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
@@ -165,6 +169,11 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        private bool CanSave(bool saveAs)
+        {
+            return saveGame != null;
+        }
+
         private void Save(bool saveAs)
         {
             if (saveAs)
@@ -181,7 +190,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName );
+                    saveGame.Save(dialog.FileName);
                     HasUnsavedChanges = false;
                 }
             }
@@ -217,6 +226,11 @@ namespace SatisfactorySaveEditor.ViewModel
         private bool CanJump(string target)
         {
             return rootItem.FindChild(target, false) != null;
+        }
+
+        private void AboutSave()
+        {
+            MessageBox.Show("TODO\n\nThe following wiki page may help.\n https://satisfactory.gamepedia.com/Save_File_Format", "About");
         }
 
         private void About()
