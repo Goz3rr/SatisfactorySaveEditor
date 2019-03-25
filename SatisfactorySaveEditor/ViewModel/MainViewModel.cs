@@ -40,7 +40,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
-        public bool hasUnsavedChanges = false; //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
+        public bool HasUnsavedChanges { get; set; } //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
 
         public MainViewModel()
         {
@@ -81,7 +81,7 @@ namespace SatisfactorySaveEditor.ViewModel
                             }
                         }
 
-                        hasUnsavedChanges = true;
+                        HasUnsavedChanges = true;
                         MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
@@ -106,7 +106,7 @@ namespace SatisfactorySaveEditor.ViewModel
                             });
                         }
 
-                        hasUnsavedChanges = true;
+                        HasUnsavedChanges = true;
                         MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
@@ -156,14 +156,14 @@ namespace SatisfactorySaveEditor.ViewModel
                 {
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName );
-                    hasUnsavedChanges = false;
+                    HasUnsavedChanges = false;
                 }
             }
             else
             {
                 rootItem.ApplyChanges();
                 saveGame.Save();
-                hasUnsavedChanges = false;
+                HasUnsavedChanges = false;
             }
         }
 
@@ -201,6 +201,14 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Open()
         {
+            if (HasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved changes. Abandon changes by opening another file?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
             OpenFileDialog dialog = new OpenFileDialog
             {
                 Filter = "Satisfactory save file|*.sav",
@@ -210,12 +218,13 @@ namespace SatisfactorySaveEditor.ViewModel
             if (dialog.ShowDialog() == true)
             {
                 LoadFile(dialog.FileName);
+                HasUnsavedChanges = false;
             }
         }
 
         private void Exit()
         {
-            if (hasUnsavedChanges)
+            if (HasUnsavedChanges)
             {
                 MessageBoxResult result = MessageBox.Show("You have unsaved changes. Close and abandon changes?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
