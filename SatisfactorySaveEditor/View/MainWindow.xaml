@@ -1,4 +1,4 @@
-﻿<Window x:Class="SatisfactorySaveEditor.View.MainWindow"
+<Window x:Class="SatisfactorySaveEditor.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -56,18 +56,6 @@
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     </Style>
                 </TreeView.ItemContainerStyle>
-                <TreeView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Copy name"/>
-                        <MenuItem Header="Copy path"/>
-                        <Separator/>
-                        <MenuItem Header="Add">
-                            <MenuItem Header="Entity"/>
-                            <MenuItem Header="Component"/>
-                        </MenuItem>
-                        <MenuItem Header="Delete"/>
-                    </ContextMenu>
-                </TreeView.ContextMenu>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectedItemChanged">
                         <command:EventToCommand Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
@@ -76,18 +64,51 @@
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveComponentModel}" ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Copy name" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyNameCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <MenuItem Header="Copy path" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyPathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <Separator/>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Entity"/>
+                                        <MenuItem Header="Component"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <TextBlock Text="[C] " Foreground="Green"/>
                             <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectModel}" ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Entity"/>
+                                        <MenuItem Header="Component"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <TextBlock Text="[O] " Foreground="Violet"/>
                             <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveEntityModel}" ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Copy name" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyNameCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <MenuItem Header="Copy path" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyPathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <Separator/>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Entity"/>
+                                        <MenuItem Header="Component"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <TextBlock Text="[E] " Foreground="Blue"/>
                             <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                         </StackPanel>

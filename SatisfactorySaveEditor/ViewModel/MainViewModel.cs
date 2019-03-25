@@ -36,6 +36,8 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand<SaveObjectModel> CopyNameCommand { get; }
+        public RelayCommand<SaveObjectModel> CopyPathCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
@@ -46,9 +48,21 @@ namespace SatisfactorySaveEditor.ViewModel
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
+            CopyNameCommand = new RelayCommand<SaveObjectModel>(CopyName);
+            CopyPathCommand = new RelayCommand<SaveObjectModel>(CopyPath);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+        }
+
+        private void CopyName(SaveObjectModel model)
+        {
+            Clipboard.SetText(model.Title);
+        }
+
+        private void CopyPath(SaveObjectModel model)
+        {
+            Clipboard.SetText(model.Model.TypePath);
         }
 
         private bool CanCheat(string target)
