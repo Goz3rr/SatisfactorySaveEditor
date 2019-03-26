@@ -15,6 +15,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public CheatInventoryViewModel()
         {
+            //NumberChosen = oldCount;
             OkCommand = new RelayCommand<Window>(Ok);
             CancelCommand = new RelayCommand<Window>(Cancel);
         }
@@ -27,8 +28,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Ok(Window obj)
         {
-            MessageBox.Show("Test " + NumberChosen);
-
+            //MessageBox.Show("Test " + NumberChosen);
             obj.Close();
         }
 
