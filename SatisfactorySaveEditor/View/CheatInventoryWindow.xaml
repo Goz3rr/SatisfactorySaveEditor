@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:SatisfactorySaveEditor.View"
         xmlns:ViewModel="clr-namespace:SatisfactorySaveEditor.ViewModel" x:Class="SatisfactorySaveEditor.View.CheatInventoryWindow"
         mc:Ignorable="d"
-        Title="Set Bonus Slot Count" Height="160" Width="400         " ResizeMode="NoResize">
+        x:Name="CheatInventoryCountWindow"
+        Title="Set Bonus Slot Count" Height="160" Width="400" ResizeMode="NoResize">
     <Window.DataContext>
         <ViewModel:CheatInventoryViewModel/>
     </Window.DataContext>
@@ -23,7 +24,7 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Column="0" Grid.Row="0" Content="Number of Slots:"/>
-            <TextBox VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" Text="{Binding NumSlots, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" Text="{Binding NumberChosen, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Grid.Column="1" Grid.Row="1" Content="(Currently X slots)"/>
         </Grid>
         <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,5,0,0" Height="20">
@@ -33,8 +34,8 @@
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Ok" Grid.Column="0" Command="{Binding OkCommand}" IsEnabled="{Binding CanConfirm}" CommandParameter="{Binding ElementName=CheatInventoryWindow}"/>
-            <Button Content="Cancel" Grid.Column="2" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=CheatInventoryWindow}"/>
+            <Button Content="Ok" Grid.Column="0" Command="{Binding OkCommand}" IsEnabled="{Binding CanConfirm}" CommandParameter="{Binding ElementName=CheatInventoryCountWindow}"/>
+            <Button Content="Cancel" Grid.Column="2" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=CheatInventoryCountWindow}"/>
         </Grid>
     </DockPanel>
 </Window>

@@ -133,17 +133,19 @@ namespace SatisfactorySaveEditor.ViewModel
                         /*string requestedCountString = Microsoft.VisualBasic.Interaction.InputBox("How many inventory slots do you want?\nCurrent: " + oldSlots, "Enter Count", "56");
                         int.TryParse(requestedCountString, out requestedSlots);*/
 
-                        CheatInventoryWindow window = new CheatInventoryWindow
+                        CheatInventoryWindow window = new CheatInventoryWindow(oldSlots)
                         {
                             Owner = Application.Current.MainWindow
                         };
                         CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
                         window.ShowDialog();
-                        MessageBox.Show("picked " + cvm.NumberChosen);
+                        requestedSlots = cvm.NumberChosen;
+                        //MessageBox.Show("picked " + requestedSlots);
+                        
 
-                        if (cvm.NumberChosen < 0) //TryParse didn't find a number, or cancel was clicked on the inputbox
+                        if (requestedSlots < 0) //TryParse didn't find a number, or cancel was clicked on the inputbox
                         {
-                            MessageBox.Show("Slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else //TryParse found a number to use
                         {
@@ -160,7 +162,7 @@ namespace SatisfactorySaveEditor.ViewModel
                             }
 
                             HasUnsavedChanges = true;
-                            MessageBox.Show("Inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                     break;

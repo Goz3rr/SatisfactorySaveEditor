@@ -19,9 +19,10 @@ namespace SatisfactorySaveEditor.View
     /// </summary>
     public partial class CheatInventoryWindow : Window
     {
-        public CheatInventoryWindow()
+        public CheatInventoryWindow(int oldCount)
         {
             InitializeComponent();
+
         }
     }
 }
