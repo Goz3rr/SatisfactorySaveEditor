@@ -1,10 +1,8 @@
 ﻿using SatisfactorySaveParser.PropertyTypes;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace SatisfactorySaveParser
 {
@@ -31,75 +29,10 @@ namespace SatisfactorySaveParser
             var start = reader.BaseStream.Position;
             var result = new SerializedFields();
 
-            while (true)
+            SerializedProperty prop;
+            while ((prop = SerializedProperty.Parse(reader)) != null)
             {
-                var propertyName = reader.ReadLengthPrefixedString();
-                if (propertyName == "None")
-                {
-                    break;
-                }
-
-                var fieldType = reader.ReadLengthPrefixedString();
-                var size = reader.ReadInt32();
-
-                var index = reader.ReadInt32();
-
-                int overhead;
-                var before = reader.BaseStream.Position;
-                switch (fieldType)
-                {
-                    case ArrayProperty.TypeName:
-                        result.Add(ArrayProperty.Parse(propertyName, index, reader, size, out overhead));
-                        break;
-                    case FloatProperty.TypeName:
-                        overhead = 1;
-                        result.Add(FloatProperty.Parse(propertyName, index, reader));
-                        break;
-                    case IntProperty.TypeName:
-                        overhead = 1;
-                        result.Add(IntProperty.Parse(propertyName, index, reader));
-                        break;
-                    case ByteProperty.TypeName:
-                        result.Add(ByteProperty.Parse(propertyName, index, reader, out overhead));
-                        break;
-                    case EnumProperty.TypeName:
-                        result.Add(EnumProperty.Parse(propertyName, index, reader, out overhead));
-                        break;
-                    case BoolProperty.TypeName:
-                        overhead = 2;
-                        result.Add(BoolProperty.Parse(propertyName, index, reader));
-                        break;
-                    case StrProperty.TypeName:
-                        overhead = 1;
-                        result.Add(StrProperty.Parse(propertyName, index, reader));
-                        break;
-                    case NameProperty.TypeName:
-                        overhead = 1;
-                        result.Add(NameProperty.Parse(propertyName, index, reader));
-                        break;
-                    case ObjectProperty.TypeName:
-                        overhead = 1;
-                        result.Add(ObjectProperty.Parse(propertyName, index, reader));
-                        break;
-                    case StructProperty.TypeName:
-                        result.Add(StructProperty.Parse(propertyName, index, reader, size, out overhead));
-                        break;
-                    case MapProperty.TypeName:
-                        result.Add(MapProperty.Parse(propertyName, index, reader, size, out overhead));
-                        break;
-                    case TextProperty.TypeName:
-                        overhead = 1;
-                        result.Add(TextProperty.Parse(propertyName, index, reader));
-                        break;
-                    default:
-                        throw new NotImplementedException(fieldType);
-                }
-                var after = reader.BaseStream.Position;
-
-                if (before + size + overhead != after)
-                {
-                    throw new InvalidOperationException($"Expected {size} bytes read but got {after - before - overhead}");
-                }
+                result.Add(prop);
             }
 
             var int1 = reader.ReadInt32();

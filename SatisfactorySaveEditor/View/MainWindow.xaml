@@ -8,6 +8,7 @@
         xmlns:model="clr-namespace:SatisfactorySaveEditor.Model"
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
+        xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
@@ -22,7 +23,6 @@
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
-        <converter:SerializablePropertyToTypeStringConverter x:Key="SerializablePropertyToTypeStringConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
@@ -33,8 +33,16 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" Command="{Binding OpenCommand}"/>
-                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}" CommandParameter="False"/>
-                <MenuItem Header="_Save as" InputGestureText="F12" Command="{Binding SaveCommand}" CommandParameter="True"/>
+                <MenuItem Header="_Save" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>False</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
+                <MenuItem Header="_Save as" InputGestureText="F12" Command="{Binding SaveCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>True</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
             </MenuItem>
@@ -44,7 +52,7 @@
                 <MenuItem Header="Give more inventory slots" Command="{Binding CheatCommand}" CommandParameter="InventorySize"/>
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="About" Command="{Binding AboutCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
+                <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             </MenuItem>
         </Menu>
         <Separator DockPanel.Dock="Top" Opacity="0.25"/>
@@ -71,18 +79,51 @@
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveComponentModel}" ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Copy name" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyNameCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <MenuItem Header="Copy path" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyPathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <Separator/>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Entity"/>
+                                        <MenuItem Header="Component"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <TextBlock Text="[C] " Foreground="Green"/>
                             <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectModel}" ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Entity"/>
+                                        <MenuItem Header="Component"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <TextBlock Text="[O] " Foreground="Violet"/>
                             <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveEntityModel}" ItemsSource="{Binding Items}">
                         <StackPanel Orientation="Horizontal">
+                            <StackPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Copy name" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyNameCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <MenuItem Header="Copy path" Command="{Binding Source={StaticResource Proxy}, Path=Data.CopyPathCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
+                                    <Separator/>
+                                    <MenuItem Header="Add">
+                                        <MenuItem Header="Entity"/>
+                                        <MenuItem Header="Component"/>
+                                    </MenuItem>
+                                    <MenuItem Header="Delete"/>
+                                </ContextMenu>
+                            </StackPanel.ContextMenu>
                             <TextBlock Text="[E] " Foreground="Blue"/>
                             <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
                         </StackPanel>
@@ -104,57 +145,7 @@
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Scale, FallbackValue='No item selected', StringFormat='Scale: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
                             <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
-                            <GroupBox Header="Properties">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <DataGrid ScrollViewer.CanContentScroll="False" IsReadOnly="True" SelectionUnit="Cell" GridLinesVisibility="Horizontal" ItemsSource="{Binding Fields}" RowHeight="{x:Static sys:Double.NaN}" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="True" CanUserResizeRows="False">
-                                        <DataGrid.Resources>
-                                            <ResourceDictionary>
-                                                <ResourceDictionary.MergedDictionaries>
-                                                    <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                                </ResourceDictionary.MergedDictionaries>
-
-                                                <Style TargetType="DataGridCell">
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsSelected" Value="True">
-                                                            <Setter Property="Background" Value="{x:Null}" />
-                                                            <Setter Property="BorderBrush" Value="{x:Null}" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                    <Style.Setters>
-                                                        <Setter Property="VerticalAlignment" Value="Stretch"/>
-                                                        <Setter Property="Foreground" Value="Black" />
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                                    <Grid Background="{TemplateBinding Background}">
-                                                                        <ContentPresenter Margin="3" VerticalAlignment="Center"/>
-                                                                    </Grid>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style.Setters>
-                                                </Style>
-                                            </ResourceDictionary>
-                                        </DataGrid.Resources>
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Name" Width="2*" Binding="{Binding PropertyName}"/>
-                                            <DataGridTextColumn Header="Type" Width="*" Binding="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}"/>
-                                            <DataGridTemplateColumn Header="Value" Width="3*">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <ContentPresenter Content="{Binding .}"/>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                    <Button Grid.Row="1" Content="Add property" Margin="0,5,0,0" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
-                                </Grid>
-                            </GroupBox>
+                            <view:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveComponentModel}">
@@ -162,59 +153,7 @@
                             <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Component name: {0}'}"/>
                             <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
                             <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, FallbackValue='No item selected', StringFormat='ParentEntityName: {0}'}"/>
-                            <GroupBox Header="Properties">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <DataGrid ScrollViewer.CanContentScroll="False" IsReadOnly="True" SelectionUnit="Cell" GridLinesVisibility="Horizontal" ItemsSource="{Binding Fields}" RowHeight="{x:Static sys:Double.NaN}" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="True" CanUserResizeRows="False">
-                                            <DataGrid.Resources>
-                                                <ResourceDictionary>
-                                                    <ResourceDictionary.MergedDictionaries>
-                                                        <ResourceDictionary Source="PropertyTemplateDictionary.xaml"/>
-                                                    </ResourceDictionary.MergedDictionaries>
-
-                                                    <Style TargetType="DataGridCell">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsSelected" Value="True">
-                                                                <Setter Property="Background" Value="{x:Null}" />
-                                                                <Setter Property="BorderBrush" Value="{x:Null}" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                        <Style.Setters>
-                                                            <Setter Property="VerticalAlignment" Value="Stretch"/>
-                                                            <Setter Property="Foreground" Value="Black" />
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                                                        <Grid Background="{TemplateBinding Background}">
-                                                                            <ContentPresenter Margin="3" VerticalAlignment="Center"/>
-                                                                        </Grid>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Style.Setters>
-                                                    </Style>
-                                                </ResourceDictionary>
-                                            </DataGrid.Resources>
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Name" Width="2*" Binding="{Binding PropertyName}"/>
-                                                <DataGridTextColumn Header="Type" Width="*" Binding="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}"/>
-                                                <DataGridTemplateColumn Header="Value" Width="3*">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <ContentPresenter Content="{Binding .}"/>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                        <Button Grid.Row="1" Content="Add property" Command="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}" CommandParameter="{Binding .}"/>
-                                    </Grid>
-                                </ScrollViewer>
-                            </GroupBox>
+                            <view:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>

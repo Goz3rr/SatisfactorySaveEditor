@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Util;
 using System.Windows;
@@ -37,6 +36,8 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand<SaveObjectModel> CopyNameCommand { get; }
+        public RelayCommand<SaveObjectModel> CopyPathCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
@@ -49,9 +50,26 @@ namespace SatisfactorySaveEditor.ViewModel
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
+            CopyNameCommand = new RelayCommand<SaveObjectModel>(CopyName);
+            CopyPathCommand = new RelayCommand<SaveObjectModel>(CopyPath);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
-            SaveCommand = new RelayCommand<bool>(Save);
-            CheatCommand = new RelayCommand<string>(Cheat);
+            SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+        }
+
+        private void CopyName(SaveObjectModel model)
+        {
+            Clipboard.SetText(model.Title);
+        }
+
+        private void CopyPath(SaveObjectModel model)
+        {
+            Clipboard.SetText(model.Model.TypePath);
+        }
+
+        private bool CanCheat(string target)
+        {
+            return rootItem != null;
         }
 
         private void Cheat(string cheatType)
@@ -139,6 +157,11 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        private bool CanSave(bool saveAs)
+        {
+            return saveGame != null;
+        }
+
         private void Save(bool saveAs)
         {
             if (saveAs)
@@ -155,7 +178,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName );
+                    saveGame.Save(dialog.FileName);
                     HasUnsavedChanges = false;
                 }
             }
