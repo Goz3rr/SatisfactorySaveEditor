@@ -34,16 +34,24 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer, writeHeader);
 
-            writer.Write(SerializedLength);
-            writer.Write(Index);
+            using (var ms = new MemoryStream())
+            using (var msWriter = new BinaryWriter(ms))
+            {
+                Data.Serialize(msWriter);
 
-            writer.WriteLengthPrefixedString(Type);
-            writer.Write(Unk1);
-            writer.Write(Unk2);
-            writer.Write(Unk3);
-            writer.Write(Unk4);
-            writer.Write(Unk5);
-            Data.Serialize(writer);
+                var bytes = ms.ToArray();
+
+                writer.Write(bytes.Length);
+                writer.Write(Index);
+
+                writer.WriteLengthPrefixedString(Type);
+                writer.Write(Unk1);
+                writer.Write(Unk2);
+                writer.Write(Unk3);
+                writer.Write(Unk4);
+                writer.Write(Unk5);
+                writer.Write(bytes);
+            }            
         }
 
         public static int GetSerializedArrayLength(StructProperty[] properties)
@@ -75,22 +83,29 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             writer.WriteLengthPrefixedString(TypeName);
 
-            // TODO: size
-            writer.Write(properties.Sum(p => p.SerializedLength));
-
-            writer.Write(first.Index);
-
-            writer.WriteLengthPrefixedString(first.Data.Type);
-
-            writer.Write(first.Unk1);
-            writer.Write(first.Unk2);
-            writer.Write(first.Unk3);
-            writer.Write(first.Unk4);
-            writer.Write(first.Unk5);
-
-            for(var i = 0; i < properties.Length; i++)
+            using (var ms = new MemoryStream())
+            using (var msWriter = new BinaryWriter(ms))
             {
-                properties[i].Data.Serialize(writer);
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    properties[i].Data.Serialize(msWriter);
+                }
+
+                var bytes = ms.ToArray();
+
+                writer.Write(bytes.Length);
+
+                writer.Write(first.Index);
+
+                writer.WriteLengthPrefixedString(first.Data.Type);
+
+                writer.Write(first.Unk1);
+                writer.Write(first.Unk2);
+                writer.Write(first.Unk3);
+                writer.Write(first.Unk4);
+                writer.Write(first.Unk5);
+
+                writer.Write(bytes);
             }
         }
 

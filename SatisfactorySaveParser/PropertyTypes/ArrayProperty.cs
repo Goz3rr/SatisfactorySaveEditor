@@ -54,40 +54,48 @@ namespace SatisfactorySaveParser.PropertyTypes
                 base.Serialize(writer, writeHeader);
             }
 
-            writer.Write(SerializedLength);
-            writer.Write(Index);
-
-            writer.WriteLengthPrefixedString(Type);
-            writer.Write((byte)0);
-
-            switch (Type)
+            using (var ms = new MemoryStream())
+            using (var msWriter = new BinaryWriter(ms))
             {
-                case StructProperty.TypeName:
-                    {
-                        StructProperty.SerializeArray(writer, Elements.Cast<StructProperty>().ToArray());
-                    }
-                    break;
-                case ObjectProperty.TypeName:
-                    {
-                        writer.Write(Elements.Count);
-                        foreach (var prop in Elements.Cast<ObjectProperty>())
+                switch (Type)
+                {
+                    case StructProperty.TypeName:
                         {
-                            writer.WriteLengthPrefixedString(prop.Str1);
-                            writer.WriteLengthPrefixedString(prop.Str2);
+                            StructProperty.SerializeArray(msWriter, Elements.Cast<StructProperty>().ToArray());
                         }
-                    }
-                    break;
-                case IntProperty.TypeName:
-                    {
-                        writer.Write(Elements.Count);
-                        foreach (var prop in Elements.Cast<IntProperty>())
+                        break;
+                    case ObjectProperty.TypeName:
                         {
-                            writer.Write(prop.Value);
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<ObjectProperty>())
+                            {
+                                msWriter.WriteLengthPrefixedString(prop.Str1);
+                                msWriter.WriteLengthPrefixedString(prop.Str2);
+                            }
                         }
-                    }
-                    break;
-                default:
-                    throw new NotImplementedException();
+                        break;
+                    case IntProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<IntProperty>())
+                            {
+                                msWriter.Write(prop.Value);
+                            }
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+
+                var bytes = ms.ToArray();
+
+                writer.Write(bytes.Length);
+                writer.Write(Index);
+
+                writer.WriteLengthPrefixedString(Type);
+                writer.Write((byte)0);
+
+                writer.Write(bytes);
             }
         }
 
