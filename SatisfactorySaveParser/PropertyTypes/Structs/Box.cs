@@ -14,6 +14,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public byte UnknownByte { get; set; }
 
         public int SerializedLength => 25;
+        public string Type => "Box";
 
         public Box(BinaryReader reader)
         {

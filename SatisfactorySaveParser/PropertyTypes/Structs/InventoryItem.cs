@@ -10,6 +10,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public string Unknown3 { get; set; }
 
         public int SerializedLength => 4 + ItemType.GetSerializedLength() + Unknown2.GetSerializedLength() + Unknown3.GetSerializedLength();
+        public string Type => "InventoryItem";
 
         public InventoryItem(BinaryReader reader)
         {

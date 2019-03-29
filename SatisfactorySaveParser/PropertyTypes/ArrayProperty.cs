@@ -17,7 +17,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 switch (Type)
                 {
                     case StructProperty.TypeName:
-                        return ((StructProperty)Elements[0]).Data.SerializedLength;
+                        return StructProperty.GetSerializedArrayLength(Elements.Cast<StructProperty>().ToArray());
                     case ObjectProperty.TypeName:
                         return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Str1.GetSerializedLength() + obj.Str2.GetSerializedLength());
                     case IntProperty.TypeName:
@@ -64,8 +64,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 case StructProperty.TypeName:
                     {
-                        // TODO
-                        ((StructProperty)Elements[0]).Data.Serialize(writer);
+                        StructProperty.SerializeArray(writer, Elements.Cast<StructProperty>().ToArray());
                     }
                     break;
                 case ObjectProperty.TypeName:
@@ -109,11 +108,6 @@ namespace SatisfactorySaveParser.PropertyTypes
                 case StructProperty.TypeName:
                     {
                         result.Elements.AddRange(StructProperty.ParseArray(reader));
-                        //for (var i = 0; i < count; i++)
-                        //{
-                        //    var prop = SerializedProperty.Parse(reader, out int _, out int _);
-                        //    result.Elements.Add(prop);
-                        //}
                     }
                     break;
                 case ObjectProperty.TypeName:
