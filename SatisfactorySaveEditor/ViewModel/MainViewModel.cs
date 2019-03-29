@@ -93,7 +93,13 @@ namespace SatisfactorySaveEditor.ViewModel
                                     return;
                                 }
 
-                                arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
+                                foreach(var research in Researches.Values)
+                                {
+                                    if(!arrayField.Elements.Cast<ObjectProperty>().Any(e => e.Str2 == research))
+                                    {
+                                        arrayField.Elements.Add(new ObjectProperty(null, "", research));
+                                    }
+                                }
                             }
                         }
 
