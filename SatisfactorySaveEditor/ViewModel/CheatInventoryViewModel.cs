@@ -11,7 +11,8 @@ namespace SatisfactorySaveEditor.ViewModel
     {
         public RelayCommand<Window> OkCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
-        public int NumberChosen { get; set; } = int.MinValue; //default value in case the prompt box is x'd
+        public int NumberChosen { get; set; }// = int.MinValue; //default value in case the prompt box is x'd
+        public string OldSlotsDisplay = "(Currently X slots.)"; //for display on the window
 
         public CheatInventoryViewModel()
         {
