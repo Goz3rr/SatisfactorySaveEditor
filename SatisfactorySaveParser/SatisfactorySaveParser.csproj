@@ -60,6 +60,7 @@
     <Compile Include="PropertyTypes\Structs\DynamicStructData.cs" />
     <Compile Include="PropertyTypes\Structs\InventoryItem.cs" />
     <Compile Include="PropertyTypes\Structs\IStructData.cs" />
+    <Compile Include="PropertyTypes\Structs\Color.cs" />
     <Compile Include="PropertyTypes\Structs\LinearColor.cs" />
     <Compile Include="PropertyTypes\Structs\Quat.cs" />
     <Compile Include="PropertyTypes\Structs\RailroadTrackPosition.cs" />

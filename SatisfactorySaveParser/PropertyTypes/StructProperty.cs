@@ -115,6 +115,8 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 case "LinearColor":
                     return new LinearColor(reader);
+                case "Color":
+                    return new Color(reader);
                 case "Rotator":
                     return new Rotator(reader);
                 case "Vector":
