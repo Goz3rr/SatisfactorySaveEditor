@@ -138,13 +138,13 @@ namespace SatisfactorySaveEditor.ViewModel
                         CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
                         MessageBox.Show("old slots " + oldSlots);
                         cvm.NumberChosen = oldSlots;
-                        cvm.OldSlotsDisplay = "(Currently " + oldSlots + " slots)";
+                        //cvm.OldSlotsDisplay = "(Currently " + oldSlots + " slots)";
                         window.ShowDialog();
                         requestedSlots = cvm.NumberChosen;
                         //MessageBox.Show("picked " + requestedSlots);
                         
 
-                        if (requestedSlots < 0) //TryParse didn't find a number, or cancel was clicked on the inputbox
+                        if (requestedSlots < 0 || requestedSlots == oldSlots) //TryParse didn't find a number, or cancel was clicked on the inputbox
                         {
                             MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
