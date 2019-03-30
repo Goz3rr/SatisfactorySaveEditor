@@ -130,14 +130,15 @@ namespace SatisfactorySaveEditor.ViewModel
                         {
                             oldSlots = inventorySize.Value;
                         }
-                        /*string requestedCountString = Microsoft.VisualBasic.Interaction.InputBox("How many inventory slots do you want?\nCurrent: " + oldSlots, "Enter Count", "56");
-                        int.TryParse(requestedCountString, out requestedSlots);*/
-
+                        
                         CheatInventoryWindow window = new CheatInventoryWindow(oldSlots)
                         {
                             Owner = Application.Current.MainWindow
                         };
                         CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
+                        MessageBox.Show("old slots " + oldSlots);
+                        cvm.NumberChosen = oldSlots;
+                        cvm.OldSlotsDisplay = "(Currently " + oldSlots + " slots)";
                         window.ShowDialog();
                         requestedSlots = cvm.NumberChosen;
                         //MessageBox.Show("picked " + requestedSlots);
