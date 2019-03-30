@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using SatisfactorySaveParser.PropertyTypes;
+using SatisfactorySaveEditor.ViewModel.Property;
 
 namespace SatisfactorySaveEditor.View
 {
@@ -22,13 +22,13 @@ namespace SatisfactorySaveEditor.View
             set => SetValue(AddPropertyCommandProperty, value);
         }
 
-        public ObservableCollection<SerializedProperty> Properties
+        public ObservableCollection<SerializedPropertyViewModel> Properties
         {
-            get => (ObservableCollection<SerializedProperty>)GetValue(PropertiesProperty);
+            get => (ObservableCollection<SerializedPropertyViewModel>)GetValue(PropertiesProperty);
             set => SetValue(PropertiesProperty, value);
         }
 
         public static readonly DependencyProperty AddPropertyCommandProperty = DependencyProperty.Register("AddPropertyCommand", typeof(ICommand), typeof(PropertiesControl));
-        public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register("Properties", typeof(ObservableCollection<SerializedProperty>), typeof(PropertiesControl));
+        public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register("Properties", typeof(ObservableCollection<SerializedPropertyViewModel>), typeof(PropertiesControl));
     }
 }

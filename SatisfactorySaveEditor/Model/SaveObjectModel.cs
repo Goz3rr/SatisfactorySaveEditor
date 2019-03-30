@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using GalaSoft.MvvmLight;
+using SatisfactorySaveEditor.Util;
+using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
-using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Model
 {
@@ -13,7 +15,8 @@ namespace SatisfactorySaveEditor.Model
         private bool isExpanded;
 
         public ObservableCollection<SaveObjectModel> Items { get; } = new ObservableCollection<SaveObjectModel>();
-        public ObservableCollection<SerializedProperty> Fields => Model.DataFields;
+
+        public ObservableCollection<SerializedPropertyViewModel> Fields { get; }
 
         public string Title
         {
@@ -46,6 +49,8 @@ namespace SatisfactorySaveEditor.Model
             Model = model;
             Title = model.InstanceName;
             RootObject = model.RootObject;
+
+            Fields = new ObservableCollection<SerializedPropertyViewModel>(Model.DataFields.Select(PropertyViewModelMapper.Convert));
         }
 
         public SaveObjectModel(string title)
@@ -91,6 +96,16 @@ namespace SatisfactorySaveEditor.Model
             foreach (var item in Items)
             {
                 item.ApplyChanges();
+            }
+
+            // This is because the named only (pink) nodes aren't actually a valid object in the game
+            if (Model == null) return;
+
+            Model.DataFields.Clear();
+            foreach (var field in Fields)
+            {
+                field.ApplyChanges();
+                Model.DataFields.Add(field.Model);
             }
         }
     }

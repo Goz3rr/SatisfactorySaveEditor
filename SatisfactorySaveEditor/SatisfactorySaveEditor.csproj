@@ -81,8 +81,22 @@
     <Compile Include="Model\SaveObjectModel.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
+    <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\EnumPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\FloatPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\IntPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\MapPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\NamePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\ObjectPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\SerializedPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\StrPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\PropertiesControl.xaml.cs">
       <DependentUpon>PropertiesControl.xaml</DependentUpon>
