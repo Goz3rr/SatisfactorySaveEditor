@@ -20,8 +20,16 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
-        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}" CommandParameter="False"/>
-        <KeyBinding Key="F12" Command="{Binding SaveCommand}" CommandParameter="True"/>
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Boolean>False</sys:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+        <KeyBinding Key="F12" Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Boolean>True</sys:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
