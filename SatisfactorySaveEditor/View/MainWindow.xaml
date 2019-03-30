@@ -20,8 +20,16 @@
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
-        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}" CommandParameter="False"/>
-        <KeyBinding Key="F12" Command="{Binding SaveCommand}" CommandParameter="True"/>
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Boolean>False</sys:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+        <KeyBinding Key="F12" Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Boolean>True</sys:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
     </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -130,23 +138,23 @@
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type model:SaveEntityModel}">
                         <DockPanel>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Entity name: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, FallbackValue='No item selected', StringFormat='Int4: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, FallbackValue='No item selected', StringFormat='Int6: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Rotation, FallbackValue='No item selected', StringFormat='Rotation: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Position, FallbackValue='No item selected', StringFormat='Position: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Scale, FallbackValue='No item selected', StringFormat='Scale: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, FallbackValue='No item selected', StringFormat='ParentObjectName: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, FallbackValue='No item selected', StringFormat='ParentObjectRoot: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, StringFormat='Entity name: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, StringFormat='Root: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, StringFormat='Int4: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, StringFormat='Int6: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Rotation, StringFormat='Rotation: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Position, StringFormat='Position: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Scale, StringFormat='Scale: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, StringFormat='ParentObjectName: {0}'}"/>
+                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, StringFormat='ParentObjectRoot: {0}'}"/>
                             <view:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveComponentModel}">
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="{Binding Title, FallbackValue='No item selected', StringFormat='Component name: {0}'}"/>
-                            <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, FallbackValue='No item selected', StringFormat='Root: {0}'}"/>
-                            <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, FallbackValue='No item selected', StringFormat='ParentEntityName: {0}'}"/>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding Title, StringFormat='Component name: {0}'}"/>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, StringFormat='Root: {0}'}"/>
+                            <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, StringFormat='ParentEntityName: {0}'}"/>
                             <view:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>

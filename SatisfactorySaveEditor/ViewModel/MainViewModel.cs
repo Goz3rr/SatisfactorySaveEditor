@@ -12,6 +12,7 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
 using System.Linq;
+using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
 
 namespace SatisfactorySaveEditor.ViewModel
@@ -87,7 +88,7 @@ namespace SatisfactorySaveEditor.ViewModel
                         {
                             if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
                             {
-                                if (!(field is ArrayProperty arrayField))
+                                if (!(field is ArrayPropertyViewModel arrayField))
                                 {
                                     MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
@@ -97,7 +98,7 @@ namespace SatisfactorySaveEditor.ViewModel
                                 {
                                     if(!arrayField.Elements.Cast<ObjectProperty>().Any(e => e.Str2 == research))
                                     {
-                                        arrayField.Elements.Add(new ObjectProperty(null, "", research));
+                                        arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research)));
                                     }
                                 }
                             }
@@ -115,16 +116,16 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolProperty mapUnlocked)
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolPropertyViewModel mapUnlocked)
                         {
                             mapUnlocked.Value = true;
                         }
                         else
                         {
-                            cheatObject.Fields.Add(new BoolProperty("mIsMapUnlocked")
+                            cheatObject.Fields.Add(new BoolPropertyViewModel(new BoolProperty("mIsMapUnlocked")
                             {
                                 Value = true
-                            });
+                            }));
                         }
 
                         MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -139,16 +140,16 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
                         {
                             inventorySize.Value = 56;
                         }
                         else
                         {
-                            cheatObject.Fields.Add(new IntProperty("mNumAdditionalInventorySlots")
+                            cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
                             {
                                 Value = 56
-                            });
+                            }));
                         }
 
                         MessageBox.Show("Inventory enlarged", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -202,9 +203,6 @@ namespace SatisfactorySaveEditor.ViewModel
                     AddViewModel avm = (AddViewModel)window.DataContext;
                     avm.ObjectModel = som;
                     window.ShowDialog();
-                    break;
-                case ArrayProperty ap:
-                    ap.Elements.Add(AddViewModel.CreateProperty(AddViewModel.FromStringType(ap.Type), $"Element {ap.Elements.Count}"));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(obj));
