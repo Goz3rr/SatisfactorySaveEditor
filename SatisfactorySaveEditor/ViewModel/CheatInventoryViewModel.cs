@@ -7,7 +7,7 @@ using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    class CheatInventoryViewModel : ViewModelBase
+    public class CheatInventoryViewModel : ViewModelBase
     {
         public RelayCommand<Window> OkCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
