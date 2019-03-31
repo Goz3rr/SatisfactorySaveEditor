@@ -128,9 +128,9 @@ namespace SatisfactorySaveEditor.ViewModel
                             Owner = Application.Current.MainWindow
                         };
                         CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
-                        MessageBox.Show("old slots " + oldSlots);
+                        //MessageBox.Show("old slots " + oldSlots);
                         cvm.NumberChosen = oldSlots;
-                        //cvm.OldSlotsDisplay = "(Currently " + oldSlots + " slots)";
+                        cvm.OldSlotsDisplay = oldSlots;
                         window.ShowDialog();
                         requestedSlots = cvm.NumberChosen;
                         //MessageBox.Show("picked " + requestedSlots);
