@@ -18,8 +18,7 @@ namespace SatisfactorySaveEditor.ViewModel
             get => numberChosen;
             set
             {
-                Set(() => NumberChosen, ref numberChosen, value);
-                RaisePropertyChanged(() => CanConfirm);
+                Set(() => OldSlotsDisplay, ref oldSlotsDisplay, value);
             }
         }
         public bool CanConfirm
@@ -39,17 +38,12 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             set
             {
-                oldSlotsDisplay = value;
-                RaisePropertyChanged("OldSlotsDisplay");
+                Set(() => OldSlotsDisplay, ref oldSlotsDisplay, value);
             }
         }
 
-        //public int NumberChosen { get; set; }// = int.MinValue; //default value in case the prompt box is x'd
-        //public string OldSlotsDisplay = "(Currently X slots.)"; //for display on the window
-
         public CheatInventoryViewModel()
         {
-            //NumberChosen = oldCount;
             OkCommand = new RelayCommand<Window>(Ok);
             CancelCommand = new RelayCommand<Window>(Cancel);
             
@@ -63,7 +57,6 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Ok(Window obj)
         {
-            //MessageBox.Show("Test " + NumberChosen);
             obj.Close();
         }
 
