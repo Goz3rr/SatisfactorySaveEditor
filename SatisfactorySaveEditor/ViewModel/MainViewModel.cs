@@ -150,7 +150,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
                         int oldSlots = 0;
                         int requestedSlots = 0;
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
                         {
                             oldSlots = inventorySize.Value;
                         }
@@ -172,16 +172,16 @@ namespace SatisfactorySaveEditor.ViewModel
                         }
                         else //TryParse found a number to use
                         {
-                            if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize2)
+                            if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize2)
                             {
                                 inventorySize2.Value = requestedSlots;
                             }
                             else
                             {
-                                cheatObject.Fields.Add(new IntProperty("mNumAdditionalInventorySlots")
+                                cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
                                 {
                                     Value = requestedSlots
-                                });
+                                }));
                             }
 
                             MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);

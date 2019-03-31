@@ -1,9 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using SatisfactorySaveEditor.Model;
-using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -16,38 +13,20 @@ namespace SatisfactorySaveEditor.ViewModel
         public int NumberChosen
         {
             get => numberChosen;
-            set
-            {
-                Set(() => NumberChosen, ref numberChosen, value);
-                RaisePropertyChanged(() => CanConfirm);
-            }
-        }
-        public bool CanConfirm
-        {
-            get
-            {
-                return NumberChosen >= 0;
-            }
+            set { Set(() => NumberChosen, ref numberChosen, value); }
         }
 
-        private int oldSlotsDisplay = 4242;
+        private int oldSlotsDisplay;
         public int OldSlotsDisplay
         {
-            get
-            {
-                return oldSlotsDisplay;
-            }
-            set
-            {
-                Set(() => OldSlotsDisplay, ref oldSlotsDisplay, value);
-            }
+            get => oldSlotsDisplay;
+            set { Set(() => OldSlotsDisplay, ref oldSlotsDisplay, value); }
         }
 
         public CheatInventoryViewModel()
         {
             OkCommand = new RelayCommand<Window>(Ok);
             CancelCommand = new RelayCommand<Window>(Cancel);
-            
         }
 
         private void Cancel(Window obj)
@@ -60,8 +39,5 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             obj.Close();
         }
-
     }
-
-
 }
