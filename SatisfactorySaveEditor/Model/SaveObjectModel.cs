@@ -1,18 +1,24 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
 
 namespace SatisfactorySaveEditor.Model
 {
-    public class SaveObjectModel : ObservableObject
+    public class SaveObjectModel : ViewModelBase
     {
         private string title;
         private string rootObject;
         private bool isSelected;
         private bool isExpanded;
+
+        public RelayCommand CopyNameCommand { get; }
+        public RelayCommand CopyPathCommand { get; }
 
         public ObservableCollection<SaveObjectModel> Items { get; } = new ObservableCollection<SaveObjectModel>();
 
@@ -51,6 +57,10 @@ namespace SatisfactorySaveEditor.Model
             RootObject = model.RootObject;
 
             Fields = new ObservableCollection<SerializedPropertyViewModel>(Model.DataFields.Select(PropertyViewModelMapper.Convert));
+
+            
+            CopyNameCommand = new RelayCommand(CopyName);
+            CopyPathCommand = new RelayCommand(CopyPath);
         }
 
         public SaveObjectModel(string title)
@@ -86,6 +96,22 @@ namespace SatisfactorySaveEditor.Model
             return null;
         }
 
+        public bool Remove(SaveObjectModel model)
+        {
+            if (this == model) throw new InvalidOperationException("Cannot remove root model");
+
+            var found = Items.Remove(model);
+            if (found) return true;
+
+            foreach (var item in Items)
+            {
+                found = item.Remove(model);
+                if (found) return true;
+            }
+
+            return false;
+        }
+
         public override string ToString()
         {
             return $"{Title} ({Items.Count})";
@@ -107,6 +133,16 @@ namespace SatisfactorySaveEditor.Model
                 field.ApplyChanges();
                 Model.DataFields.Add(field.Model);
             }
+        }
+
+        private void CopyName()
+        {
+            Clipboard.SetText(Title);
+        }
+
+        private void CopyPath()
+        {
+            Clipboard.SetText(Model.TypePath);
         }
     }
 }

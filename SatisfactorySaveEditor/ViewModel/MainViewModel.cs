@@ -31,14 +31,22 @@ namespace SatisfactorySaveEditor.ViewModel
             set { Set(() => SelectedItem, ref selectedItem, value); }
         }
 
+        public string FileName
+        {
+            get
+            {
+                if (saveGame == null) return string.Empty;
+                return string.Format(" - [{0}]", saveGame.FileName);
+            }
+        }
+
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand<object> AddPropertyCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
-        public RelayCommand<SaveObjectModel> CopyNameCommand { get; }
-        public RelayCommand<SaveObjectModel> CopyPathCommand { get; }
+        public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
@@ -49,21 +57,21 @@ namespace SatisfactorySaveEditor.ViewModel
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
-            CopyNameCommand = new RelayCommand<SaveObjectModel>(CopyName);
-            CopyPathCommand = new RelayCommand<SaveObjectModel>(CopyPath);
+            DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
         }
 
-        private void CopyName(SaveObjectModel model)
+        private bool CanDelete(SaveObjectModel model)
         {
-            Clipboard.SetText(model.Title);
+            return model != rootItem;
         }
 
-        private void CopyPath(SaveObjectModel model)
+        private void Delete(SaveObjectModel model)
         {
-            Clipboard.SetText(model.Model.TypePath);
+            rootItem.Remove(model);
+            RaisePropertyChanged(() => RootItem);
         }
 
         private bool CanCheat(string target)
@@ -182,6 +190,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 {
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName);
+                    RaisePropertyChanged(() => FileName);
                 }
             }
             else
@@ -274,6 +283,7 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             RaisePropertyChanged(() => RootItem);
+            RaisePropertyChanged(() => FileName);
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)
