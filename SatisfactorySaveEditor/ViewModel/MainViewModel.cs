@@ -128,12 +128,10 @@ namespace SatisfactorySaveEditor.ViewModel
                             Owner = Application.Current.MainWindow
                         };
                         CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
-                        //MessageBox.Show("old slots " + oldSlots);
                         cvm.NumberChosen = oldSlots;
                         cvm.OldSlotsDisplay = oldSlots;
                         window.ShowDialog();
                         requestedSlots = cvm.NumberChosen;
-                        //MessageBox.Show("picked " + requestedSlots);
                         
 
                         if (requestedSlots < 0 || requestedSlots == oldSlots) //TryParse didn't find a number, or cancel was clicked on the inputbox
