@@ -8,8 +8,8 @@
         xmlns:model="clr-namespace:SatisfactorySaveEditor.Model"
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
-        xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:control="clr-namespace:SatisfactorySaveEditor.View.Control"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
@@ -130,24 +130,69 @@
                 <ContentControl.Resources>
                     <DataTemplate DataType="{x:Type model:SaveEntityModel}">
                         <DockPanel>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Title, StringFormat='Entity name: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding RootObject, StringFormat='Root: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int4, StringFormat='Int4: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Int6, StringFormat='Int6: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Rotation, StringFormat='Rotation: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Position, StringFormat='Position: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding Scale, StringFormat='Scale: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectName, StringFormat='ParentObjectName: {0}'}"/>
-                            <TextBlock TextWrapping="Wrap" DockPanel.Dock="Top" Text="{Binding ParentObjectRoot, StringFormat='ParentObjectRoot: {0}'}"/>
-                            <view:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
+                            <Grid DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="0" Content="Entity name:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="1" Content="Root:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="Int4:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="3" Content="Int6:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="4" Content="Position:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="5" Content="Rotation:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="6" Content="Scale:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="7" Content="ParentObjectName:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="8" Content="ParentObjectRoot:"/>
+
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title}"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="2" Text="{Binding Int4}" IsEnabled="False"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="3" Text="{Binding Int6}" IsEnabled="False"/>
+                                <control:Vector3Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="4" Vector="{Binding Position}"/>
+                                <control:Vector4Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="5" Vector="{Binding Rotation}"/>
+                                <control:Vector3Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="6" Vector="{Binding Scale}"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="7" Text="{Binding ParentObjectName}" IsEnabled="False"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="8" Text="{Binding ParentObjectRoot}" IsEnabled="False"/>
+                            </Grid>
+                            <control:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveComponentModel}">
                         <DockPanel>
-                            <TextBlock DockPanel.Dock="Top" Text="{Binding Title, StringFormat='Component name: {0}'}"/>
-                            <TextBlock DockPanel.Dock="Top" Text="{Binding RootObject, StringFormat='Root: {0}'}"/>
-                            <TextBlock DockPanel.Dock="Top" Text="{Binding ParentEntityName, StringFormat='ParentEntityName: {0}'}"/>
-                            <view:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
+                            <Grid DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="0" Content="Component name:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="1" Content="Root:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="ParentEntityName:"/>
+
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title}"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="2" Text="{Binding ParentEntityName}" IsEnabled="False"/>
+                            </Grid>
+                            <control:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>
