@@ -8,12 +8,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SatisfactorySaveEditor</RootNamespace>
     <AssemblyName>SatisfactorySaveEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,9 +35,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>satisfactorysaveeditorlogo_powershard.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net47\CommonServiceLocator.dll</HintPath>
+      <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -77,14 +81,39 @@
     <Compile Include="Model\SaveObjectModel.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
+    <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\EnumPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\FloatPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\IntPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\MapPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\NamePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\ObjectPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\SerializedPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\StrPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\CheatInventoryWindow.xaml.cs">
       <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Control\PropertiesControl.xaml.cs">
+      <DependentUpon>PropertiesControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\AddWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Control\Vector4Control.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Control\Vector3Control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -99,10 +128,20 @@
     <Compile Include="View\AddWindow.xaml.cs">
       <DependentUpon>AddWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Control\Vector4Control.xaml.cs">
+      <DependentUpon>Vector4Control.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Control\Vector3Control.xaml.cs">
+      <DependentUpon>Vector3Control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\Control\PropertiesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PropertyTemplateDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -140,8 +179,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="satisfactorysaveeditorlogo_powershard.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\SatisfactorySaveParser\SatisfactorySaveParser.csproj">
-      <Project>{068dc25e-4b70-4062-9133-535f96c5cbc7}</Project>
+      <Project>{f76082b9-33c6-4e13-baaa-071ac7e53d7b}</Project>
       <Name>SatisfactorySaveParser</Name>
     </ProjectReference>
   </ItemGroup>
