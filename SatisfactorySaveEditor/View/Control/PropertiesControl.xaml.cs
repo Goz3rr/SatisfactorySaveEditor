@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using SatisfactorySaveEditor.ViewModel.Property;
 
-namespace SatisfactorySaveEditor.View
+namespace SatisfactorySaveEditor.View.Control
 {
     /// <summary>
     /// Interakční logika pro PropertiesControl.xaml

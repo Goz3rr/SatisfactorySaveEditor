@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SatisfactorySaveParser.PropertyTypes;
+﻿using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.ViewModel.Property
 {

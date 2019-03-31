@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows.Data;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
-using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Converter
 {

@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterOwner"
         DataContext="{Binding AddViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         x:Name="AddPropertyWindow"
-        Title="Add Property" Height="160" Width="400">
+        Title="Add Property" Height="160" Width="400" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider x:Key="PropertyTypes" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
