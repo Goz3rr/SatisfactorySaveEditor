@@ -96,7 +96,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
                                 foreach(var research in Researches.Values)
                                 {
-                                    if(!arrayField.Elements.Cast<ObjectProperty>().Any(e => e.Str2 == research))
+                                    if(!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research))
                                     {
                                         arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research)));
                                     }
