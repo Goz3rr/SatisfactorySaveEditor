@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SatisfactorySaveParser.Structures;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -75,7 +76,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Unknown optional map of strings
         /// </summary>
-        public List<(string, string)> UnknownMap { get; set; } = new List<(string, string)>();
+        public List<ObjectReference> UnknownMap { get; set; } = new List<ObjectReference>();
 
         /// <summary>
         ///     Open a savefile from disk
@@ -84,7 +85,7 @@ namespace SatisfactorySaveParser
         public SatisfactorySave(string file)
         {
             FileName = Environment.ExpandEnvironmentVariables(file);
-            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
                 SaveVersion1 = reader.ReadInt32();
@@ -152,7 +153,7 @@ namespace SatisfactorySaveParser
                 {
                     var str1 = reader.ReadLengthPrefixedString();
                     var str2 = reader.ReadLengthPrefixedString();
-                    UnknownMap.Add((str1, str2));
+                    UnknownMap.Add(new ObjectReference(str1, str2));
                 }
 
                 Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
@@ -223,8 +224,8 @@ namespace SatisfactorySaveParser
                 writer.Write(UnknownMap.Count);
                 foreach(var unkMap in UnknownMap)
                 {
-                    writer.WriteLengthPrefixedString(unkMap.Item1);
-                    writer.WriteLengthPrefixedString(unkMap.Item2);
+                    writer.WriteLengthPrefixedString(unkMap.Root);
+                    writer.WriteLengthPrefixedString(unkMap.Name);
                 }
             }
         }

@@ -45,7 +45,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     List of SaveComponents belonging to this object
         /// </summary>
-        public List<(string root, string name)> Components { get; set; } = new List<(string, string)>();
+        public List<ObjectReference> Components { get; set; } = new List<ObjectReference>();
 
 
 
@@ -79,10 +79,10 @@ namespace SatisfactorySaveParser
             writer.WriteLengthPrefixedString(ParentObjectName);
 
             writer.Write(Components.Count);
-            foreach(var (root, name) in Components)
+            foreach(var obj in Components)
             {
-                writer.WriteLengthPrefixedString(root);
-                writer.WriteLengthPrefixedString(name);
+                writer.WriteLengthPrefixedString(obj.Root);
+                writer.WriteLengthPrefixedString(obj.Name);
             }
 
             base.SerializeData(writer);
@@ -104,7 +104,7 @@ namespace SatisfactorySaveParser
             {
                 var root = reader.ReadLengthPrefixedString();
                 var name = reader.ReadLengthPrefixedString();
-                Components.Add((root, name));
+                Components.Add(new ObjectReference(root, name));
                 newLen -= 10 + root.Length + name.Length;
             }
 
