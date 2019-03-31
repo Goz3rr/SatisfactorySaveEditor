@@ -83,6 +83,7 @@
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
+    <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
@@ -98,6 +99,9 @@
     <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\CheatInventoryWindow.xaml.cs">
+      <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Control\PropertiesControl.xaml.cs">
       <DependentUpon>PropertiesControl.xaml</DependentUpon>
     </Compile>
@@ -139,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PropertyTemplateDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CheatInventoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

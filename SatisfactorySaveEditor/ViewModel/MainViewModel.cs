@@ -148,19 +148,44 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
+                        int oldSlots = 0;
+                        int requestedSlots = 0;
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
                         {
-                            inventorySize.Value = 56;
+                            oldSlots = inventorySize.Value;
                         }
-                        else
+                        
+                        CheatInventoryWindow window = new CheatInventoryWindow(oldSlots)
                         {
-                            cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
-                            {
-                                Value = 56
-                            }));
-                        }
+                            Owner = Application.Current.MainWindow
+                        };
+                        CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
+                        cvm.NumberChosen = oldSlots;
+                        cvm.OldSlotsDisplay = oldSlots;
+                        window.ShowDialog();
+                        requestedSlots = cvm.NumberChosen;
+                        
 
-                        MessageBox.Show("Inventory enlarged", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        if (requestedSlots < 0 || requestedSlots == oldSlots) //TryParse didn't find a number, or cancel was clicked on the inputbox
+                        {
+                            MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else //TryParse found a number to use
+                        {
+                            if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize2)
+                            {
+                                inventorySize2.Value = requestedSlots;
+                            }
+                            else
+                            {
+                                cheatObject.Fields.Add(new IntProperty("mNumAdditionalInventorySlots")
+                                {
+                                    Value = requestedSlots
+                                });
+                            }
+
+                            MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
                     break;
                 default:
