@@ -154,7 +154,6 @@ namespace SatisfactorySaveEditor.ViewModel
                                 });
                             }
 
-                            HasUnsavedChanges = true;
                             MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
