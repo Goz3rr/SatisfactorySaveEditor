@@ -25,7 +25,7 @@
 
             <Label Grid.Column="0" Grid.Row="0" Content="Number of Slots:"/>
             <TextBox VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0" Text="{Binding NumberChosen, UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path=NumberChosen }" ContentStringFormat="Currently {0} slots" />
+            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path= OldSlotsDisplay}" ContentStringFormat="Currently {0} slots" />
         </Grid>
         <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,5,0,0" Height="20">
 
