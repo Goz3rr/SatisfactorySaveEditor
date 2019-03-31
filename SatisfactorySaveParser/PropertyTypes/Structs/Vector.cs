@@ -1,13 +1,10 @@
-﻿using System.IO;
+﻿using SatisfactorySaveParser.Structures;
+using System.IO;
 
 namespace SatisfactorySaveParser.PropertyTypes.Structs
 {
-    public class Vector : IStructData
+    public class Vector : Vector3, IStructData
     {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
-
         public int SerializedLength => 12;
         public string Type => "Vector";
 
@@ -20,9 +17,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 
         public void Serialize(BinaryWriter writer)
         {
-            writer.Write(X);
-            writer.Write(Y);
-            writer.Write(Z);
+            writer.Write(this);
         }
     }
 }

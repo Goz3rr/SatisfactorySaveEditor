@@ -38,7 +38,7 @@ namespace SatisfactorySaveParser
             {
                 var bytes = Encoding.Unicode.GetBytes(str);
 
-                writer.Write(-(bytes.Length / 2 + 1)) ;
+                writer.Write(-(bytes.Length / 2 + 1));
                 writer.Write(bytes);
                 writer.Write((short)0);
             }
