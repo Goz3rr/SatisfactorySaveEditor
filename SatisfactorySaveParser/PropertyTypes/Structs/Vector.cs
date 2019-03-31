@@ -9,6 +9,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public float Z { get; set; }
 
         public int SerializedLength => 12;
+        public string Type => "Vector";
 
         public Vector(BinaryReader reader)
         {

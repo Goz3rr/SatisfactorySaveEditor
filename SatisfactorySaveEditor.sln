@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveEditor", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveParser", "SatisfactorySaveParser\SatisfactorySaveParser.csproj", "{F76082B9-33C6-4E13-BAAA-071AC7E53D7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveParser.Tests", "SatisfactorySaveParser.Tests\SatisfactorySaveParser.Tests.csproj", "{66F507E3-E386-4ABD-933A-288BA4EED825}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F76082B9-33C6-4E13-BAAA-071AC7E53D7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F76082B9-33C6-4E13-BAAA-071AC7E53D7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F76082B9-33C6-4E13-BAAA-071AC7E53D7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66F507E3-E386-4ABD-933A-288BA4EED825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F507E3-E386-4ABD-933A-288BA4EED825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F507E3-E386-4ABD-933A-288BA4EED825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F507E3-E386-4ABD-933A-288BA4EED825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

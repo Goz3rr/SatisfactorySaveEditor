@@ -12,6 +12,7 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
 using System.Linq;
+using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
 
 namespace SatisfactorySaveEditor.ViewModel
@@ -30,14 +31,22 @@ namespace SatisfactorySaveEditor.ViewModel
             set { Set(() => SelectedItem, ref selectedItem, value); }
         }
 
+        public string FileName
+        {
+            get
+            {
+                if (saveGame == null) return string.Empty;
+                return string.Format(" - [{0}]", saveGame.FileName);
+            }
+        }
+
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand<object> AddPropertyCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
-        public RelayCommand<SaveObjectModel> CopyNameCommand { get; }
-        public RelayCommand<SaveObjectModel> CopyPathCommand { get; }
+        public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
@@ -50,21 +59,21 @@ namespace SatisfactorySaveEditor.ViewModel
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
-            CopyNameCommand = new RelayCommand<SaveObjectModel>(CopyName);
-            CopyPathCommand = new RelayCommand<SaveObjectModel>(CopyPath);
+            DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
         }
 
-        private void CopyName(SaveObjectModel model)
+        private bool CanDelete(SaveObjectModel model)
         {
-            Clipboard.SetText(model.Title);
+            return model != rootItem;
         }
 
-        private void CopyPath(SaveObjectModel model)
+        private void Delete(SaveObjectModel model)
         {
-            Clipboard.SetText(model.Model.TypePath);
+            rootItem.Remove(model);
+            RaisePropertyChanged(() => RootItem);
         }
 
         private bool CanCheat(string target)
@@ -89,13 +98,19 @@ namespace SatisfactorySaveEditor.ViewModel
                         {
                             if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
                             {
-                                if (!(field is ArrayProperty arrayField))
+                                if (!(field is ArrayPropertyViewModel arrayField))
                                 {
                                     MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
                                 }
 
-                                arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
+                                foreach(var research in Researches.Values)
+                                {
+                                    if(!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research))
+                                    {
+                                        arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research)));
+                                    }
+                                }
                             }
                         }
 
@@ -112,16 +127,16 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolProperty mapUnlocked)
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolPropertyViewModel mapUnlocked)
                         {
                             mapUnlocked.Value = true;
                         }
                         else
                         {
-                            cheatObject.Fields.Add(new BoolProperty("mIsMapUnlocked")
+                            cheatObject.Fields.Add(new BoolPropertyViewModel(new BoolProperty("mIsMapUnlocked")
                             {
                                 Value = true
-                            });
+                            }));
                         }
 
                         HasUnsavedChanges = true;
@@ -137,16 +152,16 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
                         {
                             inventorySize.Value = 56;
                         }
                         else
                         {
-                            cheatObject.Fields.Add(new IntProperty("mNumAdditionalInventorySlots")
+                            cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
                             {
                                 Value = 56
-                            });
+                            }));
                         }
 
                         MessageBox.Show("Inventory enlarged", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -180,6 +195,7 @@ namespace SatisfactorySaveEditor.ViewModel
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName);
                     HasUnsavedChanges = false;
+                    RaisePropertyChanged(() => FileName);
                 }
             }
             else
@@ -202,9 +218,6 @@ namespace SatisfactorySaveEditor.ViewModel
                     AddViewModel avm = (AddViewModel)window.DataContext;
                     avm.ObjectModel = som;
                     window.ShowDialog();
-                    break;
-                case ArrayProperty ap:
-                    ap.Elements.Add(AddViewModel.CreateProperty(AddViewModel.FromStringType(ap.Type), $"Element {ap.Elements.Count}"));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(obj));
@@ -297,6 +310,7 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             RaisePropertyChanged(() => RootItem);
+            RaisePropertyChanged(() => FileName);
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)

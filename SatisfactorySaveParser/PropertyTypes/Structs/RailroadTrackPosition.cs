@@ -11,6 +11,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 
 
         public int SerializedLength => Root.GetSerializedLength() + InstanceName.GetSerializedLength() + 8;
+        public string Type => "RailroadTrackPosition";
 
         public RailroadTrackPosition(BinaryReader reader)
         {

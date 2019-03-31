@@ -85,7 +85,7 @@ namespace SatisfactorySaveParser
         public SatisfactorySave(string file)
         {
             FileName = Environment.ExpandEnvironmentVariables(file);
-            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
                 SaveVersion1 = reader.ReadInt32();

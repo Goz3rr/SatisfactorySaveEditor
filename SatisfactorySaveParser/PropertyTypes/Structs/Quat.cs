@@ -10,6 +10,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public float W { get; set; }
 
         public int SerializedLength => 16;
+        public string Type => "Quat";
 
         public Quat(BinaryReader reader)
         {

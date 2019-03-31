@@ -7,12 +7,15 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 {
     public class DynamicStructData : IStructData
     {
+        public string Type { get; }
         public List<SerializedProperty> Fields { get; set; } = new List<SerializedProperty>();
 
-        public int SerializedLength => Fields.Sum(f => f.SerializedLength);
+        public int SerializedLength => Fields.Sum(f => f.PropertyName.GetSerializedLength() + f.PropertyType.GetSerializedLength() + 8 + f.SerializedLength) + "None".GetSerializedLength();
 
-        public DynamicStructData(BinaryReader reader)
+        public DynamicStructData(BinaryReader reader, string type)
         {
+            Type = type;
+
             SerializedProperty prop;
             while ((prop = SerializedProperty.Parse(reader)) != null)
             {
@@ -26,6 +29,8 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             {
                 field.Serialize(writer);
             }
+
+            writer.WriteLengthPrefixedString("None");
         }
     }
 }

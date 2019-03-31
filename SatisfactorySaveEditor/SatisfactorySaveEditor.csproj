@@ -81,13 +81,35 @@
     <Compile Include="Model\SaveObjectModel.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
+    <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\EnumPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\FloatPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\IntPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\MapPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\NamePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\ObjectPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\SerializedPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\StrPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\PropertiesControl.xaml.cs">
+    <Compile Include="View\Control\PropertiesControl.xaml.cs">
       <DependentUpon>PropertiesControl.xaml</DependentUpon>
     </Compile>
     <Page Include="View\AddWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Control\Vector4Control.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Control\Vector3Control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -102,11 +124,17 @@
     <Compile Include="View\AddWindow.xaml.cs">
       <DependentUpon>AddWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Control\Vector4Control.xaml.cs">
+      <DependentUpon>Vector4Control.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Control\Vector3Control.xaml.cs">
+      <DependentUpon>Vector3Control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\PropertiesControl.xaml">
+    <Page Include="View\Control\PropertiesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

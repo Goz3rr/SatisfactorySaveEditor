@@ -17,7 +17,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 switch (Type)
                 {
                     case StructProperty.TypeName:
-                        return ((StructProperty)Elements[0]).Data.SerializedLength;
+                        return StructProperty.GetSerializedArrayLength(Elements.Cast<StructProperty>().ToArray());
                     case ObjectProperty.TypeName:
                         return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Str1.GetSerializedLength() + obj.Str2.GetSerializedLength());
                     case IntProperty.TypeName:
@@ -54,41 +54,48 @@ namespace SatisfactorySaveParser.PropertyTypes
                 base.Serialize(writer, writeHeader);
             }
 
-            writer.Write(SerializedLength);
-            writer.Write(Index);
-
-            writer.WriteLengthPrefixedString(Type);
-            writer.Write((byte)0);
-
-            switch (Type)
+            using (var ms = new MemoryStream())
+            using (var msWriter = new BinaryWriter(ms))
             {
-                case StructProperty.TypeName:
-                    {
-                        // TODO
-                        ((StructProperty)Elements[0]).Data.Serialize(writer);
-                    }
-                    break;
-                case ObjectProperty.TypeName:
-                    {
-                        writer.Write(Elements.Count);
-                        foreach (var prop in Elements.Cast<ObjectProperty>())
+                switch (Type)
+                {
+                    case StructProperty.TypeName:
                         {
-                            writer.WriteLengthPrefixedString(prop.Str1);
-                            writer.WriteLengthPrefixedString(prop.Str2);
+                            StructProperty.SerializeArray(msWriter, Elements.Cast<StructProperty>().ToArray());
                         }
-                    }
-                    break;
-                case IntProperty.TypeName:
-                    {
-                        writer.Write(Elements.Count);
-                        foreach (var prop in Elements.Cast<IntProperty>())
+                        break;
+                    case ObjectProperty.TypeName:
                         {
-                            writer.Write(prop.Value);
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<ObjectProperty>())
+                            {
+                                msWriter.WriteLengthPrefixedString(prop.Str1);
+                                msWriter.WriteLengthPrefixedString(prop.Str2);
+                            }
                         }
-                    }
-                    break;
-                default:
-                    throw new NotImplementedException();
+                        break;
+                    case IntProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<IntProperty>())
+                            {
+                                msWriter.Write(prop.Value);
+                            }
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException();
+                }
+
+                var bytes = ms.ToArray();
+
+                writer.Write(bytes.Length);
+                writer.Write(Index);
+
+                writer.WriteLengthPrefixedString(Type);
+                writer.Write((byte)0);
+
+                writer.Write(bytes);
             }
         }
 
@@ -109,11 +116,6 @@ namespace SatisfactorySaveParser.PropertyTypes
                 case StructProperty.TypeName:
                     {
                         result.Elements.AddRange(StructProperty.ParseArray(reader));
-                        //for (var i = 0; i < count; i++)
-                        //{
-                        //    var prop = SerializedProperty.Parse(reader, out int _, out int _);
-                        //    result.Elements.Add(prop);
-                        //}
                     }
                     break;
                 case ObjectProperty.TypeName:
