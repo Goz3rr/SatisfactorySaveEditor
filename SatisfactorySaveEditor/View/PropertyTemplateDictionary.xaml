@@ -1,7 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
-                    xmlns:property="clr-namespace:SatisfactorySaveEditor.ViewModel.Property">
+                    xmlns:property="clr-namespace:SatisfactorySaveEditor.ViewModel.Property"
+                    xmlns:structs="clr-namespace:SatisfactorySaveParser.PropertyTypes.Structs;assembly=SatisfactorySaveParser"
+                    xmlns:control="clr-namespace:SatisfactorySaveEditor.View.Control"
+                    xmlns:struct="clr-namespace:SatisfactorySaveEditor.ViewModel.Struct">
     <DataTemplate DataType="{x:Type property:ArrayPropertyViewModel}">
         <Expander>
             <Expander.Header>
@@ -101,16 +104,7 @@
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:StructPropertyViewModel}">
         <StackPanel Orientation="Vertical">
-            <Label Margin="4,0,4,0" VerticalContentAlignment="Center" Content="{Binding Type}" ContentStringFormat="Type: {0}"/>
-            <ItemsControl ItemsSource="{Binding Fields}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <GroupBox Header="{Binding PropertyName}">
-                            <ContentControl Content="{Binding .}"/>
-                        </GroupBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <ContentControl Content="{Binding StructData}"/>
         </StackPanel>
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:TextPropertyViewModel}">
@@ -124,5 +118,37 @@
                 <TextBox DockPanel.Dock="Left" x:Name="Unknown4Box" Margin="4" VerticalContentAlignment="Center" Text="{Binding Unknown4, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
         </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type struct:DynamicStructDataViewModel}">
+        <ItemsControl ItemsSource="{Binding Fields}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <GroupBox Header="{Binding PropertyName}">
+                        <ContentControl Content="{Binding .}"/>
+                    </GroupBox>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type structs:Box}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Color}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:InventoryItem}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:LinearColor}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Quat}">
+        <control:Vector4Control Vector="{Binding .}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:RailroadTrackPosition}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Rotator}">
+        <control:Vector3Control Vector="{Binding .}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Vector}">
+        <control:Vector3Control Vector="{Binding .}"/>
     </DataTemplate>
 </ResourceDictionary>

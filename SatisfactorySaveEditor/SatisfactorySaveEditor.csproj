@@ -102,6 +102,7 @@
     <Compile Include="ViewModel\Property\StrPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
+    <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\CheatInventoryWindow.xaml.cs">
       <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
