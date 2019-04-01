@@ -12,12 +12,13 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
 using System.Linq;
+using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IDropTarget
     {
         private SatisfactorySave saveGame;
         private SaveObjectModel rootItem;
@@ -321,6 +322,23 @@ namespace SatisfactorySaveEditor.ViewModel
                         break;
                 }
             }
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            if (!(dropInfo.Data is DataObject data)) return;
+
+            var files = data.GetFileDropList();
+            if (files == null || files.Count == 0) return;
+
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+            dropInfo.Effects = DragDropEffects.Copy;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var fileName = ((DataObject) dropInfo.Data).GetFileDropList()[0];
+            LoadFile(fileName);
         }
     }
 }

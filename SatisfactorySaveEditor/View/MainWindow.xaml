@@ -10,7 +10,10 @@
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:control="clr-namespace:SatisfactorySaveEditor.View.Control"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
+        dd:DragDrop.IsDropTarget="True"
+        dd:DragDrop.DropHandler="{Binding .}"
         WindowStartupLocation="CenterScreen"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Title="{Binding FileName, StringFormat='Satisfactory Save Editor{0}'}" Width="1500" Height="720">
