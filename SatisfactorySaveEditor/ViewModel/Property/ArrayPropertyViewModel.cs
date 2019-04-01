@@ -11,6 +11,7 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         private readonly ArrayProperty model;
 
         public RelayCommand AddElementCommand { get; }
+        public RelayCommand<SerializedPropertyViewModel> RemoveElementCommand { get; }
 
         public ObservableCollection<SerializedPropertyViewModel> Elements { get; }
 
@@ -23,12 +24,18 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             Elements = new ObservableCollection<SerializedPropertyViewModel>(arrayProperty.Elements.Select(PropertyViewModelMapper.Convert));
 
             AddElementCommand = new RelayCommand(AddElement);
+            RemoveElementCommand = new RelayCommand<SerializedPropertyViewModel>(RemoveElement);
         }
 
         private void AddElement()
         {
             var property = AddViewModel.CreateProperty(AddViewModel.FromStringType(Type), $"Element {Elements.Count}");
             Elements.Add(PropertyViewModelMapper.Convert(property));
+        }
+
+        private void RemoveElement(SerializedPropertyViewModel property)
+        {
+            Elements.Remove(property);
         }
 
         public override void ApplyChanges()

@@ -42,7 +42,6 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
-        public RelayCommand<object> AddPropertyCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
@@ -58,7 +57,6 @@ namespace SatisfactorySaveEditor.ViewModel
             OpenCommand = new RelayCommand(Open);
             AboutCommand = new RelayCommand(About);
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
-            AddPropertyCommand = new RelayCommand<object>(AddProperty);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
         }
@@ -228,24 +226,6 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 rootItem.ApplyChanges();
                 saveGame.Save();
-            }
-        }
-
-        private void AddProperty(object obj)
-        {
-            switch (obj)
-            {
-                case SaveObjectModel som:
-                    AddWindow window = new AddWindow
-                    {
-                        Owner = Application.Current.MainWindow
-                    };
-                    AddViewModel avm = (AddViewModel)window.DataContext;
-                    avm.ObjectModel = som;
-                    window.ShowDialog();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(obj));
             }
         }
 

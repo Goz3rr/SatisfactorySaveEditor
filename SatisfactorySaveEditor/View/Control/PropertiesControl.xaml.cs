@@ -22,6 +22,12 @@ namespace SatisfactorySaveEditor.View.Control
             set => SetValue(AddPropertyCommandProperty, value);
         }
 
+        public ICommand RemovePropertyCommand
+        {
+            get => (ICommand)GetValue(RemovePropertyCommandProperty);
+            set => SetValue(RemovePropertyCommandProperty, value);
+        }
+
         public ObservableCollection<SerializedPropertyViewModel> Properties
         {
             get => (ObservableCollection<SerializedPropertyViewModel>)GetValue(PropertiesProperty);
@@ -29,6 +35,7 @@ namespace SatisfactorySaveEditor.View.Control
         }
 
         public static readonly DependencyProperty AddPropertyCommandProperty = DependencyProperty.Register("AddPropertyCommand", typeof(ICommand), typeof(PropertiesControl));
+        public static readonly DependencyProperty RemovePropertyCommandProperty = DependencyProperty.Register("RemovePropertyCommand", typeof(ICommand), typeof(PropertiesControl));
         public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register("Properties", typeof(ObservableCollection<SerializedPropertyViewModel>), typeof(PropertiesControl));
     }
 }

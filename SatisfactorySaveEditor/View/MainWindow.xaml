@@ -167,7 +167,7 @@
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="7" Text="{Binding ParentObjectName}" IsEnabled="False"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="8" Text="{Binding ParentObjectRoot}" IsEnabled="False"/>
                             </Grid>
-                            <control:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
+                            <control:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding AddPropertyCommand}" RemovePropertyCommand="{Binding RemovePropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveComponentModel}">
@@ -192,7 +192,7 @@
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="2" Text="{Binding ParentEntityName}" IsEnabled="False"/>
                             </Grid>
-                            <control:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding Source={StaticResource Proxy}, Path=Data.AddPropertyCommand}"/>
+                            <control:PropertiesControl Properties="{Binding Fields}" AddPropertyCommand="{Binding AddPropertyCommand}" RemovePropertyCommand="{Binding RemovePropertyCommand}"/>
                         </DockPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:SaveObjectModel}"/>

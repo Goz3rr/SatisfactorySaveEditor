@@ -15,7 +15,38 @@
                 <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <GroupBox Header="{Binding PropertyName}">
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding PropertyName}"/>
+                                        <Button Margin="5,0,0,0" Width="20" Height="20" VerticalContentAlignment="Center" HorizontalAlignment="Center" Command="{Binding DataContext.RemoveElementCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding .}">
+                                            <Button.Content>
+                                                <TextBlock Text="X" FontWeight="DemiBold" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Button.Content>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Grid x:Name="grid">
+                                                        <Border x:Name="border" CornerRadius="20" BorderBrush="#707070" BorderThickness="1" Background="White">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.FontWeight="Normal"/>
+                                                        </Border>
+                                                    </Grid>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" TargetName="border" Value="#BEE6FD"/>
+                                                            <Setter Property="BorderBrush" TargetName="border" Value="#3C7FB1"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter Property="BorderBrush" TargetName="border" Value="#2C628B"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
+                                </GroupBox.Header>
                                 <ContentControl Content="{Binding .}"/>
                             </GroupBox>
                         </DataTemplate>

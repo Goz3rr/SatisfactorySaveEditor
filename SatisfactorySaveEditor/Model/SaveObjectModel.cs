@@ -6,6 +6,8 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SatisfactorySaveEditor.Util;
+using SatisfactorySaveEditor.View;
+using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
 
@@ -20,6 +22,8 @@ namespace SatisfactorySaveEditor.Model
 
         public RelayCommand CopyNameCommand { get; }
         public RelayCommand CopyPathCommand { get; }
+        public RelayCommand AddPropertyCommand { get; }
+        public RelayCommand<SerializedPropertyViewModel> RemovePropertyCommand { get; }
 
         public ObservableCollection<SaveObjectModel> Items { get; } = new ObservableCollection<SaveObjectModel>();
 
@@ -78,6 +82,8 @@ namespace SatisfactorySaveEditor.Model
             
             CopyNameCommand = new RelayCommand(CopyName);
             CopyPathCommand = new RelayCommand(CopyPath);
+            AddPropertyCommand = new RelayCommand(AddProperty);
+            RemovePropertyCommand = new RelayCommand<SerializedPropertyViewModel>(RemoveProperty);
         }
 
         public SaveObjectModel(string title)
@@ -150,6 +156,22 @@ namespace SatisfactorySaveEditor.Model
                 field.ApplyChanges();
                 Model.DataFields.Add(field.Model);
             }
+        }
+
+        private void AddProperty()
+        {
+            AddWindow window = new AddWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            AddViewModel avm = (AddViewModel)window.DataContext;
+            avm.ObjectModel = this;
+            window.ShowDialog();
+        }
+
+        private void RemoveProperty(SerializedPropertyViewModel property)
+        {
+            Fields.Remove(property);
         }
 
         private void CopyName()
