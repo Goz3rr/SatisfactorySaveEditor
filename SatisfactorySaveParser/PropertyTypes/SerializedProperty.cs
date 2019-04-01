@@ -12,7 +12,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public abstract int SerializedLength { get; }
 
-        public SerializedProperty(string propertyName, int index)
+        protected SerializedProperty(string propertyName, int index)
         {
             PropertyName = propertyName;
             Index = index;

@@ -213,6 +213,9 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
+                    saveGame.Entries.Clear();
+                    saveGame.Entries.AddRange(rootItem.DescendantSelf);
+
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName);
                     RaisePropertyChanged(() => FileName);
@@ -220,6 +223,9 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             else
             {
+                saveGame.Entries.Clear();
+                saveGame.Entries.AddRange(rootItem.DescendantSelf);
+
                 rootItem.ApplyChanges();
                 saveGame.Save();
             }

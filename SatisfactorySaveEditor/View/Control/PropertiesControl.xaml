@@ -16,7 +16,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <DataGrid ScrollViewer.CanContentScroll="False" IsReadOnly="True" SelectionUnit="Cell" GridLinesVisibility="Horizontal" ItemsSource="{Binding Properties, RelativeSource={RelativeSource AncestorType=UserControl}}" RowHeight="{x:Static sys:Double.NaN}" HeadersVisibility="Column" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="True" CanUserResizeRows="False">
+            <DataGrid ScrollViewer.CanContentScroll="False" IsReadOnly="True" SelectionUnit="Cell" GridLinesVisibility="Horizontal" ItemsSource="{Binding Properties, RelativeSource={RelativeSource AncestorType=UserControl}}" RowHeight="{x:Static sys:Double.NaN}" HeadersVisibility="None" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="True" CanUserResizeRows="False">
                 <DataGrid.Resources>
                     <ResourceDictionary>
                         <ResourceDictionary.MergedDictionaries>
@@ -33,6 +33,7 @@
                             <Style.Setters>
                                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                                 <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="ToolTip" Value="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}"/>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type DataGridCell}">
@@ -48,13 +49,6 @@
                 </DataGrid.Resources>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Width="Auto" Binding="{Binding PropertyName}">
-                        <DataGridTextColumn.HeaderStyle>
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            </Style>
-                        </DataGridTextColumn.HeaderStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="Type" Width="Auto" Binding="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}">
                         <DataGridTextColumn.HeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>

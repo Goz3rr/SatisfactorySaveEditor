@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -23,6 +24,22 @@ namespace SatisfactorySaveEditor.Model
         public ObservableCollection<SaveObjectModel> Items { get; } = new ObservableCollection<SaveObjectModel>();
 
         public ObservableCollection<SerializedPropertyViewModel> Fields { get; }
+
+        /// <summary>
+        /// Recursively gets all the SaveObject children in the tree plus self
+        /// </summary>
+        public List<SaveObject> DescendantSelf
+        {
+            get
+            {
+                var list = new List<SaveObject>();
+                if (Model != null) list.Add(Model);
+
+                foreach (var item in Items) list.AddRange(item.DescendantSelf);
+
+                return list;
+            }
+        }
 
         public string Title
         {
