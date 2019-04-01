@@ -3,22 +3,27 @@
                     xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
                     xmlns:property="clr-namespace:SatisfactorySaveEditor.ViewModel.Property">
     <DataTemplate DataType="{x:Type property:ArrayPropertyViewModel}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <GroupBox Header="{Binding PropertyName}">
-                            <ContentControl Content="{Binding .}"/>
-                        </GroupBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Button Grid.Row="1" Content="Add element" Command="{Binding AddElementCommand}"/>
-        </Grid>
+        <Expander>
+            <Expander.Header>
+                <TextBlock Text="{Binding Elements.Count, StringFormat='{}{0} elements'}"/>
+            </Expander.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <GroupBox Header="{Binding PropertyName}">
+                                <ContentControl Content="{Binding .}"/>
+                            </GroupBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Grid.Row="1" Content="Add element" Command="{Binding AddElementCommand}"/>
+            </Grid>
+        </Expander>
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:BoolPropertyViewModel}">
         <CheckBox IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
