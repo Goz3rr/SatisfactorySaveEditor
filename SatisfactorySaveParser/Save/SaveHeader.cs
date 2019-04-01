@@ -15,7 +15,6 @@ namespace SatisfactorySaveParser.Save
 
         public int PlayDuration { get; set; }
 
-        public int Padding_0 { get; set; }
         public long SaveDateTime { get; set; }
 
         public ESessionVisibility SessionVisibility { get; set; }
@@ -31,14 +30,15 @@ namespace SatisfactorySaveParser.Save
             writer.WriteLengthPrefixedString(SessionName);
 
             writer.Write(PlayDuration);
-            writer.Write(Padding_0);
             writer.Write(SaveDateTime);
-            writer.Write((byte)SessionVisibility);
+
+            if(SaveVersion >= 5)
+                writer.Write((byte)SessionVisibility);
         }
 
         public static SaveHeader Parse(BinaryReader reader)
         {
-            return new SaveHeader
+            var header = new SaveHeader
             {
                 SaveVersion = reader.ReadInt32(),
                 BuildVersion = reader.ReadInt32(),
@@ -49,10 +49,13 @@ namespace SatisfactorySaveParser.Save
                 SessionName = reader.ReadLengthPrefixedString(),
 
                 PlayDuration = reader.ReadInt32(),
-                Padding_0 = reader.ReadInt32(),
                 SaveDateTime = reader.ReadInt64(),
-                SessionVisibility = (ESessionVisibility)reader.ReadByte()
             };
+
+            if (header.SaveVersion >= 5)
+                header.SessionVisibility = (ESessionVisibility)reader.ReadByte();
+
+            return header;
         }
     }
 }

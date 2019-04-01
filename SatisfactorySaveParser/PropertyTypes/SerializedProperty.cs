@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.PropertyTypes
@@ -32,6 +33,8 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 return null;
             }
+
+            Trace.Assert(!String.IsNullOrEmpty(propertyName));
 
             var fieldType = reader.ReadLengthPrefixedString();
             var size = reader.ReadInt32();

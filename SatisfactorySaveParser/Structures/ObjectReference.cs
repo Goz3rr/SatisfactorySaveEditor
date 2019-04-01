@@ -10,5 +10,10 @@
             Root = root;
             Name = name;
         }
+
+        public override string ToString()
+        {
+            return $"Root: {Root} Name: {Name}";
+        }
     }
 }
