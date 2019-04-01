@@ -51,6 +51,9 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public MainViewModel()
         {
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1 && File.Exists(args[1])) LoadFile(args[1]);
+
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             ExitCommand = new RelayCommand(Exit);
