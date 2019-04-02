@@ -128,8 +128,8 @@
         <ItemsControl ItemsSource="{Binding Fields}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <GroupBox Header="{Binding PropertyName}">
-                        <ContentControl ToolTip="{Binding ., Converter={StaticResource IStructToTypeStringConverter}}" Content="{Binding .}"/>
+                    <GroupBox ToolTip="{Binding ., Converter={StaticResource IStructToTypeStringConverter}}" Header="{Binding PropertyName}">
+                        <ContentControl Content="{Binding .}"/>
                     </GroupBox>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
