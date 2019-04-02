@@ -182,13 +182,14 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             for(var i = 0; i < count; i++)
             {
-                result[i] = new StructProperty(name, index)
+                result[i] = new StructProperty($"Element {i}", index)
                 {
                     Unk1 = unk1,
                     Unk2 = unk2,
                     Unk3 = unk3,
                     Unk4 = unk4,
                     Unk5 = unk5,
+                    Type = structType,
                     Data = ParseStructData(reader, structType)
                 };
             }
