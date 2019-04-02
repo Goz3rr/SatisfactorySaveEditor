@@ -4,7 +4,11 @@
                     xmlns:property="clr-namespace:SatisfactorySaveEditor.ViewModel.Property"
                     xmlns:structs="clr-namespace:SatisfactorySaveParser.PropertyTypes.Structs;assembly=SatisfactorySaveParser"
                     xmlns:control="clr-namespace:SatisfactorySaveEditor.View.Control"
-                    xmlns:struct="clr-namespace:SatisfactorySaveEditor.ViewModel.Struct">
+                    xmlns:struct="clr-namespace:SatisfactorySaveEditor.ViewModel.Struct"
+                    xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter">
+    <converter:SerializablePropertyToTypeStringConverter x:Key="SerializablePropertyToTypeStringConverter"/>
+    <converter:IStructToTypeStringConverter x:Key="IStructToTypeStringConverter"/>
+
     <DataTemplate DataType="{x:Type property:ArrayPropertyViewModel}">
         <Expander>
             <Expander.Header>
@@ -18,7 +22,7 @@
                 <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <GroupBox>
+                            <GroupBox ToolTip="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}">
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding PropertyName}"/>
@@ -125,7 +129,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <GroupBox Header="{Binding PropertyName}">
-                        <ContentControl Content="{Binding .}"/>
+                        <ContentControl ToolTip="{Binding ., Converter={StaticResource IStructToTypeStringConverter}}" Content="{Binding .}"/>
                     </GroupBox>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
