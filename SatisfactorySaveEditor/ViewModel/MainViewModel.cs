@@ -260,11 +260,17 @@ namespace SatisfactorySaveEditor.ViewModel
                     return;
                 }
             }
+
             OpenFileDialog dialog = new OpenFileDialog
             {
-                Filter = "Satisfactory save file|*.sav",
-                InitialDirectory = Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\")
+                Filter = "Satisfactory save file|*.sav"
             };
+
+            var newPath = Environment.ExpandEnvironmentVariables(@"%localappdata%\FactoryGame\Saved\SaveGames\");
+            var oldPath = Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\");
+
+            if (Directory.Exists(newPath)) dialog.InitialDirectory = newPath;
+            else dialog.InitialDirectory = oldPath;
 
             if (dialog.ShowDialog() == true)
             {
