@@ -106,11 +106,11 @@ namespace SatisfactorySaveEditor.ViewModel
                                     return;
                                 }
 
-                                foreach(var research in Researches.Values)
+                                foreach(var research in Research.GetResearches())
                                 {
-                                    if(!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research))
+                                    if(!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research.Path))
                                     {
-                                        arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research)));
+                                        arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research.Path)));
                                     }
                                 }
                             }
