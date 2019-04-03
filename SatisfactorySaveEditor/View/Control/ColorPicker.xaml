@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="SatisfactorySaveEditor.View.Control.ColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <Label Content="R:" Target="{Binding ElementName=RBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="RBox" Text="{Binding Color.R, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}" TextChanged="OnTextChanged"/>
+
+        <Label Content="G:" Target="{Binding ElementName=GBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="GBox" Text="{Binding Color.G, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}" TextChanged="OnTextChanged"/>
+
+        <Label Content="B:" Target="{Binding ElementName=BBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="BBox" Text="{Binding Color.B, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}" TextChanged="OnTextChanged"/>
+
+        <Label Content="A:" Target="{Binding ElementName=ABox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="ABox" Text="{Binding Color.A, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=PropertyChanged}" TextChanged="OnTextChanged"/>
+
+        <Rectangle x:Name="PreviewRectangle" Width="25" Height="25" Fill="{Binding Color, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource ColorToBrushConverter}, Mode=OneWay}" Stroke="Black" StrokeThickness="1"/>
+    </StackPanel>
+</UserControl>

@@ -33,7 +33,7 @@ namespace SatisfactorySaveEditor.Converter
                 case StrPropertyViewModel strip:
                     return "String";
                 case StructPropertyViewModel strup:
-                    return "Struct";
+                    return $"Struct ({strup.Type})";
                 case TextPropertyViewModel tep:
                     return "text";
                 default:

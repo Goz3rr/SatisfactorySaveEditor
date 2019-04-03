@@ -128,8 +128,8 @@
         <ItemsControl ItemsSource="{Binding Fields}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <GroupBox Header="{Binding PropertyName}">
-                        <ContentControl ToolTip="{Binding ., Converter={StaticResource IStructToTypeStringConverter}}" Content="{Binding .}"/>
+                    <GroupBox ToolTip="{Binding ., Converter={StaticResource IStructToTypeStringConverter}}" Header="{Binding PropertyName}">
+                        <ContentControl Content="{Binding .}"/>
                     </GroupBox>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -139,10 +139,12 @@
     <DataTemplate DataType="{x:Type structs:Box}">
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:Color}">
+        <control:ColorPicker Color="{Binding .}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:InventoryItem}">
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:LinearColor}">
+        <control:LinearColorPicker LinearColor="{Binding .}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:Quat}">
         <control:Vector4Control Vector="{Binding .}"/>
