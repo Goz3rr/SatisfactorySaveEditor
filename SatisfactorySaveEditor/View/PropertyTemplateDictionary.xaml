@@ -139,10 +139,12 @@
     <DataTemplate DataType="{x:Type structs:Box}">
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:Color}">
+        <control:ColorPicker Color="{Binding .}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:InventoryItem}">
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:LinearColor}">
+        <control:LinearColorPicker LinearColor="{Binding .}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:Quat}">
         <control:Vector4Control Vector="{Binding .}"/>

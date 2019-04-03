@@ -78,6 +78,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
+    <Compile Include="Converter\ColorToBrushConverter.cs" />
+    <Compile Include="Converter\LinearColorToBrushConverter.cs" />
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
     <Compile Include="Model\SaveComponentModel.cs" />
@@ -108,10 +110,24 @@
     <Compile Include="View\CheatInventoryWindow.xaml.cs">
       <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Control\LinearColorPicker.xaml.cs">
+      <DependentUpon>LinearColorPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Control\ColorPicker.xaml.cs">
+      <DependentUpon>ColorPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Control\PropertiesControl.xaml.cs">
       <DependentUpon>PropertiesControl.xaml</DependentUpon>
     </Compile>
     <Page Include="View\AddWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Control\LinearColorPicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Control\ColorPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
