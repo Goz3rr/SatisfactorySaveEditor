@@ -19,8 +19,8 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
-                    <ItemsControl.ItemTemplate>
+                <ListBox VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Grid.Row="0" ItemsSource="{Binding Elements}" MaxHeight="500">
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
                             <GroupBox ToolTip="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}">
                                 <GroupBox.Header>
@@ -57,8 +57,8 @@
                                 <ContentControl Content="{Binding .}"/>
                             </GroupBox>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <Button Grid.Row="1" Content="Add element" Command="{Binding AddElementCommand}"/>
             </Grid>
         </Expander>
