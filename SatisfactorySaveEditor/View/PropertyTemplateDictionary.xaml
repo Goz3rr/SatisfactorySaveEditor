@@ -19,7 +19,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <ListBox VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Grid.Row="0" ItemsSource="{Binding Elements}" MaxHeight="500">
+                <ListBox VirtualizingPanel.IsVirtualizing="True" HorizontalContentAlignment="Stretch" VirtualizingPanel.VirtualizationMode="Recycling" Grid.Row="0" ItemsSource="{Binding Elements}" MaxHeight="500">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <GroupBox ToolTip="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}">
