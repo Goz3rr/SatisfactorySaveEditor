@@ -10,12 +10,20 @@ namespace SatisfactorySaveEditor.ViewModel.Property
     {
         private readonly ArrayProperty model;
 
+        private bool isExpanded;
+
         public RelayCommand AddElementCommand { get; }
         public RelayCommand<SerializedPropertyViewModel> RemoveElementCommand { get; }
 
         public ObservableCollection<SerializedPropertyViewModel> Elements { get; }
 
         public string Type => model.Type;
+
+        public bool IsExpanded
+        {
+            get => isExpanded;
+            set { Set(() => IsExpanded, ref isExpanded, value); }
+        }
 
         public ArrayPropertyViewModel(ArrayProperty arrayProperty) : base(arrayProperty)
         {
@@ -25,6 +33,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
 
             AddElementCommand = new RelayCommand(AddElement);
             RemoveElementCommand = new RelayCommand<SerializedPropertyViewModel>(RemoveElement);
+
+            IsExpanded = Elements.Count <= 3;
         }
 
         private void AddElement()

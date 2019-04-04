@@ -10,7 +10,7 @@
     <converter:IStructToTypeStringConverter x:Key="IStructToTypeStringConverter"/>
 
     <DataTemplate DataType="{x:Type property:ArrayPropertyViewModel}">
-        <Expander>
+        <Expander IsExpanded="{Binding IsExpanded}">
             <Expander.Header>
                 <TextBlock Text="{Binding Elements.Count, StringFormat='{}{0} elements'}"/>
             </Expander.Header>
