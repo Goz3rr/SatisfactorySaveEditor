@@ -45,6 +45,9 @@
     <Compile Include="Data\Research.cs">
       <DependentUpon>Research.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\FatalSaveException.cs" />
+    <Compile Include="Exceptions\UnknownBuildVersionException.cs" />
+    <Compile Include="Exceptions\UnknownSaveVersionException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyTypes\ArrayProperty.cs" />
     <Compile Include="PropertyTypes\BoolProperty.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="SaveEntity.cs" />
     <Compile Include="SaveObject.cs" />
     <Compile Include="Save\ESessionVisibility.cs" />
+    <Compile Include="Save\FSaveCustomVersion.cs" />
     <Compile Include="Save\SaveHeader.cs" />
     <Compile Include="SerializedFields.cs" />
     <Compile Include="Structures\ObjectReference.cs" />
