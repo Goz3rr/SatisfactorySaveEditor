@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Util;
 using System.Windows;
@@ -41,10 +42,12 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
+
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand ExitCommand { get; }
-        public RelayCommand OpenCommand { get; }
+        public RelayCommand<string> OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
@@ -57,10 +60,14 @@ namespace SatisfactorySaveEditor.ViewModel
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1])) LoadFile(args[1]);
 
+            var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
+            if (savedFiles == null) LastFiles = new ObservableCollection<string>();
+            else LastFiles = new ObservableCollection<string>(savedFiles);
+
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             ExitCommand = new RelayCommand(Exit);
-            OpenCommand = new RelayCommand(Open);
+            OpenCommand = new RelayCommand<string>(Open);
             AboutCommand = new RelayCommand(About);
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
@@ -250,8 +257,16 @@ namespace SatisfactorySaveEditor.ViewModel
             MessageBox.Show($"Satisfactory save editor{Environment.NewLine}{version}", "About");
         }
 
-        private void Open()
+        private void Open(string fileName)
         {
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                LoadFile(fileName);
+                HasUnsavedChanges = false;
+
+                return;
+            }
+
             if (HasUnsavedChanges)
             {
                 MessageBoxResult result = MessageBox.Show("You have unsaved changes. Abandon changes by opening another file?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -332,6 +347,28 @@ namespace SatisfactorySaveEditor.ViewModel
 
             RaisePropertyChanged(() => RootItem);
             RaisePropertyChanged(() => FileName);
+
+            if (Properties.Settings.Default.LastSaves == null)
+            {
+                Properties.Settings.Default.LastSaves = new StringCollection();
+            }
+
+            if (LastFiles.Contains(path)) // No duplicates
+            {
+                Properties.Settings.Default.LastSaves.Remove(path);
+                LastFiles.Remove(path);
+            }
+
+            Properties.Settings.Default.LastSaves.Add(path);
+            LastFiles.Add(path);
+
+            while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
+            {
+                LastFiles.RemoveAt(0);
+                Properties.Settings.Default.LastSaves.RemoveAt(0);
+            }
+
+            Properties.Settings.Default.Save();
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)

@@ -38,6 +38,14 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open" InputGestureText="Ctrl+O" Command="{Binding OpenCommand}"/>
+                <MenuItem Header="Open recent" ItemsSource="{Binding LastFiles}" Command="{Binding OpenCommand}">
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Command" Value="{Binding Source={StaticResource Proxy}, Path=Data.OpenCommand}"/>
+                            <Setter Property="CommandParameter" Value="{Binding}"/>
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                </MenuItem>
                 <MenuItem Header="_Save" InputGestureText="Ctrl+S" Command="{Binding SaveCommand}">
                     <MenuItem.CommandParameter>
                         <sys:Boolean>False</sys:Boolean>
