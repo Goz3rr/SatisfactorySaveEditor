@@ -80,6 +80,7 @@
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
     <Compile Include="Converter\LinearColorToBrushConverter.cs" />
+    <Compile Include="Converter\MenuTextConverter.cs" />
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
     <Compile Include="Model\SaveComponentModel.cs" />

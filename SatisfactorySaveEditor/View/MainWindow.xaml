@@ -20,6 +20,7 @@
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
+        <converter:MenuTextConverter x:Key="MenuTextConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
@@ -43,6 +44,7 @@
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="Command" Value="{Binding Source={StaticResource Proxy}, Path=Data.OpenCommand}"/>
                             <Setter Property="CommandParameter" Value="{Binding}"/>
+                            <Setter Property="Header" Value="{Binding ., Converter={StaticResource MenuTextConverter}}"/>
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
