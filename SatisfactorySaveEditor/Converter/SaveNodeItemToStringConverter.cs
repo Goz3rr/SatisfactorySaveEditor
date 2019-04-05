@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
@@ -7,25 +8,26 @@ using SatisfactorySaveEditor.Model;
 
 namespace SatisfactorySaveEditor.Converter
 {
-    public class SaveNodeItemToStringConverter : IValueConverter
+    public class SaveNodeItemToStringConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is SaveObjectModel saveNodeItem)) return string.Empty;
+            if (values.Length != 2) return string.Empty;
+            if (!(values[0] is string title) || !(values[1] is ObservableCollection<SaveObjectModel> items)) return string.Empty;
 
-            var totalCount = Traverse(saveNodeItem.Items, obj => obj.Items).Count(obj => obj.Items.Count == 0);
-            var count = saveNodeItem.Items.Count;
+            var totalCount = Traverse(items, obj => obj.Items).Count(obj => obj.Items.Count == 0);
+            var count = items.Count;
             string formatString;
 
             switch (count)
             {
                 case 0:
-                    return $"{saveNodeItem.Title}";
+                    return $"{title}";
                 case 1:
-                    formatString = $"{saveNodeItem.Title} (1 entry, ";
+                    formatString = $"{title} (1 entry, ";
                     break;
                 default:
-                    formatString = $"{saveNodeItem.Title} ({count} entries, ";
+                    formatString = $"{title} ({count} entries, ";
                     break;
             }
 
@@ -38,7 +40,7 @@ namespace SatisfactorySaveEditor.Converter
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             return null;
         }

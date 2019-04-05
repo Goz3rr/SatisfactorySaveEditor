@@ -150,6 +150,7 @@ namespace SatisfactorySaveEditor.Model
             // This is because the named only (pink) nodes aren't actually a valid object in the game
             if (Model == null) return;
 
+            Model.InstanceName = Title;
             Model.DataFields.Clear();
             foreach (var field in Fields)
             {

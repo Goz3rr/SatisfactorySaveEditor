@@ -93,7 +93,14 @@
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <TextBlock Text="[C] " Foreground="Green"/>
-                            <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource SaveNodeItemToStringConverter}">
+                                        <Binding Path="Title"/>
+                                        <Binding Path="Items"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectModel}" ItemsSource="{Binding Items}">
@@ -108,7 +115,14 @@
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <TextBlock Text="[O] " Foreground="Violet"/>
-                            <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource SaveNodeItemToStringConverter}">
+                                        <Binding Path="Title"/>
+                                        <Binding Path="Items"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type model:SaveEntityModel}" ItemsSource="{Binding Items}">
@@ -122,7 +136,14 @@
                                 </ContextMenu>
                             </StackPanel.ContextMenu>
                             <TextBlock Text="[E] " Foreground="Blue"/>
-                            <TextBlock Text="{Binding ., Converter={StaticResource SaveNodeItemToStringConverter}}"/>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource SaveNodeItemToStringConverter}">
+                                        <Binding Path="Title"/>
+                                        <Binding Path="Items"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
@@ -160,7 +181,7 @@
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="7" Content="ParentObjectName:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="8" Content="ParentObjectRoot:"/>
 
-                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title}"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, Delay=250}"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="2" Text="{Binding Int4}" IsEnabled="False"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="3" Text="{Binding Int6}" IsEnabled="False"/>
@@ -191,7 +212,7 @@
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="1" Content="Root:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="ParentEntityName:"/>
 
-                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title}"/>
+                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, Delay=250}"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="2" Text="{Binding ParentEntityName}" IsEnabled="False"/>
                             </Grid>
