@@ -83,9 +83,11 @@
     <Compile Include="Converter\MenuTextConverter.cs" />
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
+    <Compile Include="Converter\TypeTooltipConverter.cs" />
     <Compile Include="Model\SaveComponentModel.cs" />
     <Compile Include="Model\SaveEntityModel.cs" />
     <Compile Include="Model\SaveObjectModel.cs" />
+    <Compile Include="Model\TypeTooltip.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="Util\PositiveIntegerRule.cs" />
@@ -209,6 +211,11 @@
       <Project>{f76082b9-33c6-4e13-baaa-071ac7e53d7b}</Project>
       <Name>SatisfactorySaveParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Types.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

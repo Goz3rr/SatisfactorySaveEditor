@@ -17,6 +17,7 @@ namespace SatisfactorySaveEditor.Model
     {
         private string title;
         private string rootObject;
+        private string type;
         private bool isSelected;
         private bool isExpanded;
 
@@ -57,6 +58,12 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => RootObject, ref rootObject, value); }
         }
 
+        public string Type
+        {
+            get => type;
+            set { Set(() => Type, ref type, value); }
+        }
+
         public bool IsSelected
         {
             get => isSelected;
@@ -76,10 +83,10 @@ namespace SatisfactorySaveEditor.Model
             Model = model;
             Title = model.InstanceName;
             RootObject = model.RootObject;
+            Type = model.TypePath.Split('/').Last();
 
             Fields = new ObservableCollection<SerializedPropertyViewModel>(Model.DataFields.Select(PropertyViewModelMapper.Convert));
 
-            
             CopyNameCommand = new RelayCommand(CopyName);
             CopyPathCommand = new RelayCommand(CopyPath);
             AddPropertyCommand = new RelayCommand(AddProperty);
@@ -89,6 +96,7 @@ namespace SatisfactorySaveEditor.Model
         public SaveObjectModel(string title)
         {
             Title = title;
+            Type = title;
         }
 
         /// <summary>
