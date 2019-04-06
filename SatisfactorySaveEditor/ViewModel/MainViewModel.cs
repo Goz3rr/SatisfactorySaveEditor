@@ -233,6 +233,7 @@ namespace SatisfactorySaveEditor.ViewModel
                     saveGame.Save(dialog.FileName);
                     HasUnsavedChanges = false;
                     RaisePropertyChanged(() => FileName);
+                    AddRecentFileEntry(dialog.FileName);
                 }
             }
             else
@@ -348,6 +349,11 @@ namespace SatisfactorySaveEditor.ViewModel
             RaisePropertyChanged(() => RootItem);
             RaisePropertyChanged(() => FileName);
 
+            AddRecentFileEntry(path);
+        }
+
+        private void AddRecentFileEntry(string path)
+        {
             if (Properties.Settings.Default.LastSaves == null)
             {
                 Properties.Settings.Default.LastSaves = new StringCollection();

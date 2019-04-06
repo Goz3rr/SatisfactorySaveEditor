@@ -36,7 +36,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Open a savefile from disk
         /// </summary>
-        /// <param name="file">Full path to the .sav file, usually found in Documents/My Games/FactoryGame/SaveGame/</param>
+        /// <param name="file">Full path to the .sav file, usually found in %localappdata%/FactoryGame/Saved/SaveGames</param>
         public SatisfactorySave(string file)
         {
             FileName = Environment.ExpandEnvironmentVariables(file);
@@ -102,6 +102,7 @@ namespace SatisfactorySaveParser
         public void Save(string file)
         {
             file = Environment.ExpandEnvironmentVariables(file);
+            FileName = file;
 
             using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
             using (var writer = new BinaryWriter(stream))
