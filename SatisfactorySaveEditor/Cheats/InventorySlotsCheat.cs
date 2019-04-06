@@ -14,53 +14,33 @@ namespace SatisfactorySaveEditor.Cheats
 
         public bool Apply(SaveObjectModel rootItem)
         {
-            var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
-            if (cheatObject == null)
+            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+            if (gameState == null)
             {
                 MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
-            int oldSlots = 0;
-            int requestedSlots = 0;
-            if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
-            {
-                oldSlots = inventorySize.Value;
-            }
+            var numAdditionalSlots = gameState.FindOrCreateField<IntPropertyViewModel>("mNumAdditionalInventorySlots");
 
-            CheatInventoryWindow window = new CheatInventoryWindow(oldSlots)
+            var dialog = new CheatInventoryWindow
             {
                 Owner = Application.Current.MainWindow
             };
-            CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
-            cvm.NumberChosen = oldSlots;
-            cvm.OldSlotsDisplay = oldSlots;
-            window.ShowDialog();
-            requestedSlots = cvm.NumberChosen;
+            var cvm = (CheatInventoryViewModel)dialog.DataContext;
+            cvm.NumberChosen = numAdditionalSlots.Value;
+            cvm.OldSlotsDisplay = numAdditionalSlots.Value;
+            dialog.ShowDialog();
 
-
-            if (requestedSlots < 0 || requestedSlots == oldSlots) //TryParse didn't find a number, or cancel was clicked on the inputbox
+            if (cvm.NumberChosen < 0 || cvm.NumberChosen == numAdditionalSlots.Value)
             {
                 MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
-            else //TryParse found a number to use
-            {
-                if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize2)
-                {
-                    inventorySize2.Value = requestedSlots;
-                }
-                else
-                {
-                    cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
-                    {
-                        Value = requestedSlots
-                    }));
-                }
 
-                MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                return true;
-            }
+            numAdditionalSlots.Value = cvm.NumberChosen;
+            MessageBox.Show($"Bonus inventory set to {cvm.NumberChosen} slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            return true;
         }
     }
 }

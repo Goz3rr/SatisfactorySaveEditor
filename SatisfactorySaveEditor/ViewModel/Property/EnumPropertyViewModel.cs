@@ -6,9 +6,9 @@ namespace SatisfactorySaveEditor.ViewModel.Property
     {
         private readonly EnumProperty model;
 
-        private int value;
+        private string value;
 
-        public int Value
+        public string Value
         {
             get => value;
             set { Set(() => Value, ref this.value, value); }
@@ -18,12 +18,12 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         {
             model = enumProperty;
 
-            value = model.Value;
+            value = model.Name;
         }
 
         public override void ApplyChanges()
         {
-            model.Value = value;
+            model.Name = value;
         }
     }
 }

@@ -77,6 +77,7 @@
     <Compile Include="SaveComponent.cs" />
     <Compile Include="SaveEntity.cs" />
     <Compile Include="SaveObject.cs" />
+    <Compile Include="Save\EIntroTutorialSteps.cs" />
     <Compile Include="Save\ESessionVisibility.cs" />
     <Compile Include="Save\FSaveCustomVersion.cs" />
     <Compile Include="Save\SaveHeader.cs" />
