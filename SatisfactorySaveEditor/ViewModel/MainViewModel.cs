@@ -38,7 +38,7 @@ namespace SatisfactorySaveEditor.ViewModel
             get
             {
                 if (saveGame == null) return string.Empty;
-                return string.Format(" - [{0}]", saveGame.FileName);
+                return string.Format(" - {1} [{0}]", saveGame.FileName, saveGame.Header.SessionName);
             }
         }
 
