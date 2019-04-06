@@ -3,7 +3,7 @@ using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Util;
 using System.Windows;
@@ -13,11 +13,13 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
 using System.Linq;
+using GongSolutions.Wpf.DragDrop;
+using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase, IDropTarget
     {
         private SatisfactorySave saveGame;
         private SaveObjectModel rootItem;
@@ -31,25 +33,61 @@ namespace SatisfactorySaveEditor.ViewModel
             set { Set(() => SelectedItem, ref selectedItem, value); }
         }
 
+        public string FileName
+        {
+            get
+            {
+                if (saveGame == null) return string.Empty;
+                return string.Format(" - [{0}]", saveGame.FileName);
+            }
+        }
+
+        public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
+
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
-        public RelayCommand<object> AddPropertyCommand { get; }
         public RelayCommand ExitCommand { get; }
-        public RelayCommand OpenCommand { get; }
+        public RelayCommand<string> OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
 
+        public bool HasUnsavedChanges { get; set; } //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
+
         public MainViewModel()
         {
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1 && File.Exists(args[1])) LoadFile(args[1]);
+
+            var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
+            if (savedFiles == null) LastFiles = new ObservableCollection<string>();
+            else LastFiles = new ObservableCollection<string>(savedFiles);
+
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             ExitCommand = new RelayCommand(Exit);
-            OpenCommand = new RelayCommand(Open);
+            OpenCommand = new RelayCommand<string>(Open);
             AboutCommand = new RelayCommand(About);
-            AddPropertyCommand = new RelayCommand<object>(AddProperty);
-            SaveCommand = new RelayCommand<bool>(Save);
-            CheatCommand = new RelayCommand<string>(Cheat);
+            DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
+            SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+        }
+
+        private bool CanDelete(SaveObjectModel model)
+        {
+            return model != rootItem;
+        }
+
+        private void Delete(SaveObjectModel model)
+        {
+            rootItem.Remove(model);
+            RaisePropertyChanged(() => RootItem);
+        }
+
+        private bool CanCheat(string target)
+        {
+            return rootItem != null;
         }
 
         private void Cheat(string cheatType)
@@ -69,16 +107,23 @@ namespace SatisfactorySaveEditor.ViewModel
                         {
                             if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
                             {
-                                if (!(field is ArrayProperty arrayField))
+                                if (!(field is ArrayPropertyViewModel arrayField))
                                 {
                                     MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
                                 }
 
-                                arrayField.Elements = Researches.Values.Select(v => (SerializedProperty)new ObjectProperty(null, "", v)).ToList();
+                                foreach(var research in Research.GetResearches())
+                                {
+                                    if(!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research.Path))
+                                    {
+                                        arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research.Path)));
+                                    }
+                                }
                             }
                         }
 
+                        HasUnsavedChanges = true;
                         MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
@@ -91,18 +136,19 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolProperty mapUnlocked)
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolPropertyViewModel mapUnlocked)
                         {
                             mapUnlocked.Value = true;
                         }
                         else
                         {
-                            cheatObject.Fields.Add(new BoolProperty("mIsMapUnlocked")
+                            cheatObject.Fields.Add(new BoolPropertyViewModel(new BoolProperty("mIsMapUnlocked")
                             {
                                 Value = true
-                            });
+                            }));
                         }
 
+                        HasUnsavedChanges = true;
                         MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     break;
@@ -115,24 +161,54 @@ namespace SatisfactorySaveEditor.ViewModel
                             return;
                         }
 
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntProperty inventorySize)
+                        int oldSlots = 0;
+                        int requestedSlots = 0;
+                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
                         {
-                            inventorySize.Value = 56;
+                            oldSlots = inventorySize.Value;
                         }
-                        else
+                        
+                        CheatInventoryWindow window = new CheatInventoryWindow(oldSlots)
                         {
-                            cheatObject.Fields.Add(new IntProperty("mNumAdditionalInventorySlots")
-                            {
-                                Value = 56
-                            });
-                        }
+                            Owner = Application.Current.MainWindow
+                        };
+                        CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
+                        cvm.NumberChosen = oldSlots;
+                        cvm.OldSlotsDisplay = oldSlots;
+                        window.ShowDialog();
+                        requestedSlots = cvm.NumberChosen;
+                        
 
-                        MessageBox.Show("Inventory enlarged", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        if (requestedSlots < 0 || requestedSlots == oldSlots) //TryParse didn't find a number, or cancel was clicked on the inputbox
+                        {
+                            MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else //TryParse found a number to use
+                        {
+                            if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize2)
+                            {
+                                inventorySize2.Value = requestedSlots;
+                            }
+                            else
+                            {
+                                cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
+                                {
+                                    Value = requestedSlots
+                                }));
+                            }
+
+                            MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cheatType), cheatType, null);
             }
+        }
+
+        private bool CanSave(bool saveAs)
+        {
+            return saveGame != null;
         }
 
         private void Save(bool saveAs)
@@ -150,35 +226,23 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
+                    saveGame.Entries.Clear();
+                    saveGame.Entries.AddRange(rootItem.DescendantSelf);
+
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName );
+                    saveGame.Save(dialog.FileName);
+                    HasUnsavedChanges = false;
+                    RaisePropertyChanged(() => FileName);
                 }
             }
             else
             {
+                saveGame.Entries.Clear();
+                saveGame.Entries.AddRange(rootItem.DescendantSelf);
+
                 rootItem.ApplyChanges();
                 saveGame.Save();
-            }
-        }
-
-        private void AddProperty(object obj)
-        {
-            switch (obj)
-            {
-                case SaveObjectModel som:
-                    AddWindow window = new AddWindow
-                    {
-                        Owner = Application.Current.MainWindow
-                    };
-                    AddViewModel avm = (AddViewModel)window.DataContext;
-                    avm.ObjectModel = som;
-                    window.ShowDialog();
-                    break;
-                case ArrayProperty ap:
-                    ap.Elements.Add(AddViewModel.CreateProperty(AddViewModel.FromStringType(ap.Type), $"Element {ap.Elements.Count}"));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(obj));
+                HasUnsavedChanges = false;
             }
         }
 
@@ -193,23 +257,58 @@ namespace SatisfactorySaveEditor.ViewModel
             MessageBox.Show($"Satisfactory save editor{Environment.NewLine}{version}", "About");
         }
 
-        private void Open()
+        private void Open(string fileName)
         {
+            if (!string.IsNullOrWhiteSpace(fileName))
+            {
+                LoadFile(fileName);
+                HasUnsavedChanges = false;
+
+                return;
+            }
+
+            if (HasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved changes. Abandon changes by opening another file?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
             OpenFileDialog dialog = new OpenFileDialog
             {
-                Filter = "Satisfactory save file|*.sav",
-                InitialDirectory = Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\")
+                Filter = "Satisfactory save file|*.sav"
             };
+
+            var newPath = Environment.ExpandEnvironmentVariables(@"%localappdata%\FactoryGame\Saved\SaveGames\");
+            var oldPath = Environment.ExpandEnvironmentVariables(@"%userprofile%\Documents\My Games\FactoryGame\SaveGame\");
+
+            if (Directory.Exists(newPath)) dialog.InitialDirectory = newPath;
+            else dialog.InitialDirectory = oldPath;
 
             if (dialog.ShowDialog() == true)
             {
                 LoadFile(dialog.FileName);
+                HasUnsavedChanges = false;
             }
         }
 
         private void Exit()
         {
-            Application.Current.Shutdown();
+            if (HasUnsavedChanges)
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved changes. Close and abandon changes?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                    Application.Current.Shutdown();
+                else
+                    return;
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+            
         }
 
         private void Jump(string target)
@@ -247,6 +346,29 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             RaisePropertyChanged(() => RootItem);
+            RaisePropertyChanged(() => FileName);
+
+            if (Properties.Settings.Default.LastSaves == null)
+            {
+                Properties.Settings.Default.LastSaves = new StringCollection();
+            }
+
+            if (LastFiles.Contains(path)) // No duplicates
+            {
+                Properties.Settings.Default.LastSaves.Remove(path);
+                LastFiles.Remove(path);
+            }
+
+            Properties.Settings.Default.LastSaves.Add(path);
+            LastFiles.Add(path);
+
+            while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
+            {
+                LastFiles.RemoveAt(0);
+                Properties.Settings.Default.LastSaves.RemoveAt(0);
+            }
+
+            Properties.Settings.Default.Save();
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)
@@ -270,6 +392,23 @@ namespace SatisfactorySaveEditor.ViewModel
                         break;
                 }
             }
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            if (!(dropInfo.Data is DataObject data)) return;
+
+            var files = data.GetFileDropList();
+            if (files == null || files.Count == 0) return;
+
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+            dropInfo.Effects = DragDropEffects.Copy;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var fileName = ((DataObject) dropInfo.Data).GetFileDropList()[0];
+            LoadFile(fileName);
         }
     }
 }

@@ -1,47 +1,90 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:propertyTypes="clr-namespace:SatisfactorySaveParser.PropertyTypes;assembly=SatisfactorySaveParser"
-                    xmlns:view="clr-namespace:SatisfactorySaveEditor.View">
-    <DataTemplate DataType="{x:Type propertyTypes:ArrayProperty}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ItemsControl Grid.Row="0" ItemsSource="{Binding Elements}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <GroupBox Header="{Binding PropertyName}">
-                            <ContentControl Content="{Binding .}"/>
-                        </GroupBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Button Grid.Row="1" Content="Add element" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.AddPropertyCommand}" CommandParameter="{Binding .}"/>
-        </Grid>
+                    xmlns:view="clr-namespace:SatisfactorySaveEditor.View"
+                    xmlns:property="clr-namespace:SatisfactorySaveEditor.ViewModel.Property"
+                    xmlns:structs="clr-namespace:SatisfactorySaveParser.PropertyTypes.Structs;assembly=SatisfactorySaveParser"
+                    xmlns:control="clr-namespace:SatisfactorySaveEditor.View.Control"
+                    xmlns:struct="clr-namespace:SatisfactorySaveEditor.ViewModel.Struct"
+                    xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter">
+    <converter:SerializablePropertyToTypeStringConverter x:Key="SerializablePropertyToTypeStringConverter"/>
+    <converter:IStructToTypeStringConverter x:Key="IStructToTypeStringConverter"/>
+
+    <DataTemplate DataType="{x:Type property:ArrayPropertyViewModel}">
+        <Expander IsExpanded="{Binding IsExpanded}">
+            <Expander.Header>
+                <TextBlock Text="{Binding Elements.Count, StringFormat='{}{0} elements'}"/>
+            </Expander.Header>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <ListBox VirtualizingPanel.IsVirtualizing="True" HorizontalContentAlignment="Stretch" VirtualizingPanel.VirtualizationMode="Recycling" Grid.Row="0" ItemsSource="{Binding Elements}" MaxHeight="500">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <GroupBox ToolTip="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}">
+                                <GroupBox.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding PropertyName}"/>
+                                        <Button Margin="5,0,0,0" Width="20" Height="20" VerticalContentAlignment="Center" HorizontalAlignment="Center" Command="{Binding DataContext.RemoveElementCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding .}">
+                                            <Button.Content>
+                                                <TextBlock Text="X" FontWeight="DemiBold" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Button.Content>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Grid x:Name="grid">
+                                                        <Border x:Name="border" CornerRadius="20" BorderBrush="#707070" BorderThickness="1" Background="White">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.FontWeight="Normal"/>
+                                                        </Border>
+                                                    </Grid>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" TargetName="border" Value="#BEE6FD"/>
+                                                            <Setter Property="BorderBrush" TargetName="border" Value="#3C7FB1"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter Property="BorderBrush" TargetName="border" Value="#2C628B"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
+                                </GroupBox.Header>
+                                <ContentControl Content="{Binding .}"/>
+                            </GroupBox>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Grid.Row="1" Content="Add element" Command="{Binding AddElementCommand}"/>
+            </Grid>
+        </Expander>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:BoolProperty}">
+    <DataTemplate DataType="{x:Type property:BoolPropertyViewModel}">
         <CheckBox IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:ByteProperty}">
-        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: BYTE STUFF"/>
-    </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:EnumProperty}">
+    <DataTemplate DataType="{x:Type property:BytePropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:FloatProperty}">
+    <DataTemplate DataType="{x:Type property:EnumPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:IntProperty}">
+    <DataTemplate DataType="{x:Type property:FloatPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:MapProperty}">
+    <DataTemplate DataType="{x:Type property:IntPropertyViewModel}">
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type property:MapPropertyViewModel}">
         <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: MAP STUFF"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:NameProperty}">
+    <DataTemplate DataType="{x:Type property:NamePropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:ObjectProperty}">
+    <DataTemplate DataType="{x:Type property:ObjectPropertyViewModel}">
         <StackPanel Orientation="Vertical">
             <DockPanel>
                 <Label DockPanel.Dock="Left" Target="{Binding ElementName=ParentBox}" Content="Parent:"/>
@@ -60,13 +103,58 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:StrProperty}">
+    <DataTemplate DataType="{x:Type property:StrPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:StructProperty}">
-        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: STRUCT STUFF"/>
+    <DataTemplate DataType="{x:Type property:StructPropertyViewModel}">
+        <StackPanel Orientation="Vertical">
+            <ContentControl Content="{Binding StructData}"/>
+        </StackPanel>
     </DataTemplate>
-    <DataTemplate DataType="{x:Type propertyTypes:TextProperty}">
-        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: TEXT STUFF"/>
+    <DataTemplate DataType="{x:Type property:TextPropertyViewModel}">
+        <StackPanel Orientation="Vertical">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=ValueBox}" Content="Value:"/>
+                <TextBox DockPanel.Dock="Left" x:Name="ValueBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=Unknown4Box}" Content="Unknown4:"/>
+                <TextBox DockPanel.Dock="Left" x:Name="Unknown4Box" Margin="4" VerticalContentAlignment="Center" Text="{Binding Unknown4, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type struct:DynamicStructDataViewModel}">
+        <ItemsControl ItemsSource="{Binding Fields}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <GroupBox ToolTip="{Binding ., Converter={StaticResource IStructToTypeStringConverter}}" Header="{Binding PropertyName}">
+                        <ContentControl Content="{Binding .}"/>
+                    </GroupBox>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type structs:Box}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Color}">
+        <control:ColorPicker Color="{Binding .}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:InventoryItem}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:LinearColor}">
+        <control:LinearColorPicker LinearColor="{Binding .}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Quat}">
+        <control:Vector4Control Vector="{Binding .}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:RailroadTrackPosition}">
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Rotator}">
+        <control:Vector3Control Vector="{Binding .}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Vector}">
+        <control:Vector3Control Vector="{Binding .}"/>
     </DataTemplate>
 </ResourceDictionary>

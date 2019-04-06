@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="SatisfactorySaveEditor.View.Control.LinearColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
+             xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:LinearColorToBrushConverter x:Key="LinearColorToBrushConverter"/>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <Label Content="R:" Target="{Binding ElementName=RBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="RBox" TextChanged="OnTextChanged">
+            <TextBox.Text>
+                <Binding Path="LinearColor.R" RelativeSource="{RelativeSource AncestorType=UserControl}" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <util:FloatRangeRule MinValue="0" MaxValue="1"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Content="G:" Target="{Binding ElementName=GBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="GBox" TextChanged="OnTextChanged">
+            <TextBox.Text>
+                <Binding Path="LinearColor.G" RelativeSource="{RelativeSource AncestorType=UserControl}" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <util:FloatRangeRule MinValue="0" MaxValue="1"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Content="B:" Target="{Binding ElementName=BBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="BBox" TextChanged="OnTextChanged">
+            <TextBox.Text>
+                <Binding Path="LinearColor.B" RelativeSource="{RelativeSource AncestorType=UserControl}" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <util:FloatRangeRule MinValue="0" MaxValue="1"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Content="A:" Target="{Binding ElementName=ABox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="ABox" TextChanged="OnTextChanged">
+            <TextBox.Text>
+                <Binding Path="LinearColor.A" RelativeSource="{RelativeSource AncestorType=UserControl}" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <util:FloatRangeRule MinValue="0" MaxValue="1"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Rectangle x:Name="PreviewRectangle" Margin="5,0,0,0" Width="25" Height="25" Fill="{Binding LinearColor, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource LinearColorToBrushConverter}, Mode=OneWay}" Stroke="Black" StrokeThickness="1"/>
+    </StackPanel>
+</UserControl>

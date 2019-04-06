@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using SatisfactorySaveEditor.ViewModel;
-using SatisfactorySaveParser.PropertyTypes;
+using SatisfactorySaveEditor.ViewModel.Property;
 
 namespace SatisfactorySaveEditor.Converter
 {
@@ -12,29 +12,29 @@ namespace SatisfactorySaveEditor.Converter
         {
             switch (value)
             {
-                case ArrayProperty arp:
+                case ArrayPropertyViewModel arp:
                     return $"Array ({AddViewModel.FromStringType(arp.Type)})";
-                case BoolProperty bop:
+                case BoolPropertyViewModel bop:
                     return "Boolean";
-                case ByteProperty byp:
+                case BytePropertyViewModel byp:
                     return "Byte";
-                case EnumProperty enp:
+                case EnumPropertyViewModel enp:
                     return "Enum";
-                case FloatProperty flp:
+                case FloatPropertyViewModel flp:
                     return "Float";
-                case IntProperty inp:
+                case IntPropertyViewModel inp:
                     return "Int";
-                case MapProperty map: // heh
+                case MapPropertyViewModel map: // heh
                     return "Map";
-                case NameProperty nap: // THESE NAMES KEEP GETTING BETTER
+                case NamePropertyViewModel nap: // THESE NAMES KEEP GETTING BETTER
                     return "Name";
-                case ObjectProperty obp:
+                case ObjectPropertyViewModel obp:
                     return "Object";
-                case StrProperty strip:
+                case StrPropertyViewModel strip:
                     return "String";
-                case StructProperty strup:
-                    return "Struct";
-                case TextProperty tep:
+                case StructPropertyViewModel strup:
+                    return $"Struct ({strup.Type})";
+                case TextPropertyViewModel tep:
                     return "text";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);

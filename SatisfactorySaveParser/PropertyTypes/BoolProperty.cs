@@ -7,6 +7,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(BoolProperty);
         public override string PropertyType => TypeName;
+        public override int SerializedLength => 0;
 
         public bool Value { get; set; }
 
@@ -23,7 +24,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer, writeHeader);
 
-            writer.Write(0);
+            writer.Write(SerializedLength);
             writer.Write(Index);
 
             writer.Write((byte)(Value ? 1 : 0));

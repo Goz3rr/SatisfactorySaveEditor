@@ -3,6 +3,7 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Model;
+using SatisfactorySaveEditor.Util;
 using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.ViewModel
@@ -188,7 +189,7 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             var property = CreateProperty(type, name);
             if (type == AddTypeEnum.Array) ((ArrayProperty) property).Type = FromAddTypeEnum(arrayType);
-            ObjectModel.Fields.Add(property);
+            ObjectModel.Fields.Add(PropertyViewModelMapper.Convert(property));
 
             obj.Close();
         }

@@ -1,0 +1,62 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
+        x:Class="SatisfactorySaveEditor.View.CheatInventoryWindow"
+        mc:Ignorable="d"
+        x:Name="CheatInventoryCountWindow"
+        WindowStartupLocation="CenterOwner"
+        DataContext="{Binding CheatInventoryViewModel, Source={StaticResource Locator}, Mode=OneTime}"
+        Title="Set Bonus Slot Count" Height="160" Width="400" ResizeMode="NoResize">
+    <DockPanel Margin="5">
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="Number of Slots:"/>
+            <TextBox x:Name="NumberBox" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0">
+                <TextBox.Text>
+                    <Binding Path="NumberChosen" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <util:PositiveIntegerRule/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path= OldSlotsDisplay}" ContentStringFormat="Currently {0} slots" />
+        </Grid>
+        <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,5,0,0" Height="20">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Ok" Grid.Column="0" Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=CheatInventoryCountWindow}">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=NumberBox}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content="Cancel" Grid.Column="2" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=CheatInventoryCountWindow}"/>
+        </Grid>
+    </DockPanel>
+</Window>

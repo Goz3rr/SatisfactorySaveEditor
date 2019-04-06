@@ -1,5 +1,6 @@
 ﻿using SatisfactorySaveParser.Structures;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace SatisfactorySaveParser
@@ -9,7 +10,15 @@ namespace SatisfactorySaveParser
         public static char[] ReadCharArray(this BinaryReader reader)
         {
             var count = reader.ReadInt32();
-            return reader.ReadChars(count);
+            if (count >= 0)
+            {
+                return reader.ReadChars(count);
+            }
+            else
+            {
+                var bytes = reader.ReadBytes(count * -2);
+                return Encoding.Unicode.GetChars(bytes);
+            }
         }
 
         public static string ReadLengthPrefixedString(this BinaryReader reader)
@@ -19,18 +28,27 @@ namespace SatisfactorySaveParser
 
         public static void WriteLengthPrefixedString(this BinaryWriter writer, string str)
         {
-            if (str == null) return;
-
-            var bytes = Encoding.ASCII.GetBytes(str);
-            if (bytes.Length > 0)
+            if (str == null || str.Length == 0)
             {
-                writer.Write(bytes.Length + 1);
+                writer.Write(0);
+                return;
+            }
+
+            if (str.Any(c => c > 127))
+            {
+                var bytes = Encoding.Unicode.GetBytes(str);
+
+                writer.Write(-(bytes.Length / 2 + 1));
                 writer.Write(bytes);
-                writer.Write((byte)0);
+                writer.Write((short)0);
             }
             else
             {
-                writer.Write(0);
+                var bytes = Encoding.ASCII.GetBytes(str);
+
+                writer.Write(bytes.Length + 1);
+                writer.Write(bytes);
+                writer.Write((byte)0);
             }
         }
 
@@ -38,12 +56,18 @@ namespace SatisfactorySaveParser
         {
             if (str == null || str.Length == 0) return 4;
 
+            if (str.Any(c => c > 127))
+            {
+                return str.Length * 2 + 6;
+            }
+
             return str.Length + 5;
         }
 
         public static Vector3 ReadVector3(this BinaryReader reader)
         {
-            return new Vector3() {
+            return new Vector3()
+            {
                 X = reader.ReadSingle(),
                 Y = reader.ReadSingle(),
                 Z = reader.ReadSingle()

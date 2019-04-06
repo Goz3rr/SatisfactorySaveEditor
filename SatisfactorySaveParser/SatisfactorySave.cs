@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SatisfactorySaveParser.Save;
+using SatisfactorySaveParser.Structures;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,55 +19,9 @@ namespace SatisfactorySaveParser
         public string FileName { get; private set; }
 
         /// <summary>
-        ///     Unknown first magic int
-        ///     Seems to always be 5
+        ///     Header part of the save containing things like the version and metadata
         /// </summary>
-        public int SaveVersion1 { get; private set; }
-
-        /// <summary>
-        ///     Unknown second magic int
-        ///     Seems to always be 17
-        /// </summary>
-        public int SaveVersion2 { get; private set; }
-
-        /// <summary>
-        ///     Unknown third magic int
-        ///     Seems to always be 66297
-        /// </summary>
-        public int Magic3 { get; private set; }
-
-        /// <summary>
-        ///     The name of what appears to be the root object of the save.
-        ///     Seems to always be "Persistent_Level"
-        /// </summary>
-        public string RootObject { get; private set; }
-
-        /// <summary>
-        ///     An URL style list of arguments of the session.
-        ///     Contains the startloc, sessionName and Visibility
-        /// </summary>
-        public string WorldArguments { get; private set; }
-
-        /// <summary>
-        ///     Name of the saved game
-        /// </summary>
-        public string SaveName { get; private set; }
-
-        /// <summary>
-        ///     Unknown first int from the header
-        /// </summary>
-        public int UnknownHeaderInt1 { get; private set; }
-
-        /// <summary>
-        ///     Unknown bytes from the header
-        /// </summary>
-        public byte[] UnknownHeaderBytes2 { get; private set; }
-
-        /// <summary>
-        ///     Unknown byte from the header
-        /// </summary>
-        public byte UnknownByte3 { get; set; }
-
+        public SaveHeader Header { get; private set; }
 
         /// <summary>
         ///     Main content of the save game
@@ -75,7 +31,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Unknown optional map of strings
         /// </summary>
-        public List<(string, string)> UnknownMap { get; set; } = new List<(string, string)>();
+        public List<ObjectReference> UnknownMap { get; set; } = new List<ObjectReference>();
 
         /// <summary>
         ///     Open a savefile from disk
@@ -84,31 +40,10 @@ namespace SatisfactorySaveParser
         public SatisfactorySave(string file)
         {
             FileName = Environment.ExpandEnvironmentVariables(file);
-            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
-                SaveVersion1 = reader.ReadInt32();
-                Trace.Assert(SaveVersion1 == 5 || SaveVersion1 == 4);
-                SaveVersion2 = reader.ReadInt32();
-                if(SaveVersion1 == 5)
-                    Trace.Assert(SaveVersion2 == 17);
-                else
-                    Trace.Assert(SaveVersion2 == 16);
-
-                Magic3 = reader.ReadInt32();
-                Trace.Assert(Magic3 == 66297);
-
-                RootObject = reader.ReadLengthPrefixedString();
-                WorldArguments = reader.ReadLengthPrefixedString();
-                SaveName = reader.ReadLengthPrefixedString();
-
-                UnknownHeaderInt1 = reader.ReadInt32();
-                //Trace.Assert(UnknownHeaderInt1 == 158);
-
-                UnknownHeaderBytes2 = reader.ReadBytes(0x8);
-
-                if(SaveVersion1 == 5)
-                    UnknownByte3 = reader.ReadByte();
+                Header = SaveHeader.Parse(reader);
 
                 // Does not need to be a public property because it's equal to Entries.Count
                 var totalEntries = reader.ReadUInt32();
@@ -152,7 +87,7 @@ namespace SatisfactorySaveParser
                 {
                     var str1 = reader.ReadLengthPrefixedString();
                     var str2 = reader.ReadLengthPrefixedString();
-                    UnknownMap.Add((str1, str2));
+                    UnknownMap.Add(new ObjectReference(str1, str2));
                 }
 
                 Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
@@ -173,19 +108,7 @@ namespace SatisfactorySaveParser
             {
                 stream.SetLength(0); // Clear any original content
 
-                writer.Write(SaveVersion1);
-                writer.Write(SaveVersion2);
-                writer.Write(Magic3);
-
-                writer.WriteLengthPrefixedString(RootObject);
-                writer.WriteLengthPrefixedString(WorldArguments);
-                writer.WriteLengthPrefixedString(SaveName);
-
-                writer.Write(UnknownHeaderInt1);
-                writer.Write(UnknownHeaderBytes2);
-
-                if (SaveVersion1 == 5)
-                    writer.Write(UnknownByte3);
+                Header.Serialize(writer);
 
                 writer.Write(Entries.Count);
 
@@ -223,8 +146,8 @@ namespace SatisfactorySaveParser
                 writer.Write(UnknownMap.Count);
                 foreach(var unkMap in UnknownMap)
                 {
-                    writer.WriteLengthPrefixedString(unkMap.Item1);
-                    writer.WriteLengthPrefixedString(unkMap.Item2);
+                    writer.WriteLengthPrefixedString(unkMap.Root);
+                    writer.WriteLengthPrefixedString(unkMap.Name);
                 }
             }
         }

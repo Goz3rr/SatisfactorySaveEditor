@@ -7,6 +7,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(ByteProperty);
         public override string PropertyType => TypeName;
+        public override int SerializedLength => Type == "None" ? 1 : Value.GetSerializedLength();
 
         public string Type { get; set; }
         public string Value { get; set; }
@@ -22,13 +23,10 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public override void Serialize(BinaryWriter writer, bool writeHeader = true)
         {
-            base.Serialize(writer, writeHeader);
+            if (writeHeader)
+                base.Serialize(writer, writeHeader);
 
-            if (Type == "None")
-                writer.Write(1);
-            else
-                writer.Write(Value.Length + 5);
-
+            writer.Write(SerializedLength);
             writer.Write(Index);
 
             writer.WriteLengthPrefixedString(Type);

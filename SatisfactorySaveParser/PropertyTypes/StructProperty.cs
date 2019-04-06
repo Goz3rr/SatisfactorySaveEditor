@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using SatisfactorySaveParser.PropertyTypes.Structs;
+using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace SatisfactorySaveParser.PropertyTypes
 {
@@ -7,6 +10,7 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(StructProperty);
         public override string PropertyType => TypeName;
+        public override int SerializedLength => Data.SerializedLength;
 
         public string Type { get; set; }
         public int Unk1 { get; set; }
@@ -15,7 +19,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public int Unk4 { get; set; }
         public byte Unk5 { get; set; }
 
-        public byte[] Data { get; set; }
+        public IStructData Data { get; set; }
 
         public StructProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
@@ -30,16 +34,168 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             base.Serialize(writer, writeHeader);
 
-            writer.Write(Data.Length);
-            writer.Write(Index);
+            using (var ms = new MemoryStream())
+            using (var msWriter = new BinaryWriter(ms))
+            {
+                Data.Serialize(msWriter);
 
-            writer.WriteLengthPrefixedString(Type);
-            writer.Write(Unk1);
-            writer.Write(Unk2);
-            writer.Write(Unk3);
-            writer.Write(Unk4);
-            writer.Write(Unk5);
-            writer.Write(Data);
+                var bytes = ms.ToArray();
+
+                writer.Write(bytes.Length);
+                writer.Write(Index);
+
+                writer.WriteLengthPrefixedString(Type);
+                writer.Write(Unk1);
+                writer.Write(Unk2);
+                writer.Write(Unk3);
+                writer.Write(Unk4);
+                writer.Write(Unk5);
+                writer.Write(bytes);
+            }            
+        }
+
+        public static int GetSerializedArrayLength(StructProperty[] properties)
+        {
+            var size = 4;
+
+            var first = properties[0];
+
+            size += first.PropertyName.GetSerializedLength();
+            size += TypeName.GetSerializedLength();
+
+            size += 8;
+
+            size += first.Data.Type.GetSerializedLength();
+
+            size += 17;
+
+            size += properties.Sum(p => p.Data.SerializedLength);
+
+            return size;
+        }
+
+        public static void SerializeArray(BinaryWriter writer, StructProperty[] properties)
+        {
+            writer.Write(properties.Length);
+
+            var first = properties[0];
+            writer.WriteLengthPrefixedString(first.PropertyName);
+
+            writer.WriteLengthPrefixedString(TypeName);
+
+            using (var ms = new MemoryStream())
+            using (var msWriter = new BinaryWriter(ms))
+            {
+                for (var i = 0; i < properties.Length; i++)
+                {
+                    properties[i].Data.Serialize(msWriter);
+                }
+
+                var bytes = ms.ToArray();
+
+                writer.Write(bytes.Length);
+
+                writer.Write(first.Index);
+
+                writer.WriteLengthPrefixedString(first.Data.Type);
+
+                writer.Write(first.Unk1);
+                writer.Write(first.Unk2);
+                writer.Write(first.Unk3);
+                writer.Write(first.Unk4);
+                writer.Write(first.Unk5);
+
+                writer.Write(bytes);
+            }
+        }
+
+        private static IStructData ParseStructData(BinaryReader reader, string type)
+        {
+            switch (type)
+            {
+                case "LinearColor":
+                    return new LinearColor(reader);
+                case "Color":
+                    return new Color(reader);
+                case "Rotator":
+                    return new Rotator(reader);
+                case "Vector":
+                    return new Vector(reader);
+                case "Box":
+                    return new Box(reader);
+                case "Quat":
+                    return new Quat(reader);
+                case "InventoryItem":
+                    return new InventoryItem(reader);
+                case "RailroadTrackPosition":
+                    return new RailroadTrackPosition(reader);
+                /*
+                case "InventoryStack":
+                case "InventoryItem":
+                case "PhaseCost":
+                case "ItemAmount":
+                case "ResearchCost":
+                case "CompletedResearch":
+                case "ResearchRecipeReward":
+                case "ItemFoundData":
+                case "RecipeAmountStruct":
+                case "MessageData":
+                case "SplinePointData":
+                    return new DynamicStructData(reader);
+                */
+                default:
+                    return new DynamicStructData(reader, type);
+                    //throw new NotImplementedException($"Can't deserialize struct {type}");
+            }
+        }
+
+        public static StructProperty[] ParseArray(BinaryReader reader)
+        {
+            var count = reader.ReadInt32();
+            StructProperty[] result = new StructProperty[count];
+
+            var name = reader.ReadLengthPrefixedString();
+
+            var propertyType = reader.ReadLengthPrefixedString();
+            Trace.Assert(propertyType == "StructProperty");
+
+            var size = reader.ReadInt32();
+            var index = reader.ReadInt32();
+
+            var structType = reader.ReadLengthPrefixedString();
+
+
+            var unk1 = reader.ReadInt32();
+            //Trace.Assert(unk1 == 0);
+
+            var unk2 = reader.ReadInt32();
+            //Trace.Assert(unk2 == 0);
+
+            var unk3 = reader.ReadInt32();
+            //Trace.Assert(unk3 == 0);
+
+            var unk4 = reader.ReadInt32();
+            //Trace.Assert(unk4 == 0);
+
+            var unk5 = reader.ReadByte();
+            Trace.Assert(unk5 == 0);
+
+            for(var i = 0; i < count; i++)
+            {
+                result[i] = new StructProperty($"Element {i}", index)
+                {
+                    Unk1 = unk1,
+                    Unk2 = unk2,
+                    Unk3 = unk3,
+                    Unk4 = unk4,
+                    Unk5 = unk5,
+                    Type = structType,
+                    Data = ParseStructData(reader, structType)
+                };
+            }
+
+
+            return result;
         }
 
         public static StructProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
@@ -66,7 +222,14 @@ namespace SatisfactorySaveParser.PropertyTypes
             result.Unk5 = reader.ReadByte();
             Trace.Assert(result.Unk5 == 0);
 
-            result.Data = reader.ReadBytes(size);
+            var before = reader.BaseStream.Position;
+            result.Data = ParseStructData(reader, result.Type);
+            var after = reader.BaseStream.Position;
+
+            if (before + size != after)
+            {
+                throw new InvalidOperationException($"Expected {size} bytes read but got {after - before}");
+            }
 
             return result;
         }

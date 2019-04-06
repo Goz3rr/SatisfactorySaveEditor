@@ -1,5 +1,4 @@
-﻿using System;
-using SatisfactorySaveParser;
+﻿using SatisfactorySaveParser;
 using SatisfactorySaveParser.Structures;
 
 namespace SatisfactorySaveEditor.Model
