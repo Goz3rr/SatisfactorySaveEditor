@@ -91,6 +91,7 @@
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="Util\FloatRangeRule.cs" />
+    <Compile Include="Util\EnumerableExtension.cs" />
     <Compile Include="Util\PositiveIntegerRule.cs" />
     <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
@@ -214,6 +215,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Icon\search.png" />
     <Content Include="Types.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

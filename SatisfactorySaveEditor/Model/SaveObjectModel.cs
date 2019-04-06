@@ -46,6 +46,22 @@ namespace SatisfactorySaveEditor.Model
             }
         }
 
+        /// <summary>
+        /// Recursively gets all the SaveObjectModel children in the tree plus self
+        /// </summary>
+        public List<SaveObjectModel> DescendantSelfViewModel
+        {
+            get
+            {
+                var list = new List<SaveObjectModel>();
+                if (Model != null) list.Add(this);
+
+                foreach (var item in Items) list.AddRange(item.DescendantSelfViewModel);
+
+                return list;
+            }
+        }
+
         public string Title
         {
             get => title;
