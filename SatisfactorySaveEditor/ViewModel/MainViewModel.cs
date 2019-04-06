@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Globalization;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Util;
 using System.Windows;
@@ -13,6 +15,8 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
@@ -24,8 +28,15 @@ namespace SatisfactorySaveEditor.ViewModel
         private SatisfactorySave saveGame;
         private SaveObjectModel rootItem;
         private SaveObjectModel selectedItem;
+        private string searchText;
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
 
-        public ObservableCollection<SaveObjectModel> RootItem => new ObservableCollection<SaveObjectModel> { rootItem };
+        public ObservableCollection<SaveObjectModel> RootItem
+        {
+            get => rootItems;
+            private set { Set(() => RootItem, ref rootItems, value); }
+        }
 
         public SaveObjectModel SelectedItem
         {
@@ -42,6 +53,19 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        public string SearchText
+        {
+            get => searchText;
+            set
+            {
+                Set(() => SearchText, ref searchText, value);
+
+                tokenSource.Cancel();
+                tokenSource = new CancellationTokenSource();
+                Task.Factory.StartNew(() => Filter(value), tokenSource.Token);
+            }
+        }
+
         public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
 
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
@@ -52,6 +76,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<string> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
+        public RelayCommand ResetSearchCommand { get; }
 
         public bool HasUnsavedChanges { get; set; } //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
 
@@ -72,6 +97,7 @@ namespace SatisfactorySaveEditor.ViewModel
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+            ResetSearchCommand = new RelayCommand(ResetSearch);
         }
 
         private bool CanDelete(SaveObjectModel model)
@@ -325,6 +351,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void LoadFile(string path)
         {
             SelectedItem = null;
+            SearchText = null;
 
             saveGame = new SatisfactorySave(path);
 
@@ -369,6 +396,9 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             Properties.Settings.Default.Save();
+
+            RootItem.Clear();
+            RootItem.Add(rootItem);
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)
@@ -392,6 +422,34 @@ namespace SatisfactorySaveEditor.ViewModel
                         break;
                 }
             }
+        }
+
+        private void Filter(string value)
+        {
+            if (rootItem == null) return;
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RootItem.Clear();
+                    RootItem.Add(rootItem);
+                });
+            }
+            else
+            {
+                var valueLower = value.ToLower(CultureInfo.InvariantCulture);
+                var filter = rootItem.DescendantSelfViewModel.WithCancellation(tokenSource.Token).Where(vm => vm.Model?.InstanceName.ToLower(CultureInfo.InvariantCulture).Contains(valueLower) ?? false);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    RootItem = new ObservableCollection<SaveObjectModel>(filter);
+                });
+            }
+        }
+
+        private void ResetSearch()
+        {
+            SearchText = null;
         }
 
         public void DragOver(IDropInfo dropInfo)
