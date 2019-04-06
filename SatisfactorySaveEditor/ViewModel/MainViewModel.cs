@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
+using SatisfactorySaveEditor.Cheats;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -68,13 +69,15 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
 
+        public ObservableCollection<ICheat> CheatMenuItems { get; } = new ObservableCollection<ICheat>();
+
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand<string> OpenCommand { get; }
         public RelayCommand AboutCommand { get; }
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
-        public RelayCommand<string> CheatCommand { get; }
+        public RelayCommand<ICheat> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
 
@@ -89,6 +92,11 @@ namespace SatisfactorySaveEditor.ViewModel
             if (savedFiles == null) LastFiles = new ObservableCollection<string>();
             else LastFiles = new ObservableCollection<string>(savedFiles);
 
+            // TODO: load this dynamically
+            CheatMenuItems.Add(new ResearchUnlockCheat());
+            CheatMenuItems.Add(new UnlockMapCheat());
+            CheatMenuItems.Add(new InventorySlotsCheat());
+
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             ExitCommand = new RelayCommand(Exit);
@@ -96,7 +104,7 @@ namespace SatisfactorySaveEditor.ViewModel
             AboutCommand = new RelayCommand(About);
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
-            CheatCommand = new RelayCommand<string>(Cheat, CanCheat);
+            CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
         }
 
@@ -111,125 +119,15 @@ namespace SatisfactorySaveEditor.ViewModel
             RaisePropertyChanged(() => RootItem);
         }
 
-        private bool CanCheat(string target)
+        private bool CanCheat(ICheat cheat)
         {
             return rootItem != null;
         }
 
-        private void Cheat(string cheatType)
+        private void Cheat(ICheat cheat)
         {
-            switch (cheatType)
-            {
-                case "Research":
-                    {
-                        var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.schematicManager", false);
-                        if (cheatObject == null)
-                        {
-                            MessageBox.Show("This save does not contain a schematicManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find schematicManager", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-
-                        foreach (var field in cheatObject.Fields)
-                        {
-                            if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
-                            {
-                                if (!(field is ArrayPropertyViewModel arrayField))
-                                {
-                                    MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
-                                    return;
-                                }
-
-                                foreach(var research in Research.GetResearches())
-                                {
-                                    if(!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research.Path))
-                                    {
-                                        arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research.Path)));
-                                    }
-                                }
-                            }
-                        }
-
-                        HasUnsavedChanges = true;
-                        MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    break;
-                case "UnlockMap":
-                    {
-                        var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
-                        if (cheatObject == null)
-                        {
-                            MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mIsMapUnlocked") is BoolPropertyViewModel mapUnlocked)
-                        {
-                            mapUnlocked.Value = true;
-                        }
-                        else
-                        {
-                            cheatObject.Fields.Add(new BoolPropertyViewModel(new BoolProperty("mIsMapUnlocked")
-                            {
-                                Value = true
-                            }));
-                        }
-
-                        HasUnsavedChanges = true;
-                        MessageBox.Show("Map unlocked", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    break;
-                case "InventorySize":
-                    {
-                        var cheatObject = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
-                        if (cheatObject == null)
-                        {
-                            MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-
-                        int oldSlots = 0;
-                        int requestedSlots = 0;
-                        if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize)
-                        {
-                            oldSlots = inventorySize.Value;
-                        }
-                        
-                        CheatInventoryWindow window = new CheatInventoryWindow(oldSlots)
-                        {
-                            Owner = Application.Current.MainWindow
-                        };
-                        CheatInventoryViewModel cvm = (CheatInventoryViewModel)window.DataContext;
-                        cvm.NumberChosen = oldSlots;
-                        cvm.OldSlotsDisplay = oldSlots;
-                        window.ShowDialog();
-                        requestedSlots = cvm.NumberChosen;
-                        
-
-                        if (requestedSlots < 0 || requestedSlots == oldSlots) //TryParse didn't find a number, or cancel was clicked on the inputbox
-                        {
-                            MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else //TryParse found a number to use
-                        {
-                            if (cheatObject.Fields.FirstOrDefault(f => f.PropertyName == "mNumAdditionalInventorySlots") is IntPropertyViewModel inventorySize2)
-                            {
-                                inventorySize2.Value = requestedSlots;
-                            }
-                            else
-                            {
-                                cheatObject.Fields.Add(new IntPropertyViewModel(new IntProperty("mNumAdditionalInventorySlots")
-                                {
-                                    Value = requestedSlots
-                                }));
-                            }
-
-                            MessageBox.Show("Bonus inventory set to " + requestedSlots + " slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(cheatType), cheatType, null);
-            }
+            if (cheat.Apply(rootItem))
+                HasUnsavedChanges = true;
         }
 
         private bool CanSave(bool saveAs)
@@ -339,7 +237,7 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 Application.Current.Shutdown();
             }
-            
+
         }
 
         private void Jump(string target)
@@ -475,7 +373,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public void Drop(IDropInfo dropInfo)
         {
-            var fileName = ((DataObject) dropInfo.Data).GetFileDropList()[0];
+            var fileName = ((DataObject)dropInfo.Data).GetFileDropList()[0];
             LoadFile(fileName);
         }
     }

@@ -69,10 +69,14 @@
                 <Separator/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
             </MenuItem>
-            <MenuItem Header="_Cheats">
-                <MenuItem Header="Unlock all research" Command="{Binding CheatCommand}" CommandParameter="Research"/>
-                <MenuItem Header="Unlock map" Command="{Binding CheatCommand}" CommandParameter="UnlockMap"/>
-                <MenuItem Header="Set bonus inventory slots" Command="{Binding CheatCommand}" CommandParameter="InventorySize"/>
+            <MenuItem Header="_Cheats" ItemsSource="{Binding CheatMenuItems}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="Header" Value="{Binding Path=Name}" />
+                        <Setter Property="Command" Value="{Binding DataContext.CheatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
+                        <Setter Property="CommandParameter" Value="{Binding}" />
+                    </Style>
+                </MenuItem.ItemContainerStyle>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="About" Command="{Binding AboutCommand}"/>
