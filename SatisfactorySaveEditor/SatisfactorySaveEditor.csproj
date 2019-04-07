@@ -87,6 +87,7 @@
     <Compile Include="Model\SaveComponentModel.cs" />
     <Compile Include="Model\SaveEntityModel.cs" />
     <Compile Include="Model\SaveObjectModel.cs" />
+    <Compile Include="Model\SaveRootModel.cs" />
     <Compile Include="Model\TypeTooltip.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />

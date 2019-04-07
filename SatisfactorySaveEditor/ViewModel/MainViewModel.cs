@@ -356,7 +356,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             saveGame = new SatisfactorySave(path);
 
-            rootItem = new SaveObjectModel("Root");
+            rootItem = new SaveRootModel(saveGame.Header);
             var saveTree = new EditorTreeNode("Root");
 
             foreach (var entry in saveGame.Entries)
