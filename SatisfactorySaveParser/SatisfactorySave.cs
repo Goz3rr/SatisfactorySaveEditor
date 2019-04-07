@@ -1,4 +1,6 @@
-﻿using SatisfactorySaveParser.Save;
+﻿using SatisfactorySaveParser.PropertyTypes;
+using SatisfactorySaveParser.PropertyTypes.Structs;
+using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
 using System;
 using System.Collections.Generic;
@@ -49,7 +51,7 @@ namespace SatisfactorySaveParser
                 var totalEntries = reader.ReadUInt32();
 
                 // Saved entities loop
-                for(int i = 0; i < totalEntries; i++)
+                for (int i = 0; i < totalEntries; i++)
                 {
                     var type = reader.ReadInt32();
                     switch (type)
@@ -145,7 +147,7 @@ namespace SatisfactorySaveParser
                 }
 
                 writer.Write(UnknownMap.Count);
-                foreach(var unkMap in UnknownMap)
+                foreach (var unkMap in UnknownMap)
                 {
                     writer.WriteLengthPrefixedString(unkMap.Root);
                     writer.WriteLengthPrefixedString(unkMap.Name);
