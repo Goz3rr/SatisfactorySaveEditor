@@ -14,9 +14,10 @@
         mc:Ignorable="d"
         dd:DragDrop.IsDropTarget="True"
         dd:DragDrop.DropHandler="{Binding .}"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
-        Title="{Binding FileName, StringFormat='Satisfactory Save Editor{0}'}" Width="1500" Height="720">
+        Closed="MainWindow_OnClosed"
+        Title="{Binding FileName, StringFormat='Satisfactory Save Editor{0}'}">
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
