@@ -10,6 +10,7 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
+using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Model
 {
@@ -175,12 +176,13 @@ namespace SatisfactorySaveEditor.Model
             if (Model == null) return;
 
             Model.InstanceName = Title;
-            Model.DataFields.Clear();
-            foreach (var field in Fields)
-            {
-                field.ApplyChanges();
-                Model.DataFields.Add(field.Model);
-            }
+
+            var newObjects = Fields.Select(vm => vm.Model).ToList();
+            Model.DataFields.RemoveAll(s => !newObjects.Contains(s));
+            newObjects.RemoveAll(s => Model.DataFields.Contains(s));
+            Model.DataFields.AddRange(newObjects);
+
+            foreach (var field in Fields) field.ApplyChanges();
         }
 
         private void AddProperty()

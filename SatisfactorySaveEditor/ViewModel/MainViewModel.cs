@@ -252,8 +252,10 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
-                    saveGame.Entries.Clear();
-                    saveGame.Entries.AddRange(rootItem.DescendantSelf);
+                    var newObjects = rootItem.DescendantSelf;
+                    saveGame.Entries.RemoveAll(s => !newObjects.Contains(s));
+                    newObjects.RemoveAll(s => saveGame.Entries.Contains(s));
+                    saveGame.Entries.AddRange(newObjects);
 
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName);
@@ -264,8 +266,10 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             else
             {
-                saveGame.Entries.Clear();
-                saveGame.Entries.AddRange(rootItem.DescendantSelf);
+                var newObjects = rootItem.DescendantSelf;
+                saveGame.Entries.RemoveAll(s => !newObjects.Contains(s));
+                newObjects.RemoveAll(s => saveGame.Entries.Contains(s));
+                saveGame.Entries.AddRange(newObjects);
 
                 rootItem.ApplyChanges();
                 saveGame.Save();
