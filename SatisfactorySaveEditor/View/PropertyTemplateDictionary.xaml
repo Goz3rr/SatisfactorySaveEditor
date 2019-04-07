@@ -67,7 +67,22 @@
         <CheckBox IsChecked="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:BytePropertyViewModel}">
-        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" DockPanel.Dock="Left" Target="{Binding ElementName=TypeBox}" Content="Type:"/>
+            <TextBox Grid.Column="1" Grid.Row="0" DockPanel.Dock="Left" x:Name="TypeBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Type, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Grid.Column="0" Grid.Row="1" DockPanel.Dock="Left" Target="{Binding ElementName=ValueBox}" Content="Value:"/>
+            <TextBox Grid.Column="1" Grid.Row="1" DockPanel.Dock="Left" x:Name="ValueBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:EnumPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
