@@ -13,6 +13,14 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         public int SerializedLength => 16;
         public string Type => "LinearColor";
 
+        public LinearColor(float r, float g, float b, float a)
+        {
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
+
         public LinearColor(BinaryReader reader)
         {
             R = reader.ReadSingle();

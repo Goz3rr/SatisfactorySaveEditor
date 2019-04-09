@@ -12,7 +12,7 @@ namespace SatisfactorySaveParser.PropertyTypes
         public override string PropertyType => TypeName;
         public override int SerializedLength => Data.SerializedLength;
 
-        public string Type { get; set; }
+        public string Type => Data.Type;
         public int Unk1 { get; set; }
         public int Unk2 { get; set; }
         public int Unk3 { get; set; }
@@ -189,7 +189,6 @@ namespace SatisfactorySaveParser.PropertyTypes
                     Unk3 = unk3,
                     Unk4 = unk4,
                     Unk5 = unk5,
-                    Type = structType,
                     Data = ParseStructData(reader, structType)
                 };
             }
@@ -200,12 +199,10 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public static StructProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
         {
-            var result = new StructProperty(propertyName, index)
-            {
-                Type = reader.ReadLengthPrefixedString()
-            };
+            var result = new StructProperty(propertyName, index);
+            var type = reader.ReadLengthPrefixedString();
 
-            overhead = result.Type.Length + 22;
+            overhead = type.Length + 22;
 
             result.Unk1 = reader.ReadInt32();
             Trace.Assert(result.Unk1 == 0);
@@ -223,7 +220,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             Trace.Assert(result.Unk5 == 0);
 
             var before = reader.BaseStream.Position;
-            result.Data = ParseStructData(reader, result.Type);
+            result.Data = ParseStructData(reader, type);
             var after = reader.BaseStream.Position;
 
             if (before + size != after)
