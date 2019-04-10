@@ -19,7 +19,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                     case StructProperty.TypeName:
                         return StructProperty.GetSerializedArrayLength(Elements.Cast<StructProperty>().ToArray());
                     case ObjectProperty.TypeName:
-                        return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Str1.GetSerializedLength() + obj.Str2.GetSerializedLength());
+                        return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Root.GetSerializedLength() + obj.Name.GetSerializedLength());
                     case IntProperty.TypeName:
                         return Elements.Count * 4 + 4;
                     default:
@@ -69,8 +69,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                             msWriter.Write(Elements.Count);
                             foreach (var prop in Elements.Cast<ObjectProperty>())
                             {
-                                msWriter.WriteLengthPrefixedString(prop.Str1);
-                                msWriter.WriteLengthPrefixedString(prop.Str2);
+                                msWriter.WriteLengthPrefixedString(prop.Root);
+                                msWriter.WriteLengthPrefixedString(prop.Name);
                             }
                         }
                         break;
