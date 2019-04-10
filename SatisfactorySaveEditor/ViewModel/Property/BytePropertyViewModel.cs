@@ -6,6 +6,7 @@ namespace SatisfactorySaveEditor.ViewModel.Property
     {
         private readonly ByteProperty model;
 
+        private string type;
         private string value;
 
         public string Value
@@ -14,16 +15,24 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Value, ref this.value, value); }
         }
 
+        public string Type
+        {
+            get => type;
+            set { Set(() => Type, ref type, value); }
+        }
+
         public BytePropertyViewModel(ByteProperty byteProperty) : base(byteProperty)
         {
             model = byteProperty;
 
             value = model.Value;
+            type = model.Type;
         }
 
         public override void ApplyChanges()
         {
             model.Value = value;
+            model.Type = type;
         }
     }
 }

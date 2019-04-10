@@ -77,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Cheats\ICheat.cs" />
+    <Compile Include="Cheats\InventorySlotsCheat.cs" />
+    <Compile Include="Cheats\ResearchUnlockCheat.cs" />
+    <Compile Include="Cheats\UnlockMapCheat.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
     <Compile Include="Converter\LinearColorToBrushConverter.cs" />
@@ -87,10 +91,12 @@
     <Compile Include="Model\SaveComponentModel.cs" />
     <Compile Include="Model\SaveEntityModel.cs" />
     <Compile Include="Model\SaveObjectModel.cs" />
+    <Compile Include="Model\SaveRootModel.cs" />
     <Compile Include="Model\TypeTooltip.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="Util\FloatRangeRule.cs" />
+    <Compile Include="Util\EnumerableExtension.cs" />
     <Compile Include="Util\PositiveIntegerRule.cs" />
     <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
@@ -214,9 +220,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Icon\search.png" />
     <Content Include="Types.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

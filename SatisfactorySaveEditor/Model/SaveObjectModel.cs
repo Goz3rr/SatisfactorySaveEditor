@@ -10,6 +10,7 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
+using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Model
 {
@@ -41,6 +42,22 @@ namespace SatisfactorySaveEditor.Model
                 if (Model != null) list.Add(Model);
 
                 foreach (var item in Items) list.AddRange(item.DescendantSelf);
+
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// Recursively gets all the SaveObjectModel children in the tree plus self
+        /// </summary>
+        public List<SaveObjectModel> DescendantSelfViewModel
+        {
+            get
+            {
+                var list = new List<SaveObjectModel>();
+                if (Model != null) list.Add(this);
+
+                foreach (var item in Items) list.AddRange(item.DescendantSelfViewModel);
 
                 return list;
             }
@@ -159,12 +176,54 @@ namespace SatisfactorySaveEditor.Model
             if (Model == null) return;
 
             Model.InstanceName = Title;
-            Model.DataFields.Clear();
-            foreach (var field in Fields)
+
+            var newObjects = Fields.Select(vm => vm.Model).ToList();
+            Model.DataFields.RemoveAll(s => !newObjects.Contains(s));
+            newObjects.RemoveAll(s => Model.DataFields.Contains(s));
+            Model.DataFields.AddRange(newObjects);
+
+            foreach (var field in Fields) field.ApplyChanges();
+        }
+
+        public T FindField<T>(string fieldName, Action<T> edit = null) where T : SerializedPropertyViewModel
+        {
+            var field = Fields.FirstOrDefault(f => f.PropertyName == fieldName);
+
+            if (field == null)
             {
-                field.ApplyChanges();
-                Model.DataFields.Add(field.Model);
+                return null;
             }
+
+            if (field is T vm)
+            {
+                edit?.Invoke(vm);
+                return vm;
+            }
+
+            throw new InvalidOperationException($"A field with the name {fieldName} was found but with a different type ({field.GetType()} != {typeof(T)})");
+        }
+
+        public T FindOrCreateField<T>(string fieldName, Action<T> edit = null) where T : SerializedPropertyViewModel
+        {
+            var field = Fields.FirstOrDefault(f => f.PropertyName == fieldName);
+
+            if (field == null)
+            {
+                var newVM = (T)PropertyViewModelMapper.Create<T>(fieldName);
+                Fields.Add(newVM);
+
+                edit?.Invoke(newVM);
+
+                return newVM;
+            }
+
+            if (field is T vm)
+            {
+                edit?.Invoke(vm);
+                return vm;
+            }
+
+            throw new InvalidOperationException($"A field with the name {fieldName} already exists but with a different type ({field.GetType()} != {typeof(T)})");
         }
 
         private void AddProperty()

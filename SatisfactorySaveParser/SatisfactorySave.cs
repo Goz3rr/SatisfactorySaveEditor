@@ -1,4 +1,6 @@
-﻿using SatisfactorySaveParser.Save;
+﻿using SatisfactorySaveParser.PropertyTypes;
+using SatisfactorySaveParser.PropertyTypes.Structs;
+using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
 using System;
 using System.Collections.Generic;
@@ -36,7 +38,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Open a savefile from disk
         /// </summary>
-        /// <param name="file">Full path to the .sav file, usually found in Documents/My Games/FactoryGame/SaveGame/</param>
+        /// <param name="file">Full path to the .sav file, usually found in %localappdata%/FactoryGame/Saved/SaveGames</param>
         public SatisfactorySave(string file)
         {
             FileName = Environment.ExpandEnvironmentVariables(file);
@@ -49,7 +51,7 @@ namespace SatisfactorySaveParser
                 var totalEntries = reader.ReadUInt32();
 
                 // Saved entities loop
-                for(int i = 0; i < totalEntries; i++)
+                for (int i = 0; i < totalEntries; i++)
                 {
                     var type = reader.ReadInt32();
                     switch (type)
@@ -102,6 +104,7 @@ namespace SatisfactorySaveParser
         public void Save(string file)
         {
             file = Environment.ExpandEnvironmentVariables(file);
+            FileName = file;
 
             using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
             using (var writer = new BinaryWriter(stream))
@@ -144,7 +147,7 @@ namespace SatisfactorySaveParser
                 }
 
                 writer.Write(UnknownMap.Count);
-                foreach(var unkMap in UnknownMap)
+                foreach (var unkMap in UnknownMap)
                 {
                     writer.WriteLengthPrefixedString(unkMap.Root);
                     writer.WriteLengthPrefixedString(unkMap.Name);

@@ -36,6 +36,8 @@
                                 <Setter Property="ContextMenu">
                                     <Setter.Value>
                                         <ContextMenu>
+                                            <MenuItem Header="Copy name" Command="{Binding CopyPropertyNameCommand}" />
+                                            <Separator/>
                                             <MenuItem Header="Delete" Command="{Binding Source={StaticResource Proxy}, Path=Data.RemovePropertyCommand}" CommandParameter="{Binding .}"/>
                                         </ContextMenu>
                                     </Setter.Value>
