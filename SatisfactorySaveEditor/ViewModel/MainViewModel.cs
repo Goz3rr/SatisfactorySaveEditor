@@ -75,6 +75,9 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand<string> OpenCommand { get; }
+        public RelayCommand Help_ViewGithubCommand { get; }
+        public RelayCommand Help_ReportIssueCommand { get; }
+        public RelayCommand Help_RequestHelpDiscordCommand { get; }
         public RelayCommand AboutCommand { get; }
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<ICheat> CheatCommand { get; }
@@ -102,6 +105,10 @@ namespace SatisfactorySaveEditor.ViewModel
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand<string>(Open);
             AboutCommand = new RelayCommand(About);
+            Help_ViewGithubCommand = new RelayCommand(Help_ViewGithub);
+            Help_ReportIssueCommand = new RelayCommand(Help_ReportIssue);
+            Help_RequestHelpDiscordCommand = new RelayCommand(Help_RequestHelpDiscord);
+
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
@@ -178,6 +185,22 @@ namespace SatisfactorySaveEditor.ViewModel
         private bool CanJump(string target)
         {
             return rootItem.FindChild(target, false) != null;
+        }
+
+        private void Help_ViewGithub()
+        {
+            System.Diagnostics.Process.Start("https://github.com/Goz3rr/SatisfactorySaveEditor#help");
+        }
+
+        private void Help_ReportIssue()
+        {
+            System.Diagnostics.Process.Start("https://github.com/Goz3rr/SatisfactorySaveEditor/issues");
+        }
+
+        private void Help_RequestHelpDiscord()
+        {
+            MessageBox.Show("You are now being redirected to the Satisfactory Modding discord server. Please request help in the #savegame-edits channel.");
+            System.Diagnostics.Process.Start("https://discord.gg/rNxYXht");
         }
 
         private void About()
