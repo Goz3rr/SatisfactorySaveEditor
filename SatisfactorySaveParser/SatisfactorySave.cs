@@ -31,9 +31,9 @@ namespace SatisfactorySaveParser
         public List<SaveObject> Entries { get; set; } = new List<SaveObject>();
 
         /// <summary>
-        ///     Unknown optional map of strings
+        ///     List of object references of all collected objects in the world (Nut/berry bushes, slugs, etc)
         /// </summary>
-        public List<ObjectReference> UnknownMap { get; set; } = new List<ObjectReference>();
+        public List<ObjectReference> CollectedObjects { get; set; } = new List<ObjectReference>();
 
         /// <summary>
         ///     Open a savefile from disk
@@ -84,12 +84,12 @@ namespace SatisfactorySaveParser
                     }
                 }
 
-                var unk10 = reader.ReadInt32();
-                for (int i = 0; i < unk10; i++)
+                var collectedObjectsCount = reader.ReadInt32();
+                for (int i = 0; i < collectedObjectsCount; i++)
                 {
-                    var str1 = reader.ReadLengthPrefixedString();
-                    var str2 = reader.ReadLengthPrefixedString();
-                    UnknownMap.Add(new ObjectReference(str1, str2));
+                    var root = reader.ReadLengthPrefixedString();
+                    var name = reader.ReadLengthPrefixedString();
+                    CollectedObjects.Add(new ObjectReference(root, name));
                 }
 
                 Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
@@ -146,8 +146,8 @@ namespace SatisfactorySaveParser
                     }
                 }
 
-                writer.Write(UnknownMap.Count);
-                foreach (var unkMap in UnknownMap)
+                writer.Write(CollectedObjects.Count);
+                foreach (var unkMap in CollectedObjects)
                 {
                     writer.WriteLengthPrefixedString(unkMap.Root);
                     writer.WriteLengthPrefixedString(unkMap.Name);

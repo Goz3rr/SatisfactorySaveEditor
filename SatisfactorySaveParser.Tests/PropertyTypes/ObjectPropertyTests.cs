@@ -27,8 +27,8 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
 
                 Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(ObjectStr1, prop.Str1);
-                Assert.AreEqual(ObjectStr2, prop.Str2);
+                Assert.AreEqual(ObjectStr1, prop.Root);
+                Assert.AreEqual(ObjectStr2, prop.Name);
 
                 Assert.AreEqual(stream.Length, stream.Position);
             }
@@ -42,8 +42,8 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             {
                 var prop = new ObjectProperty(ObjectName)
                 {
-                    Str1 = ObjectStr1,
-                    Str2 = ObjectStr2
+                    Root = ObjectStr1,
+                    Name = ObjectStr2
                 };
 
                 prop.Serialize(writer);
