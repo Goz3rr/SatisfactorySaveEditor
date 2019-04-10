@@ -200,7 +200,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Help_RequestHelpDiscord()
         {
             MessageBox.Show("You are now being redirected to the Satisfactory Modding discord server. Please request help in the #savegame-edits channel.");
-            System.Diagnostics.Process.Start("https://discord.gg/rNxYXht");
+            System.Diagnostics.Process.Start("https://discord.gg/rNxYXht"); //discord invite that links to the #savegame-edits channel
         }
 
         private void About()
