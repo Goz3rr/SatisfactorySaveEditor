@@ -8,7 +8,6 @@ namespace SatisfactorySaveEditor.ViewModel.Property
 
         private string type;
         private string value;
-        private string type;
 
         public string Value
         {
