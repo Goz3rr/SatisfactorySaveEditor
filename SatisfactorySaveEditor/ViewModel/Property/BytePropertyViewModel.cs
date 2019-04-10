@@ -6,8 +6,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
     {
         private readonly ByteProperty model;
 
-        private string value;
         private string type;
+        private string value;
 
         public string Value
         {

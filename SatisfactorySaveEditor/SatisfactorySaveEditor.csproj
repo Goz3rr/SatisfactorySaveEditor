@@ -77,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Cheats\ICheat.cs" />
+    <Compile Include="Cheats\InventorySlotsCheat.cs" />
+    <Compile Include="Cheats\ResearchUnlockCheat.cs" />
+    <Compile Include="Cheats\UnlockMapCheat.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
     <Compile Include="Converter\LinearColorToBrushConverter.cs" />
@@ -221,5 +225,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

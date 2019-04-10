@@ -9,7 +9,6 @@ namespace SatisfactorySaveParser.PropertyTypes
         public override string PropertyType => TypeName;
         public override int SerializedLength => Name.GetSerializedLength();
 
-        public int Value { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
 
