@@ -15,3 +15,9 @@ See the [releases page](https://github.com/Goz3rr/SatisfactorySaveEditor/release
 Written in C# using WPF for the user interface.
 
 Made in Visual Studio 2017. Requires .NET Framework 4.7.2 Dev Pack and .NET Core 2.2 SDK. 
+
+# Help
+
+If you have any questions, please feel free to contact us here on Github or on Discord. 
+
+On discord, you can request help in the `#savegame-edits` channel of the [Satisfactory Modding](https://discord.gg/rNxYXht) discord server.
