@@ -25,7 +25,12 @@
                             <GroupBox ToolTip="{Binding ., Converter={StaticResource SerializablePropertyToTypeStringConverter}}">
                                 <GroupBox.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding PropertyName}"/>
+                                        <TextBlock>
+                                            <TextBlock.Inlines>
+                                                <Run FontWeight="Bold" Text="{Binding Index, Mode=OneWay, StringFormat='#{0}'}"/>
+                                                <Run Text="{Binding PropertyName, Mode=OneWay}"/>
+                                            </TextBlock.Inlines>
+                                        </TextBlock>
                                         <Button Margin="5,0,0,0" Width="20" Height="20" VerticalContentAlignment="Center" HorizontalAlignment="Center" Command="{Binding DataContext.RemoveElementCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding .}">
                                             <Button.Content>
                                                 <TextBlock Text="X" FontWeight="DemiBold" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"/>

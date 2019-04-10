@@ -30,6 +30,7 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             model = arrayProperty;
 
             Elements = new ObservableCollection<SerializedPropertyViewModel>(arrayProperty.Elements.Select(PropertyViewModelMapper.Convert));
+            for (var i = 0; i < Elements.Count; i++) Elements[i].Index = i.ToString();
 
             AddElementCommand = new RelayCommand(AddElement);
             RemoveElementCommand = new RelayCommand<SerializedPropertyViewModel>(RemoveElement);
@@ -39,8 +40,12 @@ namespace SatisfactorySaveEditor.ViewModel.Property
 
         private void AddElement()
         {
-            var property = AddViewModel.CreateProperty(AddViewModel.FromStringType(Type), $"Element {Elements.Count}");
-            Elements.Add(PropertyViewModelMapper.Convert(property));
+            // TODO: Is copying the last PropertyName ok?
+            var property = AddViewModel.CreateProperty(AddViewModel.FromStringType(Type), Elements.Last().PropertyName);
+            var viewModel = PropertyViewModelMapper.Convert(property);
+            viewModel.Index = Elements.Count.ToString();
+
+            Elements.Add(viewModel);
         }
 
         private void RemoveElement(SerializedPropertyViewModel property)
