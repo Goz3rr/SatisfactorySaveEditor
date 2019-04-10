@@ -182,7 +182,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             for(var i = 0; i < count; i++)
             {
-                result[i] = new StructProperty($"Element {i}", index)
+                result[i] = new StructProperty(name, index)
                 {
                     Unk1 = unk1,
                     Unk2 = unk2,
