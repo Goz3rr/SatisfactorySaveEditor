@@ -158,9 +158,8 @@ namespace SatisfactorySaveEditor.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     var newObjects = rootItem.DescendantSelf;
-                    saveGame.Entries.RemoveAll(s => !newObjects.Contains(s));
-                    newObjects.RemoveAll(s => saveGame.Entries.Contains(s));
-                    saveGame.Entries.AddRange(newObjects);
+                    saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
+                    saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
 
                     rootItem.ApplyChanges();
                     saveGame.Save(dialog.FileName);
