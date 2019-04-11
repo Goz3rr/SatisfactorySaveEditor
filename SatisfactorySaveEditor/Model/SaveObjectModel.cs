@@ -114,6 +114,8 @@ namespace SatisfactorySaveEditor.Model
         {
             Title = title;
             Type = title;
+
+            CopyNameCommand = new RelayCommand(CopyName);
         }
 
         /// <summary>
