@@ -17,10 +17,13 @@ namespace SatisfactorySaveEditor.Converter
             if (typeDictionary != null) return;
             typeDictionary = new Dictionary<string, string>();
 
-            using (TextReader reader = new StreamReader("Types.xml"))
+            using (TextReader reader = new StreamReader("Data/Types.xml"))
             {
-                var serializer = new XmlSerializer(typeof(List<TypeTooltip>));
-                var tooltips = (List<TypeTooltip>) serializer.Deserialize(reader);
+                var serializer = new XmlSerializer(typeof(TypeTooltip));
+                var rootTooltip = (TypeTooltip) serializer.Deserialize(reader);
+
+                var tooltips = new List<TypeTooltip>();
+                rootTooltip.Flatten(tooltips);
 
                 foreach (var tooltip in tooltips) typeDictionary.Add(tooltip.Type, tooltip.Tooltip);
             }
