@@ -199,6 +199,8 @@
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Copy name" Command="{Binding CopyNameCommand}"/>
+                                        <Separator/>
                                         <MenuItem Header="Add">
                                             <MenuItem Header="Entity"/>
                                             <MenuItem Header="Component"/>
