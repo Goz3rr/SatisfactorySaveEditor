@@ -106,6 +106,7 @@
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\PreferencesWindowViewModel.cs" />
     <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
@@ -133,6 +134,9 @@
     </Compile>
     <Compile Include="View\Control\PropertiesControl.xaml.cs">
       <DependentUpon>PropertiesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PreferencesWindow.xaml.cs">
+      <DependentUpon>PreferencesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
@@ -179,6 +183,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\Control\PropertiesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PreferencesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

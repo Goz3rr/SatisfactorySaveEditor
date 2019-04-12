@@ -6,6 +6,7 @@
         mc:Ignorable="d"
         x:Name="UpdateWin"
         ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
         Title="Update" Height="550" Width="600">
     <Grid Margin="10">
         <Grid.RowDefinitions>

@@ -67,6 +67,7 @@
                     </MenuItem.CommandParameter>
                 </MenuItem>
                 <Separator/>
+                <MenuItem Header="Preferences" Command="{Binding PreferencesCommand}"/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="_Cheats" ItemsSource="{Binding CheatMenuItems}">

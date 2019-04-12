@@ -80,6 +80,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<bool> SaveCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
         public RelayCommand CheckUpdatesCommand { get; }
+        public RelayCommand PreferencesCommand { get; }
 
         public bool HasUnsavedChanges { get; set; } //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
 
@@ -109,14 +110,24 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 CheckForUpdate(true).ConfigureAwait(false);
             });
+            PreferencesCommand = new RelayCommand(OpenPreferences);
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
-            Properties.Settings.Default.AutoUpdate = true;
             CheckForUpdate(false).ConfigureAwait(false);
+        }
+
+        private void OpenPreferences()
+        {
+            var window = new PreferencesWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            window.ShowDialog();
         }
 
         private async Task CheckForUpdate(bool manual)
@@ -129,7 +140,8 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 UpdateWindow window = new UpdateWindow
                 {
-                    DataContext = new UpdateWindowViewModel(latestVersion)
+                    DataContext = new UpdateWindowViewModel(latestVersion),
+                    Owner = Application.Current.MainWindow
                 };
 
                 window.ShowDialog();

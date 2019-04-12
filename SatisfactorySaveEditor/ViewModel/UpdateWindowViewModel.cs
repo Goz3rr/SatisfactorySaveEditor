@@ -34,7 +34,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void DisableAutoCheck(Window window)
         {
             Properties.Settings.Default.AutoUpdate = false;
-            MessageBox.Show("You have disabled automatic update checking. You can re-enable it in the settings menu or manually check for updates in the 'Help' menu.", "Update", MessageBoxButton.OK);
+            MessageBox.Show("You have disabled automatic update checking. You can re-enable it in the preferences menu or manually check for updates in the 'Help' menu.", "Update", MessageBoxButton.OK);
 
             Properties.Settings.Default.Save();
             window.Close();
