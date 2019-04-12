@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
@@ -11,16 +10,13 @@ using SatisfactorySaveEditor.Util;
 using System.Windows;
 using Microsoft.Win32;
 using System.Reflection;
-using SatisfactorySaveEditor.View;
-using SatisfactorySaveParser.PropertyTypes;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
-using SatisfactorySaveEditor.ViewModel.Property;
-using SatisfactorySaveParser.Data;
 using SatisfactorySaveEditor.Cheats;
+using SatisfactorySaveEditor.View;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -83,6 +79,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<ICheat> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
+        public RelayCommand CheckUpdatesCommand { get; }
 
         public bool HasUnsavedChanges { get; set; } //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
 
@@ -108,11 +105,39 @@ namespace SatisfactorySaveEditor.ViewModel
             Help_ViewGithubCommand = new RelayCommand(Help_ViewGithub);
             Help_ReportIssueCommand = new RelayCommand(Help_ReportIssue);
             Help_RequestHelpDiscordCommand = new RelayCommand(Help_RequestHelpDiscord);
+            CheckUpdatesCommand = new RelayCommand(() =>
+            {
+                CheckForUpdate(true).ConfigureAwait(false);
+            });
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
+
+            Properties.Settings.Default.AutoUpdate = true;
+            CheckForUpdate(false).ConfigureAwait(false);
+        }
+
+        private async Task CheckForUpdate(bool manual)
+        {
+            if (!manual && !Properties.Settings.Default.AutoUpdate) return;
+
+            var latestVersion = await UpdateChecker.GetLatestReleaseInfo();
+
+            if (latestVersion.IsNewer())
+            {
+                UpdateWindow window = new UpdateWindow
+                {
+                    DataContext = new UpdateWindowViewModel(latestVersion)
+                };
+
+                window.ShowDialog();
+            }
+            else if (manual)
+            {
+                MessageBox.Show("You are already using the latest version.", "Update", MessageBoxButton.OK);
+            }
         }
 
         private bool CanDelete(SaveObjectModel model)

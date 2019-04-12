@@ -82,6 +82,7 @@
                 <MenuItem Header="View on GitHub" Command="{Binding Help_ViewGithubCommand}"/>
                 <MenuItem Header="Report an Issue" Command="{Binding Help_ReportIssueCommand}"/>
                 <MenuItem Header="Request help on Discord" Command="{Binding Help_RequestHelpDiscordCommand}"/>
+                <MenuItem Header="Check for updates" Command="{Binding CheckUpdatesCommand}"/>
                 <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             </MenuItem>
         </Menu>

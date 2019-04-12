@@ -21,7 +21,6 @@ namespace SatisfactorySaveEditor.ViewModel
         public AddViewModel AddViewModel => ServiceLocator.Current.GetInstance<AddViewModel>(Guid.NewGuid().ToString());
         public CheatInventoryViewModel CheatInventoryViewModel => ServiceLocator.Current.GetInstance<CheatInventoryViewModel>(Guid.NewGuid().ToString());
 
-
         public static void Cleanup()
         {
         }
