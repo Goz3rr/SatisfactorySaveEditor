@@ -79,7 +79,7 @@ namespace SatisfactorySaveParser
             writer.WriteLengthPrefixedString(ParentObjectName);
 
             writer.Write(Components.Count);
-            foreach(var obj in Components)
+            foreach (var obj in Components)
             {
                 writer.WriteLengthPrefixedString(obj.Root);
                 writer.WriteLengthPrefixedString(obj.Name);
@@ -102,10 +102,9 @@ namespace SatisfactorySaveParser
             var componentCount = reader.ReadInt32();
             for (int i = 0; i < componentCount; i++)
             {
-                var root = reader.ReadLengthPrefixedString();
-                var name = reader.ReadLengthPrefixedString();
-                Components.Add(new ObjectReference(root, name));
-                newLen -= 10 + root.Length + name.Length;
+                var componentRef = new ObjectReference(reader);
+                Components.Add(componentRef);
+                newLen -= 10 + componentRef.Root.Length + componentRef.Name.Length;
             }
 
             base.ParseData(newLen, reader);

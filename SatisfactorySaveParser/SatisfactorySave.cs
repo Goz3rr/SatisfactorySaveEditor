@@ -87,9 +87,7 @@ namespace SatisfactorySaveParser
                 var collectedObjectsCount = reader.ReadInt32();
                 for (int i = 0; i < collectedObjectsCount; i++)
                 {
-                    var root = reader.ReadLengthPrefixedString();
-                    var name = reader.ReadLengthPrefixedString();
-                    CollectedObjects.Add(new ObjectReference(root, name));
+                    CollectedObjects.Add(new ObjectReference(reader));
                 }
 
                 Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);

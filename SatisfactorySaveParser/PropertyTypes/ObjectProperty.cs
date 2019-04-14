@@ -1,9 +1,11 @@
-﻿using System.Diagnostics;
+﻿using SatisfactorySaveParser.Structures;
+using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.PropertyTypes
 {
-    public class ObjectProperty : SerializedProperty
+    public class ObjectProperty : SerializedProperty, IObjectReference
     {
         public const string TypeName = nameof(ObjectProperty);
         public override string PropertyType => TypeName;
@@ -11,6 +13,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public string Root { get; set; }
         public string Name { get; set; }
+        public SaveObject ReferencedObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ObjectProperty(string propertyName, string root = null, string name = null, int index = 0) : base(propertyName, index)
         {
