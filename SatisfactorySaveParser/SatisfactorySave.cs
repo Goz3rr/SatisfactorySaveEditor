@@ -1,5 +1,4 @@
-﻿using SatisfactorySaveParser.PropertyTypes;
-using SatisfactorySaveParser.PropertyTypes.Structs;
+﻿using NLog;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
 using System;
@@ -15,6 +14,8 @@ namespace SatisfactorySaveParser
     /// </summary>
     public class SatisfactorySave
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         ///     Path to save on disk
         /// </summary>
@@ -41,6 +42,8 @@ namespace SatisfactorySaveParser
         /// <param name="file">Full path to the .sav file, usually found in %localappdata%/FactoryGame/Saved/SaveGames</param>
         public SatisfactorySave(string file)
         {
+            log.Info($"Opening save file: {file}");
+
             FileName = Environment.ExpandEnvironmentVariables(file);
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
@@ -48,10 +51,11 @@ namespace SatisfactorySaveParser
                 Header = SaveHeader.Parse(reader);
 
                 // Does not need to be a public property because it's equal to Entries.Count
-                var totalEntries = reader.ReadUInt32();
+                var totalSaveObjects = reader.ReadUInt32();
+                log.Info($"Save contains {totalSaveObjects} object headers");
 
                 // Saved entities loop
-                for (int i = 0; i < totalEntries; i++)
+                for (int i = 0; i < totalSaveObjects; i++)
                 {
                     var type = reader.ReadInt32();
                     switch (type)
@@ -67,9 +71,10 @@ namespace SatisfactorySaveParser
                     }
                 }
 
-                var totalEntries2 = reader.ReadInt32();
-                Trace.Assert(Entries.Count == totalEntries);
-                Trace.Assert(Entries.Count == totalEntries2);
+                var totalSaveObjectData = reader.ReadInt32();
+                log.Info($"Save contains {totalSaveObjectData} object data");
+                Trace.Assert(Entries.Count == totalSaveObjects);
+                Trace.Assert(Entries.Count == totalSaveObjectData);
 
                 for (int i = 0; i < Entries.Count; i++)
                 {
@@ -85,11 +90,13 @@ namespace SatisfactorySaveParser
                 }
 
                 var collectedObjectsCount = reader.ReadInt32();
+                log.Info($"Save contains {collectedObjectsCount} collected objects");
                 for (int i = 0; i < collectedObjectsCount; i++)
                 {
                     CollectedObjects.Add(new ObjectReference(reader));
                 }
 
+                log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
                 Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
             }
         }
@@ -101,10 +108,10 @@ namespace SatisfactorySaveParser
 
         public void Save(string file)
         {
-            file = Environment.ExpandEnvironmentVariables(file);
-            FileName = file;
+            log.Info($"Writing save file: {file}");
 
-            using (var stream = new FileStream(file, FileMode.OpenOrCreate, FileAccess.Write))
+            FileName = Environment.ExpandEnvironmentVariables(file);
+            using (var stream = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.Write))
             using (var writer = new BinaryWriter(stream))
             {
                 stream.SetLength(0); // Clear any original content

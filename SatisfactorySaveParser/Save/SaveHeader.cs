@@ -1,4 +1,5 @@
-﻿using SatisfactorySaveParser.Exceptions;
+﻿using NLog;
+using SatisfactorySaveParser.Exceptions;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save
@@ -6,6 +7,8 @@ namespace SatisfactorySaveParser.Save
     public class SaveHeader
     {
         public const int ExpectedMagic = 66297;
+
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Save version number
@@ -80,6 +83,8 @@ namespace SatisfactorySaveParser.Save
                 PlayDuration = reader.ReadInt32(),
                 SaveDateTime = reader.ReadInt64()
             };
+
+            log.Debug($"Read save header: Version={header.SaveVersion}, Build={(int)header.BuildVersion}, Magic={header.Magic}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}");
 
             if (header.SaveVersion < 4 || header.SaveVersion > 5)
                 throw new UnknownSaveVersionException(header.SaveVersion);
