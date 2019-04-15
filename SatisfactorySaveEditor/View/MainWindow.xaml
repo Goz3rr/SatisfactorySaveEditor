@@ -270,8 +270,8 @@
 
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="0" Content="Entity name:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="1" Content="Root:"/>
-                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="Int4:"/>
-                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="3" Content="Int6:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="NeedTransform:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="3" Content="WasPlacedInLevel:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="4" Content="Position:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="5" Content="Rotation:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="6" Content="Scale:"/>
@@ -280,8 +280,8 @@
 
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, Delay=250}"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
-                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="2" Text="{Binding Int4}" IsEnabled="False"/>
-                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="3" Text="{Binding Int6}" IsEnabled="False"/>
+                                <CheckBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="2" IsChecked="{Binding NeedTransform}" IsEnabled="False"/>
+                                <CheckBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="3" IsChecked="{Binding WasPlacedInLevel}" IsEnabled="False"/>
                                 <control:Vector3Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="4" Vector="{Binding Position}"/>
                                 <control:Vector4Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="5" Vector="{Binding Rotation}"/>
                                 <control:Vector3Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="6" Vector="{Binding Scale}"/>

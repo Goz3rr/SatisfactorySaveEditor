@@ -9,9 +9,9 @@ namespace SatisfactorySaveParser
         public const int TypeID = 1;
 
         /// <summary>
-        ///     Unknown first int from definition
+        ///     Unknown use
         /// </summary>
-        public int Int4 { get; set; }
+        public bool NeedTransform { get; set; }
 
         /// <summary>
         ///     Rotation in the world
@@ -29,9 +29,9 @@ namespace SatisfactorySaveParser
         public Vector3 Scale { get; set; }
 
         /// <summary>
-        ///     Unknown second int from definition
+        ///     Unknown use
         /// </summary>
-        public int Int6 { get; set; }
+        public bool WasPlacedInLevel { get; set; }
 
         /// <summary>
         ///     Unknown related (parent?) object root
@@ -55,22 +55,22 @@ namespace SatisfactorySaveParser
 
         public SaveEntity(BinaryReader reader) : base(reader)
         {
-            Int4 = reader.ReadInt32();
+            NeedTransform = reader.ReadInt32() == 1;
             Rotation = reader.ReadVector4();
             Position = reader.ReadVector3();
             Scale = reader.ReadVector3();
-            Int6 = reader.ReadInt32();
+            WasPlacedInLevel = reader.ReadInt32() == 1;
         }
 
         public override void SerializeHeader(BinaryWriter writer)
         {
             base.SerializeHeader(writer);
 
-            writer.Write(Int4);
+            writer.Write(NeedTransform ? 1 : 0);
             writer.Write(Rotation);
             writer.Write(Position);
             writer.Write(Scale);
-            writer.Write(Int6);
+            writer.Write(WasPlacedInLevel ? 1 : 0);
         }
 
         public override void SerializeData(BinaryWriter writer)
