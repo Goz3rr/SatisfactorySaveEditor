@@ -1,9 +1,13 @@
-﻿using SatisfactorySaveParser.Structures;
+﻿using NLog;
+using SatisfactorySaveParser.Structures;
 using System.Collections.Generic;
 using System.IO;
 
 namespace SatisfactorySaveParser
 {
+    /// <summary>
+    ///     Engine class: FActorSaveHeader
+    /// </summary>
     public class SaveEntity : SaveObject
     {
         public const int TypeID = 1;
@@ -47,8 +51,6 @@ namespace SatisfactorySaveParser
         /// </summary>
         public List<ObjectReference> Components { get; set; } = new List<ObjectReference>();
 
-
-
         public SaveEntity(string typePath, string rootObject, string instanceName) : base(typePath, rootObject, instanceName)
         {
         }
@@ -81,8 +83,8 @@ namespace SatisfactorySaveParser
             writer.Write(Components.Count);
             foreach (var obj in Components)
             {
-                writer.WriteLengthPrefixedString(obj.Root);
-                writer.WriteLengthPrefixedString(obj.Name);
+                writer.WriteLengthPrefixedString(obj.LevelName);
+                writer.WriteLengthPrefixedString(obj.PathName);
             }
 
             base.SerializeData(writer);
@@ -104,7 +106,7 @@ namespace SatisfactorySaveParser
             {
                 var componentRef = new ObjectReference(reader);
                 Components.Add(componentRef);
-                newLen -= 10 + componentRef.Root.Length + componentRef.Name.Length;
+                newLen -= 10 + componentRef.LevelName.Length + componentRef.PathName.Length;
             }
 
             base.ParseData(newLen, reader);

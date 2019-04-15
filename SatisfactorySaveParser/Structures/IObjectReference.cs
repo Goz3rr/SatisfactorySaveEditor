@@ -2,8 +2,8 @@
 {
     public interface IObjectReference
     {
-        string Root { get; set; }
-        string Name { get; set; }
+        string LevelName { get; set; }
+        string PathName { get; set; }
 
         SaveObject ReferencedObject { get; set; }
     }

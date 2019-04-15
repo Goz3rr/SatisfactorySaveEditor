@@ -4,6 +4,9 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Save
 {
+    /// <summary>
+    ///     Engine class: FSaveHeader
+    /// </summary>
     public class SaveHeader
     {
         public const int ExpectedMagic = 66297;

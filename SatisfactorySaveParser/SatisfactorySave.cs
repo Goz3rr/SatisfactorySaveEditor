@@ -80,6 +80,11 @@ namespace SatisfactorySaveParser
                 {
                     var len = reader.ReadInt32();
                     var before = reader.BaseStream.Position;
+
+#if DEBUG
+                    //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
+#endif
+
                     Entries[i].ParseData(len, reader);
                     var after = reader.BaseStream.Position;
 
@@ -154,8 +159,8 @@ namespace SatisfactorySaveParser
                 writer.Write(CollectedObjects.Count);
                 foreach (var unkMap in CollectedObjects)
                 {
-                    writer.WriteLengthPrefixedString(unkMap.Root);
-                    writer.WriteLengthPrefixedString(unkMap.Name);
+                    writer.WriteLengthPrefixedString(unkMap.LevelName);
+                    writer.WriteLengthPrefixedString(unkMap.PathName);
                 }
             }
         }

@@ -3,10 +3,13 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Structures
 {
+    /// <summary>
+    ///     Engine class: FObjectReferenceDisc
+    /// </summary>
     public class ObjectReference : IObjectReference
     {
-        public string Root { get; set; }
-        public string Name { get; set; }
+        public string LevelName { get; set; }
+        public string PathName { get; set; }
         public SaveObject ReferencedObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ObjectReference()
@@ -15,13 +18,13 @@ namespace SatisfactorySaveParser.Structures
 
         public ObjectReference(BinaryReader reader)
         {
-            Root = reader.ReadLengthPrefixedString();
-            Name = reader.ReadLengthPrefixedString();
+            LevelName = reader.ReadLengthPrefixedString();
+            PathName = reader.ReadLengthPrefixedString();
         }
 
         public override string ToString()
         {
-            return $"Root: {Root} Name: {Name}";
+            return $"Level: {LevelName} Path: {PathName}";
         }
     }
 }

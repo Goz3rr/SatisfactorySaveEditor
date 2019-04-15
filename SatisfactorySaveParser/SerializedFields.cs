@@ -1,4 +1,6 @@
-﻿using SatisfactorySaveParser.PropertyTypes;
+﻿using NLog;
+using SatisfactorySaveParser.PropertyTypes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +9,8 @@ namespace SatisfactorySaveParser
 {
     public class SerializedFields : List<SerializedProperty>
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         public byte[] TrailingData { get; private set; }
 
         public void Serialize(BinaryWriter writer)
@@ -40,7 +44,9 @@ namespace SatisfactorySaveParser
             var remainingBytes = start + length - reader.BaseStream.Position;
             if (remainingBytes > 0)
             {
+                log.Warn($"{remainingBytes} bytes left after reading all serialized fields!");
                 result.TrailingData = reader.ReadBytes((int)remainingBytes);
+                log.Trace(BitConverter.ToString(result.TrailingData).Replace("-", " "));
             }
 
             //if (remainingBytes == 4)

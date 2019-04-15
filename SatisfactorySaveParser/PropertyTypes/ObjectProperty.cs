@@ -9,16 +9,16 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(ObjectProperty);
         public override string PropertyType => TypeName;
-        public override int SerializedLength => Root.GetSerializedLength() + Name.GetSerializedLength();
+        public override int SerializedLength => LevelName.GetSerializedLength() + PathName.GetSerializedLength();
 
-        public string Root { get; set; }
-        public string Name { get; set; }
+        public string LevelName { get; set; }
+        public string PathName { get; set; }
         public SaveObject ReferencedObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ObjectProperty(string propertyName, string root = null, string name = null, int index = 0) : base(propertyName, index)
         {
-            Root = root;
-            Name = name;
+            LevelName = root;
+            PathName = name;
         }
 
         public ObjectProperty(string propertyName, int index) : base(propertyName, index)
@@ -27,7 +27,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public override string ToString()
         {
-            return $"obj: {Name}";
+            return $"obj: {PathName}";
         }
 
         public override void Serialize(BinaryWriter writer, bool writeHeader = true)
@@ -38,8 +38,8 @@ namespace SatisfactorySaveParser.PropertyTypes
             writer.Write(Index);
             writer.Write((byte)0);
 
-            writer.WriteLengthPrefixedString(Root);
-            writer.WriteLengthPrefixedString(Name);
+            writer.WriteLengthPrefixedString(LevelName);
+            writer.WriteLengthPrefixedString(PathName);
         }
 
         public static ObjectProperty Parse(string propertyName, int index, BinaryReader reader)
@@ -49,8 +49,8 @@ namespace SatisfactorySaveParser.PropertyTypes
             var unk3 = reader.ReadByte();
             Trace.Assert(unk3 == 0);
 
-            result.Root = reader.ReadLengthPrefixedString();
-            result.Name = reader.ReadLengthPrefixedString();
+            result.LevelName = reader.ReadLengthPrefixedString();
+            result.PathName = reader.ReadLengthPrefixedString();
 
             return result;
         }
