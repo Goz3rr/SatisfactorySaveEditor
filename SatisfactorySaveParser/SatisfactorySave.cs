@@ -144,9 +144,19 @@ namespace SatisfactorySaveParser
                 using (var ms = new MemoryStream())
                 using (var dataWriter = new BinaryWriter(ms))
                 {
-                    for (int i = 0; i < Entries.Count; i++)
+                    for (var i = 0; i < entities.Length; i++)
                     {
-                        Entries[i].SerializeData(dataWriter);
+                        entities[i].SerializeData(dataWriter);
+
+                        var bytes = ms.ToArray();
+                        writer.Write(bytes.Length);
+                        writer.Write(bytes);
+
+                        ms.SetLength(0);
+                    }
+                    for (var i = 0; i < components.Length; i++)
+                    {
+                        components[i].SerializeData(dataWriter);
 
                         var bytes = ms.ToArray();
                         writer.Write(bytes.Length);
