@@ -11,7 +11,7 @@ namespace SatisfactorySaveParser
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public byte[] TrailingData { get; private set; }
+        public byte[] TrailingData { get; set; }
 
         public void Serialize(BinaryWriter writer)
         {
