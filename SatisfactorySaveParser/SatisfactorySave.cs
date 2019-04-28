@@ -167,10 +167,10 @@ namespace SatisfactorySaveParser
                 }
 
                 writer.Write(CollectedObjects.Count);
-                foreach (var unkMap in CollectedObjects)
+                foreach (var collectedObject in CollectedObjects)
                 {
-                    writer.WriteLengthPrefixedString(unkMap.LevelName);
-                    writer.WriteLengthPrefixedString(unkMap.PathName);
+                    writer.WriteLengthPrefixedString(collectedObject.LevelName);
+                    writer.WriteLengthPrefixedString(collectedObject.PathName);
                 }
             }
         }
