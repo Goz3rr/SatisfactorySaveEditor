@@ -8,7 +8,7 @@ namespace SatisfactorySaveEditor.ViewModel.Property
 {
     public class ArrayPropertyViewModel : SerializedPropertyViewModel
     {
-        public readonly ArrayProperty model;
+        private readonly ArrayProperty model;
 
         private bool isExpanded;
 

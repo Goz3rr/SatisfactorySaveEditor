@@ -15,7 +15,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Kill Dummy Players";
 
-        private int GetNextStorageID(ref int currentId, SaveObjectModel rootItem)
+        private int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
             while (rootItem.FindChild($"Persistent_Level:PersistentLevel.BP_Crate_C_{currentId}.inventory", false) != null)
                 currentId++;
@@ -33,10 +33,10 @@ namespace SatisfactorySaveEditor.Cheats
             int currentStorageID = 0;
             foreach (SaveObjectModel player in players.DescendantSelfViewModel)
             {
-                string inventoryPath = player.FindOrCreateField<ObjectPropertyViewModel>("mInventory").Str2;
+                string inventoryPath = player.FindField<ObjectPropertyViewModel>("mInventory").Str2;
                 SaveObjectModel inventoryState = rootItem.FindChild(inventoryPath, false);
                 SaveComponent inventoryComponent = (SaveComponent)inventoryState.Model;
-                GetNextStorageID(ref currentStorageID, rootItem);
+                currentStorageID = GetNextStorageID(currentStorageID, rootItem);
                 SaveComponent newInventory = new SaveComponent(inventoryComponent.TypePath, inventoryComponent.RootObject, $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
                 {
                     ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
