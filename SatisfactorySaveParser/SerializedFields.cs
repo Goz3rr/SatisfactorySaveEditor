@@ -44,9 +44,9 @@ namespace SatisfactorySaveParser
             var remainingBytes = start + length - reader.BaseStream.Position;
             if (remainingBytes > 0)
             {
-                log.Warn($"{remainingBytes} bytes left after reading all serialized fields!");
+                //log.Warn($"{remainingBytes} bytes left after reading all serialized fields!");
                 result.TrailingData = reader.ReadBytes((int)remainingBytes);
-                log.Trace(BitConverter.ToString(result.TrailingData).Replace("-", " "));
+                //log.Trace(BitConverter.ToString(result.TrailingData).Replace("-", " "));
             }
 
             //if (remainingBytes == 4)

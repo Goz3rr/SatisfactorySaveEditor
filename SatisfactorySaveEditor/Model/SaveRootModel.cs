@@ -41,6 +41,8 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => PlayDuration, ref playDuration, value); }
         }
 
+        public bool HasSessionVisibility => SaveVersion >= 5;
+
         public ESessionVisibility SessionVisibility
         {
             get => sessionVisibility;

@@ -24,6 +24,7 @@
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
         <converter:MenuTextConverter x:Key="MenuTextConverter"/>
         <converter:TypeTooltipConverter x:Key="TypeTooltipConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <ObjectDataProvider x:Key="ESessionVisibilityEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="save:ESessionVisibility"/>
@@ -339,7 +340,7 @@
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="2" Content="Map name:"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="3" Content="Map options"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="4" Content="Session name:"/>
-                            <Label Margin="0,3" Grid.Column="0" Grid.Row="5" Content="Session visibility:"/>
+                            <Label Margin="0,3" Grid.Column="0" Grid.Row="5" Content="Session visibility:" Visibility="{Binding HasSessionVisibility, Converter={StaticResource BoolToVis}}"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="6" Content="Save creation time:"/>
 
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Text="{Binding SaveVersion, Mode=OneWay}" IsEnabled="False"/>
@@ -347,7 +348,7 @@
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" Text="{Binding MapName}"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="3" VerticalContentAlignment="Center" Text="{Binding MapOptions}"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="4" VerticalContentAlignment="Center" Text="{Binding SessionName}"/>
-                            <ComboBox Margin="0,3" Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" SelectedItem="{Binding SessionVisibility}" ItemsSource="{Binding Source={StaticResource ESessionVisibilityEnum}}"/>
+                            <ComboBox Margin="0,3" Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" SelectedItem="{Binding SessionVisibility}" ItemsSource="{Binding Source={StaticResource ESessionVisibilityEnum}}" Visibility="{Binding HasSessionVisibility, Converter={StaticResource BoolToVis}}"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="6" VerticalContentAlignment="Center" Text="{Binding SaveDateTime}"/>
                         </Grid>
                     </DataTemplate>
