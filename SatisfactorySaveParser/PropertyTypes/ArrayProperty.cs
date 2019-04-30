@@ -139,6 +139,16 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                     }
                     break;
+                case ByteProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for(var i = 0; i < count; i++)
+                        {
+                            var value = reader.ReadByte();
+                            result.Elements.Add(new ByteProperty($"Element {i}") { Value = value.ToString() });
+                        }
+                    }
+                    break;
                 default:
                     throw new NotImplementedException();
             }
