@@ -56,6 +56,10 @@ namespace SatisfactorySaveEditor.Cheats
                         TrailingData = null
                     };
                     newSaveObject.DataFields.Add(new ObjectProperty("mInventory", 0) { LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory" });
+                    if (rootItem.FindChild("Crate", false) == null)
+                        rootItem.FindChild("-Shared", false).Items.Add(new SaveObjectModel("Crate"));
+                    if (rootItem.FindChild("BP_Crate.BP_Crate_C", false) == null)
+                        rootItem.FindChild("Crate", false).Items.Add(new SaveObjectModel("BP_Crate.BP_Crate_C"));
                     rootItem.FindChild("BP_Crate.BP_Crate_C", false).Items.Add(new SaveEntityModel(newSaveObject));
                 }
                 rootItem.Remove(player);
