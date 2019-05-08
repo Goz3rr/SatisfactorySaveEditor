@@ -89,6 +89,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cheats\ICheat.cs" />
+    <Compile Include="Cheats\DeleteAnimalsCheat.cs" />
     <Compile Include="Cheats\KillPlayersCheat.cs" />
     <Compile Include="Cheats\InventorySlotsCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
