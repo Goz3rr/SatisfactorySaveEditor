@@ -88,7 +88,8 @@
     <Compile Include="Save\EIntroTutorialSteps.cs" />
     <Compile Include="Save\ESessionVisibility.cs" />
     <Compile Include="Save\FSaveCustomVersion.cs" />
-    <Compile Include="Save\SaveHeader.cs" />
+    <Compile Include="Save\FSaveHeader.cs" />
+    <Compile Include="Save\SaveHeaderVersion.cs" />
     <Compile Include="SerializedFields.cs" />
     <Compile Include="Structures\IObjectReference.cs" />
     <Compile Include="Structures\ObjectReference.cs" />

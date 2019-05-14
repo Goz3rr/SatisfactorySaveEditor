@@ -24,7 +24,7 @@ namespace SatisfactorySaveParser
         /// <summary>
         ///     Header part of the save containing things like the version and metadata
         /// </summary>
-        public SaveHeader Header { get; private set; }
+        public FSaveHeader Header { get; private set; }
 
         /// <summary>
         ///     Main content of the save game
@@ -48,7 +48,7 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
-                Header = SaveHeader.Parse(reader);
+                Header = FSaveHeader.Parse(reader);
 
                 // Does not need to be a public property because it's equal to Entries.Count
                 var totalSaveObjects = reader.ReadUInt32();
