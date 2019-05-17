@@ -92,6 +92,10 @@
     <Compile Include="Cheats\DeleteEnemiesCheat.cs" />
     <Compile Include="Cheats\KillPlayersCheat.cs" />
     <Compile Include="Cheats\InventorySlotsCheat.cs" />
+    <Compile Include="Cheats\MassDismantleCheat.cs" />
+    <Compile Include="Cheats\MassDismantleWindow.xaml.cs">
+      <DependentUpon>MassDismantleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
@@ -151,6 +155,10 @@
     <Compile Include="View\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Cheats\MassDismantleWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\AddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
