@@ -4,14 +4,15 @@ using SatisfactorySaveEditor.ViewModel.Struct;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
+using System;
 using System.Diagnostics;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
 {
-    public class DeleteAnimalsCheat : ICheat
+    public class DeleteEnemiesCheat : ICheat
     {
-        public string Name => "Delete Animals";
+        public string Name => "Delete enemies";
 
         public bool Apply(SaveObjectModel rootItem)
         {
@@ -21,23 +22,24 @@ namespace SatisfactorySaveEditor.Cheats
                 MessageBox.Show("This save does not contain animals or it is corrupt.", "Cannot find animals", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            
+
             // Set WasKilled to true so they don't respawn after deleting them
             foreach (SaveObjectModel animalSpawner in animalSpawners.DescendantSelfViewModel)
-                animalSpawner.FindField("mSpawnData", (ArrayPropertyViewModel arrayProperty) =>
+                if (animalSpawner.Title.ToLower().Contains("enemy"))
                 {
-                    foreach (StructPropertyViewModel elem in arrayProperty.Elements)
-                        ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
-                });
+                    animalSpawner.FindField("mSpawnData", (ArrayPropertyViewModel arrayProperty) =>
+                    {
+                        foreach (StructPropertyViewModel elem in arrayProperty.Elements)
+                            ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
+                    });
+                }
 
-            // Actually delete the animals (RIP Lizzard doggos - is there any way to save them?)
-            var animals = rootItem.FindChild("Creature", false);
-            for (int i = animals.Items.Count - 1; i >= 0; i--)
-                if (animals.Items[i].Title != "BP_CreatureSpawner.BP_CreatureSpawner_C")
-                    animals.Items.Remove(animals.Items[i]);
+            // Actually delete the animals
+            var enemies = rootItem.FindChild("Creature", false).FindChild("Enemy", false);
+            rootItem.Remove(enemies);
 
 
-            MessageBox.Show($"Deleted all animals. RIP Lizzard Doggos", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Deleted all enemies.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             return true;
         }
     }
