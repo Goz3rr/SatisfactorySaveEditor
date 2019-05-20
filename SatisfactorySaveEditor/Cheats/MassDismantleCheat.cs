@@ -117,43 +117,30 @@ namespace SatisfactorySaveEditor.Cheats
                 return ms.ToArray();
             }
         }
-        
-        public bool Apply(SaveObjectModel rootItem)
-        {
-            BuildPolygon();
-            if(polygon.Length < 2)
-            {
-                MessageBox.Show("At least 2 points needed to mass delete", "Could not mass delete", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-            List<SaveObjectModel> pathsToDelete = new List<SaveObjectModel>();
-            pathsToDelete.AddRange(rootItem.FindChild("Buildable", true).FindChild("Factory", true).DescendantSelfViewModel);
-            pathsToDelete.AddRange(rootItem.FindChild("Buildable", true).FindChild("Building", true).DescendantSelfViewModel);
 
-            ArrayProperty inventory = new ArrayProperty("mInventoryStacks")
-            {
-                Type = "StructProperty"
-            };
+        private int MassDismantle(List<SaveObjectModel> objects, ArrayProperty inventory, SaveObjectModel rootItem)
+        {
             int count = 0;
-            foreach (SaveObjectModel item in pathsToDelete)
+            foreach (SaveObjectModel item in objects)
             {
                 if (item is SaveEntityModel)
                     if (IsPointInPolygon(((SaveEntityModel)item).Position, polygon))
                     {
                         ArrayPropertyViewModel dismantleRefund = ((SaveEntityModel)item).FindField<ArrayPropertyViewModel>("mDismantleRefund");
-                        if (dismantleRefund == null)
-                            continue;
-                        foreach(SerializedPropertyViewModel property in dismantleRefund.Elements)
+                        if (dismantleRefund != null)
                         {
-                            DynamicStructData itemAmountStruct = (DynamicStructData)((StructProperty)property.Model).Data;
-                            string itemPath = ((ObjectProperty)itemAmountStruct.Fields[0]).PathName;
-                            int itemAmount = ((IntProperty)itemAmountStruct.Fields[1]).Value;
-                            byte[] bytes = PrepareForParse(itemPath, itemAmount);
-                            using (MemoryStream ms = new MemoryStream(bytes))
-                            using (BinaryReader reader = new BinaryReader(ms))
+                            foreach (SerializedPropertyViewModel property in dismantleRefund.Elements)
                             {
-                                SerializedProperty prop = SerializedProperty.Parse(reader);
-                                inventory.Elements.Add(prop);
+                                DynamicStructData itemAmountStruct = (DynamicStructData)((StructProperty)property.Model).Data;
+                                string itemPath = ((ObjectProperty)itemAmountStruct.Fields[0]).PathName;
+                                int itemAmount = ((IntProperty)itemAmountStruct.Fields[1]).Value;
+                                byte[] bytes = PrepareForParse(itemPath, itemAmount);
+                                using (MemoryStream ms = new MemoryStream(bytes))
+                                using (BinaryReader reader = new BinaryReader(ms))
+                                {
+                                    SerializedProperty prop = SerializedProperty.Parse(reader);
+                                    inventory.Elements.Add(prop);
+                                }
                             }
                         }
                         if (item.FindField<ObjectPropertyViewModel>("mInventory") != null)
@@ -162,12 +149,45 @@ namespace SatisfactorySaveEditor.Cheats
                         count++;
                     }
             }
+            return count;
+        }
 
-            int currentStorageID = GetNextStorageID(0, rootItem);
-            SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
+        public bool Apply(SaveObjectModel rootItem)
+        {
+            BuildPolygon();
+            if (polygon.Length < 2)
             {
-                ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
-                DataFields = new SerializedFields()
+                MessageBox.Show("At least 2 points needed to mass delete", "Could not mass delete", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            ArrayProperty inventory = new ArrayProperty("mInventoryStacks")
+            {
+                Type = "StructProperty"
+            };
+            int countFactory = 0, countBuilding = 0, countCrate = 0;
+            try
+            {
+                countFactory = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Factory", true).DescendantSelfViewModel, inventory, rootItem);
+            }
+            catch (NullReferenceException) { }
+            try
+            {
+                countBuilding = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Building", true).DescendantSelfViewModel, inventory, rootItem);
+            }
+            catch (NullReferenceException) { }
+            try
+            {
+                countCrate = MassDismantle(rootItem.FindChild("-Shared", true).FindChild("BP_Crate.BP_Crate_C", true).DescendantSelfViewModel, inventory, rootItem);
+            }
+            catch (NullReferenceException) { }
+            MessageBoxResult result = MessageBox.Show($"Deleted {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in deleted storages) in a single crate?", "Deleted", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                int currentStorageID = GetNextStorageID(0, rootItem);
+                SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
+                {
+                    ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
+                    DataFields = new SerializedFields()
                 {
                     inventory,
                     new ArrayProperty("mArbitrarySlotSizes")
@@ -181,26 +201,25 @@ namespace SatisfactorySaveEditor.Cheats
                         Elements = Enumerable.Repeat(new ObjectProperty("Element"){ LevelName = "", PathName = "" }, inventory.Elements.Count).Cast<SerializedProperty>().ToList()
                     }
                 }
-            };
-            rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
-            SaveEntity player = (SaveEntity)rootItem.FindChild("Char_Player.Char_Player_C", false).DescendantSelf[0];
-            SaveEntity newSaveObject = new SaveEntity("/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
-            {
-                NeedTransform = true,
-                Rotation = player.Rotation,
-                Position = new Vector3() { X = player.Position.X, Y = player.Position.Y, Z = player.Position.Z + 100 },
-                Scale = new Vector3() { X = 1, Y = 1, Z = 1 },
-                WasPlacedInLevel = false,
-                ParentObjectName = "",
-                ParentObjectRoot = ""
-            };
-            newSaveObject.DataFields = new SerializedFields()
-            {
-                new ObjectProperty("mInventory", 0) { LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory" }
-            };
-            MessageBoxResult result = MessageBox.Show($"Deleted {count} objects. Drop the items (including items in deleted storages) in a crate?", "Deleted", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if(result == MessageBoxResult.Yes)
+                };
+                rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
+                SaveEntity player = (SaveEntity)rootItem.FindChild("Char_Player.Char_Player_C", false).DescendantSelf[0];
+                SaveEntity newSaveObject = new SaveEntity("/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
+                {
+                    NeedTransform = true,
+                    Rotation = player.Rotation,
+                    Position = new Vector3() { X = player.Position.X, Y = player.Position.Y + 100, Z = player.Position.Z },
+                    Scale = new Vector3() { X = 1, Y = 1, Z = 1 },
+                    WasPlacedInLevel = false,
+                    ParentObjectName = "",
+                    ParentObjectRoot = ""
+                };
+                newSaveObject.DataFields = new SerializedFields()
+                {
+                    new ObjectProperty("mInventory", 0) { LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory" }
+                };
                 rootItem.FindChild("BP_Crate.BP_Crate_C", false).Items.Add(new SaveEntityModel(newSaveObject));
+            }
             return true;
         }
     }
