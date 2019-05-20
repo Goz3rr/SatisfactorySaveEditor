@@ -56,6 +56,7 @@ namespace SatisfactorySaveEditor.Cheats
         }
 
         private Vector3[] polygon;
+        private float minZ, maxZ;
 
         private void BuildPolygon()
         {
@@ -73,6 +74,17 @@ namespace SatisfactorySaveEditor.Cheats
                     done = true;
             }
             polygon = points.ToArray();
+            MassDismantleWindow zWindow = new MassDismantleWindow(isZWindow: true);
+            if (!zWindow.ShowDialog().Value || zWindow.Result == null)
+            {
+                minZ = float.NegativeInfinity;
+                maxZ = float.PositiveInfinity;
+            }
+            else
+            {
+                minZ = zWindow.Result.X;
+                maxZ = zWindow.Result.Y;
+            }
         }
 
         public byte[] PrepareForParse(string itemPath, int itemAmount)
@@ -124,7 +136,7 @@ namespace SatisfactorySaveEditor.Cheats
             foreach (SaveObjectModel item in objects)
             {
                 if (item is SaveEntityModel)
-                    if (IsPointInPolygon(((SaveEntityModel)item).Position, polygon))
+                    if (IsPointInPolygon(((SaveEntityModel)item).Position, polygon) && minZ <= ((SaveEntityModel)item).Position.Z && ((SaveEntityModel)item).Position.Z <= maxZ)
                     {
                         ArrayPropertyViewModel dismantleRefund = ((SaveEntityModel)item).FindField<ArrayPropertyViewModel>("mDismantleRefund");
                         if (dismantleRefund != null)

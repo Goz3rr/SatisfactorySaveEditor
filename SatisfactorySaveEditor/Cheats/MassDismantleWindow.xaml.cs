@@ -20,21 +20,36 @@ namespace SatisfactorySaveEditor.Cheats
     /// </summary>
     public partial class MassDismantleWindow : Window
     {
-        public MassDismantleWindow()
+        public MassDismantleWindow(bool isZWindow = false)
         {
             InitializeComponent();
             xCoordinate.GotFocus += RemovePlaceholder;
             xCoordinate.LostFocus += AddPlaceholder;
             yCoordinate.GotFocus += RemovePlaceholder;
             yCoordinate.LostFocus += AddPlaceholder;
+            this.isZWindow = isZWindow;
+            if(isZWindow)
+            {
+                xLabel.Content = "minimum Z";
+                yLabel.Content = "maximum Z";
+                grid.Children.Remove(nextButton);
+                Label leaveEmptyLabel = new Label()
+                {
+                    Content = "Leave placeholder for infinity"
+                };
+                grid.Children.Add(leaveEmptyLabel);
+                Grid.SetRow(leaveEmptyLabel, 2);
+                Grid.SetColumn(leaveEmptyLabel, 0);
+            }
         }
 
-        bool isPlaceHolderX = true;
-        bool isPlaceHolderY = true;
+        private bool isZWindow = false;
+        private bool isPlaceHolderX = true;
+        private bool isPlaceHolderY = true;
 
         public void RemovePlaceholder(object sender, EventArgs e)
         {
-            if (((TextBox)sender).Text == "1234.56")
+            if (((TextBox)sender).Text == "123,456.78")
             {
                 ((TextBox)sender).Text = "";
                 if (sender == xCoordinate)
@@ -48,7 +63,7 @@ namespace SatisfactorySaveEditor.Cheats
         {
             if (string.IsNullOrWhiteSpace(((TextBox)sender).Text))
             {
-                ((TextBox)sender).Text = "1234.56";
+                ((TextBox)sender).Text = "123,456.78";
                 if (sender == xCoordinate)
                     isPlaceHolderX = true;
                 if (sender == yCoordinate)
@@ -92,13 +107,20 @@ namespace SatisfactorySaveEditor.Cheats
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !isPlaceHolderX && !isPlaceHolderY)
+                if ((!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !isPlaceHolderX && !isPlaceHolderY) || isZWindow)
                 {
                     Result = new Vector3()
                     {
                         X = float.Parse(xCoordinate.Text),
                         Y = float.Parse(yCoordinate.Text)
                     };
+                }
+                if(isZWindow)
+                {
+                    if (isPlaceHolderX)
+                        Result.X = float.NegativeInfinity;
+                    if (isPlaceHolderY)
+                        Result.Y = float.PositiveInfinity;
                 }
                 DialogResult = true;
                 Done = true;
