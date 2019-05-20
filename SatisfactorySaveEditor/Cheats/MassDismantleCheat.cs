@@ -189,6 +189,7 @@ namespace SatisfactorySaveEditor.Cheats
             MessageBoxResult result = MessageBox.Show($"Deleted {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in deleted storages) in a single crate?", "Deleted", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
+                inventory = ArrangeInventory(inventory);
                 int currentStorageID = GetNextStorageID(0, rootItem);
                 SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
                 {
@@ -231,6 +232,41 @@ namespace SatisfactorySaveEditor.Cheats
                 rootItem.FindChild("BP_Crate.BP_Crate_C", false).Items.Add(new SaveEntityModel(newSaveObject));
             }
             return true;
+        }
+
+
+
+        private ArrayProperty ArrangeInventory(ArrayProperty inventory)
+        {
+            SortedDictionary<string, int> stacks = new SortedDictionary<string, int>();
+            foreach (StructProperty inventoryStruct in inventory.Elements.Cast<StructProperty>())
+            {
+                DynamicStructData inventoryStack = (DynamicStructData) inventoryStruct.Data;
+                InventoryItem inventoryItem = (InventoryItem)((StructProperty)inventoryStack.Fields[0]).Data;
+                IntProperty itemCount = (IntProperty)inventoryStack.Fields[1];
+                if (!stacks.ContainsKey(inventoryItem.ItemType))
+                    stacks[inventoryItem.ItemType] = 0;
+                stacks[inventoryItem.ItemType] += itemCount.Value;
+            }
+            ArrayProperty newInventory = new ArrayProperty("mInventoryStacks")
+            {
+                Type = "StructProperty"
+            };
+            foreach(KeyValuePair<string, int> itemStack in stacks)
+            {
+                string itemPath = itemStack.Key;
+                if (string.IsNullOrWhiteSpace(itemPath))
+                    continue;
+                int itemAmount = itemStack.Value;
+                byte[] bytes = PrepareForParse(itemPath, itemAmount);
+                using (MemoryStream ms = new MemoryStream(bytes))
+                using (BinaryReader reader = new BinaryReader(ms))
+                {
+                    SerializedProperty prop = SerializedProperty.Parse(reader);
+                    newInventory.Elements.Add(prop);
+                }
+            }
+            return newInventory;
         }
     }
 }
