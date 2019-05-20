@@ -145,6 +145,12 @@ namespace SatisfactorySaveEditor.Cheats
                         }
                         if (item.FindField<ObjectPropertyViewModel>("mInventory") != null)
                             inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
+                        if (item.FindField<ObjectPropertyViewModel>("mStorageInventory") != null)
+                            inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mStorageInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
+                        if (item.FindField<ObjectPropertyViewModel>("mInputInventory") != null)
+                            inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mInputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
+                        if (item.FindField<ObjectPropertyViewModel>("mOutputInventory") != null)
+                            inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mOutputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
                         rootItem.Remove(item);
                         count++;
                     }
