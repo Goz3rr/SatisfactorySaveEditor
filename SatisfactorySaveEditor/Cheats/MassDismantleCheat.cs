@@ -188,19 +188,19 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
                     DataFields = new SerializedFields()
-                {
-                    inventory,
-                    new ArrayProperty("mArbitrarySlotSizes")
                     {
-                        Type = "IntProperty",
-                        Elements = Enumerable.Repeat(new IntProperty("Element"){ Value = 0 }, inventory.Elements.Count).Cast<SerializedProperty>().ToList()
-                    },
-                    new ArrayProperty("mAllowedItemDescriptors")
-                    {
-                        Type = "ObjectProperty",
-                        Elements = Enumerable.Repeat(new ObjectProperty("Element"){ LevelName = "", PathName = "" }, inventory.Elements.Count).Cast<SerializedProperty>().ToList()
+                        inventory,
+                        new ArrayProperty("mArbitrarySlotSizes")
+                        {
+                            Type = "IntProperty",
+                            Elements = Enumerable.Repeat(new IntProperty("Element"){ Value = 0 }, inventory.Elements.Count).Cast<SerializedProperty>().ToList()
+                        },
+                        new ArrayProperty("mAllowedItemDescriptors")
+                        {
+                            Type = "ObjectProperty",
+                            Elements = Enumerable.Repeat(new ObjectProperty("Element"){ LevelName = "", PathName = "" }, inventory.Elements.Count).Cast<SerializedProperty>().ToList()
+                        }
                     }
-                }
                 };
                 rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
                 SaveEntity player = (SaveEntity)rootItem.FindChild("Char_Player.Char_Player_C", false).DescendantSelf[0];
@@ -218,6 +218,10 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     new ObjectProperty("mInventory", 0) { LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory" }
                 };
+                if (rootItem.FindChild("Crate", false) == null)
+                    rootItem.FindChild("-Shared", false).Items.Add(new SaveObjectModel("Crate"));
+                if (rootItem.FindChild("BP_Crate.BP_Crate_C", false) == null)
+                    rootItem.FindChild("Crate", false).Items.Add(new SaveObjectModel("BP_Crate.BP_Crate_C"));
                 rootItem.FindChild("BP_Crate.BP_Crate_C", false).Items.Add(new SaveEntityModel(newSaveObject));
             }
             return true;
