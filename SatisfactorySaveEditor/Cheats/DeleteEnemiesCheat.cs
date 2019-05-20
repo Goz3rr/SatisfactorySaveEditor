@@ -23,23 +23,30 @@ namespace SatisfactorySaveEditor.Cheats
                 return false;
             }
 
-            // Set WasKilled to true so they don't respawn after deleting them
             foreach (SaveObjectModel animalSpawner in animalSpawners.DescendantSelfViewModel)
-                if (animalSpawner.Title.ToLower().Contains("enemy"))
-                {
+            {
+                // Some crab hatchers are marked as CreatureSpawner instead of EnemySpawner and there is no other trace of the difference between enemy and friendly in the savefile
+                //if (animalSpawner.Title.ToLower().Contains("enemy"))
+                //{
                     animalSpawner.FindField("mSpawnData", (ArrayPropertyViewModel arrayProperty) =>
                     {
                         foreach (StructPropertyViewModel elem in arrayProperty.Elements)
+                        {
+                            // Set WasKilled to true so they don't respawn after deleting them
                             ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
+                            // Set KilledOnDayNumber to a huge number (some crabs respawn if the number is too small)
+                            ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = 1000000000;
+                        }
                     });
-                }
+                //}
+            }
 
-            // Actually delete the animals
+            // Delete the already spawned enemies
             var enemies = rootItem.FindChild("Creature", false).FindChild("Enemy", false);
             rootItem.Remove(enemies);
 
 
-            MessageBox.Show($"Deleted all enemies.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Deleted all spawned enemies, and all unspawned creatures (of any kind).", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             return true;
         }
     }
