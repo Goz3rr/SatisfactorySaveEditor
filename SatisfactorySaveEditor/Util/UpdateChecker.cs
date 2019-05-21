@@ -40,7 +40,7 @@ namespace SatisfactorySaveEditor.Util
 
         public class VersionInfo
         {
-            [JsonProperty(PropertyName = "url")]
+            [JsonProperty(PropertyName = "html_url")]
             public string ReleaseUrl;
 
             [JsonProperty(PropertyName = "tag_name")]
