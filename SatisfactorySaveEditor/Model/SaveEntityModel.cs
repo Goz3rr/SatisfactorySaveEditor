@@ -1,5 +1,6 @@
 ﻿using SatisfactorySaveParser;
 using SatisfactorySaveParser.Structures;
+using System.Numerics;
 
 namespace SatisfactorySaveEditor.Model
 {

@@ -7,6 +7,7 @@ using SatisfactorySaveParser.PropertyTypes.Structs;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
@@ -125,13 +126,13 @@ namespace SatisfactorySaveEditor.Cheats
             {
                 NeedTransform = true,
                 Rotation = ((SaveEntity)player.Model).Rotation,
-                Position = new SatisfactorySaveParser.Structures.Vector3()
+                Position = new Vector3()
                 {
                     X = ((SaveEntity)player.Model).Position.X,
                     Y = ((SaveEntity)player.Model).Position.Y + 100 + 10 * currentDoggoID, // so they don't glitch one into another like the tractors did
                     Z = ((SaveEntity)player.Model).Position.Z + 10
                 },
-                Scale = new SatisfactorySaveParser.Structures.Vector3() { X = 1, Y = 1, Z = 1 },
+                Scale = new Vector3() { X = 1, Y = 1, Z = 1 },
                 WasPlacedInLevel = false,
                 ParentObjectName = "",
                 ParentObjectRoot = ""

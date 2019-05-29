@@ -3,6 +3,7 @@ using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
+using System.Numerics;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
@@ -46,7 +47,7 @@ namespace SatisfactorySaveEditor.Cheats
                         NeedTransform = true,
                         Rotation = ((SaveEntity)player.Model).Rotation,
                         Position = ((SaveEntity)player.Model).Position,
-                        Scale = new SatisfactorySaveParser.Structures.Vector3() { X = 1, Y = 1, Z = 1 },
+                        Scale = new Vector3() { X = 1, Y = 1, Z = 1 },
                         WasPlacedInLevel = false,
                         ParentObjectName = "",
                         ParentObjectRoot = ""

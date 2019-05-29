@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -78,7 +79,9 @@ namespace SatisfactorySaveEditor.Cheats
             xCoordinate.Focus();
         }
 
-        public Vector3 Result { get; private set; } = null;
+        private Vector3 result;
+        public bool ResultSet { get; private set; }
+        public Vector3 Result => result;
         public bool Done { get; private set; }
 
         private void Next_Click(object sender, RoutedEventArgs e)
@@ -87,11 +90,12 @@ namespace SatisfactorySaveEditor.Cheats
             {
                 if (!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !isPlaceHolderX && !isPlaceHolderY)
                 {
-                    Result = new Vector3()
+                    result = new Vector3()
                     {
                         X = float.Parse(xCoordinate.Text),
                         Y = float.Parse(yCoordinate.Text)
                     };
+                    ResultSet = true;
                     DialogResult = true;
                 }
                 else
@@ -109,18 +113,19 @@ namespace SatisfactorySaveEditor.Cheats
             {
                 if ((!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !isPlaceHolderX && !isPlaceHolderY) || isZWindow)
                 {
-                    Result = new Vector3()
+                    result = new Vector3()
                     {
                         X = float.Parse(xCoordinate.Text),
                         Y = float.Parse(yCoordinate.Text)
                     };
+                    ResultSet = true;
                 }
                 if(isZWindow)
                 {
                     if (isPlaceHolderX)
-                        Result.X = float.NegativeInfinity;
+                        result.X = float.NegativeInfinity;
                     if (isPlaceHolderY)
-                        Result.Y = float.PositiveInfinity;
+                        result.Y = float.PositiveInfinity;
                 }
                 DialogResult = true;
                 Done = true;

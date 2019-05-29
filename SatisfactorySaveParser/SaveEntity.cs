@@ -2,6 +2,7 @@
 using SatisfactorySaveParser.Structures;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace SatisfactorySaveParser
 {

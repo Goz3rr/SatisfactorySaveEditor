@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
@@ -67,7 +68,7 @@ namespace SatisfactorySaveEditor.Cheats
                 MassDismantleWindow massDeleteWindow = new MassDismantleWindow();
                 if (!massDeleteWindow.ShowDialog().Value)
                     break;
-                if (massDeleteWindow.Result == null)
+                if (!massDeleteWindow.ResultSet)
                     break;
                 points.Add(massDeleteWindow.Result);
                 if (massDeleteWindow.Done)
@@ -75,7 +76,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
             polygon = points.ToArray();
             MassDismantleWindow zWindow = new MassDismantleWindow(isZWindow: true);
-            if (!zWindow.ShowDialog().Value || zWindow.Result == null)
+            if (!zWindow.ShowDialog().Value || !zWindow.ResultSet)
             {
                 minZ = float.NegativeInfinity;
                 maxZ = float.PositiveInfinity;
