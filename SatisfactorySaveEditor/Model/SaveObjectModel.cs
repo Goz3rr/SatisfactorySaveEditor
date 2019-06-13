@@ -10,7 +10,6 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
-using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Model
 {
@@ -114,6 +113,8 @@ namespace SatisfactorySaveEditor.Model
         {
             Title = title;
             Type = title;
+
+            CopyNameCommand = new RelayCommand(CopyName);
         }
 
         /// <summary>

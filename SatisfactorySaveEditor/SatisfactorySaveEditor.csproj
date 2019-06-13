@@ -39,8 +39,8 @@
     <ApplicationIcon>satisfactorysaveeditorlogo_powershard.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
+    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -52,10 +52,38 @@
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
-      <HintPath>..\packages\gong-wpf-dragdrop.2.0.0\lib\net46\GongSolutions.WPF.DragDrop.dll</HintPath>
+      <HintPath>..\packages\gong-wpf-dragdrop.2.0.1\lib\net46\GongSolutions.WPF.DragDrop.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.6.4\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.2.0\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.2.0\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.2.0\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -78,7 +106,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Cheats\ICheat.cs" />
+    <Compile Include="Cheats\DeleteEnemiesCheat.cs" />
+    <Compile Include="Cheats\KillPlayersCheat.cs" />
     <Compile Include="Cheats\InventorySlotsCheat.cs" />
+    <Compile Include="Cheats\MassDismantleCheat.cs" />
+    <Compile Include="Cheats\MassDismantleWindow.xaml.cs">
+      <DependentUpon>MassDismantleWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Cheats\NoPowerCheat.cs" />
+    <Compile Include="Cheats\NoCostCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
@@ -93,15 +129,18 @@
     <Compile Include="Model\SaveObjectModel.cs" />
     <Compile Include="Model\SaveRootModel.cs" />
     <Compile Include="Model\TypeTooltip.cs" />
+    <Compile Include="Rendering\Sample2DRenderer.cs" />
     <Compile Include="Util\EditorTreeNode.cs" />
     <Compile Include="Util\BindingProxy.cs" />
     <Compile Include="Util\FloatRangeRule.cs" />
     <Compile Include="Util\EnumerableExtension.cs" />
     <Compile Include="Util\PositiveIntegerRule.cs" />
     <Compile Include="Util\PropertyViewModelMapper.cs" />
+    <Compile Include="Util\UpdateChecker.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\PreferencesWindowViewModel.cs" />
     <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
@@ -116,6 +155,7 @@
     <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
+    <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\CheatInventoryWindow.xaml.cs">
       <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
@@ -129,6 +169,19 @@
     <Compile Include="View\Control\PropertiesControl.xaml.cs">
       <DependentUpon>PropertiesControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Control\SharpDx\Direct2DComponent.cs" />
+    <Compile Include="View\Control\SharpDx\DirectXComponent.cs" />
+    <Compile Include="View\Control\SharpDx\Win32HwndControl.cs" />
+    <Compile Include="View\PreferencesWindow.xaml.cs">
+      <DependentUpon>PreferencesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UpdateWindow.xaml.cs">
+      <DependentUpon>UpdateWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Cheats\MassDismantleWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\AddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -174,11 +227,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\PreferencesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PropertyTemplateDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CheatInventoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UpdateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -201,6 +262,15 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Data\Types.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -221,10 +291,19 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon\search.png" />
-    <Content Include="Types.xml">
+    <Content Include="Data\Types.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
+  del "$(TargetDir)GalaSoft*.xml", "$(TargetDir)GalaSoft*.pdb"
+  del "$(TargetDir)GongSolutions*.xml", "$(TargetDir)GongSolutions*.pdb"
+  del "$(TargetDir)Newtonsoft*.xml", "$(TargetDir)Newtonsoft*.pdb"
+  del "$(TargetDir)NLog*.xml", "$(TargetDir)NLog*.pdb"
+  del "$(TargetDir)SatisfactorySave*.xml", "$(TargetDir)SatisfactorySave*.pdb"
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

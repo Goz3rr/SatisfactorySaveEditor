@@ -19,9 +19,11 @@ namespace SatisfactorySaveParser.PropertyTypes
                     case StructProperty.TypeName:
                         return StructProperty.GetSerializedArrayLength(Elements.Cast<StructProperty>().ToArray());
                     case ObjectProperty.TypeName:
-                        return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.Root.GetSerializedLength() + obj.Name.GetSerializedLength());
+                        return 4 + Elements.Cast<ObjectProperty>().Sum(obj => obj.LevelName.GetSerializedLength() + obj.PathName.GetSerializedLength());
                     case IntProperty.TypeName:
                         return Elements.Count * 4 + 4;
+                    case ByteProperty.TypeName:
+                        return 4 + Elements.Count;
                     default:
                         throw new NotImplementedException();
                 }
@@ -69,8 +71,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                             msWriter.Write(Elements.Count);
                             foreach (var prop in Elements.Cast<ObjectProperty>())
                             {
-                                msWriter.WriteLengthPrefixedString(prop.Root);
-                                msWriter.WriteLengthPrefixedString(prop.Name);
+                                msWriter.WriteLengthPrefixedString(prop.LevelName);
+                                msWriter.WriteLengthPrefixedString(prop.PathName);
                             }
                         }
                         break;
@@ -80,6 +82,15 @@ namespace SatisfactorySaveParser.PropertyTypes
                             foreach (var prop in Elements.Cast<IntProperty>())
                             {
                                 msWriter.Write(prop.Value);
+                            }
+                        }
+                        break;
+                    case ByteProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach(var prop in Elements.Cast<ByteProperty>())
+                            {
+                                msWriter.Write(byte.Parse(prop.Value));
                             }
                         }
                         break;
@@ -136,6 +147,16 @@ namespace SatisfactorySaveParser.PropertyTypes
                         {
                             var value = reader.ReadInt32();
                             result.Elements.Add(new IntProperty($"Element {i}") { Value = value });
+                        }
+                    }
+                    break;
+                case ByteProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for(var i = 0; i < count; i++)
+                        {
+                            var value = reader.ReadByte();
+                            result.Elements.Add(new ByteProperty($"Element {i}") { Type = "None", Value = value.ToString() });
                         }
                     }
                     break;

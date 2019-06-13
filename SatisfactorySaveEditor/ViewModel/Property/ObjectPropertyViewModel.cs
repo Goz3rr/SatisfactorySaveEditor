@@ -25,14 +25,14 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         {
             model = objectProperty;
 
-            str1 = model.Root;
-            str2 = model.Name;
+            str1 = model.LevelName;
+            str2 = model.PathName;
         }
 
         public override void ApplyChanges()
         {
-            model.Root = str1;
-            model.Name = str2;
+            model.LevelName = str1;
+            model.PathName = str2;
         }
     }
 }

@@ -1,0 +1,28 @@
+﻿<Window x:Class="SatisfactorySaveEditor.View.UpdateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Name="UpdateWin"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        Title="Update" Height="550" Width="600">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="-3,3,3,3" Text="New version is available:"/>
+        <TextBox Padding="3" Grid.Row="1" DockPanel.Dock="Top" Text="{Binding Changelog, Mode=OneTime}" IsReadOnly="True" TextWrapping="WrapWithOverflow"/>
+        <Separator Grid.Row="2" Margin="0,5"/>
+        <StackPanel Grid.Row="3" DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Margin="5,0" Padding="6,3" Command="{Binding OpenCommand}" CommandParameter="{Binding ElementName=UpdateWin}" Content="Update"/>
+            <Button Margin="5,0" Padding="6,3" Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=UpdateWin}" Content="Remind later"/>
+            <Button Margin="5,0" Padding="6,3" Command="{Binding DisableAutoCheckCommand}" CommandParameter="{Binding ElementName=UpdateWin}" Content="Disable auto-check"/>
+        </StackPanel>
+    </Grid>
+</Window>

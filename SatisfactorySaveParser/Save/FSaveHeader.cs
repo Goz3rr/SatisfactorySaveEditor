@@ -1,26 +1,31 @@
-﻿using SatisfactorySaveParser.Exceptions;
+﻿using NLog;
+using SatisfactorySaveParser.Exceptions;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save
 {
-    public class SaveHeader
+    /// <summary>
+    ///     Engine class: FSaveHeader
+    ///     Header: FGSaveSystem.h
+    /// </summary>
+    public class FSaveHeader
     {
-        public const int ExpectedMagic = 66297;
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         ///     Save version number
         /// </summary>
-        public int SaveVersion { get; set; }
+        public SaveHeaderVersion HeaderVersion { get; set; }
         /// <summary>
         ///     Save build (feature) number
         /// </summary>
-        public FSaveCustomVersion BuildVersion { get; set; }
+        public FSaveCustomVersion SaveVersion { get; set; }
 
         /// <summary>
         ///     Unknown magic int
         ///     Seems to always be 66297
         /// </summary>
-        public int Magic { get; set; }
+        public int BuildVersion { get; set; }
 
         /// <summary>
         ///     The name of what appears to be the root object of the save.
@@ -50,9 +55,9 @@ namespace SatisfactorySaveParser.Save
 
         public void Serialize(BinaryWriter writer)
         {
-            writer.Write(SaveVersion);
-            writer.Write((int)BuildVersion);
-            writer.Write(Magic);
+            writer.Write((int)HeaderVersion);
+            writer.Write((int)SaveVersion);
+            writer.Write(BuildVersion);
 
             writer.WriteLengthPrefixedString(MapName);
             writer.WriteLengthPrefixedString(MapOptions);
@@ -61,17 +66,17 @@ namespace SatisfactorySaveParser.Save
             writer.Write(PlayDuration);
             writer.Write(SaveDateTime);
 
-            if (SaveVersion >= 5)
+            if (HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility)
                 writer.Write((byte)SessionVisibility);
         }
 
-        public static SaveHeader Parse(BinaryReader reader)
+        public static FSaveHeader Parse(BinaryReader reader)
         {
-            var header = new SaveHeader
+            var header = new FSaveHeader
             {
-                SaveVersion = reader.ReadInt32(),
-                BuildVersion = (FSaveCustomVersion)reader.ReadInt32(),
-                Magic = reader.ReadInt32(),
+                HeaderVersion = (SaveHeaderVersion)reader.ReadInt32(),
+                SaveVersion = (FSaveCustomVersion)reader.ReadInt32(),
+                BuildVersion = reader.ReadInt32(),
 
                 MapName = reader.ReadLengthPrefixedString(),
                 MapOptions = reader.ReadLengthPrefixedString(),
@@ -81,16 +86,15 @@ namespace SatisfactorySaveParser.Save
                 SaveDateTime = reader.ReadInt64()
             };
 
-            if (header.SaveVersion < 4 || header.SaveVersion > 5)
-                throw new UnknownSaveVersionException(header.SaveVersion);
+            log.Debug($"Read save header: Version={header.HeaderVersion}, Build={(int)header.SaveVersion}, Magic={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}");
 
-            if (header.BuildVersion < FSaveCustomVersion.WireSpanFromConnnectionComponents || header.BuildVersion > FSaveCustomVersion.LatestVersion)
-                throw new UnknownBuildVersionException(header.BuildVersion);
+            if (header.HeaderVersion > SaveHeaderVersion.LatestVersion)
+                throw new UnknownSaveVersionException(header.HeaderVersion);
 
-            if (header.Magic != ExpectedMagic)
-                throw new FatalSaveException($"Read magic header byte {header.Magic} but {ExpectedMagic} was expected");
+            if (header.SaveVersion < FSaveCustomVersion.WireSpanFromConnnectionComponents || header.SaveVersion > FSaveCustomVersion.LatestVersion)
+                throw new UnknownBuildVersionException(header.SaveVersion);
 
-            if (header.SaveVersion >= 5)
+            if (header.HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility)
                 header.SessionVisibility = (ESessionVisibility)reader.ReadByte();
 
             return header;

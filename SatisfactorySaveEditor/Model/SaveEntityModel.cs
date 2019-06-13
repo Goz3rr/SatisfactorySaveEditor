@@ -1,28 +1,29 @@
 ﻿using SatisfactorySaveParser;
 using SatisfactorySaveParser.Structures;
+using System.Numerics;
 
 namespace SatisfactorySaveEditor.Model
 {
     public class SaveEntityModel : SaveObjectModel
     {
-        private int int4;
-        private int int6;
+        private bool needTransform;
+        private bool wasPlacedInLevel;
         private Vector4 rotation;
         private Vector3 position;
         private Vector3 scale;
         private string parentObjectRoot;
         private string parentObjectName;
 
-        public int Int4
+        public bool NeedTransform
         { 
-            get => int4;
-            set { Set(() => Int4, ref int4, value); }
+            get => needTransform;
+            set { Set(() => NeedTransform, ref needTransform, value); }
         }
 
-        public int Int6
+        public bool WasPlacedInLevel
         {
-            get => int6;
-            set { Set(() => Int6, ref int6, value); }
+            get => wasPlacedInLevel;
+            set { Set(() => WasPlacedInLevel, ref wasPlacedInLevel, value); }
         }
 
         public Vector4 Rotation
@@ -56,8 +57,8 @@ namespace SatisfactorySaveEditor.Model
 
         public SaveEntityModel(SaveEntity ent) : base(ent)
         {
-            Int4 = ent.Int4;
-            Int6 = ent.Int6;
+            NeedTransform = ent.NeedTransform;
+            WasPlacedInLevel = ent.WasPlacedInLevel;
             ParentObjectRoot = ent.ParentObjectRoot;
             ParentObjectName = ent.ParentObjectName;
 
@@ -72,11 +73,11 @@ namespace SatisfactorySaveEditor.Model
 
             var model = (SaveEntity) Model;
 
-            model.Int4 = Int4;
+            model.NeedTransform = NeedTransform;
             model.Rotation = Rotation;
             model.Position = Position;
             model.Scale = Scale;
-            model.Int6 = Int6;
+            model.WasPlacedInLevel = WasPlacedInLevel;
             model.ParentObjectRoot = ParentObjectRoot;
             model.ParentObjectName = ParentObjectName;
         }

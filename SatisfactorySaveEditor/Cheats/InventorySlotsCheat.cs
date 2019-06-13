@@ -2,8 +2,6 @@
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
-using SatisfactorySaveParser.PropertyTypes;
-using System.Linq;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats

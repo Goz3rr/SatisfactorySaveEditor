@@ -1,6 +1,7 @@
 ﻿using SatisfactorySaveParser.Structures;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace SatisfactorySaveParser

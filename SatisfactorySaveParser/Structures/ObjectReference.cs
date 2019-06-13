@@ -1,19 +1,30 @@
-﻿namespace SatisfactorySaveParser.Structures
-{
-    public class ObjectReference
-    {
-        public string Root { get; set; }
-        public string Name { get; set; }
+﻿using System;
+using System.IO;
 
-        public ObjectReference(string root, string name)
+namespace SatisfactorySaveParser.Structures
+{
+    /// <summary>
+    ///     Engine class: FObjectReferenceDisc
+    /// </summary>
+    public class ObjectReference : IObjectReference
+    {
+        public string LevelName { get; set; }
+        public string PathName { get; set; }
+        public SaveObject ReferencedObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public ObjectReference()
         {
-            Root = root;
-            Name = name;
+        }
+
+        public ObjectReference(BinaryReader reader)
+        {
+            LevelName = reader.ReadLengthPrefixedString();
+            PathName = reader.ReadLengthPrefixedString();
         }
 
         public override string ToString()
         {
-            return $"Root: {Root} Name: {Name}";
+            return $"Level: {LevelName} Path: {PathName}";
         }
     }
 }

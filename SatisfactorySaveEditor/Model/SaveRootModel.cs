@@ -4,7 +4,7 @@ namespace SatisfactorySaveEditor.Model
 {
     public class SaveRootModel : SaveObjectModel
     {
-        private readonly SaveHeader model;
+        private readonly FSaveHeader model;
 
         private string mapName;
         private string mapOptions;
@@ -13,9 +13,9 @@ namespace SatisfactorySaveEditor.Model
         private long saveDateTime;
         private ESessionVisibility sessionVisibility;
 
-        public int SaveVersion => model.SaveVersion;
+        public SaveHeaderVersion HeaderVersion => model.HeaderVersion;
 
-        public FSaveCustomVersion BuildVersion => model.BuildVersion;
+        public FSaveCustomVersion SaveVersion => model.SaveVersion;
 
         public string MapName
         {
@@ -41,6 +41,8 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => PlayDuration, ref playDuration, value); }
         }
 
+        public bool HasSessionVisibility => HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility;
+
         public ESessionVisibility SessionVisibility
         {
             get => sessionVisibility;
@@ -53,7 +55,7 @@ namespace SatisfactorySaveEditor.Model
             set { Set(() => SaveDateTime, ref saveDateTime, value); }
         }
 
-        public SaveRootModel(SaveHeader header) : base(header.SessionName)
+        public SaveRootModel(FSaveHeader header) : base(header.SessionName)
         {
             model = header;
             Type = "Root";

@@ -15,17 +15,17 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 
         public Color(BinaryReader reader)
         {
-            R = reader.ReadByte();
-            G = reader.ReadByte();
             B = reader.ReadByte();
+            G = reader.ReadByte();
+            R = reader.ReadByte();
             A = reader.ReadByte();
         }
 
         public void Serialize(BinaryWriter writer)
         {
-            writer.Write(R);
-            writer.Write(G);
             writer.Write(B);
+            writer.Write(G);
+            writer.Write(R);
             writer.Write(A);
         }
     }

@@ -24,6 +24,7 @@
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
         <converter:MenuTextConverter x:Key="MenuTextConverter"/>
         <converter:TypeTooltipConverter x:Key="TypeTooltipConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <ObjectDataProvider x:Key="ESessionVisibilityEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="save:ESessionVisibility"/>
@@ -67,6 +68,7 @@
                     </MenuItem.CommandParameter>
                 </MenuItem>
                 <Separator/>
+                <MenuItem Header="Preferences" Command="{Binding PreferencesCommand}"/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="_Cheats" ItemsSource="{Binding CheatMenuItems}">
@@ -82,6 +84,7 @@
                 <MenuItem Header="View on GitHub" Command="{Binding Help_ViewGithubCommand}"/>
                 <MenuItem Header="Report an Issue" Command="{Binding Help_ReportIssueCommand}"/>
                 <MenuItem Header="Request help on Discord" Command="{Binding Help_RequestHelpDiscordCommand}"/>
+                <MenuItem Header="Check for updates" Command="{Binding CheckUpdatesCommand}"/>
                 <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             </MenuItem>
         </Menu>
@@ -199,6 +202,8 @@
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Copy name" Command="{Binding CopyNameCommand}"/>
+                                        <Separator/>
                                         <MenuItem Header="Add">
                                             <MenuItem Header="Entity"/>
                                             <MenuItem Header="Component"/>
@@ -266,8 +271,8 @@
 
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="0" Content="Entity name:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="1" Content="Root:"/>
-                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="Int4:"/>
-                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="3" Content="Int6:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" Content="NeedTransform:"/>
+                                <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="3" Content="WasPlacedInLevel:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="4" Content="Position:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="5" Content="Rotation:"/>
                                 <Label Margin="0,2,0,2" Grid.Column="0" Grid.Row="6" Content="Scale:"/>
@@ -276,8 +281,8 @@
 
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="0" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, Delay=250}"/>
                                 <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="400" Grid.Column="1" Grid.Row="1" Text="{Binding RootObject}" IsEnabled="False"/>
-                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="2" Text="{Binding Int4}" IsEnabled="False"/>
-                                <TextBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="3" Text="{Binding Int6}" IsEnabled="False"/>
+                                <CheckBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="2" IsChecked="{Binding NeedTransform}" IsEnabled="False"/>
+                                <CheckBox Margin="20,2,0,2" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="80" Grid.Column="1" Grid.Row="3" IsChecked="{Binding WasPlacedInLevel}" IsEnabled="False"/>
                                 <control:Vector3Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="4" Vector="{Binding Position}"/>
                                 <control:Vector4Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="5" Vector="{Binding Rotation}"/>
                                 <control:Vector3Control Margin="0,2,0,2" Grid.Column="1" Grid.Row="6" Vector="{Binding Scale}"/>
@@ -330,20 +335,20 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Label Margin="0,3" Grid.Column="0" Grid.Row="0" Content="Save version:"/>
-                            <Label Margin="0,3" Grid.Column="0" Grid.Row="1" Content="Build version:"/>
+                            <Label Margin="0,3" Grid.Column="0" Grid.Row="0" Content="Header version:"/>
+                            <Label Margin="0,3" Grid.Column="0" Grid.Row="1" Content="Save version:"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="2" Content="Map name:"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="3" Content="Map options"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="4" Content="Session name:"/>
-                            <Label Margin="0,3" Grid.Column="0" Grid.Row="5" Content="Session visibility:"/>
+                            <Label Margin="0,3" Grid.Column="0" Grid.Row="5" Content="Session visibility:" Visibility="{Binding HasSessionVisibility, Converter={StaticResource BoolToVis}}"/>
                             <Label Margin="0,3" Grid.Column="0" Grid.Row="6" Content="Save creation time:"/>
 
-                            <TextBox Margin="0,3" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Text="{Binding SaveVersion, Mode=OneWay}" IsEnabled="False"/>
-                            <TextBox Margin="0,3" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Text="{Binding BuildVersion, Mode=OneWay}" IsEnabled="False"/>
+                            <TextBox Margin="0,3" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Text="{Binding HeaderVersion, Mode=OneWay}" IsEnabled="False"/>
+                            <TextBox Margin="0,3" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Text="{Binding SaveVersion, Mode=OneWay}" IsEnabled="False"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" Text="{Binding MapName}"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="3" VerticalContentAlignment="Center" Text="{Binding MapOptions}"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="4" VerticalContentAlignment="Center" Text="{Binding SessionName}"/>
-                            <ComboBox Margin="0,3" Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" SelectedItem="{Binding SessionVisibility}" ItemsSource="{Binding Source={StaticResource ESessionVisibilityEnum}}"/>
+                            <ComboBox Margin="0,3" Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" SelectedItem="{Binding SessionVisibility}" ItemsSource="{Binding Source={StaticResource ESessionVisibilityEnum}}" Visibility="{Binding HasSessionVisibility, Converter={StaticResource BoolToVis}}"/>
                             <TextBox Margin="0,3" Grid.Column="1" Grid.Row="6" VerticalContentAlignment="Center" Text="{Binding SaveDateTime}"/>
                         </Grid>
                     </DataTemplate>

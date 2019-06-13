@@ -1,12 +1,13 @@
-﻿using System;
+﻿using SatisfactorySaveParser.Save;
+using System;
 
 namespace SatisfactorySaveParser.Exceptions
 {
     public class UnknownSaveVersionException : Exception
     {
-        public int SaveVersion { get; set; }
+        public SaveHeaderVersion SaveVersion { get; set; }
 
-        public UnknownSaveVersionException(int saveVersion)
+        public UnknownSaveVersionException(SaveHeaderVersion saveVersion)
         {
             SaveVersion = saveVersion;
         }
