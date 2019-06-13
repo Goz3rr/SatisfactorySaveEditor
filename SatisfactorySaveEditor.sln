@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatisfactorySaveParser", "SatisfactorySaveParser\SatisfactorySaveParser.csproj", "{5AC4782E-15E3-4B5D-B231-74741A83B0D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveParser.Tests", "SatisfactorySaveParser.Tests\SatisfactorySaveParser.Tests.csproj", "{AA1612B7-8B82-43E1-802C-46435E770E11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatisfactorySaveParser.Tests", "SatisfactorySaveParser.Tests\SatisfactorySaveParser.Tests.csproj", "{AA1612B7-8B82-43E1-802C-46435E770E11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveEditor", "SatisfactorySaveEditor\SatisfactorySaveEditor.csproj", "{4568CD4B-EF7F-45B6-8228-A111A4BCAA26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{AA1612B7-8B82-43E1-802C-46435E770E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA1612B7-8B82-43E1-802C-46435E770E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA1612B7-8B82-43E1-802C-46435E770E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4568CD4B-EF7F-45B6-8228-A111A4BCAA26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4568CD4B-EF7F-45B6-8228-A111A4BCAA26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4568CD4B-EF7F-45B6-8228-A111A4BCAA26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4568CD4B-EF7F-45B6-8228-A111A4BCAA26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

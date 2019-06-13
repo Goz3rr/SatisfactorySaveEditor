@@ -14,5 +14,9 @@ namespace SatisfactorySaveParser.Save
         public FatalSaveException(string message) : base(message)
         {
         }
+
+        public FatalSaveException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

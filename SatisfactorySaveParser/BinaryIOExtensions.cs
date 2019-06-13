@@ -3,6 +3,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 
+using SatisfactorySaveParser.Save;
+
 namespace SatisfactorySaveParser
 {
     public static class BinaryIOExtensions
@@ -132,6 +134,31 @@ namespace SatisfactorySaveParser
             writer.Write(vec.Y);
             writer.Write(vec.Z);
             writer.Write(vec.W);
+        }
+
+        /// <summary>
+        ///     Read a UE4 Object Reference (Level, Path)
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public static ObjectReference ReadObjectReference(this BinaryReader reader)
+        {
+            return new ObjectReference()
+            {
+                LevelName = reader.ReadLengthPrefixedString(),
+                PathName = reader.ReadLengthPrefixedString()
+            };
+        }
+
+        /// <summary>
+        ///     Write a UE4 Object Reference (Level, Path)
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="objectReference"></param>
+        public static void Write(this BinaryWriter writer, ObjectReference objectReference)
+        {
+            writer.WriteLengthPrefixedString(objectReference.LevelName);
+            writer.WriteLengthPrefixedString(objectReference.PathName);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace SatisfactorySaveParser.Save
         public long SaveDateTime { get; set; }
 
         /// <summary>
-        ///     The session visibility of the game
+        ///     The session visibility of the game.
         ///     Only valid for saves with HeaderVersion >= AddedSessionVisibility
         /// </summary>
         public ESessionVisibility SessionVisibility

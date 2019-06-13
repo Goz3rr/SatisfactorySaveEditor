@@ -16,5 +16,17 @@ namespace SatisfactorySaveParser.Save
         {
             SaveVersion = saveVersion;
         }
+
+        public UnsupportedSaveVersionException()
+        {
+        }
+
+        public UnsupportedSaveVersionException(string message) : base(message)
+        {
+        }
+
+        public UnsupportedSaveVersionException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

@@ -16,5 +16,17 @@ namespace SatisfactorySaveParser.Save
         {
             HeaderVersion = headerVersion;
         }
+
+        public UnsupportedHeaderVersionException()
+        {
+        }
+
+        public UnsupportedHeaderVersionException(string message) : base(message)
+        {
+        }
+
+        public UnsupportedHeaderVersionException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }
