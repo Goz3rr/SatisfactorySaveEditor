@@ -161,6 +161,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private bool CanDelete(SaveObjectModel model)
         {
+            //Allow deletion of a model as long as it is not the rootItem of the save
             return model != rootItem;
         }
 
@@ -172,17 +173,20 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private bool CanCheat(ICheat cheat)
         {
+            //Allow cheats to be used as long as a rootItem exists
             return rootItem != null;
         }
 
         private void Cheat(ICheat cheat)
         {
+            //Attempt to run the cheat. Only mark for unsaved changes if the cheat succeeds.
             if (cheat.Apply(rootItem))
                 HasUnsavedChanges = true;
         }
 
         private bool CanSave(bool saveAs)
         {
+            //Allow save functionality only if a save is loaded
             return saveGame != null;
         }
 
