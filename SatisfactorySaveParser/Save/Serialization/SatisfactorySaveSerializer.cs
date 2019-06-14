@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 
 using NLog;
+using SatisfactorySaveParser.Save.Properties;
 
 namespace SatisfactorySaveParser.Save.Serialization
 {
@@ -198,9 +199,45 @@ namespace SatisfactorySaveParser.Save.Serialization
             var dataLength = reader.ReadInt32();
             var before = reader.BaseStream.Position;
 
+            switch (saveObject)
+            {
+                case SaveActor actor:
+                    actor.ParentObject = reader.ReadObjectReference();
+                    var componentCount = reader.ReadInt32();
+                    for (int i = 0; i < componentCount; i++)
+                        actor.Components.Add(reader.ReadObjectReference());
 
-            var bytes = reader.ReadBytes(dataLength);
+                    break;
 
+                case SaveComponent component:
+                    break;
+
+                default:
+                    throw new NotImplementedException($"Unknown SaveObject kind {saveObject.ObjectKind}");
+            }
+
+            SerializedProperty prop;
+            while ((prop = DeserializeProperty(reader)) != null)
+            {
+                var (objProperty, objPropertyAttr) = saveObject.GetMatchingProperty(prop);
+
+                if(objProperty == null)
+                {
+                    var type = saveObject.GetType();
+                    if (type == typeof(SaveActor) || type == typeof(SaveComponent))
+                        log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on {saveObject.TypePath}");
+                    else
+                        log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on {type.Name}");
+
+                    saveObject.DynamicProperties.Add(prop);
+                    continue;
+                }
+
+                prop.AssignToProperty(saveObject, objProperty);
+            }
+
+            var remaining = dataLength - (int)(reader.BaseStream.Position - before);
+            saveObject.DeserializeNativeData(reader, remaining);
 
             var after = reader.BaseStream.Position;
             if (before + dataLength != after)
@@ -208,6 +245,54 @@ namespace SatisfactorySaveParser.Save.Serialization
         }
 
         public static void SerializeObjectData(SaveObject saveObject, BinaryWriter writer)
+        {
+
+        }
+
+        public static SerializedProperty DeserializeProperty(BinaryReader reader)
+        {
+            SerializedProperty result;
+
+            var propertyName = reader.ReadLengthPrefixedString();
+            if (propertyName == "None")
+                return null;
+
+            Trace.Assert(!String.IsNullOrEmpty(propertyName));
+
+            var propertyType = reader.ReadLengthPrefixedString();
+            var size = reader.ReadInt32();
+            var index = reader.ReadInt32();
+
+            int overhead = 1;
+            var before = reader.BaseStream.Position;
+            switch (propertyType)
+            {
+                case ArrayProperty.TypeName:
+                    result = ArrayProperty.Parse(reader, propertyName, size, index, out overhead);
+                    break;
+                case BoolProperty.TypeName:
+                    overhead = 2;
+                    result = BoolProperty.Parse(reader, propertyName, index);
+                    break;
+                case FloatProperty.TypeName:
+                    result = FloatProperty.Parse(reader, propertyName, index);
+                    break;
+                case IntProperty.TypeName:
+                    result = IntProperty.Parse(reader, propertyName, index);
+                    break;
+                default:
+                    throw new NotImplementedException($"Unknown property type {propertyType} for property {propertyName}");
+            }
+            var after = reader.BaseStream.Position;
+            var readBytes = (int)(after - before - overhead);
+
+            if (size != readBytes)
+                throw new InvalidOperationException($"Expected {size} bytes read but got {readBytes}");
+
+            return result;
+        }
+
+        public static void SerializeProperty(SerializedProperty property, BinaryWriter writer)
         {
 
         }

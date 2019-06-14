@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace SatisfactorySaveParser.Save
 {
@@ -35,5 +36,10 @@ namespace SatisfactorySaveParser.Save
         ///     Unknown related (parent?) object
         /// </summary>
         public ObjectReference ParentObject { get; set; }
+
+        /// <summary>
+        ///     List of SaveComponents belonging to this object
+        /// </summary>
+        public List<ObjectReference> Components { get; } = new List<ObjectReference>();
     }
 }
