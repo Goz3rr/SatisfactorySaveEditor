@@ -17,7 +17,8 @@ namespace SourceCodeMessage.ViewModel
 
         private void OpenReleases(Window obj)
         {
-            System.Diagnostics.Process.Start("https://github.com/Goz3rr/SatisfactorySaveEditor/releases");
+            //Robb, Goz3rr, and virusek20 have the login info for this bit.ly account if needed
+            System.Diagnostics.Process.Start("http://bit.ly/SSE_Wrong_Download");
             Application.Current.Shutdown();
         }
 
