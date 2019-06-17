@@ -62,9 +62,15 @@
                         <sys:Boolean>False</sys:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
-                <MenuItem Header="_Save as" InputGestureText="F12" Command="{Binding SaveCommand}">
+                <MenuItem Header="_Save as..." InputGestureText="F12" Command="{Binding SaveCommand}">
                     <MenuItem.CommandParameter>
                         <sys:Boolean>True</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Jump to tag..." InputGestureText="Ctrl+J" Command="{Binding JumpMenuCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>False</sys:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
                 <Separator/>
