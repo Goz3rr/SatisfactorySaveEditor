@@ -9,6 +9,20 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<Window> OkCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
 
+        private string windowTitle = "String Prompt";
+        public string WindowTitle
+        {
+            get => windowTitle;
+            set { Set(() => WindowTitle, ref windowTitle, value); }
+        }
+
+        private string promptMessage = "Prompt String:";
+        public string PromptMessage
+        {
+            get => promptMessage;
+            set { Set(() => PromptMessage, ref promptMessage, value); }
+        }
+
         private string valueChosen;
         public string ValueChosen
         {
@@ -16,41 +30,22 @@ namespace SatisfactorySaveEditor.ViewModel
             set { Set(() => ValueChosen, ref valueChosen, value); }
         }
 
-        private string oldValueDisplay;
-        public string OldValueDisplay
+        private string oldValueMessage = "(1)Old Value Message\n(2)\n(3)\n(4)\n(5)";
+        public string OldValueMessage
         {
-            get => oldValueDisplay;
-            set { Set(() => OldValueDisplay, ref oldValueDisplay, value); }
-        }
-
-        
-        private string windowTitle;
-        private string promptMessage;
-        private string promptInitialValue;
-
-        
-
-        public StringPromptViewModel(string windowTitle, string promptMessage, string promptInitialValue) 
-            : this()
-        {
-            MessageBox.Show("Running 3 element constructor");
-            this.windowTitle = windowTitle;
+            get => oldValueMessage;
+            set { Set(() => OldValueMessage, ref oldValueMessage, value); }
         }
 
         public StringPromptViewModel()
         {
-            MessageBox.Show("Running regular element constructor");
-            this.windowTitle = "String prompt";
-            this.promptMessage = "Enter a string:";
-            this.promptInitialValue = null;
-
             OkCommand = new RelayCommand<Window>(Ok);
             CancelCommand = new RelayCommand<Window>(Cancel);
         }
 
         private void Cancel(Window obj)
         {
-            ValueChosen = null;
+            ValueChosen = "cancel";
             obj.Close();
         }
 
