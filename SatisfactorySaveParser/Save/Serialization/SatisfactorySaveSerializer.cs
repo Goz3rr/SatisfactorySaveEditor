@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 
 using NLog;
+
 using SatisfactorySaveParser.Save.Properties;
 
 namespace SatisfactorySaveParser.Save.Serialization
@@ -221,7 +222,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             {
                 var (objProperty, objPropertyAttr) = saveObject.GetMatchingProperty(prop);
 
-                if(objProperty == null)
+                if (objProperty == null)
                 {
                     var type = saveObject.GetType();
                     if (type == typeof(SaveActor) || type == typeof(SaveComponent))
@@ -246,7 +247,33 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         public static void SerializeObjectData(SaveObject saveObject, BinaryWriter writer)
         {
+            // TODO: Replace this with proper size calculations?
+            using (var ms = new MemoryStream())
+            using (var dataWriter = new BinaryWriter(ms))
+            {
+                switch (saveObject)
+                {
+                    case SaveActor actor:
+                        dataWriter.Write(actor.ParentObject);
+                        dataWriter.Write(actor.Components.Count);
+                        foreach (var component in actor.Components)
+                            dataWriter.Write(component);
 
+                        break;
+
+                    case SaveComponent component:
+                        break;
+
+                    default:
+                        throw new NotImplementedException($"Unknown SaveObject kind {saveObject.ObjectKind}");
+                }
+
+                // TODO: serialize properties
+
+                var bytes = ms.ToArray();
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
+            }
         }
 
         public static SerializedProperty DeserializeProperty(BinaryReader reader)
@@ -272,13 +299,31 @@ namespace SatisfactorySaveParser.Save.Serialization
                     break;
                 case BoolProperty.TypeName:
                     overhead = 2;
-                    result = BoolProperty.Parse(reader, propertyName, index);
+                    result = BoolProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case ByteProperty.TypeName:
+                    result = ByteProperty.Deserialize(reader, propertyName, index, out overhead);
+                    break;
+                case EnumProperty.TypeName:
+                    result = EnumProperty.Deserialize(reader, propertyName, index, out overhead);
                     break;
                 case FloatProperty.TypeName:
-                    result = FloatProperty.Parse(reader, propertyName, index);
+                    result = FloatProperty.Deserialize(reader, propertyName, index);
                     break;
                 case IntProperty.TypeName:
-                    result = IntProperty.Parse(reader, propertyName, index);
+                    result = IntProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case NameProperty.TypeName:
+                    result = NameProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case ObjectProperty.TypeName:
+                    result = ObjectProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case StrProperty.TypeName:
+                    result = StrProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case TextProperty.TypeName:
+                    result = TextProperty.Deserialize(reader, propertyName, index);
                     break;
                 default:
                     throw new NotImplementedException($"Unknown property type {propertyType} for property {propertyName}");
@@ -292,9 +337,12 @@ namespace SatisfactorySaveParser.Save.Serialization
             return result;
         }
 
-        public static void SerializeProperty(SerializedProperty property, BinaryWriter writer)
+        public static void SerializeProperty(SerializedProperty prop, BinaryWriter writer)
         {
-
+            writer.WriteLengthPrefixedString(prop.PropertyName);
+            writer.WriteLengthPrefixedString(prop.PropertyType);
+            writer.Write(prop.SerializedLength);
+            writer.Write(prop.Index);
         }
 
         public static List<ObjectReference> DeserializeDestroyedActors(BinaryReader reader)

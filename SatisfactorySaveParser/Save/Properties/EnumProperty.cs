@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
@@ -16,26 +14,32 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override int SerializedLength => 4;
 
-        public int Value { get; set; }
+        public string Type { get; set; }
+        public string Value { get; set; }
 
+        public EnumProperty(string propertyName, int index = 0) : base(propertyName, index)
+        {
+        }
 
         public override string ToString()
         {
-            return $"Int {PropertyName}: {Value}";
+            return $"Enum {PropertyName}: {Value}";
         }
 
-        public static EnumProperty Parse(BinaryReader reader, string propertyName, int index)
+        public static EnumProperty Deserialize(BinaryReader reader, string propertyName, int index, out int overhead)
         {
-            var result = new EnumProperty()
+            var result = new EnumProperty(propertyName, index)
             {
-                PropertyName = propertyName,
-                Index = index
+                Type = reader.ReadLengthPrefixedString()
             };
+
+            overhead = result.Type.GetSerializedLength() + 1;
 
             var nullByte = reader.ReadByte();
             Trace.Assert(nullByte == 0);
 
-            result.Value = reader.ReadInt32();
+            result.Value = reader.ReadLengthPrefixedString();
+
             return result;
         }
     }

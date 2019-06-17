@@ -16,19 +16,18 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public int Value { get; set; }
 
+        public IntProperty(string propertyName, int index = 0) : base(propertyName, index)
+        {
+        }
 
         public override string ToString()
         {
             return $"Int {PropertyName}: {Value}";
         }
 
-        public static IntProperty Parse(BinaryReader reader, string propertyName, int index)
+        public static IntProperty Deserialize(BinaryReader reader, string propertyName, int index)
         {
-            var result = new IntProperty()
-            {
-                PropertyName = propertyName,
-                Index = index
-            };
+            var result = new IntProperty(propertyName, index);
 
             var nullByte = reader.ReadByte();
             Trace.Assert(nullByte == 0);

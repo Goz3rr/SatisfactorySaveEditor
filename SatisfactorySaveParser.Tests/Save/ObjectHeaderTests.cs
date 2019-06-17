@@ -30,7 +30,7 @@ namespace SatisfactorySaveParser.Tests.Save
         private const string ComponentHeaderParentEntityName = "Persistent_Level:PersistentLevel.Char_Player_C_0";
 
         [TestMethod]
-        public void TestObjectHeaderReading()
+        public void ObjectHeaderReading()
         {
             using (var stream = new MemoryStream(ActorHeaderBytes))
             using (var reader = new BinaryReader(stream))
@@ -46,7 +46,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestActorHeaderReading()
+        public void ActorHeaderReading()
         {
             using (var stream = new MemoryStream(ActorHeaderBytes))
             using (var reader = new BinaryReader(stream))
@@ -65,7 +65,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestActorHeaderWriting()
+        public void ActorHeaderWriting()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))
@@ -89,7 +89,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestComponentHeaderReading()
+        public void ComponentHeaderReading()
         {
             using (var stream = new MemoryStream(ComponentHeaderBytes))
             using (var reader = new BinaryReader(stream))
@@ -104,7 +104,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestComponentHeaderWriting()
+        public void ComponentHeaderWriting()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))

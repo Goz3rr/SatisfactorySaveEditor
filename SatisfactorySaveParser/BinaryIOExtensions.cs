@@ -143,11 +143,7 @@ namespace SatisfactorySaveParser
         /// <returns></returns>
         public static ObjectReference ReadObjectReference(this BinaryReader reader)
         {
-            return new ObjectReference()
-            {
-                LevelName = reader.ReadLengthPrefixedString(),
-                PathName = reader.ReadLengthPrefixedString()
-            };
+            return new ObjectReference(level: reader.ReadLengthPrefixedString(), path: reader.ReadLengthPrefixedString());
         }
 
         /// <summary>
@@ -159,6 +155,16 @@ namespace SatisfactorySaveParser
         {
             writer.WriteLengthPrefixedString(objectReference.LevelName);
             writer.WriteLengthPrefixedString(objectReference.PathName);
+        }
+
+        /// <summary>
+        ///     Get the serialized length of an ObjectReference in bytes
+        /// </summary>
+        /// <param name="objRef"></param>
+        /// <returns></returns>
+        public static int GetSerializedLength(this ObjectReference objRef)
+        {
+            return objRef.LevelName.GetSerializedLength() + objRef.PathName.GetSerializedLength();
         }
     }
 }

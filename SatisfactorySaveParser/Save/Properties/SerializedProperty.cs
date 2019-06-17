@@ -8,14 +8,20 @@ namespace SatisfactorySaveParser.Save.Properties
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public string PropertyName { get; set; }
+        public string PropertyName { get; }
         public abstract string PropertyType { get; }
-        public int Index { get; set; }
+        public int Index { get; }
 
         public abstract Type BackingType { get; }
         public abstract object BackingObject { get; }
 
         public abstract int SerializedLength { get; }
+
+        protected SerializedProperty(string propertyName, int index)
+        {
+            PropertyName = propertyName;
+            Index = index;
+        }
 
         public virtual void AssignToProperty(SaveObject saveObject, PropertyInfo info)
         {

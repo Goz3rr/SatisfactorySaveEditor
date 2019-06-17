@@ -16,19 +16,18 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public float Value { get; set; }
 
+        public FloatProperty(string propertyName, int index = 0) : base(propertyName, index)
+        {
+        }
 
         public override string ToString()
         {
             return $"Float {PropertyName}: {Value}";
         }
 
-        public static FloatProperty Parse(BinaryReader reader, string propertyName, int index)
+        public static FloatProperty Deserialize(BinaryReader reader, string propertyName, int index)
         {
-            var result = new FloatProperty()
-            {
-                PropertyName = propertyName,
-                Index = index
-            };
+            var result = new FloatProperty(propertyName, index);
 
             var nullByte = reader.ReadByte();
             Trace.Assert(nullByte == 0);

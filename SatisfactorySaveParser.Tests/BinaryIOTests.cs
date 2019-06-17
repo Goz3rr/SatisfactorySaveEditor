@@ -14,7 +14,7 @@ namespace SatisfactorySaveParser.Tests
         private static readonly byte[] EmptyStringBytes = new byte[] { 0x00, 0x00, 0x00, 0x00 };
 
         [TestMethod]
-        public void TestLengthPrefixedASCIIReading()
+        public void LengthPrefixedASCIIReading()
         {
             using (var stream = new MemoryStream(PersistentLevelStringBytes))
             using (var reader = new BinaryReader(stream))
@@ -26,7 +26,7 @@ namespace SatisfactorySaveParser.Tests
         }
 
         [TestMethod]
-        public void TestLengthPrefixedASCIIWriting()
+        public void LengthPrefixedASCIIWriting()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))
@@ -37,13 +37,13 @@ namespace SatisfactorySaveParser.Tests
         }
 
         [TestMethod]
-        public void TestSerializedASCIILength()
+        public void SerializedASCIILength()
         {
             Assert.AreEqual(PersistentLevelStringBytes.Length, PersistentLevelString.GetSerializedLength());
         }
 
         [TestMethod]
-        public void TestLengthPrefixedUnicodeReading()
+        public void LengthPrefixedUnicodeReading()
         {
             using (var stream = new MemoryStream(UnicodeTestStringBytes))
             using (var reader = new BinaryReader(stream))
@@ -55,7 +55,7 @@ namespace SatisfactorySaveParser.Tests
         }
 
         [TestMethod]
-        public void TestLengthPrefixedUnicodeWriting()
+        public void LengthPrefixedUnicodeWriting()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))
@@ -66,13 +66,13 @@ namespace SatisfactorySaveParser.Tests
         }
 
         [TestMethod]
-        public void TestSerializedUnicodeLength()
+        public void SerializedUnicodeLength()
         {
             Assert.AreEqual(UnicodeTestStringBytes.Length, UnicodeTestString.GetSerializedLength());
         }
 
         [TestMethod]
-        public void TestEmptyStringReading()
+        public void EmptyStringReading()
         {
             using (var stream = new MemoryStream(EmptyStringBytes))
             using (var reader = new BinaryReader(stream))
@@ -84,7 +84,7 @@ namespace SatisfactorySaveParser.Tests
         }
 
         [TestMethod]
-        public void TestEmptyStringWriting()
+        public void EmptyStringWriting()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))

@@ -33,7 +33,7 @@ namespace SatisfactorySaveParser.Tests.Save
         private const long SaveHeaderV4SaveDateTime = 0x08D6714DFFC75D60;
 
         [TestMethod]
-        public void TestSaveHeaderV5Reading()
+        public void SaveHeaderV5Reading()
         {
             using (var stream = new MemoryStream(SaveHeaderV5Bytes))
             using (var reader = new BinaryReader(stream))
@@ -57,7 +57,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestSaveHeaderV5Writing()
+        public void SaveHeaderV5Writing()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))
@@ -84,7 +84,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestSaveHeaderV4Reading()
+        public void SaveHeaderV4Reading()
         {
             using (var stream = new MemoryStream(SaveHeaderV4Bytes))
             using (var reader = new BinaryReader(stream))
@@ -107,7 +107,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestSaveHeaderV4Writing()
+        public void SaveHeaderV4Writing()
         {
             using (var stream = new MemoryStream())
             using (var writer = new BinaryWriter(stream))
@@ -133,7 +133,7 @@ namespace SatisfactorySaveParser.Tests.Save
         }
 
         [TestMethod]
-        public void TestSessionVisibilityCompatibility()
+        public void SessionVisibilityCompatibility()
         {
             using (var stream = new MemoryStream(SaveHeaderV5Bytes))
             using (var reader = new BinaryReader(stream))

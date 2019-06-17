@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
@@ -18,21 +16,21 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public bool Value { get; set; }
 
+        public BoolProperty(string propertyName, int index = 0) : base(propertyName, index)
+        {
+        }
 
         public override string ToString()
         {
             return $"Bool {PropertyName}: {Value}";
         }
 
-        public static BoolProperty Parse(BinaryReader reader, string propertyName, int index)
+        public static BoolProperty Deserialize(BinaryReader reader, string propertyName, int index)
         {
-            var result = new BoolProperty()
+            var result = new BoolProperty(propertyName, index)
             {
-                PropertyName = propertyName,
-                Index = index
+                Value = reader.ReadByte() > 0
             };
-
-            result.Value = reader.ReadByte() > 0;
 
             var nullByte = reader.ReadByte();
             Trace.Assert(nullByte == 0);
