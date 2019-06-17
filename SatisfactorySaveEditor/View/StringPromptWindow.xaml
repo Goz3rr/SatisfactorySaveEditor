@@ -9,7 +9,7 @@
         x:Name="StringPromptValueWindow"
         WindowStartupLocation="CenterOwner"
         DataContext="{Binding StringPromptViewModel, Source={StaticResource Locator}, Mode=OneTime}"
-        Title="Set Bonus Slot Count" Height="160" Width="400" ResizeMode="NoResize">
+        Title="{Binding WindowTitle}" Height="171.915" Width="400" ResizeMode="NoResize">
     <DockPanel Margin="5">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
@@ -22,17 +22,13 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Column="0" Grid.Row="0" Content="Number of Slots:"/>
+            <Label Grid.Column="0" Grid.Row="0" Content="{Binding PromptMessage}"/>
             <TextBox x:Name="NumberBox" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0">
                 <TextBox.Text>
-                    <Binding Path="NumberChosen" UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <util:PositiveIntegerRule/>
-                        </Binding.ValidationRules>
-                    </Binding>
+                    <Binding Path="ValueChosen" UpdateSourceTrigger="PropertyChanged"/>
                 </TextBox.Text>
             </TextBox>
-            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path= OldValueDisplay}" ContentStringFormat="Currently {0} slots" />
+            <Label Grid.Row="2" Content="{Binding Path= OldValueMessage}" Grid.ColumnSpan="2" Margin="0,0,0,-75"/>
         </Grid>
         <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,5,0,0" Height="20">
 
