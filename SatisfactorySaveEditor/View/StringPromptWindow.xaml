@@ -32,7 +32,7 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path= OldSlotsDisplay}" ContentStringFormat="Currently {0} slots" />
+            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path= OldValueDisplay}" ContentStringFormat="Currently {0} slots" />
         </Grid>
         <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Margin="0,5,0,0" Height="20">
 
@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Ok" Grid.Column="0" Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=StringPromptValueWindow}">
+            <Button Content="Ok" Grid.Column="0" Command="{Binding OkCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=StringPromptValueWindow}">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="False"/>
