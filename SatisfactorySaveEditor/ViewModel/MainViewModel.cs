@@ -69,6 +69,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
+        public RelayCommand<bool> JumpMenuCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand<string> OpenCommand { get; }
         public RelayCommand Help_ViewGithubCommand { get; }
@@ -105,6 +106,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
+            JumpMenuCommand = new RelayCommand<bool>(JumpMenu, CanSave); //disallow menu jumping if no save is loaded
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand<string>(Open);
             AboutCommand = new RelayCommand(About);
@@ -307,6 +309,16 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             SelectedItem.IsSelected = false;
             SelectedItem = rootItem.FindChild(target, true);
+        }
+
+        private void JumpMenu(bool notUsed_thisMakesItPossibleToDisableTheMenuItem)
+        {
+            string destination = "";
+
+            if (CanJump(destination))
+                Jump(destination);
+            else
+                MessageBox.Show("Could not jump to tag:\n" + destination);
         }
 
         private void SelectNode(SaveObjectModel node)
