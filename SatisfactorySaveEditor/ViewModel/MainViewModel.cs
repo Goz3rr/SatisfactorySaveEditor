@@ -307,18 +307,33 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Jump(string target)
         {
-            SelectedItem.IsSelected = false;
+            if(SelectedItem != null)
+                SelectedItem.IsSelected = false;
             SelectedItem = rootItem.FindChild(target, true);
         }
 
-        private void JumpMenu(bool notUsed_thisMakesItPossibleToDisableTheMenuItem)
+        private void JumpMenu(bool notUsed_thisSeemsToBeRequiredToDisableTheMenuItem)
         {
             string destination = "";
 
-            if (CanJump(destination))
-                Jump(destination);
-            else
-                MessageBox.Show("Could not jump to tag:\n" + destination);
+            var dialog = new StringPromptWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            var cvm = (StringPromptViewModel)dialog.DataContext;
+            cvm.WindowTitle = "Jump to Tag";
+            cvm.PromptMessage = "Tag name:";
+            cvm.ValueChosen = "";
+            cvm.OldValueMessage = "Obtain via Right Click > Copy name\nExample:\nPersistent_Level:PersistentLevel.Char_Player_C_0.inventory";
+            dialog.ShowDialog();
+
+            destination = cvm.ValueChosen;
+
+            if(!(destination.Equals("") || destination.Equals("cancel")))
+                if (CanJump(destination))
+                    Jump(destination);
+                else
+                    MessageBox.Show("Failed to jump to tag:\n" + destination);
         }
 
         private void SelectNode(SaveObjectModel node)
