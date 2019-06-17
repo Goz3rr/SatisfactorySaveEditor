@@ -3,11 +3,11 @@
 namespace SatisfactorySaveEditor.View
 {
     /// <summary>
-    /// Interaction logic for CheatInventoryWindow.xaml
+    /// Interaction logic for StringPromptWindow.xaml
     /// </summary>
-    public partial class CheatInventoryWindow : Window
+    public partial class StringPromptWindow : Window
     {
-        public CheatInventoryWindow()
+        public StringPromptWindow()
         {
             InitializeComponent();
         }

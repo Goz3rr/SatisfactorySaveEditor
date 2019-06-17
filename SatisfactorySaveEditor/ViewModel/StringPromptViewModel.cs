@@ -9,29 +9,48 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<Window> OkCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
 
-        private int numberChosen;
-        public int NumberChosen
+        private string valueChosen;
+        public string ValueChosen
         {
-            get => numberChosen;
-            set { Set(() => NumberChosen, ref numberChosen, value); }
+            get => valueChosen;
+            set { Set(() => ValueChosen, ref valueChosen, value); }
         }
 
-        private int oldSlotsDisplay;
-        public int OldSlotsDisplay
+        private string oldValueDisplay;
+        public string OldValueDisplay
         {
-            get => oldSlotsDisplay;
-            set { Set(() => OldSlotsDisplay, ref oldSlotsDisplay, value); }
+            get => oldValueDisplay;
+            set { Set(() => OldValueDisplay, ref oldValueDisplay, value); }
+        }
+
+        
+        private string windowTitle;
+        private string promptMessage;
+        private string promptInitialValue;
+
+        
+
+        public StringPromptViewModel(string windowTitle, string promptMessage, string promptInitialValue) 
+            : this()
+        {
+            MessageBox.Show("Running 3 element constructor");
+            this.windowTitle = windowTitle;
         }
 
         public StringPromptViewModel()
         {
+            MessageBox.Show("Running regular element constructor");
+            this.windowTitle = "String prompt";
+            this.promptMessage = "Enter a string:";
+            this.promptInitialValue = null;
+
             OkCommand = new RelayCommand<Window>(Ok);
             CancelCommand = new RelayCommand<Window>(Cancel);
         }
 
         private void Cancel(Window obj)
         {
-            NumberChosen = int.MinValue;
+            ValueChosen = null;
             obj.Close();
         }
 

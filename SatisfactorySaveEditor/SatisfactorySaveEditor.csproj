@@ -138,6 +138,7 @@
     <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="Util\UpdateChecker.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
+    <Compile Include="ViewModel\StringPromptViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PreferencesWindowViewModel.cs" />
@@ -157,6 +158,9 @@
     <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
     <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\StringPromptWindow.xaml.cs">
+      <DependentUpon>StringPromptWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CheatInventoryWindow.xaml.cs">
       <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
     </Compile>
@@ -185,6 +189,10 @@
     <Page Include="View\AddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StringPromptWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Control\LinearColorPicker.xaml">
       <Generator>MSBuild:Compile</Generator>
