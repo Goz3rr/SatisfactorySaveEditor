@@ -16,7 +16,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     public class MassDismantleCheat : ICheat
     {
-        public string Name => "Mass dismantle";
+        public string Name => "Mass dismantle...";
 
         private int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
