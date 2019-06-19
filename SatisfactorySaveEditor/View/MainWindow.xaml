@@ -67,6 +67,11 @@
                         <sys:Boolean>True</sys:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
+                <MenuItem Header="_Create backup" Command="{Binding ManualBackupCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>True</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Preferences" Command="{Binding PreferencesCommand}"/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
