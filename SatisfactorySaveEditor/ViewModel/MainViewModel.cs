@@ -75,6 +75,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand Help_ViewGithubCommand { get; }
         public RelayCommand Help_ReportIssueCommand { get; }
         public RelayCommand Help_RequestHelpDiscordCommand { get; }
+        public RelayCommand Help_FicsitAppGuideCommand { get; }
         public RelayCommand AboutCommand { get; }
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<ICheat> CheatCommand { get; }
@@ -113,6 +114,7 @@ namespace SatisfactorySaveEditor.ViewModel
             Help_ViewGithubCommand = new RelayCommand(Help_ViewGithub);
             Help_ReportIssueCommand = new RelayCommand(Help_ReportIssue);
             Help_RequestHelpDiscordCommand = new RelayCommand(Help_RequestHelpDiscord);
+            Help_FicsitAppGuideCommand = new RelayCommand(Help_FicsitAppGuide);
             CheckUpdatesCommand = new RelayCommand(() =>
             {
                 CheckForUpdate(true).ConfigureAwait(false);
@@ -243,6 +245,12 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             MessageBox.Show("You are now being redirected to the Satisfactory Modding discord server. Please request help in the #savegame-edits channel.");
             System.Diagnostics.Process.Start("https://discord.gg/rNxYXht"); //discord invite that links to the #savegame-edits channel
+        }
+
+        private void Help_FicsitAppGuide()
+        {
+            MessageBox.Show("You are now being redirected to the ficsit.app mod and tool repository to view a guide.");
+            System.Diagnostics.Process.Start("https://ficsit.app/guide/Z8h6z2CczH43c");
         }
 
         private void About()
