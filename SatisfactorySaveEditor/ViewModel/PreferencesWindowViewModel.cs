@@ -8,6 +8,7 @@ namespace SatisfactorySaveEditor.ViewModel
     {
         private bool canApply;
         private bool autoUpdate;
+        private bool autoBackup;
         private int backupCount;
 
         public bool AutoUpdate
@@ -16,6 +17,16 @@ namespace SatisfactorySaveEditor.ViewModel
             set
             {
                 Set(() => AutoUpdate, ref autoUpdate, value);
+                Set(() => CanApply, ref canApply, true);
+            }
+        }
+
+        public bool AutoBackup
+        {
+            get => autoBackup;
+            set
+            {
+                Set(() => AutoBackup, ref autoBackup, value);
                 Set(() => CanApply, ref canApply, true);
             }
         }
@@ -43,6 +54,7 @@ namespace SatisfactorySaveEditor.ViewModel
             CancelCommand = new RelayCommand<Window>(Cancel);
 
             autoUpdate = Properties.Settings.Default.AutoUpdate;
+            autoBackup = Properties.Settings.Default.AutoBackup;
         }
 
         private void Accept(Window window)
