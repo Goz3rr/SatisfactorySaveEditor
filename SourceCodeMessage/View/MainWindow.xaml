@@ -1,0 +1,21 @@
+﻿<Window x:Class="SourceCodeMessage.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SourceCodeMessage"
+        mc:Ignorable="d"
+        Title="Info" Height="234.042" Width="417.164" ResizeMode="NoResize"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+        >
+    <Grid>
+        <DockPanel Margin="5">
+            <Grid HorizontalAlignment="Left" Height="171" Margin="10,10,0,0" VerticalAlignment="Top" Width="374">
+                <Button Grid.Column="0" Content="Close" Command="{Binding CloseCommand}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" IsCancel="True"/>
+                <Button Content="Proceed to Releases page" Command="{Binding OpenReleasesCommand}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="150" IsDefault="True"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="374" Height="146"><Run Text="If you intended to download the source code for this program, you're in the right place. You'll find the source code in this folder."/><LineBreak/><Run/><LineBreak/><Run Text="If you intended to download this program in order to edit your save, you should go to the Releases page to download a compiled version of the program."/><LineBreak/><Run/><LineBreak/><Run Text="Click the button below to be taken to the Releases page, or click Close to close this message."/><LineBreak/><Run/><LineBreak/><Run/><LineBreak/><Run/></TextBlock>
+            </Grid>
+        </DockPanel>
+
+    </Grid>
+</Window>
