@@ -96,7 +96,12 @@ namespace SatisfactorySaveEditor.Cheats
 
         private void MissingTagMsg(string tagName)
         {
-            MessageBox.Show("This save does not contain a " + tagName + ".\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find " + tagName, MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"This save does not contain a {tagName}.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find " + tagName, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private BoolPropertyViewModel CreateOrSetBoolField(SaveObjectModel model, string fieldName, bool value)
+        {
+            return model.FindOrCreateField<BoolPropertyViewModel>(fieldName, f => f.Value = value);
         }
     }
 }
