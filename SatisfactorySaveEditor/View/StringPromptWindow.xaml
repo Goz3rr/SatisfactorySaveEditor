@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
 
             <Label Grid.Column="0" Grid.Row="0" Content="{Binding PromptMessage}"/>
-            <TextBox x:Name="NumberBox" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0">
+            <TextBox x:Name="StringBox" VerticalContentAlignment="Center" Grid.Column="1" Grid.Row="0">
                 <TextBox.Text>
                     <Binding Path="ValueChosen" UpdateSourceTrigger="PropertyChanged"/>
                 </TextBox.Text>
@@ -44,7 +44,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=NumberBox}" Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError), ElementName=StringBox}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="IsEnabled" Value="True"/>
                             </MultiDataTrigger>
