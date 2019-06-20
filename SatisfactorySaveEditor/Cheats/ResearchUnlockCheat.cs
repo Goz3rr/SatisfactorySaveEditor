@@ -49,20 +49,19 @@ namespace SatisfactorySaveEditor.Cheats
             }
 
             tutorialManager.FindOrCreateField<EnumPropertyViewModel>("mPendingTutorial", f => f.Value = "EIntroTutorialSteps::ITS_DONE");
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroTutorial", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroSequence", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep1Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep2Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep3Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep4Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep5Upgrade", f => f.Value = true);
             tutorialManager.FindOrCreateField<IntPropertyViewModel>("mTradingPostLevel", f => f.Value = 5);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroTutorial", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroTutorial", f => f.Value = true);
+            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroTutorial", true);
+            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroSequence", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep1Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep2Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep3Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep4Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep5Upgrade", true);
+
 
             // TODO: Set GameState->mScannableResources
-            gameState.FindOrCreateField<BoolPropertyViewModel>("mIsBuildingEfficiencyUnlocked", f => f.Value = true);
-            gameState.FindOrCreateField<BoolPropertyViewModel>("mIsBuildingOverclockUnlocked", f => f.Value = true);
+            CreateOrSetBoolField(gameState, "mIsBuildingEfficiencyUnlocked", true);
+            CreateOrSetBoolField(gameState, "mIsBuildingOverclockUnlocked", true);
 
             gamePhaseManager.FindOrCreateField<BytePropertyViewModel>("mGamePhase", f =>
             {
