@@ -1,5 +1,7 @@
 # Satisfactory Save Editor
 
+**View installation instructions in the [guide](https://ficsit.app/guide/Z8h6z2CczH43c)**!
+
 **See the [releases page](https://github.com/Goz3rr/SatisfactorySaveEditor/releases) to download a compiled release**, or build your own by cloning this repo.
 Stuck? Bugs? Questions? Feel free to contact us here on Github or on the [Satisfactory Modding](https://discord.gg/rNxYXht) discord server.
 
@@ -8,7 +10,7 @@ A work in progress save editor for Satisfactory. Consists of both a save parser 
 Features include:
 * View all save data in a more human readable format
 * Manually edit data tags
-* Enable the ingame minimap
+* Enable the minimap early
 * Change your inventory size
 * Unlock all milestones (to make a testing map, for example)
 * Delete things from your save
@@ -24,11 +26,13 @@ Made in Visual Studio 2017. Requires .NET Framework 4.7.2 Dev Pack and .NET Core
 
 # Help
 
+Check out the [guide](https://ficsit.app/guide/Z8h6z2CczH43c) on ficsit.app for some installation instructions and basic usage information.
+
 Mousing over items in the left pane tree view will provide a short description of their purpose in the save. Please help us keep this list up to date by updating [`Types.xml`](https://github.com/Goz3rr/SatisfactorySaveEditor/blob/master/SatisfactorySaveEditor/Types.xml) with the tags you discover in your save editing adventures.
 
 If you have any questions, please feel free to contact us here on Github or on Discord. 
 
-On discord, you can request help in the `#savegame-edits` channel of the [Satisfactory Modding](https://discord.gg/rNxYXht) discord server.
+On Discord, you can request help in the `#savegame-edits` channel of the [Satisfactory Modding](https://discord.gg/rNxYXht) discord server.
 
 # FAQ
 

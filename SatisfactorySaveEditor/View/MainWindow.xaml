@@ -87,10 +87,13 @@
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
             <MenuItem Header="_Help">
+                <MenuItem Header="View guides on ficsit.app" Command="{Binding Help_FicsitAppGuideCommand}"/>
+                <MenuItem Header="Request help on Discord" Command="{Binding Help_RequestHelpDiscordCommand}"/>
+                <Separator/>
                 <MenuItem Header="View on GitHub" Command="{Binding Help_ViewGithubCommand}"/>
                 <MenuItem Header="Report an Issue" Command="{Binding Help_ReportIssueCommand}"/>
-                <MenuItem Header="Request help on Discord" Command="{Binding Help_RequestHelpDiscordCommand}"/>
                 <MenuItem Header="Check for updates" Command="{Binding CheckUpdatesCommand}"/>
+                <Separator/>
                 <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             </MenuItem>
         </Menu>
