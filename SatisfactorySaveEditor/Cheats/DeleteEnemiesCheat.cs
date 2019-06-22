@@ -4,6 +4,7 @@ using SatisfactorySaveEditor.ViewModel.Struct;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
+using SatisfactorySaveParser.Structures;
 using System;
 using System.Diagnostics;
 using System.IO;
