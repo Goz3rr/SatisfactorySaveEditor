@@ -8,7 +8,6 @@ using SatisfactorySaveParser.Structures;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Numerics;
 using System.Windows;
 using Vector = SatisfactorySaveParser.PropertyTypes.Structs.Vector;
 using Vector3 = SatisfactorySaveParser.Structures.Vector3;
@@ -197,11 +196,11 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     foreach (StructPropertyViewModel elem in arrayProperty.Elements)
                     {
-                        ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Z += offset; // Move the spawn point under the map
+                        ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data.Z += offset; // Move the spawn point under the map
                         // Set WasKilled to true so they don't respawn after deleting them
                         ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
                         // Set KilledOnDayNumber to a huge number (some far away animals respawn if the number is too small)
-                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data))/10000);
+                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data) /10000);
                     }
                 });
             }
