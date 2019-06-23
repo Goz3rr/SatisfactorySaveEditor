@@ -98,7 +98,7 @@ namespace SatisfactorySaveEditor.ViewModel
             // TODO: load this dynamically
             CheatMenuItems.Add(new ResearchUnlockCheat());
             CheatMenuItems.Add(new UnlockMapCheat());
-            CheatMenuItems.Add(new InventorySlotsCheat());
+            //CheatMenuItems.Add(new InventorySlotsCheat()); //inventory size can no longer be expanded by save editing as of 6/23/2019
             CheatMenuItems.Add(new KillPlayersCheat());
             CheatMenuItems.Add(new DeleteEnemiesCheat());
             CheatMenuItems.Add(new MassDismantleCheat());
