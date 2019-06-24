@@ -8,7 +8,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     public class InventorySlotsCheat : ICheat
     {
-        public string Name => "Set bonus inventory slots";
+        public string Name => "Set bonus inventory slots...";
 
         public bool Apply(SaveObjectModel rootItem)
         {

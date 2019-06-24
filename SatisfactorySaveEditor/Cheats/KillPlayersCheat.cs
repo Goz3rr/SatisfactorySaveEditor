@@ -3,6 +3,7 @@ using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
+using SatisfactorySaveParser.Structures;
 using System.Numerics;
 using System.Windows;
 

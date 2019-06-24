@@ -9,14 +9,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
 {
     public class MassDismantleCheat : ICheat
     {
-        public string Name => "Mass dismantle";
+        public string Name => "Mass dismantle...";
 
         private int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
@@ -65,13 +64,13 @@ namespace SatisfactorySaveEditor.Cheats
             bool done = false;
             while (!done)
             {
-                MassDismantleWindow massDeleteWindow = new MassDismantleWindow();
-                if (!massDeleteWindow.ShowDialog().Value)
+                MassDismantleWindow massDismantleWindow = new MassDismantleWindow();
+                if (!massDismantleWindow.ShowDialog().Value)
                     break;
-                if (!massDeleteWindow.ResultSet)
+                if (!massDismantleWindow.ResultSet)
                     break;
-                points.Add(massDeleteWindow.Result);
-                if (massDeleteWindow.Done)
+                points.Add(massDismantleWindow.Result);
+                if (massDismantleWindow.Done)
                     done = true;
             }
             polygon = points.ToArray();
@@ -164,6 +163,17 @@ namespace SatisfactorySaveEditor.Cheats
                             inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mInputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
                         if (item.FindField<ObjectPropertyViewModel>("mOutputInventory") != null)
                             inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mOutputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
+                        // Unlink miners & geysers
+                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/Miner") || item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/GeneratorGeoThermal"))
+                        {
+                            string resourceNode = item.FindField<ObjectPropertyViewModel>("mExtractResourceNode").Str2;
+                            rootItem.FindChild(resourceNode, false).FindField<BoolPropertyViewModel>("mIsOccupied", property => property.Value = false);
+                        }
+                        var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/TradingPost/Build_TradingPost.Build_TradingPost_C"))
+                            gameState.FindField<BoolPropertyViewModel>("mIsTradingPostBuilt", property => property.Value = false);
+                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/TradingPost/Build_SpaceElevator.Build_SpaceElevator_C"))
+                            gameState.FindField<BoolPropertyViewModel>("mIsSpaceElevatorBuilt", property => property.Value = false);
                         rootItem.Remove(item);
                         count++;
                     }
@@ -176,7 +186,7 @@ namespace SatisfactorySaveEditor.Cheats
             BuildPolygon();
             if (polygon.Length < 2)
             {
-                MessageBox.Show("At least 2 points needed to mass delete", "Could not mass delete", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("At least 2 points needed to mass dismantle", "Could not mass dismantle", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             ArrayProperty inventory = new ArrayProperty("mInventoryStacks")
@@ -199,7 +209,12 @@ namespace SatisfactorySaveEditor.Cheats
                 countCrate = MassDismantle(rootItem.FindChild("-Shared", true).FindChild("BP_Crate.BP_Crate_C", true).DescendantSelfViewModel, inventory, rootItem);
             }
             catch (NullReferenceException) { }
-            MessageBoxResult result = MessageBox.Show($"Deleted {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in deleted storages) in a single crate?", "Deleted", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if(countFactory + countBuilding + countCrate == 0)
+            {
+                MessageBox.Show("Nothing was dismantled. Make sure the coordinates are correct and in clockwise order.", "Mass dismantle", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 inventory = ArrangeInventory(inventory);
@@ -219,6 +234,10 @@ namespace SatisfactorySaveEditor.Cheats
                         {
                             Type = "ObjectProperty",
                             Elements = Enumerable.Repeat(new ObjectProperty("Element"){ LevelName = "", PathName = "" }, inventory.Elements.Count).Cast<SerializedProperty>().ToList()
+                        },
+                        new BoolProperty("mCanBeRearrange")
+                        {
+                            Value = false
                         }
                     }
                 };

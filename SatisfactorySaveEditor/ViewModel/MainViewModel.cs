@@ -70,6 +70,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
+        public RelayCommand JumpMenuCommand { get; }
         public RelayCommand ExitCommand { get; }
         public RelayCommand<string> OpenCommand { get; }
         public RelayCommand Help_ViewGithubCommand { get; }
@@ -108,6 +109,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
+            JumpMenuCommand = new RelayCommand(JumpMenu, () => CanSave(false)); //disallow menu jumping if no save is loaded
             ExitCommand = new RelayCommand(Exit);
             OpenCommand = new RelayCommand<string>(Open);
             AboutCommand = new RelayCommand(About);
@@ -367,8 +369,33 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void Jump(string target)
         {
-            SelectedItem.IsSelected = false;
+            if(SelectedItem != null)
+                SelectedItem.IsSelected = false;
             SelectedItem = rootItem.FindChild(target, true);
+        }
+
+        private void JumpMenu()
+        {
+            string destination = "";
+
+            var dialog = new StringPromptWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            var cvm = (StringPromptViewModel)dialog.DataContext;
+            cvm.WindowTitle = "Jump to Tag";
+            cvm.PromptMessage = "Tag name:";
+            cvm.ValueChosen = "";
+            cvm.OldValueMessage = "Obtain via Right Click > Copy name\nExample:\nPersistent_Level:PersistentLevel.Char_Player_C_0.inventory";
+            dialog.ShowDialog();
+
+            destination = cvm.ValueChosen;
+
+            if(!(destination.Equals("") || destination.Equals("cancel")))
+                if (CanJump(destination))
+                    Jump(destination);
+                else
+                    MessageBox.Show("Failed to jump to tag:\n" + destination);
         }
 
         private void SelectNode(SaveObjectModel node)
