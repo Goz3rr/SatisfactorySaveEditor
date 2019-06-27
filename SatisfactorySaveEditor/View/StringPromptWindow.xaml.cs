@@ -10,6 +10,7 @@ namespace SatisfactorySaveEditor.View
         public StringPromptWindow()
         {
             InitializeComponent();
+            StringBox.Focus();
         }
     }
 }

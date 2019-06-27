@@ -16,53 +16,52 @@ namespace SatisfactorySaveEditor.Cheats
             var tutorialManager = rootItem.FindChild("Persistent_Level:PersistentLevel.TutorialIntroManager", false);
             if (tutorialManager == null)
             {
-                MessageBox.Show("This save does not contain a TutorialIntroManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find TutorialIntroManager", MessageBoxButton.OK, MessageBoxImage.Error);
+                MissingTagMsg("TutorialIntroManager");
                 return false;
             }
 
             var schematicManager = rootItem.FindChild("Persistent_Level:PersistentLevel.schematicManager", false);
             if (schematicManager == null)
             {
-                MessageBox.Show("This save does not contain a schematicManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find schematicManager", MessageBoxButton.OK, MessageBoxImage.Error);
+                MissingTagMsg("schematicManager");
                 return false;
             }
 
             var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
             if (gameState == null)
             {
-                MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
+                MissingTagMsg("GameState");
                 return false;
             }
 
             var gamePhaseManager = rootItem.FindChild("Persistent_Level:PersistentLevel.GamePhaseManager", false);
             if (gamePhaseManager == null)
             {
-                MessageBox.Show("This save does not contain a GamePhaseManager.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GamePhaseManager", MessageBoxButton.OK, MessageBoxImage.Error);
+                MissingTagMsg("GamePhaseManager");
                 return false;
             }
 
             var tradingPostBuilt = tutorialManager.FindField<BoolPropertyViewModel>("mTradingPostBuilt");
             if (tradingPostBuilt == null)
             {
-                MessageBox.Show("You should build a hub before attempting to unlock all research", "No hub found", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("You should build a hub before attempting to unlock all research.", "No hub found", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
             tutorialManager.FindOrCreateField<EnumPropertyViewModel>("mPendingTutorial", f => f.Value = "EIntroTutorialSteps::ITS_DONE");
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroTutorial", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroSequence", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep1Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep2Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep3Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep4Upgrade", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mDidStep5Upgrade", f => f.Value = true);
             tutorialManager.FindOrCreateField<IntPropertyViewModel>("mTradingPostLevel", f => f.Value = 5);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroTutorial", f => f.Value = true);
-            tutorialManager.FindOrCreateField<BoolPropertyViewModel>("mHasCompletedIntroTutorial", f => f.Value = true);
+            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroTutorial", true);
+            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroSequence", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep1Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep2Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep3Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep4Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep5Upgrade", true);
+
 
             // TODO: Set GameState->mScannableResources
-            gameState.FindOrCreateField<BoolPropertyViewModel>("mIsBuildingEfficiencyUnlocked", f => f.Value = true);
-            gameState.FindOrCreateField<BoolPropertyViewModel>("mIsBuildingOverclockUnlocked", f => f.Value = true);
+            CreateOrSetBoolField(gameState, "mIsBuildingEfficiencyUnlocked", true);
+            CreateOrSetBoolField(gameState, "mIsBuildingOverclockUnlocked", true);
 
             gamePhaseManager.FindOrCreateField<BytePropertyViewModel>("mGamePhase", f =>
             {
@@ -92,6 +91,16 @@ namespace SatisfactorySaveEditor.Cheats
 
             MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             return true;
+        }
+
+        private void MissingTagMsg(string tagName)
+        {
+            MessageBox.Show($"This save does not contain a {tagName}.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find " + tagName, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private BoolPropertyViewModel CreateOrSetBoolField(SaveObjectModel model, string fieldName, bool value)
+        {
+            return model.FindOrCreateField<BoolPropertyViewModel>(fieldName, f => f.Value = value);
         }
     }
 }
