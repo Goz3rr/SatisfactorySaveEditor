@@ -67,6 +67,11 @@
                         <sys:Boolean>True</sys:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
+                <MenuItem Header="_Create backup" Command="{Binding ManualBackupCommand}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>True</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Jump to tag..." InputGestureText="Ctrl+J" Command="{Binding JumpMenuCommand}">
                     <MenuItem.CommandParameter>

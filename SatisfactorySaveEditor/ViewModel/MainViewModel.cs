@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.Cheats;
 using SatisfactorySaveEditor.View;
+using System.IO.Compression;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -80,6 +81,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<ICheat> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
+        public RelayCommand ManualBackupCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
         public RelayCommand CheckUpdatesCommand { get; }
         public RelayCommand PreferencesCommand { get; }
@@ -123,6 +125,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            ManualBackupCommand = new RelayCommand(() => CreateBackup(true), CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
@@ -211,10 +214,15 @@ namespace SatisfactorySaveEditor.ViewModel
             return saveGame != null;
         }
 
+        private bool CanSave() //overload of CanSave(bool saveAs) for contexts when saveAs doesn't matter
+        {
+            return CanSave(false);
+        }
+
         /// <summary>
         /// Save changes, creating a backup first if auto backups are enabled in the user's preferences
         /// </summary>
-        /// <param name="saveAs">If the Save As... option box should be brought up to choose a destination</param>
+        /// <param name="saveAs">(optional) If the Save As... option box should be brought up to choose a destination</param>
         private void Save(bool saveAs)
         {
             if (saveAs)
@@ -230,6 +238,8 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
+                    AutoBackupIfEnabled();
+
                     var newObjects = rootItem.DescendantSelf;
                     saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                     saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
@@ -243,6 +253,8 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             else
             {
+                AutoBackupIfEnabled();
+                
                 var newObjects = rootItem.DescendantSelf;
                 saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                 saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
@@ -251,6 +263,48 @@ namespace SatisfactorySaveEditor.ViewModel
                 saveGame.Save();
                 HasUnsavedChanges = false;
             }
+        }
+
+        private void AutoBackupIfEnabled()
+        {
+            if (Properties.Settings.Default.AutoBackup)
+            {
+                CreateBackup(false);
+            }
+        }
+
+        private void CreateBackup(bool manual)
+        {
+            string saveFileDirectory = Path.GetDirectoryName(saveGame.FileName);
+            string tempDirectoryName = @"\SSEtemp\";
+            string pathToZipFrom = saveFileDirectory + tempDirectoryName;
+
+            string tempFilePath = saveFileDirectory + tempDirectoryName + Path.GetFileName(saveGame.FileName);
+            string backupFileFullPath = saveFileDirectory + @"\" + Path.GetFileNameWithoutExtension(saveGame.FileName) + "_" + DateTimeOffset.Now.ToUnixTimeMilliseconds() + ".SSEbkup.zip";
+
+            try
+            {
+                //Satisfactory save files compress exceedingly well, so compress all backups so that they take up less space.
+                //ZipFile only accepts directories, not single files, so copy the save to a temporary folder and then zip that folder
+                Directory.CreateDirectory(pathToZipFrom);
+                File.Copy(saveGame.FileName, tempFilePath, true); 
+                ZipFile.CreateFromDirectory(pathToZipFrom, backupFileFullPath);
+            }
+            catch (Exception)
+            {
+                //should never be reached, but hopefully any users that encounter an error here will report it 
+                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error.");
+                throw;
+            }
+            finally
+            {
+                //delete the temporary folder and copy even if the zipping process fails
+                File.Delete(tempFilePath);
+                Directory.Delete(pathToZipFrom);
+            }
+
+            if (manual)
+                MessageBox.Show("Backup created. Find it in your save file folder.");
         }
 
         /// <summary>

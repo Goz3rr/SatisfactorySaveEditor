@@ -24,8 +24,11 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Column="0" Grid.Row="0" Target="{Binding ElementName=BackupBox}" Content="Enable auto update check:"/>
+        <Label Grid.Column="0" Grid.Row="1" Target="{Binding ElementName=BackupBox}" Content="Enable auto backups:"/>
+        
+        <Label Grid.Column="0" Grid.Row="0" Target="{Binding ElementName=BackupBox}" Content="Enable auto update check:"/>
         <CheckBox Grid.Column="1" Grid.Row="0" x:Name="AutoUpdateCheckbox" VerticalAlignment="Center" IsChecked="{Binding AutoUpdate}"/>
-
+        <CheckBox Grid.Column="1" Grid.Row="1" x:Name="AutoBackupCheckbox" VerticalAlignment="Center" IsChecked="{Binding AutoBackup}"/>
         <!-- Future stuff
         <Label Grid.Column="0" Grid.Row="1" Target="{Binding ElementName=BackupBox}" Content="Max backup count:"/>
         <TextBox Grid.Column="1" Grid.Row="1" x:Name="BackupBox" VerticalAlignment="Center" Text="{Binding BackupCount}"/>
@@ -37,5 +40,8 @@
             <Button Margin="5,0" Padding="20,3" Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=PreferencesWin}"/>
             <Button Margin="5,0" Padding="20,3" Content="Apply" Command="{Binding ApplyCommand}" IsEnabled="{Binding CanApply}"/>
         </StackPanel>
+        
+        
+
     </Grid>
 </Window>
