@@ -12,8 +12,12 @@ Features include:
 * Manually edit data tags
 * Enable the minimap early
 * Change your inventory size
-* Unlock all milestones, including unreleased ones
+* Unlock all milestones (to make a testing map, for example)
 * Delete things from your save
+* Search your save for certain information
+* Determine the location of resource nodes
+* Edit the contents of containers and your inventory
+* Edit your player position to teleport yourself
 * More coming soon
 
 Written in C# using WPF for the user interface.
@@ -43,3 +47,4 @@ Some people have encountered issues if they don't complete HUB tier 0 before run
 * Placing some things I unlocked using the `Unlock all research` cheat crashes my game!
 
 A few updates ago, something in the game was changed to cause crashes when some, but not all, unreleased buildings are placed. We aren't sure if this was intentionally done by Coffee Stain or if it happened on accident, but we can't do anything about it.
+

@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 
+//TODO: Make pressing enter in the text box trigger Ok()
 namespace SatisfactorySaveEditor.ViewModel
 {
     public class StringPromptViewModel : ViewModelBase
