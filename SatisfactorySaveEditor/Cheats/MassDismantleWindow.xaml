@@ -4,14 +4,13 @@
         xmlns:local="clr-namespace:SatisfactorySaveEditor.Cheats"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="SatisfactorySaveEditor.Cheats.MassDismantleWindow"
         Title="Mass Delete" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
-        ContentRendered="Window_ContentRendered" Height="194.184">
+        ContentRendered="Window_ContentRendered" Height="154.934">
     <Grid x:Name="grid" Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -29,10 +28,6 @@
             <Button IsDefault="True" MinWidth="60" Margin="0,0,10,0" Click="Next_Click" x:Name="nextButton" Content="_Next Point"/>
             <Button MinWidth="60" Click="Done_Click" Content="_Done"/>
         </WrapPanel>
-
-        <Label Grid.Column="1" Grid.Row ="4" x:Name="MinerWarnLabel" Content="Warning: Using this on Miners/Oil Pumps" Margin="0,0,0,0"/>
-        <Label Grid.Column="1" Grid.Row ="4" x:Name="MinerWarnLabel2" Content="requires manually toggling the ore node's" Margin="0,10,0,0"/>
-        <Label Grid.Column="1" Grid.Row ="4" x:Name="MinerWarnLabel3" Content="mIsOccupied field to build another" Margin="0,20,0,0"/>
 
 
 
