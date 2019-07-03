@@ -38,7 +38,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -94,6 +93,8 @@
     <Compile Include="SerializedFields.cs" />
     <Compile Include="Structures\IObjectReference.cs" />
     <Compile Include="Structures\ObjectReference.cs" />
+    <Compile Include="Structures\Vector3.cs" />
+    <Compile Include="Structures\Vector4.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Research.xml">

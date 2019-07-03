@@ -1,7 +1,6 @@
 ﻿using SatisfactorySaveParser.Structures;
 using System;
 using System.IO;
-using System.Numerics;
 
 namespace SatisfactorySaveParser.PropertyTypes.Structs
 {

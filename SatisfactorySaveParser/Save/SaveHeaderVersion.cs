@@ -20,6 +20,9 @@
         // @2019-01-15 Added session visibility to the header so we can set it up with the same visibility
         AddedSessionVisibility,
 
+        // @2019-06-19 This was put in the wrong save version thingy and is now on experimental so cant remnove it.
+        LookAtTheComment,
+
         // -----<new versions can be added above this line>-----
         VersionPlusOne,
         LatestVersion = VersionPlusOne - 1 // Last version to use

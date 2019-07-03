@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.Cheats;
 using SatisfactorySaveEditor.View;
+using System.IO.Compression;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -75,10 +76,12 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand Help_ViewGithubCommand { get; }
         public RelayCommand Help_ReportIssueCommand { get; }
         public RelayCommand Help_RequestHelpDiscordCommand { get; }
+        public RelayCommand Help_FicsitAppGuideCommand { get; }
         public RelayCommand AboutCommand { get; }
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<ICheat> CheatCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
+        public RelayCommand ManualBackupCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
         public RelayCommand CheckUpdatesCommand { get; }
         public RelayCommand PreferencesCommand { get; }
@@ -97,7 +100,7 @@ namespace SatisfactorySaveEditor.ViewModel
             // TODO: load this dynamically
             CheatMenuItems.Add(new ResearchUnlockCheat());
             CheatMenuItems.Add(new UnlockMapCheat());
-            CheatMenuItems.Add(new InventorySlotsCheat());
+            //CheatMenuItems.Add(new InventorySlotsCheat()); //inventory size can no longer be expanded by save editing as of 6/23/2019
             CheatMenuItems.Add(new KillPlayersCheat());
             CheatMenuItems.Add(new DeleteEnemiesCheat());
             CheatMenuItems.Add(new MassDismantleCheat());
@@ -113,6 +116,7 @@ namespace SatisfactorySaveEditor.ViewModel
             Help_ViewGithubCommand = new RelayCommand(Help_ViewGithub);
             Help_ReportIssueCommand = new RelayCommand(Help_ReportIssue);
             Help_RequestHelpDiscordCommand = new RelayCommand(Help_RequestHelpDiscord);
+            Help_FicsitAppGuideCommand = new RelayCommand(Help_FicsitAppGuide);
             CheckUpdatesCommand = new RelayCommand(() =>
             {
                 CheckForUpdate(true).ConfigureAwait(false);
@@ -121,6 +125,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new RelayCommand<bool>(Save, CanSave);
+            ManualBackupCommand = new RelayCommand(() => CreateBackup(true), CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
@@ -159,33 +164,65 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        /// <summary>
+        /// Checks if the passed model is not the rootItem of the save
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>If deletion is allowed</returns>
         private bool CanDelete(SaveObjectModel model)
         {
             return model != rootItem;
         }
 
+        /// <summary>
+        /// Removes the passed model from rootItem and raises property changed on the root item.
+        /// </summary>
+        /// <param name="model">The model to delete</param>
         private void Delete(SaveObjectModel model)
         {
             rootItem.Remove(model);
             RaisePropertyChanged(() => RootItem);
         }
 
+        /// <summary>
+        /// Checks if rootItem exists (if a save file is opened)
+        /// </summary>
+        /// <param name="cheat"></param>
+        /// <returns>True if the root item is NOT null, false otherwise</returns>
         private bool CanCheat(ICheat cheat)
         {
             return rootItem != null;
         }
 
+        /// <summary>
+        /// Calls Apply() on the passed ICheat, providing it with rootItem. Only mark for unsaved changes if the cheat succeeds.
+        /// </summary>
+        /// <param name="cheat">The cheat to run</param>
         private void Cheat(ICheat cheat)
         {
             if (cheat.Apply(rootItem))
                 HasUnsavedChanges = true;
         }
 
+        /// <summary>
+        /// Checks if the editor can perform a save operation
+        /// </summary>
+        /// <param name="saveAs">If the save operation is Save As (unused)</param>
+        /// <returns>True if saveGame is NOT null, false otherwise</returns>
         private bool CanSave(bool saveAs)
         {
             return saveGame != null;
         }
 
+        private bool CanSave() //overload of CanSave(bool saveAs) for contexts when saveAs doesn't matter
+        {
+            return CanSave(false);
+        }
+
+        /// <summary>
+        /// Save changes, creating a backup first if auto backups are enabled in the user's preferences
+        /// </summary>
+        /// <param name="saveAs">(optional) If the Save As... option box should be brought up to choose a destination</param>
         private void Save(bool saveAs)
         {
             if (saveAs)
@@ -201,6 +238,8 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
+                    AutoBackupIfEnabled();
+
                     var newObjects = rootItem.DescendantSelf;
                     saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                     saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
@@ -214,6 +253,8 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             else
             {
+                AutoBackupIfEnabled();
+                
                 var newObjects = rootItem.DescendantSelf;
                 saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                 saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
@@ -224,33 +265,106 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        private void AutoBackupIfEnabled()
+        {
+            if (Properties.Settings.Default.AutoBackup)
+            {
+                CreateBackup(false);
+            }
+        }
+
+        private void CreateBackup(bool manual)
+        {
+            string saveFileDirectory = Path.GetDirectoryName(saveGame.FileName);
+            string tempDirectoryName = @"\SSEtemp\";
+            string pathToZipFrom = saveFileDirectory + tempDirectoryName;
+
+            string tempFilePath = saveFileDirectory + tempDirectoryName + Path.GetFileName(saveGame.FileName);
+            string backupFileFullPath = saveFileDirectory + @"\" + Path.GetFileNameWithoutExtension(saveGame.FileName) + "_" + DateTimeOffset.Now.ToUnixTimeMilliseconds() + ".SSEbkup.zip";
+
+            try
+            {
+                //Satisfactory save files compress exceedingly well, so compress all backups so that they take up less space.
+                //ZipFile only accepts directories, not single files, so copy the save to a temporary folder and then zip that folder
+                Directory.CreateDirectory(pathToZipFrom);
+                File.Copy(saveGame.FileName, tempFilePath, true); 
+                ZipFile.CreateFromDirectory(pathToZipFrom, backupFileFullPath);
+            }
+            catch (Exception)
+            {
+                //should never be reached, but hopefully any users that encounter an error here will report it 
+                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error.");
+                throw;
+            }
+            finally
+            {
+                //delete the temporary folder and copy even if the zipping process fails
+                File.Delete(tempFilePath);
+                Directory.Delete(pathToZipFrom);
+            }
+
+            if (manual)
+                MessageBox.Show("Backup created. Find it in your save file folder.");
+        }
+
+        /// <summary>
+        /// Checks if it's possible to jump to the passed EntityName string
+        /// </summary>
+        /// <param name="target">The EntityName to jump to, in string format</param>
+        /// <returns>True if rootItem contains the EntitiyName, false otherwise.</returns>
         private bool CanJump(string target)
         {
             return rootItem.FindChild(target, false) != null;
         }
 
+        /// <summary>
+        /// Opens the Github repo page scrolled to the 'Help' heading
+        /// </summary>
         private void Help_ViewGithub()
         {
             System.Diagnostics.Process.Start("https://github.com/Goz3rr/SatisfactorySaveEditor#help");
         }
 
+        /// <summary>
+        /// Opens the Github repo page scrolled to the Issues tab
+        /// </summary>
         private void Help_ReportIssue()
         {
             System.Diagnostics.Process.Start("https://github.com/Goz3rr/SatisfactorySaveEditor/issues");
         }
 
+        /// <summary>
+        /// Notifies the user of their redirection to the discord, then opens the invite.
+        /// </summary>
         private void Help_RequestHelpDiscord()
         {
             MessageBox.Show("You are now being redirected to the Satisfactory Modding discord server. Please request help in the #savegame-edits channel.");
             System.Diagnostics.Process.Start("https://discord.gg/rNxYXht"); //discord invite that links to the #savegame-edits channel
         }
 
+        /// <summary>
+        /// Notifies the user of their redirection to the ficsit.app guide, then opens the guide.
+        /// </summary>
+        private void Help_FicsitAppGuide()
+        {
+            MessageBox.Show("You are now being redirected to the ficsit.app mod and tool repository to view a guide.");
+            System.Diagnostics.Process.Start("https://ficsit.app/guide/Z8h6z2CczH43c");
+        }
+
+
+        /// <summary>
+        /// Displays version information box
+        /// </summary>
         private void About()
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             MessageBox.Show($"Satisfactory save editor{Environment.NewLine}{version}", "About");
         }
 
+        /// <summary>
+        /// Starts the process of loading a file, prompting the user if there are unsaved changes. Marks as having no unsaved changes
+        /// </summary>
+        /// <param name="fileName">Path to the save file</param>
         private void Open(string fileName)
         {
             if (!string.IsNullOrWhiteSpace(fileName))
@@ -270,6 +384,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 }
             }
 
+            //TODO: swap this over to calling the save method instead
             OpenFileDialog dialog = new OpenFileDialog
             {
                 Filter = "Satisfactory save file|*.sav"
@@ -288,6 +403,11 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
+        /// <summary>
+        /// Checks if there are unsaved changes, exits otherwise or if the user choses to discard.
+        /// TODO: Mark as unsaved when property fileds are changed
+        /// TODO: Check this when pressing alt+f4 and clicking the red x
+        /// </summary>
         private void Exit()
         {
             if (HasUnsavedChanges)
@@ -305,6 +425,10 @@ namespace SatisfactorySaveEditor.ViewModel
 
         }
 
+        /// <summary>
+        /// Select the specified entity in the tree view
+        /// </summary>
+        /// <param name="target">EntityName of the entity to jump to</param>
         private void Jump(string target)
         {
             if(SelectedItem != null)
@@ -312,6 +436,9 @@ namespace SatisfactorySaveEditor.ViewModel
             SelectedItem = rootItem.FindChild(target, true);
         }
 
+        /// <summary>
+        /// Opens a StringPromptWindow prompting for an EntityName to jump to
+        /// </summary>
         private void JumpMenu()
         {
             string destination = "";
@@ -336,11 +463,19 @@ namespace SatisfactorySaveEditor.ViewModel
                     MessageBox.Show("Failed to jump to tag:\n" + destination);
         }
 
+        /// <summary>
+        /// Selects a node
+        /// </summary>
+        /// <param name="node">The node to select</param>
         private void SelectNode(SaveObjectModel node)
         {
             SelectedItem = node;
         }
 
+        /// <summary>
+        /// Loads a file into the editor
+        /// </summary>
+        /// <param name="path">The path to the file to open</param>
         private void LoadFile(string path)
         {
             SelectedItem = null;
@@ -371,6 +506,10 @@ namespace SatisfactorySaveEditor.ViewModel
             AddRecentFileEntry(path);
         }
 
+        /// <summary>
+        /// Adds a recently opened file to the list
+        /// </summary>
+        /// <param name="path">The path of the file to add</param>
         private void AddRecentFileEntry(string path)
         {
             if (Properties.Settings.Default.LastSaves == null)
@@ -461,6 +600,10 @@ namespace SatisfactorySaveEditor.ViewModel
             dropInfo.Effects = DragDropEffects.Copy;
         }
 
+        /// <summary>
+        /// Handle drag and drop opening of save files
+        /// </summary>
+        /// <param name="dropInfo"></param>
         public void Drop(IDropInfo dropInfo)
         {
             var fileName = ((DataObject)dropInfo.Data).GetFileDropList()[0];

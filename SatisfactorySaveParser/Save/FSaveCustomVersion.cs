@@ -56,6 +56,12 @@
         // 2019-01-30 Renamed SaveSessionId
         RenamedSaveSessionId,
 
+        // 2019-06-20 GeoThermal generators didn't save resource nodes prior to this which results with issues when being dismantled
+        ChangedGeoThermalGeneratorSaved,
+
+        // 2019-06-24 NewRailroadSerialization to overwrite old railroad data
+        OverwriteOldRailroadData,
+
         // -----<new versions can be added above this line>-------------------------------------------------
         VersionPlusOne,
         LatestVersion = VersionPlusOne - 1

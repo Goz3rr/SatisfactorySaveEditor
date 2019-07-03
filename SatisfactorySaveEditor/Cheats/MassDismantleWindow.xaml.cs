@@ -24,58 +24,21 @@ namespace SatisfactorySaveEditor.Cheats
         public MassDismantleWindow(bool isZWindow = false)
         {
             InitializeComponent();
-            xCoordinate.GotFocus += RemovePlaceholder;
-            xCoordinate.LostFocus += AddPlaceholder;
-            yCoordinate.GotFocus += RemovePlaceholder;
-            yCoordinate.LostFocus += AddPlaceholder;
             this.isZWindow = isZWindow;
             if(isZWindow)
             {
                 xLabel.Content = "minimum Z";
                 yLabel.Content = "maximum Z";
-                grid.Children.Remove(nextButton);
-                Label leaveEmptyLabel = new Label()
-                {
-                    Content = "Leave placeholder for infinity"
-                };
-                grid.Children.Add(leaveEmptyLabel);
-                Grid.SetRow(leaveEmptyLabel, 2);
-                Grid.SetColumn(leaveEmptyLabel, 0);
+                xCoordinate.Placeholder = "-inf";
+                yCoordinate.Placeholder = "+inf";
+                ((WrapPanel)grid.Children[4]).Children.Remove(nextButton);
             }
         }
 
         private bool isZWindow = false;
-        private bool isPlaceHolderX = true;
-        private bool isPlaceHolderY = true;
-
-        public void RemovePlaceholder(object sender, EventArgs e)
-        {
-            if (((TextBox)sender).Text == "123,456.78")
-            {
-                ((TextBox)sender).Text = "";
-                if (sender == xCoordinate)
-                    isPlaceHolderX = false;
-                if (sender == yCoordinate)
-                    isPlaceHolderY = false;
-            }
-        }
-
-        public void AddPlaceholder(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(((TextBox)sender).Text))
-            {
-                ((TextBox)sender).Text = "123,456.78";
-                if (sender == xCoordinate)
-                    isPlaceHolderX = true;
-                if (sender == yCoordinate)
-                    isPlaceHolderY = true;
-            }
-        }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            xCoordinate.Focus();
-            yCoordinate.Focus();
             xCoordinate.Focus();
         }
 
@@ -88,7 +51,7 @@ namespace SatisfactorySaveEditor.Cheats
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !isPlaceHolderX && !isPlaceHolderY)
+                if (!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !xCoordinate.IsPlaceholder && !yCoordinate.IsPlaceholder)
                 {
                     result = new Vector3()
                     {
@@ -103,7 +66,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
             catch (FormatException)
             {
-                MessageBox.Show("Coordinate format: 123.45");
+                MessageBox.Show("Coordinate format: 123456");
             }
         }
 
@@ -111,7 +74,7 @@ namespace SatisfactorySaveEditor.Cheats
         {
             try
             {
-                if ((!string.IsNullOrWhiteSpace(xCoordinate.Text) && !string.IsNullOrWhiteSpace(yCoordinate.Text) && !isPlaceHolderX && !isPlaceHolderY) || isZWindow)
+                if ((!xCoordinate.IsPlaceholder && !yCoordinate.IsPlaceholder))
                 {
                     result = new Vector3()
                     {
@@ -122,18 +85,91 @@ namespace SatisfactorySaveEditor.Cheats
                 }
                 if(isZWindow)
                 {
-                    if (isPlaceHolderX)
+                    result = new Vector3();
+                    if (xCoordinate.IsPlaceholder)
                         result.X = float.NegativeInfinity;
-                    if (isPlaceHolderY)
+                    else
+                        result.X = float.Parse(xCoordinate.Text);
+                    if (yCoordinate.IsPlaceholder)
                         result.Y = float.PositiveInfinity;
+                    else
+                        result.Y = float.Parse(yCoordinate.Text);
+                    ResultSet = true;
                 }
                 DialogResult = true;
                 Done = true;
             }
             catch (FormatException)
             {
-                MessageBox.Show("Coordinate format: 123.45");
+                MessageBox.Show("Coordinate format: 123456");
             }
+        }
+    }
+
+    public partial class PlaceholderTextBox : TextBox
+    {
+        private string _placeholder;
+
+        public string Placeholder
+        {
+            get => _placeholder;
+            set
+            {
+                _placeholder = value;
+                if (IsPlaceholder)
+                {
+                    IsPlaceholder = false;
+                    if (string.IsNullOrEmpty(Text))
+                        HandlePlaceholder(this, null);
+                    else
+                        Text = "";
+                }
+            }
+        }
+        public bool IsPlaceholder { get; set; }
+        public Brush PlaceholderColor { get; set; } = Brushes.Gray;
+
+        public PlaceholderTextBox() : base()
+        {
+            TextChanged += HandlePlaceholder;
+            SelectionChanged += HandleCaretPosition;
+            HandlePlaceholder(this, null);
+        }
+
+        private void HandleCaretPosition(object sender, RoutedEventArgs e)
+        {
+            SelectionChanged -= HandleCaretPosition;
+            if (IsPlaceholder)
+                CaretIndex = 0;
+            SelectionChanged += HandleCaretPosition;
+        }
+
+        private void HandlePlaceholder(object sender, TextChangedEventArgs e)
+        {
+            bool newIsPlaceHolder = string.IsNullOrEmpty(Text);
+            if (!IsPlaceholder && newIsPlaceHolder)
+            {
+                Text = Placeholder;
+                Foreground = PlaceholderColor;
+                CaretIndex = 0;
+            }
+            if (IsPlaceholder)
+            {
+                TextChange textChange = e.Changes.First();
+                if (textChange.AddedLength == 0)
+                {
+                    IsPlaceholder = false;
+                    Text = "";
+                    newIsPlaceHolder = true;
+                }
+                else
+                {
+                    Text = Text.Substring(textChange.Offset, textChange.AddedLength);
+                    Foreground = Brushes.Black;
+                    CaretIndex = textChange.AddedLength;
+                }
+            }
+            IsPlaceholder = newIsPlaceHolder;
         }
     }
 }
