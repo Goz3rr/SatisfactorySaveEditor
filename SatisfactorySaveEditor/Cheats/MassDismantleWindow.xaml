@@ -1,10 +1,11 @@
-﻿<Window x:Class="SatisfactorySaveEditor.Cheats.MassDismantleWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Mass Delete" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
         xmlns:local="clr-namespace:SatisfactorySaveEditor.Cheats"
-        ContentRendered="Window_ContentRendered">
-    <Grid Name="grid" Margin="15">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="SatisfactorySaveEditor.Cheats.MassDismantleWindow"
+        Title="Mass Delete" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
+        ContentRendered="Window_ContentRendered" Height="194.184">
+    <Grid x:Name="grid" Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -13,16 +14,30 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0" Grid.Row="0" Name="xLabel">X</Label>
-        <local:PlaceholderTextBox x:Name="xCoordinate" Placeholder="123456" Grid.Column="1" Grid.Row="0" MinWidth="250" VerticalAlignment="Center" Margin="5,4,0,4" ></local:PlaceholderTextBox>
-        <Label Grid.Column="0" Grid.Row="1" Name="yLabel">Y</Label>
-        <local:PlaceholderTextBox x:Name="yCoordinate" Placeholder="123456" Grid.Column="1" Grid.Row="1" MinWidth="250" VerticalAlignment="Center" Margin="5,4,0,4"></local:PlaceholderTextBox>
+        <Label Grid.Column="0" Grid.Row="0" x:Name="xLabel" Content="X"/>
+        <local:PlaceholderTextBox x:Name="xCoordinate" Placeholder="123456" Grid.Column="1" Grid.Row="0" MinWidth="250" VerticalAlignment="Center" Margin="5,4,0,4" />
+        <Label Grid.Column="0" Grid.Row="1" x:Name="yLabel" Content="Y"/>
+        <local:PlaceholderTextBox x:Name="yCoordinate" Placeholder="123456" Grid.Column="1" Grid.Row="1" MinWidth="250" VerticalAlignment="Center" Margin="5,4,0,4"/>
+
+
 
         <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button IsDefault="True" MinWidth="60" Margin="0,0,10,0" Click="Next_Click" Name="nextButton" Content="_Next Point"/>
+            <Button IsDefault="False" MinWidth="60" Margin="0,0,70,0" Click="HelpButton_Click" x:Name="helpButton" Content="_Help"/>
+            <Button IsDefault="True" MinWidth="60" Margin="0,0,10,0" Click="Next_Click" x:Name="nextButton" Content="_Next Point"/>
             <Button MinWidth="60" Click="Done_Click" Content="_Done"/>
         </WrapPanel>
+
+        <Label Grid.Column="1" Grid.Row ="4" x:Name="MinerWarnLabel" Content="Warning: Using this on Miners/Oil Pumps" Margin="0,0,0,0"/>
+        <Label Grid.Column="1" Grid.Row ="4" x:Name="MinerWarnLabel2" Content="requires manually toggling the ore node's" Margin="0,10,0,0"/>
+        <Label Grid.Column="1" Grid.Row ="4" x:Name="MinerWarnLabel3" Content="mIsOccupied field to build another" Margin="0,20,0,0"/>
+
+
+
+
+
     </Grid>
+
 </Window>
