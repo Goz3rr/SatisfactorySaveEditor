@@ -104,6 +104,11 @@ namespace SatisfactorySaveEditor.Cheats
                 MessageBox.Show("Coordinate format: 123456");
             }
         }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://ficsit.app/guide/1Nk4oKqhpMhgN");
+        }
     }
 
     public partial class PlaceholderTextBox : TextBox
