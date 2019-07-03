@@ -164,7 +164,7 @@ namespace SatisfactorySaveEditor.Cheats
                         if (item.FindField<ObjectPropertyViewModel>("mOutputInventory") != null)
                             inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mOutputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
                         // Unlink miners & geysers
-                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/Miner") || item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/GeneratorGeoThermal"))
+                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/Miner") || item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/GeneratorGeoThermal") || item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/OilPump"))
                         {
                             string resourceNode = item.FindField<ObjectPropertyViewModel>("mExtractResourceNode").Str2;
                             rootItem.FindChild(resourceNode, false).FindField<BoolPropertyViewModel>("mIsOccupied", property => property.Value = false);
