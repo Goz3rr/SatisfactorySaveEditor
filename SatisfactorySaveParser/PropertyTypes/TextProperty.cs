@@ -67,9 +67,12 @@ namespace SatisfactorySaveParser.PropertyTypes
                 foreach (var formatData in FormatData)
                 {
                     writer.WriteLengthPrefixedString(formatData.Name);
-                    writer.Write(formatData.Unknown);
-                    writer.Write(formatData.Data.Length);
-                    writer.Write(formatData.Data);
+                    writer.Write(formatData.Unknown1);
+                    writer.Write(formatData.Unknown2);
+                    writer.Write(formatData.Unknown3);
+                    writer.Write(formatData.Unknown4);
+                    writer.Write(formatData.Unknown5);
+                    writer.WriteLengthPrefixedString(formatData.Data);
                 }
             }
         }
@@ -102,18 +105,16 @@ namespace SatisfactorySaveParser.PropertyTypes
                 var count = reader.ReadInt32();
                 for (var i = 0; i < count; i++)
                 {
-                    var formatName = reader.ReadLengthPrefixedString();
-                    var formatUnknown = reader.ReadByte();
-                    var formatLength = reader.ReadInt32();
-                    var formatBytes = reader.ReadBytes(formatLength);
-
                     result.FormatData.Add(new TextFormatData()
                     {
-                        Name = formatName,
-                        Unknown = formatUnknown,
-                        Data = formatBytes
-                    }
-                    );
+                        Name = reader.ReadLengthPrefixedString(),
+                        Unknown1 = reader.ReadByte(),
+                        Unknown2 = reader.ReadInt32(),
+                        Unknown3 = reader.ReadInt32(),
+                        Unknown4 = reader.ReadInt32(),
+                        Unknown5 = reader.ReadByte(),
+                        Data = reader.ReadLengthPrefixedString()
+                    });
                 }
             }
 
@@ -123,10 +124,14 @@ namespace SatisfactorySaveParser.PropertyTypes
 
     public class TextFormatData
     {
-        public int SerializedLength => Name.GetSerializedLength() + 5 + Data.Length;
+        public int SerializedLength => Name.GetSerializedLength() + 14 + Data.GetSerializedLength();
 
         public string Name { get; set; }
-        public byte Unknown { get; set; }
-        public byte[] Data { get; set; }
+        public byte Unknown1 { get; set; }
+        public int Unknown2 { get; set; }
+        public int Unknown3 { get; set; }
+        public int Unknown4 { get; set; }
+        public byte Unknown5 { get; set; }
+        public string Data { get; set; }
     }
 }
