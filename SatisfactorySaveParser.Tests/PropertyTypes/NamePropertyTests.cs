@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using SatisfactorySaveParser.Save.Properties;
 using SatisfactorySaveParser.Save.Serialization;
 

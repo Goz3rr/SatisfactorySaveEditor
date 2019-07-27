@@ -19,6 +19,8 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         public FGSaveSession Deserialize(Stream stream)
         {
+            var sw = Stopwatch.StartNew();
+
             using (var reader = new BinaryReader(stream))
             {
                 var save = new FGSaveSession
@@ -50,6 +52,9 @@ namespace SatisfactorySaveParser.Save.Serialization
 
                 log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
                 Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
+
+                sw.Stop();
+                log.Info($"Parsing save took {sw.ElapsedMilliseconds / 1000f}s");
 
                 return save;
             }
@@ -156,6 +161,10 @@ namespace SatisfactorySaveParser.Save.Serialization
                     actor.Rotation = reader.ReadVector4();
                     actor.Position = reader.ReadVector3();
                     actor.Scale = reader.ReadVector3();
+
+                    if (actor.Scale.IsSuspicious())
+                        log.Warn($"Actor {actor} has suspicious scale {actor.Scale}");
+
                     actor.WasPlacedInLevel = reader.ReadInt32() == 1;
                     break;
 
@@ -220,15 +229,20 @@ namespace SatisfactorySaveParser.Save.Serialization
             SerializedProperty prop;
             while ((prop = DeserializeProperty(reader)) != null)
             {
-                var (objProperty, objPropertyAttr) = saveObject.GetMatchingProperty(prop);
+                var (objProperty, objPropertyAttr) = prop.GetMatchingSaveProperty(saveObject.GetType());
 
                 if (objProperty == null)
                 {
                     var type = saveObject.GetType();
+
+                    var propType = prop.PropertyType;
+                    if (prop is StructProperty structProp)
+                        propType += $" ({structProp.Data.GetType().Name})";
+
                     if (type == typeof(SaveActor) || type == typeof(SaveComponent))
-                        log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on {saveObject.TypePath}");
+                        log.Warn($"Missing property for {propType} {prop.PropertyName} on {saveObject.TypePath}");
                     else
-                        log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on {type.Name}");
+                        log.Warn($"Missing property for {propType} {prop.PropertyName} on {type.Name}");
 
                     saveObject.DynamicProperties.Add(prop);
                     continue;
@@ -313,6 +327,9 @@ namespace SatisfactorySaveParser.Save.Serialization
                 case IntProperty.TypeName:
                     result = IntProperty.Deserialize(reader, propertyName, index);
                     break;
+                case MapProperty.TypeName:
+                    result = MapProperty.Deserialize(reader, propertyName, size, index, out overhead);
+                    break;
                 case NameProperty.TypeName:
                     result = NameProperty.Deserialize(reader, propertyName, index);
                     break;
@@ -321,6 +338,9 @@ namespace SatisfactorySaveParser.Save.Serialization
                     break;
                 case StrProperty.TypeName:
                     result = StrProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case StructProperty.TypeName:
+                    result = StructProperty.Deserialize(reader, propertyName, size, index, out overhead);
                     break;
                 case TextProperty.TypeName:
                     result = TextProperty.Deserialize(reader, propertyName, index);

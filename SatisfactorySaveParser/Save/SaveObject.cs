@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
+
 using NLog;
+
 using SatisfactorySaveParser.Save.Properties;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save
 {
     /// <summary>
     ///     Class representing a single saved UObject in a Satisfactory save
     /// </summary>
-    public abstract class SaveObject
+    public abstract class SaveObject : IPropertyContainer
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly List<string> missingDeserializers = new List<string>();
+        private static readonly List<string> missingSerializers = new List<string>();
 
         /// <summary>
         ///     Type of save object
@@ -53,7 +55,26 @@ namespace SatisfactorySaveParser.Save
         /// <param name="length"></param>
         public virtual void DeserializeNativeData(BinaryReader reader, int length)
         {
-            log.Warn($"Missing native deserializer for {ObjectKind} {TypePath}");
+            if (!missingDeserializers.Contains(TypePath))
+            {
+                if (length == 4)
+                {
+                    var value = reader.ReadInt32();
+                    reader.BaseStream.Position -= 4;
+
+                    if (value != 0)
+                    {
+                        log.Warn($"Missing native deserializer for {ObjectKind} {TypePath} ({length} bytes)");
+                        missingDeserializers.Add(TypePath);
+                    }
+                }
+                else
+                {
+                    log.Warn($"Missing native deserializer for {ObjectKind} {TypePath} ({length} bytes)");
+                    missingDeserializers.Add(TypePath);
+                }
+            }
+
             NativeData = reader.ReadBytes(length);
         }
 
@@ -65,24 +86,14 @@ namespace SatisfactorySaveParser.Save
         {
             if (NativeData != null)
             {
-                log.Warn($"Missing native serializer for {ObjectKind} {TypePath}");
+                if (!missingSerializers.Contains(TypePath))
+                {
+                    log.Warn($"Missing native serializer for {ObjectKind} {TypePath} ({NativeData.Length} bytes)");
+                    missingSerializers.Add(TypePath);
+                }
+
                 writer.Write(NativeData);
             }
-        }
-
-        /// <summary>
-        ///     Attempts to find a matching class property for the serialized property. Returns null if one can't be found.
-        /// </summary>
-        /// <param name="prop"></param>
-        /// <returns></returns>
-        public (PropertyInfo Property, SavePropertyAttribute Attribute) GetMatchingProperty(SerializedProperty prop)
-        {
-            var found = GetType().GetProperties()
-                //.Where(p => Attribute.IsDefined(p, typeof(SavePropertyAttribute)))
-                .Select(p => (Property: p, Attribute: p.GetCustomAttributes(typeof(SavePropertyAttribute), false).SingleOrDefault() as SavePropertyAttribute))
-                .SingleOrDefault(p => p.Attribute != null && p.Attribute.Name == prop.PropertyName);
-
-            return found;
         }
     }
 }

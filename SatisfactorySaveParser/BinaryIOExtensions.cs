@@ -166,5 +166,10 @@ namespace SatisfactorySaveParser
         {
             return objRef.LevelName.GetSerializedLength() + objRef.PathName.GetSerializedLength();
         }
+
+        public static bool IsSuspicious(this Vector3 vector)
+        {
+            return vector.X < 1E-8 || vector.Y < 1E-8 || vector.Y < 1E-8;
+        }
     }
 }

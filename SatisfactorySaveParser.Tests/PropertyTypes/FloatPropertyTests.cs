@@ -62,7 +62,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                 Value = MappingTestActor.TestFloatValue * 2
             };
 
-            var (objProperty, objPropertyAttr) = saveObject.GetMatchingProperty(prop);
+            var (objProperty, objPropertyAttr) = prop.GetMatchingSaveProperty(saveObject.GetType());
 
             Assert.AreEqual(nameof(saveObject.TestFloat), objProperty.Name);
 

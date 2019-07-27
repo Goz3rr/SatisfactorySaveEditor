@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+
 using NLog;
+using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
     public abstract class SerializedProperty
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly Dictionary<(Type, string), (PropertyInfo, Attribute)> propertyCache = new Dictionary<(Type, string), (PropertyInfo, Attribute)>();
 
         public string PropertyName { get; }
         public abstract string PropertyType { get; }
@@ -23,17 +29,170 @@ namespace SatisfactorySaveParser.Save.Properties
             Index = index;
         }
 
-        public virtual void AssignToProperty(SaveObject saveObject, PropertyInfo info)
+        /// <summary>
+        ///     Attempts to find a matching class property for this serialized property. Returns null if one can't be found.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public (PropertyInfo Property, SavePropertyAttribute Attribute) GetMatchingSaveProperty(Type targetType)
         {
-            if (info.PropertyType != BackingType)
+            if(!propertyCache.TryGetValue((targetType, PropertyName), out (PropertyInfo Property, Attribute Attribute) found))
             {
-                log.Warn($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing type {info.PropertyType.Name}");
-                saveObject.DynamicProperties.Add(this);
+                found = targetType.GetProperties()
+                    //.Where(p => Attribute.IsDefined(p, typeof(SavePropertyAttribute)))
+                    .Select(p => (Property: p, Attribute: p.GetCustomAttributes(typeof(SavePropertyAttribute), false).FirstOrDefault() as SavePropertyAttribute))
+                    .SingleOrDefault(p => p.Attribute != null && p.Attribute.Name == PropertyName);
+
+                propertyCache[(targetType, PropertyName)] = found;
             }
 
-            info.SetValue(saveObject, BackingObject);
+            return (found.Property, (SavePropertyAttribute)found.Attribute);
+        }
 
-            //saveObject.DynamicProperties.Add(this);
+        /// <summary>
+        ///     Attempts to find a matching struct property for this serialized property. Returns null if one can't be found.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public (PropertyInfo Property, StructPropertyAttribute Attribute) GetMatchingStructProperty(Type targetType)
+        {
+            if (!propertyCache.TryGetValue((targetType, PropertyName), out (PropertyInfo Property, Attribute Attribute) found))
+            {
+                found = targetType.GetProperties()
+                    //.Where(p => Attribute.IsDefined(p, typeof(SavePropertyAttribute)))
+                    .Select(p => (Property: p, Attribute: p.GetCustomAttributes(typeof(StructPropertyAttribute), false).FirstOrDefault() as StructPropertyAttribute))
+                    .SingleOrDefault(p => p.Attribute != null && p.Attribute.Name == PropertyName);
+
+                propertyCache[(targetType, PropertyName)] = found;
+            }
+
+            return (found.Property, (StructPropertyAttribute)found.Attribute);
+        }
+
+        public virtual void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
+        {
+            switch(this)
+            {
+                case ArrayProperty arrayProperty:
+                    {
+                        if (info.PropertyType.GetGenericTypeDefinition() != typeof(List<>))
+                        {
+                            log.Error($"Attempted to assign array {PropertyName} to non list field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                            saveObject.DynamicProperties.Add(this);
+                            break;
+                        }
+
+                        var list = info.GetValue(saveObject);
+                        var addMethod = info.PropertyType.GetMethod(nameof(List<object>.Add));
+
+                        switch (arrayProperty.Type)
+                        {
+                            case ObjectProperty.TypeName:
+                                {                                    
+                                    foreach (var obj in arrayProperty.Elements.Cast<ObjectProperty>())
+                                    {
+                                        addMethod.Invoke(list, new[] { obj.Reference });
+                                    }
+                                }
+                                break;
+
+                            case StructProperty.TypeName:
+                                {
+                                    foreach (var obj in arrayProperty.Elements.Cast<StructProperty>())
+                                    {
+
+                                    }
+                                }
+                                break;
+
+                            case IntProperty.TypeName:
+                                {
+                                    foreach (var prop in arrayProperty.Elements.Cast<IntProperty>())
+                                    {
+                                        addMethod.Invoke(list, new[] { (object)prop.Value });
+                                    }
+                                }
+                                break;
+
+                            default:
+                                {
+                                    log.Warn($"Attempted to assign array {PropertyName} of unknown type {arrayProperty.Type}");
+                                    saveObject.DynamicProperties.Add(this);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+
+                case StructProperty structProperty:
+                    {
+                        if(info.PropertyType.IsArray && structProperty.Data.GetType() == info.PropertyType.GetElementType())
+                        {
+                            var array = (Array)info.GetValue(saveObject);
+                            array.SetValue(structProperty.Data, Index);
+                            break;
+                        }
+
+                        if(structProperty.Data.GetType() != info.PropertyType)
+                        {
+                            log.Error($"Attempted to assign struct {PropertyName} ({structProperty.Data.GetType().Name}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                            saveObject.DynamicProperties.Add(this);
+                            break;
+                        }
+
+                        info.SetValue(saveObject, structProperty.Data);
+                    }
+                    break;
+
+                case EnumProperty enumProperty:
+                    {
+                        if(enumProperty.Type != info.PropertyType.Name)
+                        {
+                            log.Error($"Attempted to assign enum {PropertyName} ({enumProperty.Type}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                            saveObject.DynamicProperties.Add(this);
+                            break;
+                        }
+
+                        // TODO: should probably already be in BackingObject
+                        if(!Enum.TryParse(info.PropertyType, enumProperty.Value.Split(':').Last(), true, out object enumValue))
+                        {
+                            log.Error($"Failed to parse \"{enumProperty.Value}\" as {info.PropertyType.Name}");
+                            saveObject.DynamicProperties.Add(this);
+                            break;
+                        }
+
+                        info.SetValue(saveObject, enumValue);
+                    }
+                    break;
+
+                // TODO
+                case ByteProperty byteProperty:
+                case MapProperty mapProperty:
+                    {
+                        saveObject.DynamicProperties.Add(this);
+                    }
+                    break;
+
+                default:
+                    {
+                        if (info.PropertyType.IsArray && BackingType == info.PropertyType.GetElementType())
+                        {
+                            var array = (Array)info.GetValue(saveObject);
+                            array.SetValue(BackingObject, Index);
+                            break;
+                        }
+
+                        if (info.PropertyType != BackingType)
+                        {
+                            log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                            saveObject.DynamicProperties.Add(this);
+                            break;
+                        }
+
+                        info.SetValue(saveObject, BackingObject);
+                    }
+                    break;
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SatisfactorySaveParser.Save
     public class SavePropertyAttribute : Attribute
     {
         /// <summary>
-        ///     Serialized name of the property, usually prefixes with m
+        ///     Serialized name of the property, usually prefixed with m
         /// </summary>
         public string Name { get; set; }
 

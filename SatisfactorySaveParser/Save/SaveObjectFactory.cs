@@ -11,9 +11,10 @@ namespace SatisfactorySaveParser.Save
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private static readonly Dictionary<string, Type> objectTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(SaveObjectClassAttribute), false))
-                .ToDictionary(t => ((SaveObjectClassAttribute)t.GetCustomAttribute(typeof(SaveObjectClassAttribute), false)).Type, t => t);
         private static readonly List<string> missingTypes = new List<string>();
+        private static readonly Dictionary<string, Type> objectTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(SaveObjectClassAttribute), false))
+                .SelectMany(t => t.GetCustomAttributes<SaveObjectClassAttribute>(false).Select(attr => new { Attribute = attr, Type = t }))
+                .ToDictionary(x => x.Attribute.ClassPath, x => x.Type);
 
         /// <summary>
         ///     Attempt to instantiate the matching class for this type, or return a dynamic object when missing

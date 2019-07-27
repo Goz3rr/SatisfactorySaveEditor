@@ -11,11 +11,11 @@ namespace SatisfactorySaveParser.Save
         /// <summary>
         ///     The UE4 class this object belongs to
         /// </summary>
-        public string Type { get; set; }
+        public string ClassPath { get; set; }
 
-        public SaveObjectClassAttribute(string type)
+        public SaveObjectClassAttribute(string classPath)
         {
-            Type = type;
+            ClassPath = classPath;
         }
     }
 }
