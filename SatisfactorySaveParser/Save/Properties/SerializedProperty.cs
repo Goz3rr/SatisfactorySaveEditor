@@ -165,10 +165,45 @@ namespace SatisfactorySaveParser.Save.Properties
                     }
                     break;
 
-                // TODO
                 case ByteProperty byteProperty:
+                    {
+                        if(byteProperty.IsEnum)
+                        {
+                            var enumType = info.PropertyType.GenericTypeArguments[0];
+                            if (info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>) || enumType.Name != byteProperty.EnumType)
+                            {
+                                log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                                saveObject.DynamicProperties.Add(this);
+                                break;
+                            }
+
+                            if (!Enum.TryParse(enumType, byteProperty.EnumValue, true, out object enumValue))
+                            {
+                                log.Error($"Failed to parse \"{byteProperty.EnumValue}\" as {enumType.Name}");
+                                saveObject.DynamicProperties.Add(this);
+                                break;
+                            }
+
+                            var enumAsByteType = typeof(EnumAsByte<>).MakeGenericType(new[] { enumType });
+                            var instance = Activator.CreateInstance(enumAsByteType, enumValue);
+                            info.SetValue(saveObject, instance);
+                            break;
+                        }
+
+                        if(info.PropertyType != typeof(byte))
+                        {
+                            log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                            saveObject.DynamicProperties.Add(this);
+                            break;
+                        }
+
+                        info.SetValue(saveObject, byteProperty.ByteValue);
+                    }
+                    break;
+
                 case MapProperty mapProperty:
                     {
+                        // TODO
                         saveObject.DynamicProperties.Add(this);
                     }
                     break;

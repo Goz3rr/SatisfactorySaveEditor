@@ -10,5 +10,8 @@ namespace SatisfactorySaveParser.Game.Buildable.Factory
 
         [SaveProperty("mTimeToNextExpansion")]
         public float TimeToNextExpansion { get; set; }
+
+        [SaveProperty("mMapText")]
+        public TextEntry MapText { get; set; }
     }
 }

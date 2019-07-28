@@ -2,7 +2,7 @@
 using System.IO;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Save.Serialization;
 

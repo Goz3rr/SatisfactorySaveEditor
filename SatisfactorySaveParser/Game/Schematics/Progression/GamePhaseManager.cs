@@ -10,7 +10,7 @@ namespace SatisfactorySaveParser.Game.Schematics.Progression
     public class GamePhaseManager : SaveActor
     {
         [SaveProperty("mGamePhase")]
-        public EGamePhase GamePhase { get; set; }
+        public EnumAsByte<EGamePhase> GamePhase { get; set; }
 
         [SaveProperty("mGamePhaseCosts")]
         public List<FPhaseCost> GamePhaseCosts { get; } = new List<FPhaseCost>();

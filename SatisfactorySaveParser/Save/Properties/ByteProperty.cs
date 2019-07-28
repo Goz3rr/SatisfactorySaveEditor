@@ -29,6 +29,10 @@ namespace SatisfactorySaveParser.Save.Properties
         /// </summary>
         public byte ByteValue { get; set; }
 
+        /// <summary>
+        ///     Indicates if this ByteProperty is holding a <see cref="EnumAsByte{T}"/>
+        /// </summary>
+        public bool IsEnum => EnumType != "None";
 
         public ByteProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
@@ -36,10 +40,10 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override string ToString()
         {
-            if (EnumType == "None")
-                return $"Byte {PropertyName}: {ByteValue}";
+            if (IsEnum)
+                return $"Byte {PropertyName}: {EnumType}::{EnumValue}";
 
-            return $"Byte {PropertyName}: {EnumType}::{EnumValue}";
+            return $"Byte {PropertyName}: {ByteValue}";
         }
 
         public static ByteProperty Deserialize(BinaryReader reader, string propertyName, int index, out int overhead)
@@ -52,13 +56,13 @@ namespace SatisfactorySaveParser.Save.Properties
             var nullByte = reader.ReadByte();
             Trace.Assert(nullByte == 0);
 
-            if (result.EnumType == "None")
+            if (result.IsEnum)
             {
-                result.ByteValue = reader.ReadByte();
+                result.EnumValue = reader.ReadLengthPrefixedString();
             }
             else
             {
-                result.EnumValue = reader.ReadLengthPrefixedString();
+                result.ByteValue = reader.ReadByte();
             }
 
             overhead = result.EnumType.GetSerializedLength() + 1;

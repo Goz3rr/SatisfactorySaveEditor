@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 
 using NLog;
-
+using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Save.Properties;
 
 namespace SatisfactorySaveParser.Save.Serialization
@@ -119,11 +119,11 @@ namespace SatisfactorySaveParser.Save.Serialization
             if (header.SupportsSessionVisibility)
             {
                 header.SessionVisibility = (ESessionVisibility)reader.ReadByte();
-                log.Debug($"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={(int)header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}, Visibility={header.SessionVisibility}");
+                log.Debug($"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}, Visibility={header.SessionVisibility}");
             }
             else
             {
-                log.Debug($"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={(int)header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}");
+                log.Debug($"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}");
             }
 
             return header;

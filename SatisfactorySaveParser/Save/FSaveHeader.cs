@@ -1,4 +1,5 @@
 ﻿using System;
+using SatisfactorySaveParser.Game.Enums;
 
 namespace SatisfactorySaveParser.Save
 {
