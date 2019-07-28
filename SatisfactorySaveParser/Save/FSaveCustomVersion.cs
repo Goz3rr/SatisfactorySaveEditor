@@ -62,6 +62,9 @@
         // 2019-06-24 NewRailroadSerialization to overwrite old railroad data
         OverwriteOldRailroadData,
 
+        // 2019-07-24 Due to a bug in the network optimizations the legs data where trashed, reseting the legs to zero is the best option.
+        ResetFactoryLegs,
+
         // -----<new versions can be added above this line>-------------------------------------------------
         VersionPlusOne,
         LatestVersion = VersionPlusOne - 1
