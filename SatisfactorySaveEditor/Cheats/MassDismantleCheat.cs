@@ -172,7 +172,7 @@ namespace SatisfactorySaveEditor.Cheats
                         var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
                         if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/TradingPost/Build_TradingPost.Build_TradingPost_C"))
                             gameState.FindField<BoolPropertyViewModel>("mIsTradingPostBuilt", property => property.Value = false);
-                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/TradingPost/Build_SpaceElevator.Build_SpaceElevator_C"))
+                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/SpaceElevator/Build_SpaceElevator.Build_SpaceElevator_C"))
                             gameState.FindField<BoolPropertyViewModel>("mIsSpaceElevatorBuilt", property => property.Value = false);
                         rootItem.Remove(item);
                         count++;
