@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using SatisfactorySaveParser.Game.Structs;
 using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Schematics.Progression
@@ -14,7 +15,7 @@ namespace SatisfactorySaveParser.Game.Schematics.Progression
         public List<ObjectReference> PurchasedSchematics { get; } = new List<ObjectReference>();
 
         [SaveProperty("mPaidOffSchematic")]
-        public List<ObjectReference> PaidOffSchematic { get; } = new List<ObjectReference>();
+        public List<FSchematicCost> PaidOffSchematic { get; } = new List<FSchematicCost>();
 
         [SaveProperty("mActiveSchematic")]
         public ObjectReference ActiveSchematic { get; set; }

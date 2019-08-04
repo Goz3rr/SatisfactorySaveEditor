@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+
+using NLog;
 
 using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Game.Structs;
@@ -10,6 +13,8 @@ namespace SatisfactorySaveParser.Game.Character.Player
     [SaveObjectClass("/Game/FactoryGame/Character/Player/BP_PlayerState.BP_PlayerState_C")]
     public class PlayerState : SaveActor
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         [SaveProperty("mHotbarShortcuts")]
         public List<ObjectReference> HotbarShortcuts { get; } = new List<ObjectReference>();
 
@@ -49,11 +54,14 @@ namespace SatisfactorySaveParser.Game.Character.Player
         [SaveProperty("mFilteredOutCompassTypes")]
         public List<ERepresentationType> FilteredOutCompassTypes { get; } = new List<ERepresentationType>();
 
-        public byte[] UserID { get; private set; } = new byte[18];
+        public byte[] UserID { get; private set; } = Array.Empty<byte>();
 
         public override void DeserializeNativeData(BinaryReader reader, int length)
         {
-            UserID = reader.ReadBytes(18);
+            if (length != 18)
+                log.Warn($"Expected to read 18 bytes for PlayerState native data but got {length} bytes");
+
+            UserID = reader.ReadBytes(length);
         }
     }
 }

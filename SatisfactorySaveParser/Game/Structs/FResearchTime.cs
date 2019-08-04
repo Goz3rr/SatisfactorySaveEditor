@@ -2,9 +2,10 @@
 
 namespace SatisfactorySaveParser.Game.Structs
 {
+    // TODO
     public class FResearchTime : GameStruct
     {
-        public override string StructName => "";
+        public override string StructName => throw new System.NotImplementedException();
 
         public ObjectReference ResearchRecipe { get; set; }
 

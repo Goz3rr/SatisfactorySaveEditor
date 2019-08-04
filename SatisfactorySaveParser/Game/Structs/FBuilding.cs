@@ -4,10 +4,10 @@ using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Structs
 {
-    //[GameStruct("")]
+    // TODO
     public class FBuilding : GameStruct
     {
-        public override string StructName => "";
+        public override string StructName => throw new System.NotImplementedException();
 
         [StructProperty("Buildables")]
         public List<ObjectReference> Buildables { get; } = new List<ObjectReference>();

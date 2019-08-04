@@ -1,4 +1,5 @@
-﻿using SatisfactorySaveParser.Save;
+﻿using SatisfactorySaveParser.Game.Structs.Native;
+using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Equipment
 {
@@ -7,5 +8,8 @@ namespace SatisfactorySaveParser.Game.Equipment
     {
         [SaveProperty("mCompassText")]
         public TextEntry CompassText { get; set; }
+
+        [SaveProperty("mCompassColor")]
+        public FLinearColor CompassColor { get; set; }
     }
 }
