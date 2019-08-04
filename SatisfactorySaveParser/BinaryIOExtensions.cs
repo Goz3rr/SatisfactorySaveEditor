@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -170,6 +171,18 @@ namespace SatisfactorySaveParser
         public static bool IsSuspicious(this Vector3 vector)
         {
             return vector.X < 1E-8 || vector.Y < 1E-8 || vector.Y < 1E-8;
+        }
+
+        public static void AssertNullByte(this BinaryReader reader)
+        {
+            var nullByte = reader.ReadByte();
+            Trace.Assert(nullByte == 0, $"Expected null byte, got {nullByte} instead at {reader.BaseStream.Position - 1}");
+        }
+
+        public static void AssertNullInt32(this BinaryReader reader)
+        {
+            var nullInt = reader.ReadInt32();
+            Trace.Assert(nullInt == 0, $"Expected null int32, got {nullInt} instead at {reader.BaseStream.Position - 1}");
         }
     }
 }
