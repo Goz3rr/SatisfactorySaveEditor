@@ -2,9 +2,10 @@
 
 namespace SatisfactorySaveParser.Game.Structs
 {
+    [GameStruct("SplinePointData")]
     public class FSplinePointData : GameStruct
     {
-        public override string StructName => throw new System.NotImplementedException();
+        public override string StructName => "SplinePointData";
 
         [StructProperty("Location")]
         public FVector Location { get; set; }

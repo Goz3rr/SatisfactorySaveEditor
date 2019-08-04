@@ -1,4 +1,5 @@
-﻿using SatisfactorySaveParser.Game.Structs.Native;
+﻿using System.IO;
+using SatisfactorySaveParser.Game.Structs.Native;
 using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Buildable.Vehicle.Train
@@ -13,5 +14,15 @@ namespace SatisfactorySaveParser.Game.Buildable.Vehicle.Train
 
         [SaveProperty("mTrackPosition")]
         public FRailroadTrackPosition TrackPosition { get; set; }
+
+        public ObjectReference NextVehicle { get; set; }
+        public ObjectReference PreviousVehicle { get; set; }
+
+        public override void DeserializeNativeData(BinaryReader reader, int length)
+        {
+            reader.AssertNullInt32();
+            NextVehicle = reader.ReadObjectReference();
+            PreviousVehicle = reader.ReadObjectReference();
+        }
     }
 }

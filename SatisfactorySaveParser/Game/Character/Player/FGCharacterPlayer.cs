@@ -31,5 +31,8 @@ namespace SatisfactorySaveParser.Game.Character.Player
 
         [SaveProperty("mSavedDrivenVehicle")]
         public ObjectReference SavedDrivenVehicle { get; set; }
+
+        [SaveProperty("mFlashlightOn")]
+        public bool FlashlightOn { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using SatisfactorySaveParser.Save;
+﻿using System.Collections.Generic;
+using System.IO;
+using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Blueprint
 {
@@ -19,5 +21,16 @@ namespace SatisfactorySaveParser.Game.Blueprint
 
         [SaveProperty("mStartingPointTagName")]
         public string StartingPointTagName { get; set; }
+
+        public List<ObjectReference> PlayerStates { get; } = new List<ObjectReference>();
+
+        public override void DeserializeNativeData(BinaryReader reader, int length)
+        {
+            var count = reader.ReadInt32();
+            for(var i = 0; i < count; i++)
+            {
+                PlayerStates.Add(reader.ReadObjectReference());
+            }
+        }
     }
 }

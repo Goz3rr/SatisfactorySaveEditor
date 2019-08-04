@@ -1,6 +1,24 @@
-﻿namespace SatisfactorySaveParser.Game.Buildable.Factory
+﻿using System.Collections.Generic;
+using System.IO;
+
+namespace SatisfactorySaveParser.Game.Buildable.Factory
 {
     public abstract class FGBuildableConveyorBase : FGBuildable
     {
+        public List<FConveyorBeltItem> Items { get; } = new List<FConveyorBeltItem>();
+
+        public override void DeserializeNativeData(BinaryReader reader, int length)
+        {
+            var itemCount = reader.ReadInt32();
+            for (var i = 0; i < itemCount; i++)
+            {
+                reader.AssertNullInt32(); // probably a string
+                var itemClass = reader.ReadLengthPrefixedString();
+                var itemState = reader.ReadObjectReference();
+                var offset = reader.ReadSingle();
+
+                Items.Add(new FConveyorBeltItem(itemClass, itemState, offset));
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+
 using SatisfactorySaveParser.Game.Enums;
+using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Structs
 {
@@ -9,7 +11,7 @@ namespace SatisfactorySaveParser.Game.Structs
         public override string StructName => "PhaseCost";
 
         [StructProperty("gamePhase")]
-        public EGamePhase GamePhase { get; set; }
+        public EnumAsByte<EGamePhase> GamePhase { get; set; }
 
         [StructProperty("Cost")]
         public List<FItemAmount> Cost { get; } = new List<FItemAmount>();

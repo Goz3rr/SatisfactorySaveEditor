@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Game.Structs;
 using SatisfactorySaveParser.Save;
@@ -46,5 +47,12 @@ namespace SatisfactorySaveParser.Game.Character.Player
 
         [SaveProperty("mFilteredOutCompassTypes")]
         public List<ERepresentationType> FilteredOutCompassTypes { get; } = new List<ERepresentationType>();
+
+        public byte[] UserID { get; private set; } = new byte[18];
+
+        public override void DeserializeNativeData(BinaryReader reader, int length)
+        {
+            UserID = reader.ReadBytes(18);
+        }
     }
 }
