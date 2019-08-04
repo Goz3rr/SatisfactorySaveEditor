@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Game.Structs;
 using SatisfactorySaveParser.Save;

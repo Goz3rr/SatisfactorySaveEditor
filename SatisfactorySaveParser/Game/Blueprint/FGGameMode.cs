@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Blueprint
@@ -27,7 +28,7 @@ namespace SatisfactorySaveParser.Game.Blueprint
         public override void DeserializeNativeData(BinaryReader reader, int length)
         {
             var count = reader.ReadInt32();
-            for(var i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 PlayerStates.Add(reader.ReadObjectReference());
             }

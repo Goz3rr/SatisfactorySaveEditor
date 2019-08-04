@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using NLog;
+
 using SatisfactorySaveParser.Save.Properties;
 using SatisfactorySaveParser.Save.Serialization;
 
@@ -23,13 +25,13 @@ namespace SatisfactorySaveParser.Game.Structs
             SerializedProperty prop;
             while ((prop = SatisfactorySaveSerializer.DeserializeProperty(reader)) != null)
             {
-                var (objProperty, objPropertyAttr) = prop.GetMatchingStructProperty(this.GetType());
+                var (objProperty, objPropertyAttr) = prop.GetMatchingStructProperty(GetType());
 
                 if (objProperty == null)
                 {
                     // Dynamic game structs have no typed properties by definition so don't clog up the log
-                    if(GetType() != typeof(DynamicGameStruct))
-                        if(prop is StructProperty structProp)
+                    if (GetType() != typeof(DynamicGameStruct))
+                        if (prop is StructProperty structProp)
                             log.Warn($"Missing property for {prop.PropertyType} ({structProp.Data.GetType().Name}) {prop.PropertyName} on struct {GetType().Name}");
                         else
                             log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on struct {GetType().Name}");

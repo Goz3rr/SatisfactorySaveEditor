@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+
 using SatisfactorySaveParser.Game.Structs.Native;
 using SatisfactorySaveParser.Save;
 
@@ -52,7 +53,7 @@ namespace SatisfactorySaveParser.Game.Buildable.Vehicle
         public override void DeserializeNativeData(BinaryReader reader, int length)
         {
             var count = reader.ReadInt32();
-            for(var i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 MaybeBones.Add(new MaybeBone()
                 {

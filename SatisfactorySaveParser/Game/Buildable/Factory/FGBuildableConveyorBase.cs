@@ -13,11 +13,7 @@ namespace SatisfactorySaveParser.Game.Buildable.Factory
             for (var i = 0; i < itemCount; i++)
             {
                 reader.AssertNullInt32(); // probably a string
-                var itemClass = reader.ReadLengthPrefixedString();
-                var itemState = reader.ReadObjectReference();
-                var offset = reader.ReadSingle();
-
-                Items.Add(new FConveyorBeltItem(itemClass, itemState, offset));
+                Items.Add(new FConveyorBeltItem(item: reader.ReadLengthPrefixedString(), state: reader.ReadObjectReference(), offset: reader.ReadSingle()));
             }
         }
     }
