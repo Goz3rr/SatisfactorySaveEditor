@@ -251,8 +251,13 @@ namespace SatisfactorySaveParser.Save.Serialization
                 prop.AssignToProperty(saveObject, objProperty);
             }
 
+            var extra = reader.ReadInt32();
+            if (extra != 0)
+                log.Warn($"Read extra {extra} after {saveObject.TypePath} @ {reader.BaseStream.Position - 4}");
+
             var remaining = dataLength - (int)(reader.BaseStream.Position - before);
-            saveObject.DeserializeNativeData(reader, remaining);
+            if(remaining > 0)
+                saveObject.DeserializeNativeData(reader, remaining);
 
             var after = reader.BaseStream.Position;
             if (before + dataLength != after)
@@ -363,6 +368,8 @@ namespace SatisfactorySaveParser.Save.Serialization
             writer.WriteLengthPrefixedString(prop.PropertyType);
             writer.Write(prop.SerializedLength);
             writer.Write(prop.Index);
+
+            prop.Serialize(writer);
         }
 
         public static List<ObjectReference> DeserializeDestroyedActors(BinaryReader reader)

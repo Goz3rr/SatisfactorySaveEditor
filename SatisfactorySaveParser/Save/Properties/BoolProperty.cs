@@ -37,5 +37,11 @@ namespace SatisfactorySaveParser.Save.Properties
 
             return result;
         }
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            writer.Write((byte)(Value ? 1 : 0));
+            writer.Write((byte)0);
+        }
     }
 }

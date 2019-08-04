@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -14,9 +15,22 @@ namespace SatisfactorySaveParser.Save.Properties
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly Dictionary<(Type, string), (PropertyInfo, Attribute)> propertyCache = new Dictionary<(Type, string), (PropertyInfo, Attribute)>();
 
+        /// <summary>
+        ///     Name of the property
+        /// </summary>
         public string PropertyName { get; }
+
+        /// <summary>
+        ///     String representation of the name of the property type
+        /// </summary>
         public abstract string PropertyType { get; }
+
+        /// <summary>
+        ///     Index of property when in an array
+        /// </summary>
         public int Index { get; }
+
+        public byte HasPropertyGuid { get; private set; }
 
         public abstract Type BackingType { get; }
         public abstract object BackingObject { get; }
@@ -87,6 +101,15 @@ namespace SatisfactorySaveParser.Save.Properties
 
                         switch (arrayProperty.Type)
                         {
+                            case ByteProperty.TypeName:
+                                {
+                                    foreach (var obj in arrayProperty.Elements.Cast<ByteProperty>())
+                                    {
+                                        addMethod.Invoke(list, new[] { (object)obj.ByteValue });
+                                    }
+                                }
+                                break;
+
                             case ObjectProperty.TypeName:
                                 {                                    
                                     foreach (var obj in arrayProperty.Elements.Cast<ObjectProperty>())
@@ -169,8 +192,15 @@ namespace SatisfactorySaveParser.Save.Properties
                     {
                         if(byteProperty.IsEnum)
                         {
+                            if(!info.PropertyType.IsGenericType || info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>))
+                            {
+                                log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                                saveObject.DynamicProperties.Add(this);
+                                break;
+                            }
+
                             var enumType = info.PropertyType.GenericTypeArguments[0];
-                            if (info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>) || enumType.Name != byteProperty.EnumType)
+                            if (enumType.Name != byteProperty.EnumType)
                             {
                                 log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
                                 saveObject.DynamicProperties.Add(this);
@@ -229,5 +259,7 @@ namespace SatisfactorySaveParser.Save.Properties
                     break;
             }
         }
+
+        public abstract void Serialize(BinaryWriter writer);
     }
 }

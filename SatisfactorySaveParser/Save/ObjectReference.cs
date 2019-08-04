@@ -22,6 +22,8 @@ namespace SatisfactorySaveParser.Save
         /// </summary>
         public SaveObject ReferencedObject { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public bool IsInLevel => !String.IsNullOrEmpty(LevelName);
+
         public ObjectReference(string level, string path)
         {
             LevelName = level;

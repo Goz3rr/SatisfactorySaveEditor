@@ -34,6 +34,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
 
                 Assert.AreEqual(0, prop.Index);
 
+                Assert.AreEqual(true, prop.IsEnum);
                 Assert.AreEqual(ByteEnumType, prop.EnumType);
                 Assert.AreEqual(ByteEnumValue, prop.EnumValue);
 
@@ -75,7 +76,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
 
                 Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual("None", prop.EnumType);
+                Assert.AreEqual(false, prop.IsEnum);
                 Assert.AreEqual(ByteNumberValue, prop.ByteValue);
 
                 Assert.AreEqual(stream.Length, stream.Position);

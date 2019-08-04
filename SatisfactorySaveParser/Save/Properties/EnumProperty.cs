@@ -12,7 +12,7 @@ namespace SatisfactorySaveParser.Save.Properties
         public override Type BackingType => typeof(Enum);
         public override object BackingObject => Value;
 
-        public override int SerializedLength => 4;
+        public override int SerializedLength => Value.GetSerializedLength();
 
         public string Type { get; set; }
         public string Value { get; set; }
@@ -41,6 +41,13 @@ namespace SatisfactorySaveParser.Save.Properties
             result.Value = reader.ReadLengthPrefixedString();
 
             return result;
+        }
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            writer.WriteLengthPrefixedString(Type);
+            writer.Write((byte)0);
+            writer.WriteLengthPrefixedString(Value);
         }
     }
 }

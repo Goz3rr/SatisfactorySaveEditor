@@ -56,5 +56,10 @@ namespace SatisfactorySaveParser.Save.Properties
 
             return result;
         }
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

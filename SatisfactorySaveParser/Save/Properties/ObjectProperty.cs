@@ -35,5 +35,11 @@ namespace SatisfactorySaveParser.Save.Properties
             result.Reference = reader.ReadObjectReference();
             return result;
         }
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            writer.Write((byte)0);
+            writer.Write(Reference);
+        }
     }
 }

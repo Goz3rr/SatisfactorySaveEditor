@@ -32,7 +32,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// <summary>
         ///     Indicates if this ByteProperty is holding a <see cref="EnumAsByte{T}"/>
         /// </summary>
-        public bool IsEnum => EnumType != "None";
+        public bool IsEnum => EnumType != null && EnumType != "None";
 
         public ByteProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
@@ -68,6 +68,21 @@ namespace SatisfactorySaveParser.Save.Properties
             overhead = result.EnumType.GetSerializedLength() + 1;
 
             return result;
+        }
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            writer.WriteLengthPrefixedString(EnumType);
+            writer.Write((byte)0);
+
+            if (IsEnum)
+            {
+                writer.WriteLengthPrefixedString(EnumValue);
+            }
+            else
+            {
+                writer.Write(ByteValue);
+            }
         }
     }
 }

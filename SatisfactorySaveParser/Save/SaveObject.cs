@@ -57,22 +57,8 @@ namespace SatisfactorySaveParser.Save
         {
             if (!missingDeserializers.Contains(TypePath))
             {
-                if (length == 4)
-                {
-                    var value = reader.ReadInt32();
-                    reader.BaseStream.Position -= 4;
-
-                    if (value != 0)
-                    {
-                        log.Warn($"Missing native deserializer for {ObjectKind} {TypePath} ({length} bytes)");
-                        missingDeserializers.Add(TypePath);
-                    }
-                }
-                else
-                {
-                    log.Warn($"Missing native deserializer for {ObjectKind} {TypePath} ({length} bytes)");
-                    missingDeserializers.Add(TypePath);
-                }
+                log.Warn($"Missing native deserializer for {ObjectKind} {TypePath} ({length} bytes)");
+                missingDeserializers.Add(TypePath);
             }
 
             NativeData = reader.ReadBytes(length);
