@@ -94,6 +94,15 @@ namespace SatisfactorySaveParser.PropertyTypes
                             }
                         }
                         break;
+                    case EnumProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<EnumProperty>())
+                            {
+                                msWriter.WriteLengthPrefixedString(prop.Name);
+                            }
+                        }
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -157,6 +166,16 @@ namespace SatisfactorySaveParser.PropertyTypes
                         {
                             var value = reader.ReadByte();
                             result.Elements.Add(new ByteProperty($"Element {i}") { Type = "None", Value = value.ToString() });
+                        }
+                    }
+                    break;
+                case EnumProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var str = reader.ReadLengthPrefixedString();
+                            result.Elements.Add(new EnumProperty($"Element {i}") { Type = str.Split(':')[0], Name = str });
                         }
                     }
                     break;
