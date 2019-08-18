@@ -102,10 +102,13 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new UnlockMapCheat());
             //CheatMenuItems.Add(new InventorySlotsCheat()); //inventory size can no longer be expanded by save editing as of 6/23/2019
             CheatMenuItems.Add(new KillPlayersCheat());
-            CheatMenuItems.Add(new DeleteEnemiesCheat());
+            DeleteEnemiesCheat deleteEnemiesCheat = new DeleteEnemiesCheat();
+            CheatMenuItems.Add(deleteEnemiesCheat);
+            CheatMenuItems.Add(new SpawnDoggoCheat(deleteEnemiesCheat));
             CheatMenuItems.Add(new MassDismantleCheat());
             CheatMenuItems.Add(new NoCostCheat());
             CheatMenuItems.Add(new NoPowerCheat());
+            
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);

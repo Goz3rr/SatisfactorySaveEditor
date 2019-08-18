@@ -116,6 +116,7 @@
     <Compile Include="Cheats\NoPowerCheat.cs" />
     <Compile Include="Cheats\NoCostCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
+    <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />

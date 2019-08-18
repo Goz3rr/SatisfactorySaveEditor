@@ -1,32 +1,50 @@
 ﻿using SatisfactorySaveEditor.Model;
-using SatisfactorySaveEditor.ViewModel.Property;
-using SatisfactorySaveEditor.ViewModel.Struct;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
 using SatisfactorySaveParser.Structures;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using Vector = SatisfactorySaveParser.PropertyTypes.Structs.Vector;
-using Vector3 = SatisfactorySaveParser.Structures.Vector3;
 
 namespace SatisfactorySaveEditor.Cheats
 {
-    public class DeleteEnemiesCheat : ICheat
+    class SpawnDoggoCheat : ICheat
     {
-        public string Name => "Delete enemies";
+        public string Name => "Spawn Doggo at Host Player";
 
         private int currentDoggoID = 0;
 
-        private SaveObjectModel FindOrCreatePath(SaveObjectModel start, string[] path, int index = 0)
+        //Method 1: Use AddDoggo from DeleteEnemiesCheat. Doesn't work.
+
+        private DeleteEnemiesCheat deleteEnemiesCheat; //uses the add doggo code from delete enemies to avoid duplicating code
+
+        public SpawnDoggoCheat(DeleteEnemiesCheat deleter)
         {
-            if (index == path.Length)
-                return start;
-            if (start.FindChild(path[index], false) == null)
-                start.Items.Add(new SaveObjectModel(path[index]));
-            return FindOrCreatePath(start.FindChild(path[index], false), path, index + 1);
+            deleteEnemiesCheat = deleter;
+        }
+
+        /*
+        public bool Apply(SaveObjectModel rootItem)
+        {
+            //AddDoggo(rootItem);
+            deleteEnemiesCheat.AddDoggo(rootItem);
+            MessageBox.Show("Spawned 1 Lizard Doggo at the host player.");
+            return true;
+        }
+        //End Method 1
+        */
+
+        //Method 2: Copy-paste Doggo-related code from DeleteEnemiesCheat. Works.
+        public bool Apply(SaveObjectModel rootItem)
+        {
+            AddDoggo(rootItem);
+            MessageBox.Show("Spawned 1 Lizard Doggo at the host player.");
+            return true;
         }
 
         private int GetNextDoggoID(int currentId, SaveObjectModel rootItem)
@@ -77,6 +95,15 @@ namespace SatisfactorySaveEditor.Cheats
                 }
                 return ms.ToArray();
             }
+        }
+
+        private SaveObjectModel FindOrCreatePath(SaveObjectModel start, string[] path, int index = 0)
+        {
+            if (index == path.Length)
+                return start;
+            if (start.FindChild(path[index], false) == null)
+                start.Items.Add(new SaveObjectModel(path[index]));
+            return FindOrCreatePath(start.FindChild(path[index], false), path, index + 1);
         }
 
         public void AddDoggo(SaveObjectModel rootItem)
@@ -168,53 +195,7 @@ namespace SatisfactorySaveEditor.Cheats
             rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(inventoryComponent));
             rootItem.FindChild("FactoryGame.FGHealthComponent", false).Items.Add(new SaveComponentModel(healthComponent));
         }
+        //End Method 2
 
-        private double Distance(Vector3 a, Vector3 b)
-        {
-            return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y) + (a.Z - b.Z) * (a.Z - b.Z));
-        }
-
-        public bool Apply(SaveObjectModel rootItem)
-        {
-            var animalSpawners = rootItem.FindChild("BP_CreatureSpawner.BP_CreatureSpawner_C", false);
-            if (animalSpawners == null)
-            {
-                MessageBox.Show("This save does not contain animals or it is corrupt.", "Cannot find animals", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-
-            float offset = -50000;
-            Vector3 playerPosition = ((SaveEntityModel)rootItem.FindChild("Char_Player.Char_Player_C", false).Items[0]).Position;
-
-            foreach (SaveObjectModel animalSpawner in animalSpawners.DescendantSelfViewModel)
-            {
-                // Some crab hatchers are marked as CreatureSpawner instead of EnemySpawner and there is no other trace of the difference between enemy and friendly in the savefile
-                //if (animalSpawner.Title.ToLower().Contains("enemy"))
-                //{
-                ((SaveEntityModel)animalSpawner).Position.Z += offset; // Move the spawn under the map
-                animalSpawner.FindField("mSpawnData", (ArrayPropertyViewModel arrayProperty) =>
-                {
-                    foreach (StructPropertyViewModel elem in arrayProperty.Elements)
-                    {
-                        ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data.Z += offset; // Move the spawn point under the map
-                        // Set WasKilled to true so they don't respawn after deleting them
-                        ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
-                        // Set KilledOnDayNumber to a huge number (some far away animals respawn if the number is too small)
-                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data) /10000);
-                    }
-                });
-            }
-
-            // Delete the already spawned enemies
-            var enemies = rootItem.FindChild("Creature", false).FindChild("Enemy", false);
-            rootItem.Remove(enemies);
-
-            if (MessageBox.Show($"Deleted all spawned enemies, and all unspawned creatures (enemy & friendly). Would you like 3 tamed Lizzard Doggos as a compensation?", "Success", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-            {
-                for (int i = 0; i < 3; i++)
-                    AddDoggo(rootItem);
-            }
-            return true;
-        }
     }
 }
