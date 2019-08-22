@@ -79,10 +79,18 @@ namespace SatisfactorySaveEditor.Cheats
             }
         }
 
-        public void AddDoggo(SaveObjectModel rootItem)
+        public bool AddDoggo(SaveObjectModel rootItem)
         {
             currentDoggoID = GetNextDoggoID(currentDoggoID, rootItem);
-            var player = (SaveEntityModel)rootItem.FindChild("Char_Player.Char_Player_C", false).Items[0];
+
+            var hostPlayerModel = rootItem.FindChild("Char_Player.Char_Player_C", false);
+            if (hostPlayerModel == null || hostPlayerModel.Items.Count < 1)
+            {
+                MessageBox.Show("This save does not contain a host player or it is corrupt.", "Cannot find host player", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            var player = (SaveEntityModel)hostPlayerModel.Items[0];
+
             SaveComponent healthComponent = new SaveComponent("/Script/FactoryGame.FGHealthComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.HealthComponent")
             {
                 DataFields = new SerializedFields(),
@@ -167,6 +175,7 @@ namespace SatisfactorySaveEditor.Cheats
             FindOrCreatePath(rootItem, new string[] { "Character", "Creature", "Wildlife", "SpaceRabbit", "Char_SpaceRabbit.Char_SpaceRabbit_C" }).Items.Add(new SaveEntityModel(doggo));
             rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(inventoryComponent));
             rootItem.FindChild("FactoryGame.FGHealthComponent", false).Items.Add(new SaveComponentModel(healthComponent));
+            return true;
         }
 
         private double Distance(Vector3 a, Vector3 b)
@@ -184,7 +193,13 @@ namespace SatisfactorySaveEditor.Cheats
             }
 
             float offset = -50000;
-            Vector3 playerPosition = ((SaveEntityModel)rootItem.FindChild("Char_Player.Char_Player_C", false).Items[0]).Position;
+            var hostPlayerModel = rootItem.FindChild("Char_Player.Char_Player_C", false);
+            if (hostPlayerModel == null || hostPlayerModel.Items.Count < 1)
+            {
+                MessageBox.Show("This save does not contain a host player or it is corrupt.", "Cannot find host player", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            Vector3 playerPosition = ((SaveEntityModel)hostPlayerModel.Items[0]).Position;
 
             foreach (SaveObjectModel animalSpawner in animalSpawners.DescendantSelfViewModel)
             {
