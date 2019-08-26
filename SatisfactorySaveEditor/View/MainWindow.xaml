@@ -24,6 +24,7 @@
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
         <converter:MenuTextConverter x:Key="MenuTextConverter"/>
         <converter:TypeTooltipConverter x:Key="TypeTooltipConverter"/>
+        <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <ObjectDataProvider x:Key="ESessionVisibilityEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
@@ -46,7 +47,7 @@
         </KeyBinding>
     </Window.InputBindings>
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open..." InputGestureText="Ctrl+O" Command="{Binding OpenCommand}"/>
                 <MenuItem Header="Open recent" ItemsSource="{Binding LastFiles}" Command="{Binding OpenCommand}">
