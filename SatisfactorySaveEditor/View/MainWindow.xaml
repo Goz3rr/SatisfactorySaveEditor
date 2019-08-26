@@ -25,6 +25,7 @@
         <converter:MenuTextConverter x:Key="MenuTextConverter"/>
         <converter:TypeTooltipConverter x:Key="TypeTooltipConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <ObjectDataProvider x:Key="ESessionVisibilityEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="save:ESessionVisibility"/>
@@ -104,6 +105,7 @@
         </Menu>
         <Separator DockPanel.Dock="Top" Opacity="0.25"/>
         <Grid Margin="5">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="5"/>
@@ -368,6 +370,12 @@
                     </DataTemplate>
                 </ContentControl.Resources>
             </ContentControl>
+            <Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}" Grid.RowSpan="1" Grid.ColumnSpan="3">
+                <Grid>
+                    <TextBlock Margin="0" TextWrapping="Wrap" Text="Please Wait..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="#7EFFFFFF"/>
+                </Grid>
+            </Border>
+
         </Grid>
     </DockPanel>
 </Window>
