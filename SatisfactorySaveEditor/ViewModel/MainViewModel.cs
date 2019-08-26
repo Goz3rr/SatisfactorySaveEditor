@@ -30,6 +30,29 @@ namespace SatisfactorySaveEditor.ViewModel
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
 
+        /*private string dummy = "test";
+
+        public bool IsBusy
+        {
+            get => true;
+            set => dummy = "hi";
+        }*/
+
+        private bool isBusyInternal = false;
+        public bool IsBusy
+        {
+            get
+            {
+                //MessageBox.Show("IsBusy accessed");
+                return isBusyInternal;
+            }
+            set
+            {
+                //MessageBox.Show("IsBusy set to " + value);
+                Set(() => IsBusy, ref isBusyInternal, value);
+            }
+        }
+
         public ObservableCollection<SaveObjectModel> RootItem
         {
             get => rootItems;
@@ -238,6 +261,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
+                    this.IsBusy = true;
                     AutoBackupIfEnabled();
 
                     var newObjects = rootItem.DescendantSelf;
@@ -249,6 +273,7 @@ namespace SatisfactorySaveEditor.ViewModel
                     HasUnsavedChanges = false;
                     RaisePropertyChanged(() => FileName);
                     AddRecentFileEntry(dialog.FileName);
+                    this.IsBusy = false;
                 }
             }
             else
@@ -275,6 +300,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void CreateBackup(bool manual)
         {
+            this.IsBusy = true;
             string saveFileDirectory = Path.GetDirectoryName(saveGame.FileName);
             string tempDirectoryName = @"\SSEtemp\";
             string pathToZipFrom = saveFileDirectory + tempDirectoryName;
@@ -305,6 +331,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             if (manual)
                 MessageBox.Show("Backup created. Find it in your save file folder.");
+            this.IsBusy = false;
         }
 
         /// <summary>
@@ -476,11 +503,19 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Loads a file into the editor
         /// </summary>
         /// <param name="path">The path to the file to open</param>
-        private void LoadFile(string path)
+        private async Task LoadFile(string path)
         {
             SelectedItem = null;
             SearchText = null;
 
+            this.IsBusy = true;
+            await Task.Run(() => LoadFileAsync(path));
+            this.IsBusy = false;
+        }
+
+        private void LoadFileAsync(string path)
+        {
+            //MessageBox.Show("Loading file...");
             saveGame = new SatisfactorySave(path);
 
             rootItem = new SaveRootModel(saveGame.Header);
