@@ -18,6 +18,7 @@ using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.Cheats;
 using SatisfactorySaveEditor.View;
 using System.IO.Compression;
+using System.Windows.Threading;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -30,25 +31,15 @@ namespace SatisfactorySaveEditor.ViewModel
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
 
-        /*private string dummy = "test";
-
-        public bool IsBusy
-        {
-            get => true;
-            set => dummy = "hi";
-        }*/
-
         private bool isBusyInternal = false;
         public bool IsBusy
         {
             get
             {
-                //MessageBox.Show("IsBusy accessed");
                 return isBusyInternal;
             }
             set
             {
-                //MessageBox.Show("IsBusy set to " + value);
                 Set(() => IsBusy, ref isBusyInternal, value);
             }
         }
@@ -558,11 +549,18 @@ namespace SatisfactorySaveEditor.ViewModel
             if (LastFiles.Contains(path)) // No duplicates
             {
                 Properties.Settings.Default.LastSaves.Remove(path);
-                LastFiles.Remove(path);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LastFiles.Remove(path);
+                });
+                
             }
 
             Properties.Settings.Default.LastSaves.Add(path);
-            LastFiles.Add(path);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                LastFiles.Add(path);
+            });
 
             while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
             {
@@ -572,8 +570,11 @@ namespace SatisfactorySaveEditor.ViewModel
 
             Properties.Settings.Default.Save();
 
-            RootItem.Clear();
-            RootItem.Add(rootItem);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RootItem.Clear();
+                RootItem.Add(rootItem);
+            });
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)
