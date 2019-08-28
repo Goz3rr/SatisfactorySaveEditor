@@ -1,11 +1,24 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace SatisfactorySaveParser.PropertyTypes.Structs
 {
-    public class InventoryItem : IStructData
+    public class InventoryItem : IStructData, INotifyPropertyChanged
     {
+        private string itemType;
         public int Unknown1 { get; set; }
-        public string ItemType { get; set; }
+
+        public string ItemType
+        {
+            get => itemType;
+            set
+            {
+                itemType = value;
+                OnPropertyChanged(nameof(ItemType));
+            }
+        }
+
         public string Unknown2 { get; set; }
         public string Unknown3 { get; set; }
 
@@ -26,6 +39,13 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             writer.WriteLengthPrefixedString(ItemType);
             writer.WriteLengthPrefixedString(Unknown2);
             writer.WriteLengthPrefixedString(Unknown3);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

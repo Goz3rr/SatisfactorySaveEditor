@@ -197,6 +197,8 @@
                                     <ContextMenu>
                                         <MenuItem Header="Copy name" Command="{Binding CopyNameCommand}"/>
                                         <MenuItem Header="Copy path" Command="{Binding CopyPathCommand}"/>
+                                        <MenuItem Header="Fill Inventory" Command="{Binding FillInventoryCommand}"/>
+                                        <MenuItem Header="Empty Inventory" Command="{Binding EmptyInventoryCommand}"/>
                                         <Separator/>
                                         <MenuItem Header="Delete" Command="{Binding Source={StaticResource Proxy}, Path=Data.DeleteCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.DataContext}"/>
                                     </ContextMenu>
