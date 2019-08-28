@@ -16,8 +16,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.Cheats;
-using SatisfactorySaveEditor.View;
 using System.IO.Compression;
+using GalaSoft.MvvmLight.Messaging;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
+using SatisfactorySaveEditor.Message;
+using SatisfactorySaveEditor.View.Dialogs;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -29,6 +33,13 @@ namespace SatisfactorySaveEditor.ViewModel
         private string searchText;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
+        private bool drawerOpen;
+        private bool dialogOpen;
+        private SnackbarMessageQueue snackbar;
+        private DialogService dialogService;
+        private bool drawerEnabled;
+        private BaseTheme windowTheme;
+        private bool isLoading;
 
         public ObservableCollection<SaveObjectModel> RootItem
         {
@@ -39,9 +50,19 @@ namespace SatisfactorySaveEditor.ViewModel
         public SaveObjectModel SelectedItem
         {
             get => selectedItem;
-            set { Set(() => SelectedItem, ref selectedItem, value); }
+            set
+            {
+                Set(() => SelectedItem, ref selectedItem, value);
+                if (!drawerEnabled) return;
+                switch (value)
+                {
+                    case SaveEntityModel se:
+                    case SaveComponentModel sc:
+                        DrawerOpen = false;
+                        break;
+                }
+            }
         }
-
         public string FileName
         {
             get
@@ -50,7 +71,6 @@ namespace SatisfactorySaveEditor.ViewModel
                 return string.Format(" - {1} [{0}]", saveGame.FileName, saveGame.Header.SessionName);
             }
         }
-
         public string SearchText
         {
             get => searchText;
@@ -63,7 +83,35 @@ namespace SatisfactorySaveEditor.ViewModel
                 Task.Factory.StartNew(() => Filter(value), tokenSource.Token);
             }
         }
+        public bool DrawerEnabled
+        {
+            get => drawerEnabled;
+            set { Set(() => DrawerEnabled, ref drawerEnabled, value); }
+        }
+        public bool DrawerOpen
+        {
+            get => drawerOpen;
+            set { Set(() => DrawerOpen, ref drawerOpen, value); }
+        }
 
+        public bool DialogOpen
+        {
+            get => dialogOpen;
+            set { Set(() => DialogOpen, ref dialogOpen, value); }
+        }
+        public BaseTheme WindowTheme
+        {
+            get => windowTheme;
+            set { Set(() => WindowTheme, ref windowTheme, value); }
+        }
+
+        public bool IsLoading
+        {
+            get => isLoading;
+            set { Set(() => IsLoading, ref isLoading, value); }
+        }
+
+        public SnackbarMessageQueue MessageQueue => snackbar;
         public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
 
         public ObservableCollection<ICheat> CheatMenuItems { get; } = new ObservableCollection<ICheat>();
@@ -88,7 +136,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public bool HasUnsavedChanges { get; set; } //TODO: set this to true when any value in WPF is changed. current plan for this according to goz3rr is to make a wrapper for the data from the parser and then change the set method in the wrapper
 
-        public MainViewModel()
+        public MainViewModel(IDialogService dialogService, ISnackbarMessageQueue snackbar)
         {
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1])) LoadFile(args[1]);
@@ -108,7 +156,7 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new MassDismantleCheat());
             CheatMenuItems.Add(new NoCostCheat());
             CheatMenuItems.Add(new NoPowerCheat());
-            
+
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
@@ -133,16 +181,17 @@ namespace SatisfactorySaveEditor.ViewModel
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
             CheckForUpdate(false).ConfigureAwait(false);
+
+
+            this.snackbar = (SnackbarMessageQueue)snackbar;
+            this.dialogService = (DialogService)dialogService;
+            drawerEnabled = Properties.Settings.Default.DrawerEnabled;
+            Messenger.Default.Register<DrawerEnabledMessage>(this, (b) => { DrawerOpen = DrawerEnabled = b.DrawerEnabled; });
         }
 
-        private void OpenPreferences()
+        private async void OpenPreferences()
         {
-            var window = new PreferencesWindow
-            {
-                Owner = Application.Current.MainWindow
-            };
-
-            window.ShowDialog();
+            await dialogService.ShowDialog<PreferencesDialog>(new PreferencesDialog());
         }
 
         private async Task CheckForUpdate(bool manual)
@@ -153,17 +202,16 @@ namespace SatisfactorySaveEditor.ViewModel
 
             if (latestVersion.IsNewer())
             {
-                UpdateWindow window = new UpdateWindow
+                UpdateDialog dialog = new UpdateDialog
                 {
-                    DataContext = new UpdateWindowViewModel(latestVersion),
-                    Owner = Application.Current.MainWindow
+                    DataContext = new UpdateWindowViewModel(snackbar, latestVersion),
                 };
 
-                window.ShowDialog();
+                await dialogService.ShowDialog<UpdateDialog>(dialog);
             }
             else if (manual)
             {
-                MessageBox.Show("You are already using the latest version.", "Update", MessageBoxButton.OK);
+                snackbar.Enqueue($"Already up to date! You are already using the latest version {Assembly.GetExecutingAssembly().GetName().Version}.", "Ok", () => { });
             }
         }
 
@@ -201,9 +249,9 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Calls Apply() on the passed ICheat, providing it with rootItem. Only mark for unsaved changes if the cheat succeeds.
         /// </summary>
         /// <param name="cheat">The cheat to run</param>
-        private void Cheat(ICheat cheat)
+        private async void Cheat(ICheat cheat)
         {
-            if (cheat.Apply(rootItem))
+            if (await cheat.Apply(rootItem))
                 HasUnsavedChanges = true;
         }
 
@@ -214,7 +262,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <returns>True if saveGame is NOT null, false otherwise</returns>
         private bool CanSave(bool saveAs)
         {
-            return saveGame != null;
+            return saveGame != null && !isLoading;
         }
 
         private bool CanSave() //overload of CanSave(bool saveAs) for contexts when saveAs doesn't matter
@@ -252,12 +300,13 @@ namespace SatisfactorySaveEditor.ViewModel
                     HasUnsavedChanges = false;
                     RaisePropertyChanged(() => FileName);
                     AddRecentFileEntry(dialog.FileName);
+                    snackbar.Enqueue($"Saved {dialog.FileName}", "Ok", () => { });
                 }
             }
             else
             {
                 AutoBackupIfEnabled();
-                
+
                 var newObjects = rootItem.DescendantSelf;
                 saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                 saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
@@ -265,6 +314,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 rootItem.ApplyChanges();
                 saveGame.Save();
                 HasUnsavedChanges = false;
+                snackbar.Enqueue($"Saved {saveGame.FileName}", "Ok", () => { });
             }
         }
 
@@ -276,7 +326,7 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
-        private void CreateBackup(bool manual)
+        private async void CreateBackup(bool manual)
         {
             string saveFileDirectory = Path.GetDirectoryName(saveGame.FileName);
             string tempDirectoryName = @"\SSEtemp\";
@@ -290,13 +340,16 @@ namespace SatisfactorySaveEditor.ViewModel
                 //Satisfactory save files compress exceedingly well, so compress all backups so that they take up less space.
                 //ZipFile only accepts directories, not single files, so copy the save to a temporary folder and then zip that folder
                 Directory.CreateDirectory(pathToZipFrom);
-                File.Copy(saveGame.FileName, tempFilePath, true); 
+                File.Copy(saveGame.FileName, tempFilePath, true);
                 ZipFile.CreateFromDirectory(pathToZipFrom, backupFileFullPath);
             }
             catch (Exception)
             {
                 //should never be reached, but hopefully any users that encounter an error here will report it 
-                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error.");
+                await dialogService.ShowError(
+                    "An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error.",
+                    "Error", "Ok",
+                    () => { });
                 throw;
             }
             finally
@@ -307,7 +360,7 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             if (manual)
-                MessageBox.Show("Backup created. Find it in your save file folder.");
+                snackbar.Enqueue("Backup created. Find it in your save file folder.");
         }
 
         /// <summary>
@@ -341,7 +394,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// </summary>
         private void Help_RequestHelpDiscord()
         {
-            MessageBox.Show("You are now being redirected to the Satisfactory Modding discord server. Please request help in the #savegame-edits channel.");
+            snackbar.Enqueue("You are now being redirected to the Satisfactory Modding discord server. Please request help in the #savegame-edits channel.");
             System.Diagnostics.Process.Start("https://discord.gg/rNxYXht"); //discord invite that links to the #savegame-edits channel
         }
 
@@ -350,7 +403,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// </summary>
         private void Help_FicsitAppGuide()
         {
-            MessageBox.Show("You are now being redirected to the ficsit.app mod and tool repository to view a guide.");
+            snackbar.Enqueue("You are now being redirected to the ficsit.app mod and tool repository to view a guide.");
             System.Diagnostics.Process.Start("https://ficsit.app/guide/Z8h6z2CczH43c");
         }
 
@@ -358,31 +411,33 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <summary>
         /// Displays version information box
         /// </summary>
-        private void About()
+        private async void About()
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            MessageBox.Show($"Satisfactory save editor{Environment.NewLine}{version}", "About");
+            await dialogService.ShowMessage($"Satisfactory save editor\nv{version}", "About");
         }
 
         /// <summary>
         /// Starts the process of loading a file, prompting the user if there are unsaved changes. Marks as having no unsaved changes
         /// </summary>
         /// <param name="fileName">Path to the save file</param>
-        private void Open(string fileName)
+        private async void Open(string fileName)
         {
+            IsLoading = true;
             if (!string.IsNullOrWhiteSpace(fileName))
             {
                 LoadFile(fileName);
                 HasUnsavedChanges = false;
-
                 return;
             }
 
             if (HasUnsavedChanges)
             {
-                MessageBoxResult result = MessageBox.Show("You have unsaved changes. Abandon changes by opening another file?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.No)
+                var result = await dialogService.ShowMessage("You have unsaved changes. Abandon changes by opening another file?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", "Yes", "No",
+                    (b) => { });
+                if (!result)
                 {
+                    IsLoading = false;
                     return;
                 }
             }
@@ -411,12 +466,14 @@ namespace SatisfactorySaveEditor.ViewModel
         /// TODO: Mark as unsaved when property fileds are changed
         /// TODO: Check this when pressing alt+f4 and clicking the red x
         /// </summary>
-        private void Exit()
+        private async void Exit()
         {
             if (HasUnsavedChanges)
             {
-                MessageBoxResult result = MessageBox.Show("You have unsaved changes. Close and abandon changes?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
+                var result = await dialogService.ShowMessage(
+                    "You have unsaved changes. Close and abandon changes?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", "Yes", "No", b => { });
+
+                if (result)
                     Application.Current.Shutdown();
                 else
                     return;
@@ -434,7 +491,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <param name="target">EntityName of the entity to jump to</param>
         private void Jump(string target)
         {
-            if(SelectedItem != null)
+            if (SelectedItem != null)
                 SelectedItem.IsSelected = false;
             SelectedItem = rootItem.FindChild(target, true);
         }
@@ -442,28 +499,20 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <summary>
         /// Opens a StringPromptWindow prompting for an EntityName to jump to
         /// </summary>
-        private void JumpMenu()
+        private async void JumpMenu()
         {
-            string destination = "";
-
-            var dialog = new StringPromptWindow
-            {
-                Owner = Application.Current.MainWindow
-            };
+            var dialog = new StringPromptDialog();
             var cvm = (StringPromptViewModel)dialog.DataContext;
-            cvm.WindowTitle = "Jump to Tag";
+            cvm.Title = "Jump to Tag";
             cvm.PromptMessage = "Tag name:";
             cvm.ValueChosen = "";
             cvm.OldValueMessage = "Obtain via Right Click > Copy name\nExample:\nPersistent_Level:PersistentLevel.Char_Player_C_0.inventory";
-            dialog.ShowDialog();
 
-            destination = cvm.ValueChosen;
-
-            if(!(destination.Equals("") || destination.Equals("cancel")))
+            if (await dialogService.ShowDialog<StringPromptDialog>(dialog) is string destination)
                 if (CanJump(destination))
                     Jump(destination);
                 else
-                    MessageBox.Show("Failed to jump to tag:\n" + destination);
+                    await dialogService.ShowError($"Failed to jump to tag:\n{destination}", "Error", "Ok", () => { });
         }
 
         /// <summary>
@@ -479,34 +528,47 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Loads a file into the editor
         /// </summary>
         /// <param name="path">The path to the file to open</param>
-        private void LoadFile(string path)
+        private async void LoadFile(string path)
         {
-            SelectedItem = null;
-            SearchText = null;
-
-            saveGame = new SatisfactorySave(path);
-
-            rootItem = new SaveRootModel(saveGame.Header);
-            var saveTree = new EditorTreeNode("Root");
-
-            foreach (var entry in saveGame.Entries)
+            Task.Factory.StartNew(() =>
             {
-                var parts = entry.TypePath.TrimStart('/').Split('/');
-                saveTree.AddChild(parts, entry);
-            }
+                SelectedItem = null;
+                SearchText = null;
 
-            BuildNode(rootItem.Items, saveTree);
+                saveGame = new SatisfactorySave(path);
 
-            rootItem.IsExpanded = true;
-            foreach (var item in rootItem.Items)
+                rootItem = new SaveRootModel(saveGame.Header);
+                var saveTree = new EditorTreeNode("Root");
+
+                foreach (var entry in saveGame.Entries)
+                {
+                    var parts = entry.TypePath.TrimStart('/').Split('/');
+                    saveTree.AddChild(parts, entry);
+                }
+
+                BuildNode(rootItem.Items, saveTree);
+
+                rootItem.IsExpanded = true;
+                foreach (var item in rootItem.Items)
+                {
+                    item.IsExpanded = true;
+                }
+
+                RaisePropertyChanged(() => RootItem);
+                RaisePropertyChanged(() => FileName);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AddRecentFileEntry(path);
+                });
+
+            }).ContinueWith(r =>
             {
-                item.IsExpanded = true;
-            }
-
-            RaisePropertyChanged(() => RootItem);
-            RaisePropertyChanged(() => FileName);
-
-            AddRecentFileEntry(path);
+                DialogOpen = false;
+                if (DrawerEnabled) DrawerOpen = true;
+                IsLoading = false;
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+            await dialogService.ShowDialog<ProgressDialog>(new ProgressDialog());
         }
 
         /// <summary>

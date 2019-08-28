@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="SatisfactorySaveEditor.View.Dialogs.AddDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SatisfactorySaveEditor.View"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModel="clr-namespace:SatisfactorySaveEditor.ViewModel"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             DataContext="{Binding AddViewModel, Source={StaticResource Locator}, Mode=OneTime}"
+             mc:Ignorable="d"
+             Height="210" Width="300">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="PropertyTypes" MethodName="GetValues" ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="viewModel:AddViewModel+AddTypeEnum" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <materialDesign:ColorZone Margin="0,0,0,8" Mode="Accent" Effect="{DynamicResource MaterialDesignShadowDepth2}">
+            <TextBlock Margin="8" Text="Add Property"
+                       Style="{StaticResource MaterialDesignTitleTextBlock}" />
+        </materialDesign:ColorZone>
+
+        <ComboBox Margin="0,0,0,4" VerticalContentAlignment="Center" Grid.Row="1"
+                  ItemsSource="{Binding Source={StaticResource PropertyTypes}}" SelectedItem="{Binding Type}" materialDesign:HintAssist.Hint="Type"/>
+        <ComboBox Margin="0,0,0,4" VerticalContentAlignment="Center" Grid.Row="2"
+                  Visibility="{Binding IsArray}" ItemsSource="{Binding Source={StaticResource PropertyTypes}}"
+                  SelectedItem="{Binding ArrayType}" materialDesign:HintAssist.Hint="Array Type"/>
+        <TextBox VerticalContentAlignment="Center" Grid.Row="3"
+                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Name"/>
+
+        <StackPanel Margin="4" Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="4"  Content="Ok" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding OkCommand}" IsEnabled="{Binding CanConfirm}"
+                    CommandParameter="{Binding ElementName=AddPropertyWindow}" />
+            <Button  Margin="4" Content="Cancel" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -105,5 +105,29 @@ namespace SatisfactorySaveEditor.Properties {
                 this["AutoBackup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DrawerEnabled {
+            get {
+                return ((bool)(this["DrawerEnabled"]));
+            }
+            set {
+                this["DrawerEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DarkModeEnabled {
+            get {
+                return ((bool)(this["DarkModeEnabled"]));
+            }
+            set {
+                this["DarkModeEnabled"] = value;
+            }
+        }
     }
 }

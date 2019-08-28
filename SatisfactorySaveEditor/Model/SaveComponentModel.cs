@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight.Command;
-using SatisfactorySaveEditor.View;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
+using SatisfactorySaveEditor.View.Control;
+using SatisfactorySaveEditor.View.Dialogs;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveEditor.ViewModel.Struct;
@@ -12,6 +15,8 @@ namespace SatisfactorySaveEditor.Model
     public class SaveComponentModel : SaveObjectModel
     {
         private string parentEntityName;
+        private readonly DialogService dialogService;
+        private readonly ISnackbarMessageQueue snackbar;
 
         public string ParentEntityName
         {
@@ -26,6 +31,8 @@ namespace SatisfactorySaveEditor.Model
         public SaveComponentModel(SaveComponent sc) : base(sc)
         {
             ParentEntityName = sc.ParentEntityName;
+            dialogService = (DialogService) ServiceLocator.Current.GetInstance<IDialogService>();
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
         }
 
         public override void ApplyChanges()
@@ -37,14 +44,12 @@ namespace SatisfactorySaveEditor.Model
             model.ParentEntityName = ParentEntityName;
         }
 
-        private void FillInventory()
+        private async void FillInventory()
         {
-            FillWindow dialog = new FillWindow();
-            FillViewModel fvm = (FillViewModel) dialog.DataContext;
-            dialog.ShowDialog();
+            var result = await dialogService.ShowDialog<FillDialog>(new FillDialog());
+            if (!(result is FillViewModel fvm)) return;
 
-            if(!fvm.IsConfirmed) return;
-            ArrayPropertyViewModel inv = FindField<ArrayPropertyViewModel>("mInventoryStacks");
+            var inv = FindField<ArrayPropertyViewModel>("mInventoryStacks");
             foreach (StructPropertyViewModel element in inv.Elements)
             {
                 DynamicStructDataViewModel structData = (DynamicStructDataViewModel)element.StructData;
@@ -68,7 +73,7 @@ namespace SatisfactorySaveEditor.Model
                 numItems.Value = 0;
             }
             ApplyChanges();
-            MessageBox.Show($"Inventory for storage {Title} emptied", "Inventory Emptied");
+            snackbar.Enqueue($"Inventory for container {Title} emptied", "Ok", () => { });
         }
     }
 }

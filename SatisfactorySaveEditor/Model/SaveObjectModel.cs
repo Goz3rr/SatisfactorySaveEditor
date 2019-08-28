@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Views;
 using SatisfactorySaveEditor.Util;
-using SatisfactorySaveEditor.View;
+using SatisfactorySaveEditor.View.Dialogs;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser;
@@ -20,6 +22,7 @@ namespace SatisfactorySaveEditor.Model
         private string type;
         private bool isSelected;
         private bool isExpanded;
+        private readonly DialogService dialogService;
 
         public RelayCommand CopyNameCommand { get; }
         public RelayCommand CopyPathCommand { get; }
@@ -97,6 +100,7 @@ namespace SatisfactorySaveEditor.Model
         public SaveObjectModel(SaveObject model)
         {
             Model = model;
+            dialogService = (DialogService) ServiceLocator.Current.GetInstance<IDialogService>();
             Title = model.InstanceName;
             RootObject = model.RootObject;
             Type = model.TypePath.Split('/').Last();
@@ -112,6 +116,7 @@ namespace SatisfactorySaveEditor.Model
         public SaveObjectModel(string title)
         {
             Title = title;
+            dialogService = (DialogService)ServiceLocator.Current.GetInstance<IDialogService>();
             Type = title;
 
             CopyNameCommand = new RelayCommand(CopyName);
@@ -227,15 +232,12 @@ namespace SatisfactorySaveEditor.Model
             throw new InvalidOperationException($"A field with the name {fieldName} already exists but with a different type ({field.GetType()} != {typeof(T)})");
         }
 
-        private void AddProperty()
+        private async void AddProperty()
         {
-            AddWindow window = new AddWindow
-            {
-                Owner = Application.Current.MainWindow
-            };
-            AddViewModel avm = (AddViewModel)window.DataContext;
+            AddDialog dialog = new AddDialog();
+            AddViewModel avm = (AddViewModel)dialog.DataContext;
             avm.ObjectModel = this;
-            window.ShowDialog();
+            await dialogService.ShowDialog<AddDialog>(dialog);
         }
 
         private void RemoveProperty(SerializedPropertyViewModel property)

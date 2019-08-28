@@ -1,22 +1,31 @@
-﻿using SatisfactorySaveEditor.Model;
+﻿using System.Threading.Tasks;
+using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 using System.Windows;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
 
 namespace SatisfactorySaveEditor.Cheats
 {
     public class InventorySlotsCheat : ICheat
     {
+        private readonly ISnackbarMessageQueue snackbar;
         public string Name => "Set bonus inventory slots...";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public InventorySlotsCheat()
+        {
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
+        }
+
+        public async Task<bool> Apply(SaveObjectModel rootItem)
         {
             var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
             if (gameState == null)
             {
-                MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                snackbar.Enqueue("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Ok", () => { });
             }
 
             var numAdditionalSlots = gameState.FindOrCreateField<IntPropertyViewModel>("mNumAdditionalInventorySlots");
@@ -32,12 +41,12 @@ namespace SatisfactorySaveEditor.Cheats
 
             if (cvm.NumberChosen < 0 || cvm.NumberChosen == numAdditionalSlots.Value)
             {
-                MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
+                snackbar.Enqueue("Bonus inventory slot count unchanged", "Ok", () => { });
                 return false;
             }
 
             numAdditionalSlots.Value = cvm.NumberChosen;
-            MessageBox.Show($"Bonus inventory set to {cvm.NumberChosen} slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            snackbar.Enqueue($"Bonus inventory set to {cvm.NumberChosen} slots.", "Ok", () => { });
             return true;
         }
     }

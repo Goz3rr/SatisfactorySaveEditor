@@ -3,15 +3,26 @@ using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveParser.Data;
 using SatisfactorySaveParser.PropertyTypes;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
 
 namespace SatisfactorySaveEditor.Cheats
 {
     public class ResearchUnlockCheat : ICheat
     {
+        private readonly ISnackbarMessageQueue snackbar;
+        private readonly IDialogService dialogService;
         public string Name => "Unlock all research";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public ResearchUnlockCheat()
+        {
+            dialogService = ServiceLocator.Current.GetInstance<IDialogService>();
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
+        }
+
+        public async Task<bool> Apply(SaveObjectModel rootItem)
         {
             var tutorialManager = rootItem.FindChild("Persistent_Level:PersistentLevel.TutorialIntroManager", false);
             if (tutorialManager == null)
@@ -44,7 +55,9 @@ namespace SatisfactorySaveEditor.Cheats
             var tradingPostBuilt = tutorialManager.FindField<BoolPropertyViewModel>("mTradingPostBuilt");
             if (tradingPostBuilt == null)
             {
-                MessageBox.Show("You should build a hub before attempting to unlock all research.", "No hub found", MessageBoxButton.OK, MessageBoxImage.Error);
+                await dialogService.ShowError("You should build a hub before attempting to unlock all research.",
+                    "No hub found", "Ok",
+                    () => { });
                 return false;
             }
 
@@ -75,7 +88,9 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     if (!(field is ArrayPropertyViewModel arrayField))
                     {
-                        MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
+                        await dialogService.ShowError(
+                            "Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.",
+                            "Wrong schematics type", "Ok", () => { });
                         return false;
                     }
 
@@ -89,13 +104,16 @@ namespace SatisfactorySaveEditor.Cheats
                 }
             }
 
-            MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            snackbar.Enqueue("All research successfully unlocked.", "Ok", () => { });
             return true;
         }
 
-        private void MissingTagMsg(string tagName)
+        private async void MissingTagMsg(string tagName)
         {
-            MessageBox.Show($"This save does not contain a {tagName}.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find " + tagName, MessageBoxButton.OK, MessageBoxImage.Error);
+            await dialogService.ShowError(
+                $"This save does not contain a {tagName}.\nThis means that the loaded save is probably corrupt. Aborting.",
+                $"Cannot find {tagName}", "Ok",
+                () => { });
         }
 
         private BoolPropertyViewModel CreateOrSetBoolField(SaveObjectModel model, string fieldName, bool value)

@@ -54,6 +54,12 @@
     <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
       <HintPath>..\packages\gong-wpf-dragdrop.2.0.1\lib\net46\GongSolutions.WPF.DragDrop.dll</HintPath>
     </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.2.0.325, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.2.0\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.6.0.325, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.6.0\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -110,14 +116,12 @@
     <Compile Include="Cheats\KillPlayersCheat.cs" />
     <Compile Include="Cheats\InventorySlotsCheat.cs" />
     <Compile Include="Cheats\MassDismantleCheat.cs" />
-    <Compile Include="Cheats\MassDismantleWindow.xaml.cs">
-      <DependentUpon>MassDismantleWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Cheats\NoPowerCheat.cs" />
     <Compile Include="Cheats\NoCostCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
     <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
+    <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
     <Compile Include="Converter\LinearColorToBrushConverter.cs" />
@@ -125,6 +129,10 @@
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
     <Compile Include="Converter\TypeTooltipConverter.cs" />
+    <Compile Include="Message\CoordinateAddedMessage.cs" />
+    <Compile Include="Message\DarkModeEnabledMessage.cs" />
+    <Compile Include="Message\DismantleNavigateMessage.cs" />
+    <Compile Include="Message\DrawerEnabledMessage.cs" />
     <Compile Include="Model\ResourceType.cs" />
     <Compile Include="Model\SaveComponentModel.cs" />
     <Compile Include="Model\SaveEntityModel.cs" />
@@ -140,11 +148,16 @@
     <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="Util\UpdateChecker.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
+    <Compile Include="ViewModel\ConfirmViewModel.cs" />
+    <Compile Include="ViewModel\CoordinateFormViewModel.cs" />
+    <Compile Include="ViewModel\CoordinateListViewModel.cs" />
+    <Compile Include="ViewModel\DialogService.cs" />
     <Compile Include="ViewModel\FillViewModel.cs" />
+    <Compile Include="ViewModel\MassDismantleViewModel.cs" />
     <Compile Include="ViewModel\StringPromptViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\PreferencesWindowViewModel.cs" />
+    <Compile Include="ViewModel\PreferencesViewModel.cs" />
     <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
@@ -159,13 +172,38 @@
     <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
-    <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
+    <Compile Include="ViewModel\UpdateViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\FillWindow.xaml.cs">
-      <DependentUpon>FillWindow.xaml</DependentUpon>
+    <Compile Include="View\Dialogs\AddDialog.xaml.cs">
+      <DependentUpon>AddDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\StringPromptWindow.xaml.cs">
-      <DependentUpon>StringPromptWindow.xaml</DependentUpon>
+    <Compile Include="View\Dialogs\ConfirmDialog.xaml.cs">
+      <DependentUpon>ConfirmDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\CoordinateFormDialog.xaml.cs">
+      <DependentUpon>CoordinateFormDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\CoordinateListDialog.xaml.cs">
+      <DependentUpon>CoordinateListDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\FillDialog.xaml.cs">
+      <DependentUpon>FillDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\ISlideNavigationSubject.cs" />
+    <Compile Include="View\Dialogs\ITidyable.cs" />
+    <Compile Include="View\Dialogs\MassDismantleDialog.xaml.cs">
+      <DependentUpon>MassDismantleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\PreferencesDialog.xaml.cs">
+      <DependentUpon>PreferencesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\SlideNavigator.cs" />
+    <Compile Include="View\Dialogs\SlideNavigatorFrame.cs" />
+    <Compile Include="View\Dialogs\StringPromptDialog.xaml.cs">
+      <DependentUpon>StringPromptDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CheatInventoryWindow.xaml.cs">
       <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
@@ -182,25 +220,42 @@
     <Compile Include="View\Control\SharpDx\Direct2DComponent.cs" />
     <Compile Include="View\Control\SharpDx\DirectXComponent.cs" />
     <Compile Include="View\Control\SharpDx\Win32HwndControl.cs" />
-    <Compile Include="View\PreferencesWindow.xaml.cs">
-      <DependentUpon>PreferencesWindow.xaml</DependentUpon>
+    <Compile Include="View\Dialogs\UpdateDialog.xaml.cs">
+      <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\UpdateWindow.xaml.cs">
-      <DependentUpon>UpdateWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Cheats\MassDismantleWindow.xaml">
+    <Page Include="View\Dialogs\AddDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\AddWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\FillWindow.xaml">
+    <Page Include="View\Dialogs\ConfirmDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\StringPromptWindow.xaml">
+    <Page Include="View\Dialogs\CoordinateFormDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\CoordinateListDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\FillDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\MassDismantleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\PreferencesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\ProgressDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\StringPromptDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -220,6 +275,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Dialogs\UpdateDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -227,9 +286,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\AddWindow.xaml.cs">
-      <DependentUpon>AddWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Control\Vector4Control.xaml.cs">
       <DependentUpon>Vector4Control.xaml</DependentUpon>
@@ -245,19 +301,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\PreferencesWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\PropertyTemplateDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CheatInventoryWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\UpdateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

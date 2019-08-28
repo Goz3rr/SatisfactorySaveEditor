@@ -4,11 +4,12 @@ using SatisfactorySaveEditor.ViewModel.Struct;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
-using SatisfactorySaveParser.Structures;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Windows;
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
 using Vector = SatisfactorySaveParser.PropertyTypes.Structs.Vector;
 using Vector3 = SatisfactorySaveParser.Structures.Vector3;
 
@@ -17,8 +18,16 @@ namespace SatisfactorySaveEditor.Cheats
     public class DeleteEnemiesCheat : ICheat
     {
         public string Name => "Delete enemies";
+        private IDialogService dialogService;
+        private ISnackbarMessageQueue snackbar;
 
         private int currentDoggoID = 0;
+
+        public DeleteEnemiesCheat()
+        {
+            dialogService = ServiceLocator.Current.GetInstance<IDialogService>();
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
+        }
 
         private SaveObjectModel FindOrCreatePath(SaveObjectModel start, string[] path, int index = 0)
         {
@@ -79,14 +88,14 @@ namespace SatisfactorySaveEditor.Cheats
             }
         }
 
-        public bool AddDoggo(SaveObjectModel rootItem)
+        public async Task<bool> AddDoggo(SaveObjectModel rootItem)
         {
             currentDoggoID = GetNextDoggoID(currentDoggoID, rootItem);
 
             var hostPlayerModel = rootItem.FindChild("Char_Player.Char_Player_C", false);
             if (hostPlayerModel == null || hostPlayerModel.Items.Count < 1)
             {
-                MessageBox.Show("This save does not contain a host player or it is corrupt.", "Cannot find host player", MessageBoxButton.OK, MessageBoxImage.Error);
+                await dialogService.ShowError("This save does not contain a host player or it is corrupt.", "Cannot find host player", "Ok", () => { });
                 return false;
             }
             var player = (SaveEntityModel)hostPlayerModel.Items[0];
@@ -183,12 +192,12 @@ namespace SatisfactorySaveEditor.Cheats
             return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y) + (a.Z - b.Z) * (a.Z - b.Z));
         }
 
-        public bool Apply(SaveObjectModel rootItem)
+        public async Task<bool> Apply(SaveObjectModel rootItem)
         {
             var animalSpawners = rootItem.FindChild("BP_CreatureSpawner.BP_CreatureSpawner_C", false);
             if (animalSpawners == null)
             {
-                MessageBox.Show("This save does not contain animals or it is corrupt.", "Cannot find animals", MessageBoxButton.OK, MessageBoxImage.Error);
+                snackbar.Enqueue("This save does not contain animals or it is corrupt. Cannot find animals", "Ok", () => { });
                 return false;
             }
 
@@ -196,7 +205,7 @@ namespace SatisfactorySaveEditor.Cheats
             var hostPlayerModel = rootItem.FindChild("Char_Player.Char_Player_C", false);
             if (hostPlayerModel == null || hostPlayerModel.Items.Count < 1)
             {
-                MessageBox.Show("This save does not contain a host player or it is corrupt.", "Cannot find host player", MessageBoxButton.OK, MessageBoxImage.Error);
+                await dialogService.ShowError("This save does not contain a host player or it is corrupt.", "Cannot find host player", "Ok", () => { });
                 return false;
             }
             Vector3 playerPosition = ((SaveEntityModel)hostPlayerModel.Items[0]).Position;
@@ -215,7 +224,7 @@ namespace SatisfactorySaveEditor.Cheats
                         // Set WasKilled to true so they don't respawn after deleting them
                         ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
                         // Set KilledOnDayNumber to a huge number (some far away animals respawn if the number is too small)
-                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data) /10000);
+                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data) / 10000);
                     }
                 });
             }
@@ -224,11 +233,14 @@ namespace SatisfactorySaveEditor.Cheats
             var enemies = rootItem.FindChild("Creature", false).FindChild("Enemy", false);
             rootItem.Remove(enemies);
 
-            if (MessageBox.Show($"Deleted all spawned enemies, and all unspawned creatures (enemy & friendly). Would you like 3 tamed Lizzard Doggos as a compensation?", "Success", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (await dialogService.ShowMessage(
+                "Deleted all spawned enemies, and all unspawned creatures (enemy & friendly). Would you like 3 tamed Lizzard Doggos as a compensation?",
+                "Success!", "Yes", "No", b => { }))
             {
                 for (int i = 0; i < 3; i++)
-                    AddDoggo(rootItem);
+                    await AddDoggo(rootItem);
             }
+
             return true;
         }
     }

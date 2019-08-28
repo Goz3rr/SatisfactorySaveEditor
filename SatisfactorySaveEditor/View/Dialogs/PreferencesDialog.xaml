@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="SatisfactorySaveEditor.View.Dialogs.PreferencesDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SatisfactorySaveEditor.View.Control"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             DataContext="{Binding PreferencesViewModel, Source={StaticResource Locator}, Mode=OneTime}"
+             mc:Ignorable="d"
+             MinHeight="170" Width="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <materialDesign:ColorZone Margin="0,0,0,8" Grid.ColumnSpan="2" Mode="Accent" Effect="{DynamicResource MaterialDesignShadowDepth2}">
+            <TextBlock Margin="8" Text="Preferences"
+                       Style="{StaticResource MaterialDesignTitleTextBlock}" />
+        </materialDesign:ColorZone>
+        <Label Grid.Column="0" Grid.Row="1" Target="{Binding ElementName=BackupBox}"
+               Content="Enable auto update check:" />
+        <Label Grid.Column="0" Grid.Row="2" Target="{Binding ElementName=BackupBox}" Content="Enable auto backups:" />
+        <Label Grid.Column="0" Grid.Row="3" Target="{Binding ElementName=BackupBox}"
+               Content="Enable collapsible drawer:" />
+        <CheckBox Grid.Column="1" Grid.Row="1" x:Name="AutoUpdateCheckbox" VerticalAlignment="Center"
+                  IsChecked="{Binding AutoUpdate}" />
+        <CheckBox Grid.Column="1" Grid.Row="2" x:Name="AutoBackupCheckbox" VerticalAlignment="Center"
+                  IsChecked="{Binding AutoBackup}" />
+        <CheckBox Grid.Column="1" Grid.Row="3" x:Name="DrawerEnabledCheckbox" VerticalAlignment="Center"
+                  IsChecked="{Binding DrawerEnabled}" />
+        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Margin="8">
+            <TextBlock VerticalAlignment="Center">Light</TextBlock>
+            <ToggleButton Margin="8 0 16 0" Command="{Binding ToggleDarkModeCommand}"
+                          IsChecked="{Binding DarkModeEnabled}"
+                          CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" />
+            <TextBlock VerticalAlignment="Center">Dark</TextBlock>
+        </StackPanel>
+
+        <Separator Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Margin="0,5" />
+        <StackPanel Margin="4" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Margin="5,0" Padding="20,3" Style="{StaticResource MaterialDesignFlatAccentButton}" Content="OK"
+                    Command="{Binding AcceptCommand}"
+                    CommandParameter="{Binding ElementName=PreferencesWin}" />
+            <Button Margin="5,0" Padding="20,3" Style="{StaticResource MaterialDesignFlatAccentButton}" Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding ElementName=PreferencesWin}" />
+            <Button Margin="5,0" Padding="20,3" Style="{StaticResource MaterialDesignFlatAccentButton}" Content="Apply"
+                    Command="{Binding ApplyCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

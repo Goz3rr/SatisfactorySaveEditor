@@ -12,7 +12,10 @@
         <converter:SerializablePropertyToTypeStringConverter x:Key="SerializablePropertyToTypeStringConverter"/>
         <util:BindingProxy x:Key="Proxy" Data="{Binding .}"/>
     </UserControl.Resources>
-    <GroupBox Header="Properties">
+    <GroupBox Style="{DynamicResource MaterialDesignCardGroupBox}">
+        <GroupBox.Header>
+            <TextBlock Text="Properties"/>
+        </GroupBox.Header>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -69,7 +72,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Grid.Row="1" Content="Add property" Margin="0,5,0,0" Command="{Binding AddPropertyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding .}"/>
+            <Button Grid.Row="1" Style="{StaticResource MaterialDesignRaisedAccentButton}" Content="Add property" Margin="0,5,0,0" Command="{Binding AddPropertyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding .}"/>
         </Grid>
     </GroupBox>
 </UserControl>

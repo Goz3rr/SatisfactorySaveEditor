@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="SatisfactorySaveEditor.View.Dialogs.CoordinateFormDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:convert="clr-namespace:SatisfactorySaveEditor.Converter"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBox Text="{Binding FirstCoordinate}" materialDesign:HintAssist.Hint="{Binding FirstCoordinateHint}" Grid.Column="1" Grid.Row="0"
+                 MinWidth="250" VerticalAlignment="Center" Margin="5,4,0,4" />
+        <TextBox Text="{Binding SecondCoordinate}" materialDesign:HintAssist.Hint="{Binding SecondCoordinateHint}" Grid.Column="1" Grid.Row="1"
+                 MinWidth="250" VerticalAlignment="Center" Margin="5,4,0,4" />
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Visibility="{Binding IsZDialog, Converter={StaticResource InverseBoolToVisConverter}}">
+            <Button  Margin="10,0,0,0" Style="{StaticResource MaterialDesignFlatAccentButton}" Command="{Binding AddCommand}" MinWidth="60" Content="_Add" />
+            <Button  Margin="10,0,0,0" Style="{StaticResource MaterialDesignFlatAccentButton}" Command="{Binding CancelCommand}" MinWidth="60" Content="_Cancel" />
+        </StackPanel>
+    </Grid>
+</UserControl>

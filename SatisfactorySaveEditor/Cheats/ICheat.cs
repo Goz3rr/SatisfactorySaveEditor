@@ -1,4 +1,5 @@
-﻿using SatisfactorySaveEditor.Model;
+﻿using System.Threading.Tasks;
+using SatisfactorySaveEditor.Model;
 
 namespace SatisfactorySaveEditor.Cheats
 {
@@ -11,6 +12,6 @@ namespace SatisfactorySaveEditor.Cheats
         /// </summary>
         /// <param name="rootItem">SaveObjectModel to apply the cheat on</param>
         /// <returns>true if succesfull and the SaveObjectModel was mutated, false on failure</returns>
-        bool Apply(SaveObjectModel rootItem);
+        Task<bool> Apply(SaveObjectModel rootItem);
     }
 }

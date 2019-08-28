@@ -7,14 +7,11 @@ namespace SatisfactorySaveEditor.ViewModel
 {
     public class StringPromptViewModel : ViewModelBase
     {
-        public RelayCommand<Window> OkCommand { get; }
-        public RelayCommand<Window> CancelCommand { get; }
-
-        private string windowTitle = "String Prompt";
-        public string WindowTitle
+        private string title = "String Prompt";
+        public string Title
         {
-            get => windowTitle;
-            set { Set(() => WindowTitle, ref windowTitle, value); }
+            get => title;
+            set { Set(() => Title, ref title, value); }
         }
 
         private string promptMessage = "Prompt String:";
@@ -36,23 +33,6 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             get => oldValueMessage;
             set { Set(() => OldValueMessage, ref oldValueMessage, value); }
-        }
-
-        public StringPromptViewModel()
-        {
-            OkCommand = new RelayCommand<Window>(Ok);
-            CancelCommand = new RelayCommand<Window>(Cancel);
-        }
-
-        private void Cancel(Window obj)
-        {
-            ValueChosen = "cancel";
-            obj.Close();
-        }
-
-        private void Ok(Window obj)
-        {
-            obj.Close();
         }
     }
 }

@@ -1,22 +1,21 @@
 ﻿using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
-using SatisfactorySaveParser;
-using SatisfactorySaveParser.PropertyTypes;
-using SatisfactorySaveParser.PropertyTypes.Structs;
-using SatisfactorySaveParser.Structures;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
+using SatisfactorySaveEditor.View.Control;
+using SatisfactorySaveEditor.View.Dialogs;
 
 namespace SatisfactorySaveEditor.Cheats
 {
     class SpawnDoggoCheat : ICheat
     {
+        private readonly DialogService dialogService;
+        private readonly ISnackbarMessageQueue snackbar;
         public string Name => "Spawn Doggos...";
 
         private DeleteEnemiesCheat deleteEnemiesCheat; //uses the add doggo code from delete enemies to avoid duplicating code
@@ -24,63 +23,51 @@ namespace SatisfactorySaveEditor.Cheats
         public SpawnDoggoCheat(DeleteEnemiesCheat deleter)
         {
             deleteEnemiesCheat = deleter;
+            dialogService = (DialogService)ServiceLocator.Current.GetInstance<IDialogService>();
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
         }
-        
-        public bool Apply(SaveObjectModel rootItem)
-        {
-            int doggocount = 1;
 
-            var dialog = new StringPromptWindow
-            {
-                Owner = Application.Current.MainWindow
-            };
-            var cvm = (StringPromptViewModel)dialog.DataContext;
-            cvm.WindowTitle = "Enter doggo count";
+        public async Task<bool> Apply(SaveObjectModel rootItem)
+        {
+            var dialog = new StringPromptDialog();
+            var cvm = (StringPromptViewModel) dialog.DataContext;
+            cvm.Title = "Enter doggo count";
             cvm.PromptMessage = "Count (integer):";
             cvm.ValueChosen = "1";
             cvm.OldValueMessage = "";
-            dialog.ShowDialog();
-
+            if (!(await dialogService.ShowDialog<StringPromptDialog>(dialog) is string valueChosen)) return false;
             try
             {
-                doggocount = int.Parse(cvm.ValueChosen);
-                //MessageBox.Show("" + doggocount);
+                var doggoCount = int.Parse(valueChosen);
 
-                if (doggocount > 0)
+                if (doggoCount > 0)
                 {
                     int counter;
                     bool pastSuccess = true; //don't keep running the loop if one run fails
-                    for (counter = 0; counter < doggocount && pastSuccess; counter++)
+                    for (counter = 0; counter < doggoCount && pastSuccess; counter++)
                     {
-                        pastSuccess = deleteEnemiesCheat.AddDoggo(rootItem);
+                        pastSuccess = await deleteEnemiesCheat.AddDoggo(rootItem);
                     }
 
                     if (pastSuccess)
                     {
-                        MessageBox.Show("Spawned " + counter + " doggo(s) at the host player.");
+                        snackbar.Enqueue($"Spawned {counter} doggo(s) at the host player", "Ok", () => { });
                         return true;
                     }
-                    else
-                    {
-                        //failed to spawn some doggos for some reason
-                        return false;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("You can't spawn " + doggocount + " doggos.");
+
+                    //failed to spawn some doggos for some reason
                     return false;
                 }
+
+                await dialogService.ShowError($"You can't spawn {doggoCount} doggos.", "Error!", "Ok", () => { });
+                return false;
             }
             catch (Exception)
             {
-                if (!(cvm.ValueChosen == "cancel"))
-                {
-                    MessageBox.Show("Could not parse: " + cvm.ValueChosen);
-                }
+                await dialogService.ShowError($"Could not parse: {valueChosen}", "Error!", "Ok", () => { });
                 return false;
             }
         }
-        
+
     }
 }

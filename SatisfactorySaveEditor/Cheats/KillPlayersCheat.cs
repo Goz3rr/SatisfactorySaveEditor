@@ -4,14 +4,24 @@ using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
 using SatisfactorySaveParser.Structures;
-using System.Numerics;
-using System.Windows;
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
 
 namespace SatisfactorySaveEditor.Cheats
 {
     public class KillPlayersCheat : ICheat
     {
+        private readonly IDialogService dialogService;
+        private readonly ISnackbarMessageQueue snackbar;
         public string Name => "Kill Dummy Players";
+
+        public KillPlayersCheat()
+        {
+            dialogService = ServiceLocator.Current.GetInstance<IDialogService>();
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
+        }
 
         private int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
@@ -20,12 +30,16 @@ namespace SatisfactorySaveEditor.Cheats
             return currentId;
         }
 
-        public bool Apply(SaveObjectModel rootItem)
+
+        public async Task<bool> Apply(SaveObjectModel rootItem)
+        //public bool Apply(SaveObjectModel rootItem)
         {
             var players = rootItem.FindChild("Char_Player.Char_Player_C", false);
             if (players == null)
             {
-                MessageBox.Show("This save does not contain a Player.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find Player", MessageBoxButton.OK, MessageBoxImage.Error);
+                await dialogService.ShowError(
+                    "This save does not contain a Player.\nThis means that the loaded save is probably corrupt. Aborting.",
+                    "Cannot find Player", "Ok", null);
                 return false;
             }
             int currentStorageID = 0;
@@ -66,7 +80,7 @@ namespace SatisfactorySaveEditor.Cheats
                 }
                 rootItem.Remove(player);
                 rootItem.Remove(inventoryState);
-                MessageBox.Show($"Killed {player.Title}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                snackbar.Enqueue($"Success! Killed {player.Title}.", "Ok", () => { });
             }
             return true;
         }

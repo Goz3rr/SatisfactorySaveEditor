@@ -6,16 +6,31 @@ using SatisfactorySaveParser.PropertyTypes.Structs;
 using SatisfactorySaveParser.Structures;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
+using CommonServiceLocator;
+using GalaSoft.MvvmLight.Views;
+using MaterialDesignThemes.Wpf;
+using SatisfactorySaveEditor.View.Control;
+using SatisfactorySaveEditor.View.Dialogs;
+using SatisfactorySaveEditor.ViewModel;
 
 namespace SatisfactorySaveEditor.Cheats
 {
     public class MassDismantleCheat : ICheat
     {
+        private Vector3[] polygon;
+        private float minZ, maxZ;
+        private readonly DialogService dialogService;
+        private readonly ISnackbarMessageQueue snackbar;
         public string Name => "Mass dismantle...";
+
+        public MassDismantleCheat()
+        {
+            dialogService = (DialogService)ServiceLocator.Current.GetInstance<IDialogService>();
+            snackbar = ServiceLocator.Current.GetInstance<ISnackbarMessageQueue>();
+        }
 
         private int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
@@ -23,6 +38,8 @@ namespace SatisfactorySaveEditor.Cheats
                 currentId++;
             return currentId;
         }
+
+
 
         public bool IsPointInPolygon(Vector3 p, Vector3[] polygon)
         {
@@ -54,37 +71,16 @@ namespace SatisfactorySaveEditor.Cheats
 
             return inside;
         }
-
-        private Vector3[] polygon;
-        private float minZ, maxZ;
-
-        private void BuildPolygon()
+        private async Task<bool> BuildPolygon()
         {
-            List<Vector3> points = new List<Vector3>();
-            bool done = false;
-            while (!done)
-            {
-                MassDismantleWindow massDismantleWindow = new MassDismantleWindow();
-                if (!massDismantleWindow.ShowDialog().Value)
-                    break;
-                if (!massDismantleWindow.ResultSet)
-                    break;
-                points.Add(massDismantleWindow.Result);
-                if (massDismantleWindow.Done)
-                    done = true;
-            }
-            polygon = points.ToArray();
-            MassDismantleWindow zWindow = new MassDismantleWindow(isZWindow: true);
-            if (!zWindow.ShowDialog().Value || !zWindow.ResultSet)
-            {
-                minZ = float.NegativeInfinity;
-                maxZ = float.PositiveInfinity;
-            }
-            else
-            {
-                minZ = zWindow.Result.X;
-                maxZ = zWindow.Result.Y;
-            }
+            var dialog = new MassDismantleDialog();
+            ((MassDismantleViewModel)dialog.DataContext).ButtonText = "Next";
+            var coordinates = await dialogService.ShowDialog<MassDismantleDialog>(dialog);
+            if (!(coordinates is CoordinateListViewModel coords)) return false;
+            polygon = coords.Points.ToArray();
+            minZ = coords.MinZ;
+            maxZ = coords.MaxZ;
+            return true;
         }
 
         public byte[] PrepareForParse(string itemPath, int itemAmount)
@@ -181,12 +177,13 @@ namespace SatisfactorySaveEditor.Cheats
             return count;
         }
 
-        public bool Apply(SaveObjectModel rootItem)
+        public async Task<bool> Apply(SaveObjectModel rootItem)
         {
-            BuildPolygon();
+            if (!await BuildPolygon()) return false;
             if (polygon.Length < 2)
             {
-                MessageBox.Show("At least 2 points needed to mass dismantle", "Could not mass dismantle", MessageBoxButton.OK, MessageBoxImage.Error);
+                await dialogService.ShowError("At least 2 points needed to mass dismantle", "Could not mass dismantle", "Ok",
+                    () => { });
                 return false;
             }
             ArrayProperty inventory = new ArrayProperty("mInventoryStacks")
@@ -209,13 +206,16 @@ namespace SatisfactorySaveEditor.Cheats
                 countCrate = MassDismantle(rootItem.FindChild("-Shared", true).FindChild("BP_Crate.BP_Crate_C", true).DescendantSelfViewModel, inventory, rootItem);
             }
             catch (NullReferenceException) { }
-            if(countFactory + countBuilding + countCrate == 0)
+            if (countFactory + countBuilding + countCrate == 0)
             {
-                MessageBox.Show("Nothing was dismantled. Make sure the coordinates are correct and in clockwise order.", "Mass dismantle", MessageBoxButton.OK, MessageBoxImage.Error);
+                await dialogService.ShowError("Nothing was dismantled. Make sure the coordinates are correct and in clockwise order.", "Mass dismantle", "Ok", () => { });
                 return false;
             }
-            MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+
+            var dialogResult = await dialogService.ShowMessage(
+                $"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storage) in a single crate?",
+                "Dismantled", "Yes", "No", (b) => { });
+            if (dialogResult)
             {
                 inventory = ArrangeInventory(inventory);
                 int currentStorageID = GetNextStorageID(0, rootItem);
