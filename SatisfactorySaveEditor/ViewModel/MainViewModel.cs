@@ -310,8 +310,8 @@ namespace SatisfactorySaveEditor.ViewModel
 
                     }).ContinueWith(r =>
                     {
+                        snackbar.Enqueue($"Saved {dialog.FileName}", "Ok", () => { });
                         DialogOpen = false;
-                        IsBusy = false;
                     }, TaskScheduler.FromCurrentSynchronizationContext());
                     await dialogService.ShowDialog<ProgressDialog>(new ProgressDialog());
                 }
@@ -332,12 +332,12 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 }).ContinueWith(r =>
                 {
+                    snackbar.Enqueue($"Saved {saveGame.FileName}", "Ok", () => { });
                     DialogOpen = false;
-                    IsBusy = false;
                 }, TaskScheduler.FromCurrentSynchronizationContext());
                 await dialogService.ShowDialog<ProgressDialog>(new ProgressDialog());
             }
-            snackbar.Enqueue($"Saved {saveGame.FileName}", "Ok", () => { });
+            IsBusy = false;
         }
 
         private void AutoBackupIfEnabled()
