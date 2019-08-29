@@ -96,7 +96,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<ICheat> CheatCommand { get; }
         public AsyncCommand<bool> SaveCommand { get; }
-        public RelayCommand ManualBackupCommand { get; }
+        public AsyncCommand ManualBackupCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
         public RelayCommand CheckUpdatesCommand { get; }
         public RelayCommand PreferencesCommand { get; }
@@ -146,7 +146,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
             SaveCommand = new AsyncCommand<bool>(Save, CanSave, null, true);
-            ManualBackupCommand = new RelayCommand(() => CreateBackup(true), CanSave);
+            ManualBackupCommand = new AsyncCommand(() => CreateBackup(true), CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
@@ -259,27 +259,24 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
-                    this.IsBusy = true;
-                    await Task.Run(() => AutoBackupIfEnabledAsync());
-                    this.IsBusy = false;
+                    await AutoBackupIfEnabled();
 
                     var newObjects = rootItem.DescendantSelf;
                     saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                     saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
 
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName);
+                    this.IsBusy = true;
+                    await Task.Run(() => saveGame.Save(dialog.FileName));
+                    this.IsBusy = false;
                     HasUnsavedChanges = false;
                     RaisePropertyChanged(() => FileName);
                     AddRecentFileEntry(dialog.FileName);
-                    this.IsBusy = false;
                 }
             }
             else
             {
-                this.IsBusy = true;
-                await Task.Run(() => AutoBackupIfEnabledAsync());
-                this.IsBusy = false;
+                await AutoBackupIfEnabled();
 
                 var newObjects = rootItem.DescendantSelf;
                 saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
@@ -293,17 +290,23 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }
 
-        private void AutoBackupIfEnabledAsync()
+        private async Task AutoBackupIfEnabled()
         {
             if (Properties.Settings.Default.AutoBackup)
             {
-                CreateBackup(false);
+                await CreateBackup(false);
             }
         }
 
-        private void CreateBackup(bool manual)
+        private async Task CreateBackup(bool manual)
         {
             this.IsBusy = true;
+            await Task.Run(() => CreateBackupAsync(manual));
+            this.IsBusy = false;
+        }
+
+        private void CreateBackupAsync(bool manual)
+        {  
             string saveFileDirectory = Path.GetDirectoryName(saveGame.FileName);
             string tempDirectoryName = @"\SSEtemp\";
             string pathToZipFrom = saveFileDirectory + tempDirectoryName;
@@ -334,7 +337,6 @@ namespace SatisfactorySaveEditor.ViewModel
 
             if (manual)
                 MessageBox.Show("Backup created. Find it in your save file folder.");
-            this.IsBusy = false;
         }
 
         /// <summary>
@@ -522,7 +524,9 @@ namespace SatisfactorySaveEditor.ViewModel
             saveGame = new SatisfactorySave(path);
             Application.Current.Dispatcher.Invoke(() =>
             {
-                SaveCommand.RaiseCanExecuteChanged(); //manually raise this for the AsyncCommand library to pick up on it (ask virusek20 or Robb)
+                //manually raise these for the AsyncCommand library to pick up on it (ask virusek20 or Robb)
+                SaveCommand.RaiseCanExecuteChanged();
+                ManualBackupCommand.RaiseCanExecuteChanged();
             });
             
             rootItem = new SaveRootModel(saveGame.Header);
