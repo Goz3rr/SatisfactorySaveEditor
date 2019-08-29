@@ -39,7 +39,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private DialogService dialogService;
         private bool drawerEnabled;
         private BaseTheme windowTheme;
-        private bool isLoading;
+        private bool isBusy;
 
         public ObservableCollection<SaveObjectModel> RootItem
         {
@@ -104,11 +104,10 @@ namespace SatisfactorySaveEditor.ViewModel
             get => windowTheme;
             set { Set(() => WindowTheme, ref windowTheme, value); }
         }
-
-        public bool IsLoading
+        public bool IsBusy
         {
-            get => isLoading;
-            set { Set(() => IsLoading, ref isLoading, value); }
+            get => isBusy;
+            set { Set(() => IsBusy, ref isBusy, value); }
         }
 
         public SnackbarMessageQueue MessageQueue => snackbar;
@@ -262,7 +261,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <returns>True if saveGame is NOT null, false otherwise</returns>
         private bool CanSave(bool saveAs)
         {
-            return saveGame != null && !isLoading;
+            return saveGame != null && !isBusy;
         }
 
         private bool CanSave() //overload of CanSave(bool saveAs) for contexts when saveAs doesn't matter
@@ -274,8 +273,9 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Save changes, creating a backup first if auto backups are enabled in the user's preferences
         /// </summary>
         /// <param name="saveAs">(optional) If the Save As... option box should be brought up to choose a destination</param>
-        private void Save(bool saveAs)
+        private async void Save(bool saveAs)
         {
+            IsBusy = true;
             if (saveAs)
             {
                 SaveFileDialog dialog = new SaveFileDialog
@@ -289,6 +289,37 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
+                    Task.Factory.StartNew(() =>
+                    {
+                        AutoBackupIfEnabled();
+
+                        var newObjects = rootItem.DescendantSelf;
+                        saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
+                        saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
+
+                        rootItem.ApplyChanges();
+                        saveGame.Save(dialog.FileName);
+                        HasUnsavedChanges = false;
+                        RaisePropertyChanged(() => FileName);
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            
+                            AddRecentFileEntry(dialog.FileName);
+                        });
+
+                    }).ContinueWith(r =>
+                    {
+                        DialogOpen = false;
+                        IsBusy = false;
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                    await dialogService.ShowDialog<ProgressDialog>(new ProgressDialog());
+                }
+            }
+            else
+            {
+                Task.Factory.StartNew(() =>
+                {
                     AutoBackupIfEnabled();
 
                     var newObjects = rootItem.DescendantSelf;
@@ -296,26 +327,17 @@ namespace SatisfactorySaveEditor.ViewModel
                     saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
 
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName);
+                    saveGame.Save();
                     HasUnsavedChanges = false;
-                    RaisePropertyChanged(() => FileName);
-                    AddRecentFileEntry(dialog.FileName);
-                    snackbar.Enqueue($"Saved {dialog.FileName}", "Ok", () => { });
-                }
-            }
-            else
-            {
-                AutoBackupIfEnabled();
 
-                var newObjects = rootItem.DescendantSelf;
-                saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
-                saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
-
-                rootItem.ApplyChanges();
-                saveGame.Save();
-                HasUnsavedChanges = false;
-                snackbar.Enqueue($"Saved {saveGame.FileName}", "Ok", () => { });
+                }).ContinueWith(r =>
+                {
+                    DialogOpen = false;
+                    IsBusy = false;
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+                await dialogService.ShowDialog<ProgressDialog>(new ProgressDialog());
             }
+            snackbar.Enqueue($"Saved {saveGame.FileName}", "Ok", () => { });
         }
 
         private void AutoBackupIfEnabled()
@@ -423,7 +445,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <param name="fileName">Path to the save file</param>
         private async void Open(string fileName)
         {
-            IsLoading = true;
+            IsBusy = true;
             if (!string.IsNullOrWhiteSpace(fileName))
             {
                 LoadFile(fileName);
@@ -437,7 +459,7 @@ namespace SatisfactorySaveEditor.ViewModel
                     (b) => { });
                 if (!result)
                 {
-                    IsLoading = false;
+                    IsBusy = false;
                     return;
                 }
             }
@@ -566,7 +588,7 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 DialogOpen = false;
                 if (DrawerEnabled) DrawerOpen = true;
-                IsLoading = false;
+                IsBusy = false;
             }, TaskScheduler.FromCurrentSynchronizationContext());
             await dialogService.ShowDialog<ProgressDialog>(new ProgressDialog());
         }

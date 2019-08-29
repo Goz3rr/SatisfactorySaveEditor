@@ -107,8 +107,8 @@
         <Menu Grid.Row="1" materialDesign:ShadowAssist.ShadowDepth="Depth2">
 
             <MenuItem Header="_File" >
-                <MenuItem Header="_Open..." InputGestureText="Ctrl+O" Command="{Binding OpenCommand}" IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"/>
-                <MenuItem Header="_Open recent" ItemsSource="{Binding LastFiles}" Command="{Binding OpenCommand}" IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}">
+                <MenuItem Header="_Open..." InputGestureText="Ctrl+O" Command="{Binding OpenCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}"/>
+                <MenuItem Header="_Open recent" ItemsSource="{Binding LastFiles}" Command="{Binding OpenCommand}" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MaterialDesignMenuItem}">
                             <Setter Property="Command" Value="{Binding Source={StaticResource Proxy}, Path=Data.OpenCommand}"/>
