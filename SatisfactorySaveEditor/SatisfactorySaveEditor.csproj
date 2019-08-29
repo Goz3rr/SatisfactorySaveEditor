@@ -124,7 +124,6 @@
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
     <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
-    <Compile Include="Converter\BoolToVisibilityConverter.cs" />
     <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
