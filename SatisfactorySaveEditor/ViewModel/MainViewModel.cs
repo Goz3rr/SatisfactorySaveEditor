@@ -108,7 +108,7 @@ namespace SatisfactorySaveEditor.ViewModel
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1]))
             {
-                var _supressAwaitWarning = LoadFile(args[1]);
+                var _ = LoadFile(args[1]);
             }
 
             var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
@@ -227,10 +227,9 @@ namespace SatisfactorySaveEditor.ViewModel
         /// </summary>
         /// <param name="saveAs">If the save operation is Save As (unused)</param>
         /// <returns>True if saveGame is NOT null, false otherwise</returns>
-        private bool CanSave(object ignoreThis_NeededForAsyncThing)
+        private bool CanSave(object _)
         {
             return saveGame != null;
-            //return true;
         }
 
         private bool CanSave() //overload of CanSave(bool saveAs) for contexts when saveAs doesn't matter
@@ -397,7 +396,7 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             if (!string.IsNullOrWhiteSpace(fileName))
             {
-                var _supressAwaitWarning = LoadFile(fileName);
+                var _ = LoadFile(fileName);
                 HasUnsavedChanges = false;
 
                 return;
@@ -426,7 +425,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             if (dialog.ShowDialog() == true)
             {
-                var _supressAwaitWarning = LoadFile(dialog.FileName);
+                var _ = LoadFile(dialog.FileName);
                 HasUnsavedChanges = false;
             }
         }
@@ -657,7 +656,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public void Drop(IDropInfo dropInfo)
         {
             var fileName = ((DataObject)dropInfo.Data).GetFileDropList()[0];
-            var _supressAwaitWarning = LoadFile(fileName);
+            var _ = LoadFile(fileName);
         }
     }
 }
