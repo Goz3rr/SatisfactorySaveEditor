@@ -54,6 +54,13 @@ namespace SatisfactorySaveParser.Game.Character.Player
         [SaveProperty("mFilteredOutCompassTypes")]
         public List<ERepresentationType> FilteredOutCompassTypes { get; } = new List<ERepresentationType>();
 
+        [SaveProperty("mShoppingList")]
+        public List<RecipeAmountStruct> ShoppingList { get; } = new List<RecipeAmountStruct>();
+
+        [SaveProperty("mLastSchematicTierInUI")]
+        public int LastSchematicTierInUI { get; set; }
+
+
         public byte[] UserID { get; private set; } = Array.Empty<byte>();
 
         public override void DeserializeNativeData(BinaryReader reader, int length)

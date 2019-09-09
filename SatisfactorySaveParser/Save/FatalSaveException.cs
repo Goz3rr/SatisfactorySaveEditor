@@ -7,12 +7,22 @@ namespace SatisfactorySaveParser.Save
     /// </summary>
     public class FatalSaveException : Exception
     {
+        /// <summary>
+        ///     Position that was being read in the save before the last failed operation
+        /// </summary>
+        public long ReaderPosition { get; set; }
+
         public FatalSaveException()
         {
         }
 
         public FatalSaveException(string message) : base(message)
         {
+        }
+
+        public FatalSaveException(string message, long position) : base(message)
+        {
+            ReaderPosition = position;
         }
 
         public FatalSaveException(string message, Exception innerException) : base(message, innerException)

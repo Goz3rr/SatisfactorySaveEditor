@@ -3,7 +3,7 @@
 namespace SatisfactorySaveParser.Game.Structs.Native
 {
     [GameStruct("InventoryItem")]
-    public class InventoryItem : GameStruct
+    public class FInventoryItem : GameStruct
     {
         public override string StructName => "InventoryItem";
         public override int SerializedLength => 4 + ItemType.GetSerializedLength() + Unknown2.GetSerializedLength() + Unknown3.GetSerializedLength();

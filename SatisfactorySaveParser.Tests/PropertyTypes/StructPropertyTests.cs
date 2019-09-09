@@ -2,6 +2,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using SatisfactorySaveParser.Game.Structs.Native;
 using SatisfactorySaveParser.Save.Properties;
 using SatisfactorySaveParser.Save.Serialization;
 
@@ -33,7 +34,14 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
 
                 Assert.AreEqual(0, prop.Index);
 
-                // todo
+                var color = prop.Data as FLinearColor;
+                Assert.AreNotEqual(null, color);
+
+                Assert.AreEqual(StructTypedType, color.StructName);
+                Assert.AreEqual(StructTypedDataR, color.R);
+                Assert.AreEqual(StructTypedDataG, color.G);
+                Assert.AreEqual(StructTypedDataB, color.B);
+                Assert.AreEqual(StructTypedDataA, color.A);
 
                 Assert.AreEqual(stream.Length, stream.Position);
             }

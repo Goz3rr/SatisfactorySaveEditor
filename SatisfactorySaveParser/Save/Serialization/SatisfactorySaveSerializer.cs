@@ -261,7 +261,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
             var after = reader.BaseStream.Position;
             if (before + dataLength != after)
-                throw new FatalSaveException($"Expected {dataLength} bytes read but got {after - before}");
+                throw new FatalSaveException($"Expected {dataLength} bytes read but got {after - before}", before);
         }
 
         public static void SerializeObjectData(SaveObject saveObject, BinaryWriter writer)
@@ -314,7 +314,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             switch (propertyType)
             {
                 case ArrayProperty.TypeName:
-                    result = ArrayProperty.Parse(reader, propertyName, size, index, out overhead);
+                    result = ArrayProperty.Parse(reader, propertyName, index, out overhead);
                     break;
                 case BoolProperty.TypeName:
                     overhead = 2;
@@ -333,7 +333,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                     result = IntProperty.Deserialize(reader, propertyName, index);
                     break;
                 case MapProperty.TypeName:
-                    result = MapProperty.Deserialize(reader, propertyName, size, index, out overhead);
+                    result = MapProperty.Deserialize(reader, propertyName, index, out overhead);
                     break;
                 case NameProperty.TypeName:
                     result = NameProperty.Deserialize(reader, propertyName, index);

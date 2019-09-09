@@ -29,12 +29,13 @@ namespace SatisfactorySaveParser.Game.Structs
 
                 if (objProperty == null)
                 {
-                    // Dynamic game structs have no typed properties by definition so don't clog up the log
                     if (GetType() != typeof(DynamicGameStruct))
+                    {
                         if (prop is StructProperty structProp)
                             log.Warn($"Missing property for {prop.PropertyType} ({structProp.Data.GetType().Name}) {prop.PropertyName} on struct {GetType().Name}");
                         else
                             log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on struct {GetType().Name}");
+                    }
 
                     DynamicProperties.Add(prop);
                     continue;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 
 using NLog;
+
 using SatisfactorySaveParser.Game.Structs;
 using SatisfactorySaveParser.Save.Serialization;
 
@@ -50,7 +51,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// <returns></returns>
         public (PropertyInfo Property, SavePropertyAttribute Attribute) GetMatchingSaveProperty(Type targetType)
         {
-            if(!propertyCache.TryGetValue((targetType, PropertyName), out (PropertyInfo Property, Attribute Attribute) found))
+            if (!propertyCache.TryGetValue((targetType, PropertyName), out (PropertyInfo Property, Attribute Attribute) found))
             {
                 found = targetType.GetProperties()
                     //.Where(p => Attribute.IsDefined(p, typeof(SavePropertyAttribute)))
@@ -70,6 +71,9 @@ namespace SatisfactorySaveParser.Save.Properties
         /// <returns></returns>
         public (PropertyInfo Property, StructPropertyAttribute Attribute) GetMatchingStructProperty(Type targetType)
         {
+            if (targetType == typeof(DynamicGameStruct))
+                return (null, null);
+
             if (!propertyCache.TryGetValue((targetType, PropertyName), out (PropertyInfo Property, Attribute Attribute) found))
             {
                 found = targetType.GetProperties()
@@ -85,7 +89,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public virtual void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
         {
-            switch(this)
+            switch (this)
             {
                 case ArrayProperty arrayProperty:
                     {
@@ -110,8 +114,24 @@ namespace SatisfactorySaveParser.Save.Properties
                                 }
                                 break;
 
+                            case EnumProperty.TypeName:
+                                {
+                                    // TODO
+                                    saveObject.DynamicProperties.Add(this);
+                                }
+                                break;
+
+                            case IntProperty.TypeName:
+                                {
+                                    foreach (var prop in arrayProperty.Elements.Cast<IntProperty>())
+                                    {
+                                        addMethod.Invoke(list, new[] { (object)prop.Value });
+                                    }
+                                }
+                                break;
+
                             case ObjectProperty.TypeName:
-                                {                                    
+                                {
                                     foreach (var obj in arrayProperty.Elements.Cast<ObjectProperty>())
                                     {
                                         addMethod.Invoke(list, new[] { obj.Reference });
@@ -123,16 +143,7 @@ namespace SatisfactorySaveParser.Save.Properties
                                 {
                                     foreach (var obj in arrayProperty.Elements.Cast<StructProperty>())
                                     {
-
-                                    }
-                                }
-                                break;
-
-                            case IntProperty.TypeName:
-                                {
-                                    foreach (var prop in arrayProperty.Elements.Cast<IntProperty>())
-                                    {
-                                        addMethod.Invoke(list, new[] { (object)prop.Value });
+                                        addMethod.Invoke(list, new[] { obj.Data });
                                     }
                                 }
                                 break;
@@ -149,14 +160,14 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case StructProperty structProperty:
                     {
-                        if(info.PropertyType.IsArray && structProperty.Data.GetType() == info.PropertyType.GetElementType())
+                        if (info.PropertyType.IsArray && structProperty.Data.GetType() == info.PropertyType.GetElementType())
                         {
                             var array = (Array)info.GetValue(saveObject);
                             array.SetValue(structProperty.Data, Index);
                             break;
                         }
 
-                        if(structProperty.Data.GetType() != info.PropertyType)
+                        if (structProperty.Data.GetType() != info.PropertyType)
                         {
                             log.Error($"Attempted to assign struct {PropertyName} ({structProperty.Data.GetType().Name}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
                             saveObject.DynamicProperties.Add(this);
@@ -169,7 +180,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case EnumProperty enumProperty:
                     {
-                        if(enumProperty.Type != info.PropertyType.Name)
+                        if (enumProperty.Type != info.PropertyType.Name)
                         {
                             log.Error($"Attempted to assign enum {PropertyName} ({enumProperty.Type}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
                             saveObject.DynamicProperties.Add(this);
@@ -177,7 +188,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         }
 
                         // TODO: should probably already be in BackingObject
-                        if(!Enum.TryParse(info.PropertyType, enumProperty.Value.Split(':').Last(), true, out object enumValue))
+                        if (!Enum.TryParse(info.PropertyType, enumProperty.Value.Split(':').Last(), true, out object enumValue))
                         {
                             log.Error($"Failed to parse \"{enumProperty.Value}\" as {info.PropertyType.Name}");
                             saveObject.DynamicProperties.Add(this);
@@ -190,9 +201,9 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case ByteProperty byteProperty:
                     {
-                        if(byteProperty.IsEnum)
+                        if (byteProperty.IsEnum)
                         {
-                            if(!info.PropertyType.IsGenericType || info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>))
+                            if (!info.PropertyType.IsGenericType || info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>))
                             {
                                 log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
                                 saveObject.DynamicProperties.Add(this);
@@ -220,7 +231,7 @@ namespace SatisfactorySaveParser.Save.Properties
                             break;
                         }
 
-                        if(info.PropertyType != typeof(byte))
+                        if (info.PropertyType != typeof(byte))
                         {
                             log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
                             saveObject.DynamicProperties.Add(this);
@@ -261,5 +272,25 @@ namespace SatisfactorySaveParser.Save.Properties
         }
 
         public abstract void Serialize(BinaryWriter writer);
+
+        public static Type GetPropertyTypeFromName(string name)
+        {
+            switch (name)
+            {
+                case ArrayProperty.TypeName: return typeof(ArrayProperty);
+                case BoolProperty.TypeName: return typeof(BoolProperty);
+                case ByteProperty.TypeName: return typeof(ByteProperty);
+                case EnumProperty.TypeName: return typeof(EnumProperty);
+                case FloatProperty.TypeName: return typeof(FloatProperty);
+                case IntProperty.TypeName: return typeof(IntProperty);
+                case MapProperty.TypeName: return typeof(MapProperty);
+                case NameProperty.TypeName: return typeof(NameProperty);
+                case ObjectProperty.TypeName: return typeof(ObjectProperty);
+                case StrProperty.TypeName: return typeof(StrProperty);
+                case StructProperty.TypeName: return typeof(StructProperty);
+                case TextProperty.TypeName: return typeof(TextProperty);
+                default: throw new NotImplementedException($"Unknown PropertyType {name}");
+            }
+        }
     }
 }

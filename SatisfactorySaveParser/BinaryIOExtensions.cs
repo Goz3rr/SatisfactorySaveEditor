@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -18,16 +19,23 @@ namespace SatisfactorySaveParser
         public static string ReadLengthPrefixedString(this BinaryReader reader)
         {
             var count = reader.ReadInt32();
+            if (count == 0) return String.Empty;
 
             // If count is negative the string is UTF16, otherwise it's ASCII
-            if (count >= 0)
+            if (count > 0)
             {
                 var bytes = reader.ReadBytes(count);
+                if (bytes.Last() != 0)
+                    throw new FatalSaveException($"Read non null terminated string", reader.BaseStream.Position - count);
+
                 return Encoding.ASCII.GetString(bytes).TrimEnd('\0');
             }
             else
             {
                 var bytes = reader.ReadBytes(count * -2);
+                if (bytes.Last() != 0)
+                    throw new FatalSaveException($"Read non null terminated string", reader.BaseStream.Position - count);
+
                 return Encoding.Unicode.GetString(bytes).TrimEnd('\0');
             }
         }

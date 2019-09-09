@@ -8,7 +8,7 @@ namespace SatisfactorySaveParser.Game.Structs
         public override string StructName => "InventoryStack";
 
         [StructProperty("Item")]
-        public InventoryItem Item { get; set; }
+        public FInventoryItem Item { get; set; }
 
         [StructProperty("NumItems")]
         public int NumItems { get; set; }

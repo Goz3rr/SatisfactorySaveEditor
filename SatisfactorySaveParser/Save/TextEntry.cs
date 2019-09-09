@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SatisfactorySaveParser.Save
 {
@@ -16,7 +17,7 @@ namespace SatisfactorySaveParser.Save
 
     public enum ETextHistoryType
     {
-        None = -1,
+        None = 255,
         Base = 0,
         NamedFormat,
         OrderedFormat,
@@ -45,7 +46,7 @@ namespace SatisfactorySaveParser.Save
         }
     }
 
-    public class BaseTextEntry : TextEntry
+    public class BaseTextEntry : TextEntry, IEquatable<BaseTextEntry>
     {
         public override ETextHistoryType HistoryType => ETextHistoryType.Base;
         public override int SerializedLength => Namespace.GetSerializedLength() + Key.GetSerializedLength() + Value.GetSerializedLength();
@@ -65,13 +66,51 @@ namespace SatisfactorySaveParser.Save
         public BaseTextEntry(int flags) : base(flags)
         {
         }
+
+        public bool Equals(BaseTextEntry other)
+        {
+            if (other == null) return false;
+
+            return Flags == other.Flags &&
+                Namespace == other.Namespace &&
+                Key == other.Key &&
+                Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as BaseTextEntry);
+        }
+
+        public override int GetHashCode()
+        {
+            return Flags + Namespace.GetHashCode(StringComparison.InvariantCulture) + 17 * Key.GetHashCode(StringComparison.InvariantCulture) + 23 * Value.GetHashCode(StringComparison.InvariantCulture);
+        }
     }
 
-    public class ArgumentFormat
+    public class ArgumentFormat : IEquatable<ArgumentFormat>
     {
         public string Name { get; set; }
         public EFormatArgumentType ValueType { get; set; }
         public TextEntry Value { get; set; }
+
+        public bool Equals(ArgumentFormat other)
+        {
+            if (other == null) return false;
+
+            return Name == other.Name &&
+                Value.Equals(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as ArgumentFormat);
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode(StringComparison.InvariantCulture) + 17 * Value.GetHashCode();
+        }
     }
 
     public class ArgumentFormatTextEntry : TextEntry
@@ -84,6 +123,17 @@ namespace SatisfactorySaveParser.Save
         public List<ArgumentFormat> Arguments { get; } = new List<ArgumentFormat>();
 
         public ArgumentFormatTextEntry(int flags) : base(flags)
+        {
+        }
+    }
+
+    public class NoneTextEntry : TextEntry
+    {
+        public override ETextHistoryType HistoryType => ETextHistoryType.None;
+
+        public override int SerializedLength => 0;
+
+        public NoneTextEntry(int flags) : base(flags)
         {
         }
     }

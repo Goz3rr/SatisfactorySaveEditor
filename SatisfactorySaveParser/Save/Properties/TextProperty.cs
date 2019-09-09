@@ -66,6 +66,10 @@ namespace SatisfactorySaveParser.Save.Properties
                         }
                         return result;
                     }
+                case ETextHistoryType.None:
+                    {
+                        return new NoneTextEntry(flags);
+                    }
                 default:
                     throw new NotImplementedException($"Unknown ETextHistoryType {historyType}");
             }
