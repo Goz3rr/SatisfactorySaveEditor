@@ -1,28 +1,37 @@
-# Satisfactory Save Editor
+
+
+# ![SSE Logo](https://i.imgur.com/YgnPVSo.png) Satisfactory Save Editor 
 
 **View installation instructions in the [guide](https://ficsit.app/guide/Z8h6z2CczH43c)**!
 
 **See the [releases page](https://github.com/Goz3rr/SatisfactorySaveEditor/releases) to download a compiled release**, or build your own by cloning this repo.
 Stuck? Bugs? Questions? Feel free to contact us here on Github or on the [Satisfactory Modding](https://discord.gg/rNxYXht) discord server.
 
-A work in progress save editor for Satisfactory. Consists of both a save parser and an application for viewing and editing the parsed data.
+A save editor for Satisfactory, a game by Coffee Stain Studios. Consists of both a save parser and an application for viewing and editing the parsed data.
 
 Features include:
 * View all save data in a more human readable format
+* Dismantle portions of your factory instantly, putting all materials in one crate for easy pickup
+* Automatically create backups before saving in case you break your save
+* Delete broken content or fix duplicated milestones caused by mod bugs.
+* Spawn lizard doggos!
+* Remove ghost players
+* Edit the contents of containers and your inventory
+* (Should) support any modded content serialized in the game save
 * Manually edit data tags
 * Enable the minimap early
-* Change your inventory size
 * Unlock all milestones (to make a testing map, for example)
-* Delete things from your save
 * Search your save for certain information
 * Determine the location of resource nodes
-* Edit the contents of containers and your inventory
 * Edit your player position to teleport yourself
-* More coming soon
+* More coming soon!
 
 Written in C# using WPF for the user interface.
 
 Made in Visual Studio 2017. Requires .NET Framework 4.7.2 Dev Pack and .NET Core 2.2 SDK. 
+
+Screenshot of the interface:
+![Interface Screenshot](https://i.imgur.com/iPO9Gp1.png)
 
 # Help
 
@@ -44,7 +53,6 @@ Are you sure you're using `File > Save` to save after making your changes?
 
 Some people have encountered issues if they don't complete HUB tier 0 before running this cheat. Try that, and contact us if the issue continues.
 
-* Placing some things I unlocked using the `Unlock all research` cheat crashes my game!
+* The editor crashed!
 
-A few updates ago, something in the game was changed to cause crashes when some, but not all, unreleased buildings are placed. We aren't sure if this was intentionally done by Coffee Stain or if it happened on accident, but we can't do anything about it.
-
+Please create a [github issue](https://github.com/Goz3rr/SatisfactorySaveEditor/issues/new) with the details of what you were doing before the editor crashed, and include the save file you were editing if you'd like. Please contact us on Discord (above) as well.
