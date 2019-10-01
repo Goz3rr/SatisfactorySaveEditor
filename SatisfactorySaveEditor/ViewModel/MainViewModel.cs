@@ -18,6 +18,8 @@ using GongSolutions.Wpf.DragDrop;
 using SatisfactorySaveEditor.Cheats;
 using SatisfactorySaveEditor.View;
 using System.IO.Compression;
+using System.Windows.Threading;
+using AsyncAwaitBestPractices.MVVM;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -29,6 +31,19 @@ namespace SatisfactorySaveEditor.ViewModel
         private string searchText;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
+
+        private bool isBusyInternal = false;
+        public bool IsBusy
+        {
+            get
+            {
+                return isBusyInternal;
+            }
+            set
+            {
+                Set(() => IsBusy, ref isBusyInternal, value);
+            }
+        }
 
         public ObservableCollection<SaveObjectModel> RootItem
         {
@@ -80,8 +95,8 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand AboutCommand { get; }
         public RelayCommand<SaveObjectModel> DeleteCommand { get; }
         public RelayCommand<ICheat> CheatCommand { get; }
-        public RelayCommand<bool> SaveCommand { get; }
-        public RelayCommand ManualBackupCommand { get; }
+        public AsyncCommand<bool> SaveCommand { get; }
+        public AsyncCommand ManualBackupCommand { get; }
         public RelayCommand ResetSearchCommand { get; }
         public RelayCommand CheckUpdatesCommand { get; }
         public RelayCommand PreferencesCommand { get; }
@@ -91,7 +106,10 @@ namespace SatisfactorySaveEditor.ViewModel
         public MainViewModel()
         {
             string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1 && File.Exists(args[1])) LoadFile(args[1]);
+            if (args.Length > 1 && File.Exists(args[1]))
+            {
+                var _ = LoadFile(args[1]);
+            }
 
             var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
             if (savedFiles == null) LastFiles = new ObservableCollection<string>();
@@ -102,10 +120,13 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new UnlockMapCheat());
             //CheatMenuItems.Add(new InventorySlotsCheat()); //inventory size can no longer be expanded by save editing as of 6/23/2019
             CheatMenuItems.Add(new KillPlayersCheat());
-            CheatMenuItems.Add(new DeleteEnemiesCheat());
+            DeleteEnemiesCheat deleteEnemiesCheat = new DeleteEnemiesCheat();
+            CheatMenuItems.Add(deleteEnemiesCheat);
+            CheatMenuItems.Add(new SpawnDoggoCheat(deleteEnemiesCheat));
             CheatMenuItems.Add(new MassDismantleCheat());
             CheatMenuItems.Add(new NoCostCheat());
             CheatMenuItems.Add(new NoPowerCheat());
+            
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
@@ -124,8 +145,8 @@ namespace SatisfactorySaveEditor.ViewModel
             PreferencesCommand = new RelayCommand(OpenPreferences);
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
-            SaveCommand = new RelayCommand<bool>(Save, CanSave);
-            ManualBackupCommand = new RelayCommand(() => CreateBackup(true), CanSave);
+            SaveCommand = new AsyncCommand<bool>(Save, CanSave, null, true);
+            ManualBackupCommand = new AsyncCommand(() => CreateBackup(true), CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
@@ -209,7 +230,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// </summary>
         /// <param name="saveAs">If the save operation is Save As (unused)</param>
         /// <returns>True if saveGame is NOT null, false otherwise</returns>
-        private bool CanSave(bool saveAs)
+        private bool CanSave(object _)
         {
             return saveGame != null;
         }
@@ -223,7 +244,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Save changes, creating a backup first if auto backups are enabled in the user's preferences
         /// </summary>
         /// <param name="saveAs">(optional) If the Save As... option box should be brought up to choose a destination</param>
-        private void Save(bool saveAs)
+        private async Task Save(bool saveAs)
         {
             if (saveAs)
             {
@@ -238,14 +259,16 @@ namespace SatisfactorySaveEditor.ViewModel
 
                 if (dialog.ShowDialog() == true)
                 {
-                    AutoBackupIfEnabled();
+                    await AutoBackupIfEnabled();
 
                     var newObjects = rootItem.DescendantSelf;
                     saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                     saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
 
                     rootItem.ApplyChanges();
-                    saveGame.Save(dialog.FileName);
+                    this.IsBusy = true;
+                    await Task.Run(() => saveGame.Save(dialog.FileName));
+                    this.IsBusy = false;
                     HasUnsavedChanges = false;
                     RaisePropertyChanged(() => FileName);
                     AddRecentFileEntry(dialog.FileName);
@@ -253,28 +276,37 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             else
             {
-                AutoBackupIfEnabled();
-                
+                await AutoBackupIfEnabled();
+
                 var newObjects = rootItem.DescendantSelf;
                 saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
                 saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
 
                 rootItem.ApplyChanges();
-                saveGame.Save();
+                this.IsBusy = true;
+                await Task.Run(() => saveGame.Save());
+                this.IsBusy = false;
                 HasUnsavedChanges = false;
             }
         }
 
-        private void AutoBackupIfEnabled()
+        private async Task AutoBackupIfEnabled()
         {
             if (Properties.Settings.Default.AutoBackup)
             {
-                CreateBackup(false);
+                await CreateBackup(false);
             }
         }
 
-        private void CreateBackup(bool manual)
+        private async Task CreateBackup(bool manual)
         {
+            this.IsBusy = true;
+            await Task.Run(() => CreateBackupAsync(manual));
+            this.IsBusy = false;
+        }
+
+        private void CreateBackupAsync(bool manual)
+        {  
             string saveFileDirectory = Path.GetDirectoryName(saveGame.FileName);
             string tempDirectoryName = @"\SSEtemp\";
             string pathToZipFrom = saveFileDirectory + tempDirectoryName;
@@ -369,7 +401,7 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             if (!string.IsNullOrWhiteSpace(fileName))
             {
-                LoadFile(fileName);
+                var _ = LoadFile(fileName);
                 HasUnsavedChanges = false;
 
                 return;
@@ -398,7 +430,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             if (dialog.ShowDialog() == true)
             {
-                LoadFile(dialog.FileName);
+                var _ = LoadFile(dialog.FileName);
                 HasUnsavedChanges = false;
             }
         }
@@ -476,13 +508,27 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Loads a file into the editor
         /// </summary>
         /// <param name="path">The path to the file to open</param>
-        private void LoadFile(string path)
+        private async Task LoadFile(string path)
         {
             SelectedItem = null;
             SearchText = null;
 
-            saveGame = new SatisfactorySave(path);
+            this.IsBusy = true;
+            await Task.Run(() => LoadFileAsync(path));
+            this.IsBusy = false;
+        }
 
+        private void LoadFileAsync(string path)
+        {
+            //MessageBox.Show("Loading file...");
+            saveGame = new SatisfactorySave(path);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                //manually raise these for the AsyncCommand library to pick up on it (ask virusek20 or Robb)
+                SaveCommand.RaiseCanExecuteChanged();
+                ManualBackupCommand.RaiseCanExecuteChanged();
+            });
+            
             rootItem = new SaveRootModel(saveGame.Header);
             var saveTree = new EditorTreeNode("Root");
 
@@ -520,11 +566,18 @@ namespace SatisfactorySaveEditor.ViewModel
             if (LastFiles.Contains(path)) // No duplicates
             {
                 Properties.Settings.Default.LastSaves.Remove(path);
-                LastFiles.Remove(path);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LastFiles.Remove(path);
+                });
+                
             }
 
             Properties.Settings.Default.LastSaves.Add(path);
-            LastFiles.Add(path);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                LastFiles.Add(path);
+            });
 
             while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
             {
@@ -534,8 +587,11 @@ namespace SatisfactorySaveEditor.ViewModel
 
             Properties.Settings.Default.Save();
 
-            RootItem.Clear();
-            RootItem.Add(rootItem);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                RootItem.Clear();
+                RootItem.Add(rootItem);
+            });
         }
 
         private void BuildNode(ObservableCollection<SaveObjectModel> items, EditorTreeNode node)
@@ -607,7 +663,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public void Drop(IDropInfo dropInfo)
         {
             var fileName = ((DataObject)dropInfo.Data).GetFileDropList()[0];
-            LoadFile(fileName);
+            var _ = LoadFile(fileName);
         }
     }
 }

@@ -39,6 +39,12 @@
     <ApplicationIcon>satisfactorysaveeditorlogo_powershard.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncAwaitBestPractices, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncAwaitBestPractices.3.0.0\lib\netstandard1.0\AsyncAwaitBestPractices.dll</HintPath>
+    </Reference>
+    <Reference Include="AsyncAwaitBestPractices.MVVM, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncAwaitBestPractices.MVVM.3.0.0\lib\netstandard2.0\AsyncAwaitBestPractices.MVVM.dll</HintPath>
+    </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net46\CommonServiceLocator.dll</HintPath>
     </Reference>
@@ -116,7 +122,9 @@
     <Compile Include="Cheats\NoPowerCheat.cs" />
     <Compile Include="Cheats\NoCostCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
+    <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
+    <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
     <Compile Include="Converter\LinearColorToBrushConverter.cs" />
@@ -124,6 +132,7 @@
     <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
     <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
     <Compile Include="Converter\TypeTooltipConverter.cs" />
+    <Compile Include="Model\ResourceType.cs" />
     <Compile Include="Model\SaveComponentModel.cs" />
     <Compile Include="Model\SaveEntityModel.cs" />
     <Compile Include="Model\SaveObjectModel.cs" />
@@ -138,6 +147,7 @@
     <Compile Include="Util\PropertyViewModelMapper.cs" />
     <Compile Include="Util\UpdateChecker.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
+    <Compile Include="ViewModel\FillViewModel.cs" />
     <Compile Include="ViewModel\StringPromptViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -158,6 +168,9 @@
     <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
     <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\FillWindow.xaml.cs">
+      <DependentUpon>FillWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\StringPromptWindow.xaml.cs">
       <DependentUpon>StringPromptWindow.xaml</DependentUpon>
     </Compile>
@@ -189,6 +202,10 @@
     <Page Include="View\AddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FillWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\StringPromptWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -273,6 +290,87 @@
     <None Include="Data\Types.xsd">
       <SubType>Designer</SubType>
     </None>
+    <Resource Include="Icon\A.I._Limiter.png" />
+    <Resource Include="Icon\Alclad_Aluminum_Sheet.png" />
+    <Resource Include="Icon\Battery.png" />
+    <Resource Include="Icon\Bauxite_Ore.png" />
+    <Resource Include="Icon\Beacon.png" />
+    <Resource Include="Icon\Beryl_Nut.png" />
+    <Resource Include="Icon\Biofuel.png" />
+    <Resource Include="Icon\Biomass.png" />
+    <Resource Include="Icon\Black_Powder.png" />
+    <Resource Include="Icon\Blade_Runners.png" />
+    <Resource Include="Icon\Cable.png" />
+    <Resource Include="Icon\Cartridge.png" />
+    <Resource Include="Icon\Caterium_Ingot.png" />
+    <Resource Include="Icon\Caterium_Ore.png" />
+    <Resource Include="Icon\Circuit_Board.png" />
+    <Resource Include="Icon\Coal.png" />
+    <Resource Include="Icon\Color_Cartridge.png" />
+    <Resource Include="Icon\Color_Gun.png" />
+    <Resource Include="Icon\Compacted_Coal.png" />
+    <Resource Include="Icon\Computer.png" />
+    <Resource Include="Icon\Concrete.png" />
+    <Resource Include="Icon\Copper_Ingot.png" />
+    <Resource Include="Icon\Copper_Ore.png" />
+    <Resource Include="Icon\Crude_Oil.png" />
+    <Resource Include="Icon\Crystal_Oscillator.png" />
+    <Resource Include="Icon\Electromagnetic_Control_Rod.png" />
+    <Resource Include="Icon\Encased_Industrial_Beam.png" />
+    <Resource Include="Icon\Fabric.png" />
+    <Resource Include="Icon\Filter.png" />
+    <Resource Include="Icon\Flower_Petals.png" />
+    <Resource Include="Icon\Fuel.png" />
+    <Resource Include="Icon\Gas_Mask.png" />
+    <Resource Include="Icon\Heat_Sink.png" />
+    <Resource Include="Icon\Heavy_Modular_Frame.png" />
+    <Resource Include="Icon\High-Speed_Connector.png" />
+    <Resource Include="Icon\Iron_Ingot.png" />
+    <Resource Include="Icon\Iron_Ore.png" />
+    <Resource Include="Icon\Iron_Plate.png" />
+    <Resource Include="Icon\Iron_Rod.png" />
+    <Resource Include="Icon\Jetpack.png" />
+    <Resource Include="Icon\Leaves.png" />
+    <Resource Include="Icon\Limestone.png" />
+    <Resource Include="Icon\Medicinal_Inhaler.png" />
+    <Resource Include="Icon\Modular_Frame.png" />
+    <Resource Include="Icon\Motor.png" />
+    <Resource Include="Icon\Mycelia.png" />
+    <Resource Include="Icon\Nobelisk.png" />
+    <Resource Include="Icon\Nobelisk_Detonator.png" />
+    <Resource Include="Icon\Nuclear_Waste.png" />
+    <Resource Include="Icon\Object_Scanner.png" />
+    <Resource Include="Icon\Parachute.png" />
+    <Resource Include="Icon\Plastic.png" />
+    <Resource Include="Icon\Portable_Miner.png" />
+    <Resource Include="Icon\Quantum_Computer.png" />
+    <Resource Include="Icon\Quartz_Crystal.png" />
+    <Resource Include="Icon\Quickwire.png" />
+    <Resource Include="Icon\Radio_Control_Unit.png" />
+    <Resource Include="Icon\Raw_Quartz.png" />
+    <Resource Include="Icon\Rebar_Gun.png" />
+    <Resource Include="Icon\Reinforced_Iron_Plate.png" />
+    <Resource Include="Icon\Rifle.png" />
+    <Resource Include="Icon\Rotor.png" />
+    <Resource Include="Icon\Rubber.png" />
+    <Resource Include="Icon\S.A.M._Ore.png" />
+    <Resource Include="Icon\Screw.png" />
+    <Resource Include="Icon\Silica.png" />
+    <Resource Include="Icon\Spiked_Rebar.png" />
+    <Resource Include="Icon\Stator.png" />
+    <Resource Include="Icon\Steel_Beam.png" />
+    <Resource Include="Icon\Steel_Ingot.png" />
+    <Resource Include="Icon\Steel_Pipe.png" />
+    <Resource Include="Icon\Sulfur.png" />
+    <Resource Include="Icon\Supercomputer.png" />
+    <Resource Include="Icon\Superposition_Oscillator.png" />
+    <Resource Include="Icon\Turbo_Fuel.png" />
+    <Resource Include="Icon\Turbo_Motor.png" />
+    <Resource Include="Icon\Uranium.png" />
+    <Resource Include="Icon\Wire.png" />
+    <Resource Include="Icon\Wood.png" />
+    <Resource Include="Icon\Xeno-Basher.png" />
+    <Resource Include="Icon\Xeno-Zapper.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -13,6 +13,8 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
             get
             {
+                if (Unknown5 == 255) return 5;
+
                 var size = 9 + Unknown8.GetSerializedLength() + Value.GetSerializedLength() + FormatData.Sum(d => d.SerializedLength);
                 if (Unknown5 == 3)
                     size += 9;
@@ -55,6 +57,10 @@ namespace SatisfactorySaveParser.PropertyTypes
                 writer.Write(Unknown6);
                 writer.Write(Unknown7);
             }
+            else if (Unknown5 == 255)
+            {
+                return;
+            }
 
             writer.Write(0);
 
@@ -91,6 +97,10 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 result.Unknown6 = reader.ReadInt32();
                 result.Unknown7 = reader.ReadByte();
+            }
+            else if (result.Unknown5 == 255)
+            {
+                return result;
             }
 
             var unk5 = reader.ReadInt32();

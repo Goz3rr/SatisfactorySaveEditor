@@ -16,6 +16,7 @@ namespace SatisfactorySaveEditor.ViewModel
             SimpleIoc.Default.Register<CheatInventoryViewModel>();
             SimpleIoc.Default.Register<StringPromptViewModel>();
             SimpleIoc.Default.Register<PreferencesWindowViewModel>();
+            SimpleIoc.Default.Register<FillViewModel>();
         }
 
         public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();
@@ -25,6 +26,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public CheatInventoryViewModel CheatInventoryViewModel => ServiceLocator.Current.GetInstance<CheatInventoryViewModel>(Guid.NewGuid().ToString());
         public StringPromptViewModel StringPromptViewModel => ServiceLocator.Current.GetInstance<StringPromptViewModel>(Guid.NewGuid().ToString());
         public PreferencesWindowViewModel PreferencesWindowViewModel => ServiceLocator.Current.GetInstance<PreferencesWindowViewModel>(Guid.NewGuid().ToString());
+        public FillViewModel FillViewModel => ServiceLocator.Current.GetInstance<FillViewModel>(Guid.NewGuid().ToString());
 
         public static void Cleanup()
         {
