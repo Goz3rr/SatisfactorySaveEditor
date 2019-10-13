@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SatisfactoryHeaderGenerator": {
-      "commandName": "Project",
-      "commandLineArgs": "FactoryGame-Win64-Shipping.pdb"
-    }
-  }
-}
