@@ -65,6 +65,9 @@
         // 2019-07-24 Due to a bug in the network optimizations the legs data where trashed, reseting the legs to zero is the best option.
         ResetFactoryLegs,
 
+        // 2019-08-28 The large portion of the save file is now compressed. The header is still intact at the start of the file but after that it is compressed with ZLIB.
+        SaveFileIsCompressed,
+
         // -----<new versions can be added above this line>-------------------------------------------------
         VersionPlusOne,
         LatestVersion = VersionPlusOne - 1
