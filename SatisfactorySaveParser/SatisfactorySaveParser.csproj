@@ -74,6 +74,7 @@
     <Compile Include="PropertyTypes\StructProperty.cs" />
     <Compile Include="PropertyTypes\Structs\Box.cs" />
     <Compile Include="PropertyTypes\Structs\DynamicStructData.cs" />
+    <Compile Include="PropertyTypes\Structs\Guid.cs" />
     <Compile Include="PropertyTypes\Structs\InventoryItem.cs" />
     <Compile Include="PropertyTypes\Structs\IStructData.cs" />
     <Compile Include="PropertyTypes\Structs\Color.cs" />
