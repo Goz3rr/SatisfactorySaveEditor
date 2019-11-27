@@ -108,6 +108,10 @@
 /Game/FactoryGame/Resource/Parts/SteelPlateReinforced/Desc_SteelPlateReinforced.Desc_SteelPlateReinforced_C
 /Game/FactoryGame/Resource/Parts/Turbofuel/Desc_TurboFuel.Desc_TurboFuel_C
 /Game/FactoryGame/Resource/Parts/Wire/Desc_Wire.Desc_Wire_C
+/Game/FactoryGame/Resource/Parts/ElectromagneticControlRod/Desc_ElectromagneticControlRod.Desc_ElectromagneticControlRod_C
+/Game/FactoryGame/Resource/Parts/IodineInfusedFilter/Desc_HazmatFilter.Desc_HazmatFilter_C
+/Game/FactoryGame/Resource/Parts/NuclearFuelRod/Desc_NuclearFuelRod.Desc_NuclearFuelRod_C
+/Game/FactoryGame/Resource/Parts/UraniumCell/Desc_UraniumCell.Desc_UraniumCell_C
 /Game/FactoryGame/Resource/RawResources/Coal/Desc_Coal.Desc_Coal_C
 /Game/FactoryGame/Resource/RawResources/CrudeOil/Desc_CrudeOil.Desc_CrudeOil_C
 /Game/FactoryGame/Resource/RawResources/Geyser/Desc_Geyser.Desc_Geyser_C
@@ -121,6 +125,3 @@
 /Game/FactoryGame/Resource/RawResources/Stone/Desc_Stone.Desc_Stone_C
 /Game/FactoryGame/Resource/RawResources/Sulfur/Desc_Sulfur.Desc_Sulfur_C
 /Game/FactoryGame/Resource/BP_Pickup.BP_Pickup_C
-/Game/FactoryGame/Resource/Parts/ElectromagneticControlRod/Desc_ElectromagneticControlRod.Desc_ElectromagneticControlRod_C
-/Game/FactoryGame/Resource/Parts/IodineInfusedFilter/Desc_HazmatFilter.Desc_HazmatFilter_C
-/Game/FactoryGame/Resource/Parts/NuclearFuelRod/Desc_NuclearFuelRod.Desc_NuclearFuelRod_C
