@@ -1,4 +1,5 @@
-﻿using SatisfactorySaveParser.Structures;
+﻿using SatisfactorySaveParser.Save;
+using SatisfactorySaveParser.Structures;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -98,6 +99,21 @@ namespace SatisfactorySaveParser
             writer.Write(vec.Y);
             writer.Write(vec.Z);
             writer.Write(vec.W);
+        }
+
+        public static ChunkInfo ReadChunkInfo(this BinaryReader reader)
+        {
+            return new ChunkInfo()
+            {
+                CompressedSize = reader.ReadInt64(),
+                UncompressedSize = reader.ReadInt64()
+            };
+        }
+
+        public static void Write(this BinaryWriter writer, ChunkInfo info)
+        {
+            writer.Write(info.CompressedSize);
+            writer.Write(info.UncompressedSize);
         }
     }
 }

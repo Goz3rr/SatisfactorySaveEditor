@@ -129,6 +129,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new InventoryItem(reader);
                 case "RailroadTrackPosition":
                     return new RailroadTrackPosition(reader);
+                case "Guid":
+                    return new GuidStruct(reader);
                 /*
                 case "InventoryStack":
                 case "InventoryItem":

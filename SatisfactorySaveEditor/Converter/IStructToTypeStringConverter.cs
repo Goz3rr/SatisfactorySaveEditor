@@ -31,6 +31,8 @@ namespace SatisfactorySaveEditor.Converter
                     return "Rotator";
                 case Vector v:
                     return "Vector";
+                case GuidStruct g:
+                    return "Guid";
                 case SerializedPropertyViewModel spvm: // TODO: This seems like a bad idea, but it works for now
                     return new SerializablePropertyToTypeStringConverter().Convert(spvm, targetType, parameter, culture);
                 default:

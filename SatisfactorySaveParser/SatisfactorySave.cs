@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Ionic.Zlib;
+using NLog;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
 using System;
@@ -50,60 +51,107 @@ namespace SatisfactorySaveParser
             {
                 Header = FSaveHeader.Parse(reader);
 
-                // Does not need to be a public property because it's equal to Entries.Count
-                var totalSaveObjects = reader.ReadUInt32();
-                log.Info($"Save contains {totalSaveObjects} object headers");
-
-                // Saved entities loop
-                for (int i = 0; i < totalSaveObjects; i++)
+                if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
                 {
-                    var type = reader.ReadInt32();
-                    switch (type)
+                    LoadData(reader);
+                }
+                else
+                {
+                    using (var buffer = new MemoryStream())
                     {
-                        case SaveEntity.TypeID:
-                            Entries.Add(new SaveEntity(reader));
-                            break;
-                        case SaveComponent.TypeID:
-                            Entries.Add(new SaveComponent(reader));
-                            break;
-                        default:
-                            throw new InvalidOperationException($"Unexpected type {type}");
+                        var uncompressedSize = 0L;
+
+                        while (stream.Position < stream.Length)
+                        {
+                            var header = reader.ReadChunkInfo();
+                            Trace.Assert(header.CompressedSize == ChunkInfo.Magic);
+
+                            var summary = reader.ReadChunkInfo();
+
+                            var subChunk = reader.ReadChunkInfo();
+                            Trace.Assert(subChunk.UncompressedSize == summary.UncompressedSize);
+
+                            var startPosition = stream.Position;
+                            using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
+                            {
+                                zStream.CopyTo(buffer);
+                            }
+
+                            // ZlibStream appears to read more bytes than it uses (because of buffering probably) so we need to manually fix the input stream position
+                            stream.Position = startPosition + subChunk.CompressedSize;
+
+                            uncompressedSize += subChunk.UncompressedSize;
+                        }
+
+
+                        buffer.Position = 0;
+                        using (var bufferReader = new BinaryReader(buffer))
+                        {
+                            var dataLength = bufferReader.ReadInt32();
+                            Trace.Assert(uncompressedSize == dataLength + 4);
+
+                            LoadData(bufferReader);
+                        }
                     }
                 }
+            }
+        }
 
-                var totalSaveObjectData = reader.ReadInt32();
-                log.Info($"Save contains {totalSaveObjectData} object data");
-                Trace.Assert(Entries.Count == totalSaveObjects);
-                Trace.Assert(Entries.Count == totalSaveObjectData);
+        private void LoadData(BinaryReader reader)
+        {
+            // Does not need to be a public property because it's equal to Entries.Count
+            var totalSaveObjects = reader.ReadUInt32();
+            log.Info($"Save contains {totalSaveObjects} object headers");
 
-                for (int i = 0; i < Entries.Count; i++)
+            // Saved entities loop
+            for (int i = 0; i < totalSaveObjects; i++)
+            {
+                var type = reader.ReadInt32();
+                switch (type)
                 {
-                    var len = reader.ReadInt32();
-                    var before = reader.BaseStream.Position;
+                    case SaveEntity.TypeID:
+                        Entries.Add(new SaveEntity(reader));
+                        break;
+                    case SaveComponent.TypeID:
+                        Entries.Add(new SaveComponent(reader));
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unexpected type {type}");
+                }
+            }
+
+            var totalSaveObjectData = reader.ReadInt32();
+            log.Info($"Save contains {totalSaveObjectData} object data");
+            Trace.Assert(Entries.Count == totalSaveObjects);
+            Trace.Assert(Entries.Count == totalSaveObjectData);
+
+            for (int i = 0; i < Entries.Count; i++)
+            {
+                var len = reader.ReadInt32();
+                var before = reader.BaseStream.Position;
 
 #if DEBUG
-                    //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
+                //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
 #endif
 
-                    Entries[i].ParseData(len, reader);
-                    var after = reader.BaseStream.Position;
+                Entries[i].ParseData(len, reader);
+                var after = reader.BaseStream.Position;
 
-                    if (before + len != after)
-                    {
-                        throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
-                    }
-                }
-
-                var collectedObjectsCount = reader.ReadInt32();
-                log.Info($"Save contains {collectedObjectsCount} collected objects");
-                for (int i = 0; i < collectedObjectsCount; i++)
+                if (before + len != after)
                 {
-                    CollectedObjects.Add(new ObjectReference(reader));
+                    throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
                 }
-
-                log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
-                Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
             }
+
+            var collectedObjectsCount = reader.ReadInt32();
+            log.Info($"Save contains {collectedObjectsCount} collected objects");
+            for (int i = 0; i < collectedObjectsCount; i++)
+            {
+                CollectedObjects.Add(new ObjectReference(reader));
+            }
+
+            log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
+            Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
         }
 
         public void Save()
@@ -123,55 +171,114 @@ namespace SatisfactorySaveParser
 
                 Header.Serialize(writer);
 
-                writer.Write(Entries.Count);
+                if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
+                {
+                    SaveData(writer);
+                }
+                else
+                {
+                    using (var buffer = new MemoryStream())
+                    using (var bufferWriter = new BinaryWriter(buffer))
+                    {
+                        bufferWriter.Write(0); // Placeholder size
 
-                var entities = Entries.Where(e => e is SaveEntity).ToArray();
+                        SaveData(bufferWriter);
+
+                        buffer.Position = 0;
+                        bufferWriter.Write((int)buffer.Length - 4);
+                        buffer.Position = 0;
+
+                        for (var i = 0; i < (int)Math.Ceiling((double)buffer.Length / ChunkInfo.ChunkSize); i++)
+                        {
+                            using (var zBuffer = new MemoryStream())
+                            {
+                                var remaining = (int)Math.Min(ChunkInfo.ChunkSize, buffer.Length - (ChunkInfo.ChunkSize * i));
+
+                                using (var zStream = new ZlibStream(zBuffer, CompressionMode.Compress, CompressionLevel.Level6, true))
+                                {
+                                    var tmpBuf = new byte[remaining];
+                                    buffer.Read(tmpBuf, 0, remaining);
+                                    zStream.Write(tmpBuf, 0, remaining);
+                                }
+
+                                writer.Write(new ChunkInfo()
+                                {
+                                    CompressedSize = ChunkInfo.Magic,
+                                    UncompressedSize = remaining
+                                });
+
+                                writer.Write(new ChunkInfo()
+                                {
+                                    CompressedSize = zBuffer.Length,
+                                    UncompressedSize = remaining
+                                });
+
+                                writer.Write(new ChunkInfo()
+                                {
+                                    CompressedSize = zBuffer.Length,
+                                    UncompressedSize = remaining
+                                });
+
+                                //writer.Write(tmpBuf);
+                                //zBuffer.CopyTo(stream);
+                                writer.Write(zBuffer.ToArray());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SaveData(BinaryWriter writer)
+        {
+            writer.Write(Entries.Count);
+
+            var entities = Entries.Where(e => e is SaveEntity).ToArray();
+            for (var i = 0; i < entities.Length; i++)
+            {
+                writer.Write(SaveEntity.TypeID);
+                entities[i].SerializeHeader(writer);
+            }
+
+            var components = Entries.Where(e => e is SaveComponent).ToArray();
+            for (var i = 0; i < components.Length; i++)
+            {
+                writer.Write(SaveComponent.TypeID);
+                components[i].SerializeHeader(writer);
+            }
+
+            writer.Write(entities.Length + components.Length);
+
+            using (var ms = new MemoryStream())
+            using (var dataWriter = new BinaryWriter(ms))
+            {
                 for (var i = 0; i < entities.Length; i++)
                 {
-                    writer.Write(SaveEntity.TypeID);
-                    entities[i].SerializeHeader(writer);
-                }
+                    entities[i].SerializeData(dataWriter);
 
-                var components = Entries.Where(e => e is SaveComponent).ToArray();
+                    var bytes = ms.ToArray();
+                    writer.Write(bytes.Length);
+                    writer.Write(bytes);
+
+                    ms.SetLength(0);
+                }
                 for (var i = 0; i < components.Length; i++)
                 {
-                    writer.Write(SaveComponent.TypeID);
-                    components[i].SerializeHeader(writer);
+                    components[i].SerializeData(dataWriter);
+
+                    var bytes = ms.ToArray();
+                    writer.Write(bytes.Length);
+                    writer.Write(bytes);
+
+                    ms.SetLength(0);
                 }
+            }
 
-                writer.Write(entities.Length + components.Length);
-
-                using (var ms = new MemoryStream())
-                using (var dataWriter = new BinaryWriter(ms))
-                {
-                    for (var i = 0; i < entities.Length; i++)
-                    {
-                        entities[i].SerializeData(dataWriter);
-
-                        var bytes = ms.ToArray();
-                        writer.Write(bytes.Length);
-                        writer.Write(bytes);
-
-                        ms.SetLength(0);
-                    }
-                    for (var i = 0; i < components.Length; i++)
-                    {
-                        components[i].SerializeData(dataWriter);
-
-                        var bytes = ms.ToArray();
-                        writer.Write(bytes.Length);
-                        writer.Write(bytes);
-
-                        ms.SetLength(0);
-                    }
-                }
-
-                writer.Write(CollectedObjects.Count);
-                foreach (var collectedObject in CollectedObjects)
-                {
-                    writer.WriteLengthPrefixedString(collectedObject.LevelName);
-                    writer.WriteLengthPrefixedString(collectedObject.PathName);
-                }
+            writer.Write(CollectedObjects.Count);
+            foreach (var collectedObject in CollectedObjects)
+            {
+                writer.WriteLengthPrefixedString(collectedObject.LevelName);
+                writer.WriteLengthPrefixedString(collectedObject.PathName);
             }
         }
     }

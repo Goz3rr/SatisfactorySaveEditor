@@ -108,7 +108,8 @@ namespace SatisfactorySaveEditor.ViewModel
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1]))
             {
-                var _ = LoadFile(args[1]);
+                var task = LoadFile(args[1]);
+                task.Wait();
             }
 
             var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
@@ -132,7 +133,7 @@ namespace SatisfactorySaveEditor.ViewModel
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             JumpMenuCommand = new RelayCommand(JumpMenu, () => CanSave(false)); //disallow menu jumping if no save is loaded
             ExitCommand = new RelayCommand(Exit);
-            OpenCommand = new RelayCommand<string>(Open);
+            OpenCommand = new RelayCommand<string>(async (fileName) => await Open(fileName) );
             AboutCommand = new RelayCommand(About);
             Help_ViewGithubCommand = new RelayCommand(Help_ViewGithub);
             Help_ReportIssueCommand = new RelayCommand(Help_ReportIssue);
@@ -145,8 +146,8 @@ namespace SatisfactorySaveEditor.ViewModel
             PreferencesCommand = new RelayCommand(OpenPreferences);
 
             DeleteCommand = new RelayCommand<SaveObjectModel>(Delete, CanDelete);
-            SaveCommand = new AsyncCommand<bool>(Save, CanSave, null, true);
-            ManualBackupCommand = new AsyncCommand(() => CreateBackup(true), CanSave);
+            SaveCommand = new AsyncCommand<bool>(async (saveAs) => await Save(saveAs), CanSave, null, true);
+            ManualBackupCommand = new AsyncCommand(async () => await CreateBackup(true), CanSave);
             CheatCommand = new RelayCommand<ICheat>(Cheat, CanCheat);
             ResetSearchCommand = new RelayCommand(ResetSearch);
 
@@ -397,11 +398,11 @@ namespace SatisfactorySaveEditor.ViewModel
         /// Starts the process of loading a file, prompting the user if there are unsaved changes. Marks as having no unsaved changes
         /// </summary>
         /// <param name="fileName">Path to the save file</param>
-        private void Open(string fileName)
+        private async Task Open(string fileName)
         {
             if (!string.IsNullOrWhiteSpace(fileName))
             {
-                var _ = LoadFile(fileName);
+                await LoadFile(fileName);
                 HasUnsavedChanges = false;
 
                 return;
@@ -430,7 +431,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             if (dialog.ShowDialog() == true)
             {
-                var _ = LoadFile(dialog.FileName);
+                await LoadFile(dialog.FileName);
                 HasUnsavedChanges = false;
             }
         }
@@ -663,7 +664,8 @@ namespace SatisfactorySaveEditor.ViewModel
         public void Drop(IDropInfo dropInfo)
         {
             var fileName = ((DataObject)dropInfo.Data).GetFileDropList()[0];
-            var _ = LoadFile(fileName);
+            var task = LoadFile(fileName);
+            task.Wait();
         }
     }
 }
