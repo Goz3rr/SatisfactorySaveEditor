@@ -113,7 +113,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                         break;
                     default:
-                        throw new NotImplementedException();
+                        throw new NotImplementedException("Serializing an array of " + Type + " is not yet supported.");
                 }
 
                 var bytes = ms.ToArray();
@@ -199,7 +199,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                     }
                     break;
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("Parsing an array of " + result.Type + " is not yet supported.");
             }
 
             return result;
