@@ -112,6 +112,15 @@ namespace SatisfactorySaveParser.PropertyTypes
                             }
                         }
                         break;
+                    case FloatProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<FloatProperty>())
+                            {
+                                msWriter.Write(prop.Value);
+                            }
+                        }
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -195,6 +204,16 @@ namespace SatisfactorySaveParser.PropertyTypes
                         {
                             var str = reader.ReadLengthPrefixedString();
                             result.Elements.Add(new StrProperty($"Element {i}") { Value = str });
+                        }
+                    }
+                    break;
+                case FloatProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var value = reader.ReadSingle();
+                            result.Elements.Add(new FloatProperty($"Element {i}") { Value = (float) value });
                         }
                     }
                     break;
