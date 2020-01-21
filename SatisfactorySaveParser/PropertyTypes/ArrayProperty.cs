@@ -217,6 +217,17 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                     }
                     break;
+                /*case TextProperty.TypeName:
+                    {
+                        //TODO handle unknown bytes; see TextProperty.cs
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var str = reader.ReadLengthPrefixedString();
+                            result.Elements.Add(new StrProperty($"Element {i}") { Value = str });
+                        }
+                    }
+                    break;*/
                 default:
                     throw new NotImplementedException("Parsing an array of " + result.Type + " is not yet supported.");
             }
