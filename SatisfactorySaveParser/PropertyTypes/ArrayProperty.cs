@@ -122,7 +122,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                         break;
                     default:
-                        throw new NotImplementedException("Serializing an array of " + Type + " is not yet supported.");
+                        throw new NotImplementedException($"Serializing an array of {Type} is not yet supported.");
                 }
 
                 var bytes = ms.ToArray();
@@ -213,23 +213,12 @@ namespace SatisfactorySaveParser.PropertyTypes
                         for (var i = 0; i < count; i++)
                         {
                             var value = reader.ReadSingle();
-                            result.Elements.Add(new FloatProperty($"Element {i}") { Value = (float) value });
+                            result.Elements.Add(new FloatProperty($"Element {i}") { Value = value });
                         }
                     }
                     break;
-                /*case TextProperty.TypeName:
-                    {
-                        //TODO handle unknown bytes; see TextProperty.cs
-                        var count = reader.ReadInt32();
-                        for (var i = 0; i < count; i++)
-                        {
-                            var str = reader.ReadLengthPrefixedString();
-                            result.Elements.Add(new StrProperty($"Element {i}") { Value = str });
-                        }
-                    }
-                    break;*/
                 default:
-                    throw new NotImplementedException("Parsing an array of " + result.Type + " is not yet supported.");
+                    throw new NotImplementedException($"Parsing an array of {result.Type} is not yet supported.");
             }
 
             return result;

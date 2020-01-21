@@ -70,6 +70,7 @@
     <Compile Include="PropertyTypes\NameProperty.cs" />
     <Compile Include="PropertyTypes\ObjectProperty.cs" />
     <Compile Include="PropertyTypes\SerializedProperty.cs" />
+    <Compile Include="PropertyTypes\SetProperty.cs" />
     <Compile Include="PropertyTypes\StrProperty.cs" />
     <Compile Include="PropertyTypes\StructProperty.cs" />
     <Compile Include="PropertyTypes\Structs\Box.cs" />

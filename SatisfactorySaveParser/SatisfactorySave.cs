@@ -85,6 +85,12 @@ namespace SatisfactorySaveParser
 
 
                         buffer.Position = 0;
+
+#if DEBUG
+                        //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
+#endif
+
+
                         using (var bufferReader = new BinaryReader(buffer))
                         {
                             var dataLength = bufferReader.ReadInt32();

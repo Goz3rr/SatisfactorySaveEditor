@@ -87,6 +87,9 @@ namespace SatisfactorySaveParser.PropertyTypes
                     overhead = 1;
                     result = TextProperty.Parse(propertyName, index, reader);
                     break;
+                case SetProperty.TypeName:
+                    result = SetProperty.Parse(propertyName, index, reader, size, out overhead);
+                    break;
                 default:
                     throw new NotImplementedException(fieldType);
             }
