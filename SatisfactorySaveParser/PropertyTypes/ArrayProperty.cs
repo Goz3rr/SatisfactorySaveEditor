@@ -121,6 +121,15 @@ namespace SatisfactorySaveParser.PropertyTypes
                             }
                         }
                         break;
+                    case TextProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<TextProperty>())
+                            {
+                                prop.Serialize(msWriter, false);
+                            }
+                        }
+                        break;
                     default:
                         throw new NotImplementedException($"Serializing an array of {Type} is not yet supported.");
                 }
@@ -214,6 +223,15 @@ namespace SatisfactorySaveParser.PropertyTypes
                         {
                             var value = reader.ReadSingle();
                             result.Elements.Add(new FloatProperty($"Element {i}") { Value = value });
+                        }
+                    }
+                    break;
+                case TextProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            result.Elements.Add(TextProperty.Parse($"Element {i}", 0, reader, true));
                         }
                     }
                     break;
