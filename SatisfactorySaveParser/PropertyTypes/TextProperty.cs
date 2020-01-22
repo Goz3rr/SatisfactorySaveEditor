@@ -43,11 +43,14 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public override void Serialize(BinaryWriter writer, bool writeHeader = true)
         {
-            base.Serialize(writer, writeHeader);
+            if (writeHeader)
+            {
+                base.Serialize(writer, writeHeader);
 
-            writer.Write(SerializedLength);
-            writer.Write(Index);
-            writer.Write((byte)0);
+                writer.Write(SerializedLength);
+                writer.Write(Index);
+                writer.Write((byte)0);
+            }
 
             writer.Write(Unknown4);
 
@@ -83,12 +86,15 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
-        public static TextProperty Parse(string propertyName, int index, BinaryReader reader)
+        public static TextProperty Parse(string propertyName, int index, BinaryReader reader, bool inArray = false)
         {
             var result = new TextProperty(propertyName, index);
 
-            var unk3 = reader.ReadByte();
-            Trace.Assert(unk3 == 0);
+            if (!inArray)
+            {
+                var unk3 = reader.ReadByte();
+                Trace.Assert(unk3 == 0);
+            }
 
             result.Unknown4 = reader.ReadInt32();
 

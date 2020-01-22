@@ -34,6 +34,8 @@ namespace SatisfactorySaveEditor.Util
                     return new StructPropertyViewModel(strup);
                 case TextProperty tep:
                     return new TextPropertyViewModel(tep);
+                case SetProperty sep:
+                    return new SetPropertyViewModel(sep);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(property), property, null);
             }
@@ -76,6 +78,9 @@ namespace SatisfactorySaveEditor.Util
 
             if (typeof(T) == typeof(TextPropertyViewModel))
                 return new TextPropertyViewModel(new TextProperty(propertyName));
+
+            if (typeof(T) == typeof(SetPropertyViewModel))
+                return new SetPropertyViewModel(new SetProperty(propertyName));
 
             throw new NotImplementedException($"Can't instantiate unknown property type {typeof(T)}");
         }

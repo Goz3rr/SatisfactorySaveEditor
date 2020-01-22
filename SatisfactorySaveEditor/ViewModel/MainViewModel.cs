@@ -578,13 +578,13 @@ namespace SatisfactorySaveEditor.ViewModel
             Application.Current.Dispatcher.Invoke(() =>
             {
                 LastFiles.Add(path);
-            });
 
-            while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
-            {
-                LastFiles.RemoveAt(0);
-                Properties.Settings.Default.LastSaves.RemoveAt(0);
-            }
+                while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
+                {
+                    LastFiles.RemoveAt(0);
+                    Properties.Settings.Default.LastSaves.RemoveAt(0);
+                }
+            });
 
             Properties.Settings.Default.Save();
 
