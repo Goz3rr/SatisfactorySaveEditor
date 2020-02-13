@@ -149,6 +149,8 @@
     <Compile Include="Util\UpdateChecker.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\FillViewModel.cs" />
+    <Compile Include="ViewModel\Property\InterfacePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\Int64PropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\SetPropertyViewModel.cs" />
     <Compile Include="ViewModel\StringPromptViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />

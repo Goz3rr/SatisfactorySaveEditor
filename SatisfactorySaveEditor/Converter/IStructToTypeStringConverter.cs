@@ -33,6 +33,8 @@ namespace SatisfactorySaveEditor.Converter
                     return "Vector";
                 case GuidStruct g:
                     return "Guid";
+                case FluidBox fb:
+                    return "FluidBox";
                 case SerializedPropertyViewModel spvm: // TODO: This seems like a bad idea, but it works for now
                     return new SerializablePropertyToTypeStringConverter().Convert(spvm, targetType, parameter, culture);
                 default:

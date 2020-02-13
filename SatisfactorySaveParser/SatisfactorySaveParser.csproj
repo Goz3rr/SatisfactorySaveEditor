@@ -65,6 +65,8 @@
     <Compile Include="PropertyTypes\ByteProperty.cs" />
     <Compile Include="PropertyTypes\EnumProperty.cs" />
     <Compile Include="PropertyTypes\FloatProperty.cs" />
+    <Compile Include="PropertyTypes\InterfaceProperty.cs" />
+    <Compile Include="PropertyTypes\Int64Property.cs" />
     <Compile Include="PropertyTypes\IntProperty.cs" />
     <Compile Include="PropertyTypes\MapProperty.cs" />
     <Compile Include="PropertyTypes\NameProperty.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="PropertyTypes\StructProperty.cs" />
     <Compile Include="PropertyTypes\Structs\Box.cs" />
     <Compile Include="PropertyTypes\Structs\DynamicStructData.cs" />
+    <Compile Include="PropertyTypes\Structs\FluidBox.cs" />
     <Compile Include="PropertyTypes\Structs\Guid.cs" />
     <Compile Include="PropertyTypes\Structs\InventoryItem.cs" />
     <Compile Include="PropertyTypes\Structs\IStructData.cs" />
