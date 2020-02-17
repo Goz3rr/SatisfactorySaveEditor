@@ -36,6 +36,10 @@ namespace SatisfactorySaveEditor.Util
                     return new TextPropertyViewModel(tep);
                 case SetProperty sep:
                     return new SetPropertyViewModel(sep);
+                case InterfaceProperty ifp:
+                    return new InterfacePropertyViewModel(ifp);
+                case Int64Property i64p:
+                    return new Int64PropertyViewModel(i64p);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(property), property, null);
             }
@@ -81,6 +85,12 @@ namespace SatisfactorySaveEditor.Util
 
             if (typeof(T) == typeof(SetPropertyViewModel))
                 return new SetPropertyViewModel(new SetProperty(propertyName));
+
+            if (typeof(T) == typeof(InterfacePropertyViewModel))
+                return new InterfacePropertyViewModel(new InterfaceProperty(propertyName));
+
+            if (typeof(T) == typeof(Int64PropertyViewModel))
+                return new Int64PropertyViewModel(new Int64Property(propertyName));
 
             throw new NotImplementedException($"Can't instantiate unknown property type {typeof(T)}");
         }

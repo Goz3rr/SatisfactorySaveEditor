@@ -130,6 +130,16 @@ namespace SatisfactorySaveParser.PropertyTypes
                             }
                         }
                         break;
+                    case InterfaceProperty.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<InterfaceProperty>())
+                            {
+                                msWriter.WriteLengthPrefixedString(prop.LevelName);
+                                msWriter.WriteLengthPrefixedString(prop.PathName);
+                            }
+                        }
+                        break;
                     default:
                         throw new NotImplementedException($"Serializing an array of {Type} is not yet supported.");
                 }
@@ -232,6 +242,17 @@ namespace SatisfactorySaveParser.PropertyTypes
                         for (var i = 0; i < count; i++)
                         {
                             result.Elements.Add(TextProperty.Parse($"Element {i}", 0, reader, true));
+                        }
+                    }
+                    break;
+                case InterfaceProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var obj1 = reader.ReadLengthPrefixedString();
+                            var obj2 = reader.ReadLengthPrefixedString();
+                            result.Elements.Add(new InterfaceProperty($"Element {i}", obj1, obj2));
                         }
                     }
                     break;

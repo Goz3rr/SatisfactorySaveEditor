@@ -58,7 +58,7 @@ namespace SatisfactorySaveEditor.Util
             public bool IsNewer()
             {
                 var version = Assembly.GetEntryAssembly().GetName().Version;
-                var newVersion = new Version(TagName);
+                var newVersion = new Version(TagName.TrimStart('v', 'V'));
 
                 return newVersion > version;
             }

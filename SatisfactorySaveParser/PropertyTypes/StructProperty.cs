@@ -131,6 +131,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new RailroadTrackPosition(reader);
                 case "Guid":
                     return new GuidStruct(reader);
+                case "FluidBox":
+                    return new FluidBox(reader);
                 /*
                 case "InventoryStack":
                 case "InventoryItem":

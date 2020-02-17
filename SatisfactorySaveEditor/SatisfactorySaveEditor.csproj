@@ -122,6 +122,7 @@
     <Compile Include="Cheats\NoPowerCheat.cs" />
     <Compile Include="Cheats\NoCostCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
+    <Compile Include="Cheats\RevealMapCheat.cs" />
     <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
     <Compile Include="Converter\InverseBooleanConverter.cs" />
@@ -148,6 +149,8 @@
     <Compile Include="Util\UpdateChecker.cs" />
     <Compile Include="ViewModel\AddViewModel.cs" />
     <Compile Include="ViewModel\FillViewModel.cs" />
+    <Compile Include="ViewModel\Property\InterfacePropertyViewModel.cs" />
+    <Compile Include="ViewModel\Property\Int64PropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\SetPropertyViewModel.cs" />
     <Compile Include="ViewModel\StringPromptViewModel.cs" />
     <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
