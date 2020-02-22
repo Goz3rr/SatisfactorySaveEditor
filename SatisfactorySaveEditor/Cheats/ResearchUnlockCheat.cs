@@ -89,6 +89,12 @@ namespace SatisfactorySaveEditor.Cheats
                 }
             }
 
+            //clear PaidOffSchematic and ActiveSchematic fields so the progress indicator in the top right doesn't linger after unlocking
+            var paidOffSchematicField = schematicManager.FindField<ArrayPropertyViewModel>("mPaidOffSchematic");
+            var activeSchematicField = schematicManager.FindField<ObjectPropertyViewModel>("mActiveSchematic");
+            schematicManager.RemovePropertyCommand.Execute(paidOffSchematicField);
+            schematicManager.RemovePropertyCommand.Execute(activeSchematicField);
+
             MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             return true;
         }
