@@ -6,7 +6,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     public class NoCostCheat : ICheat
     {
-        public string Name => "No cost";
+        public string Name => "Toggle no build cost";
 
         public bool Apply(SaveObjectModel rootItem)
         {
@@ -19,7 +19,7 @@ namespace SatisfactorySaveEditor.Cheats
 
             var numAdditionalSlots = gameState.FindOrCreateField<BoolPropertyViewModel>("mCheatNoCost");
             numAdditionalSlots.Value = !numAdditionalSlots.Value;
-            MessageBox.Show($"{(numAdditionalSlots.Value ? "Enabled" : "Disabled")} no cost cheat", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"{(numAdditionalSlots.Value ? "Enabled" : "Disabled")} no building cost cheat", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
             return true;
         }

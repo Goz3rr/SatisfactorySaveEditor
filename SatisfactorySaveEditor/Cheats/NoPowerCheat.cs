@@ -6,7 +6,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     public class NoPowerCheat : ICheat
     {
-        public string Name => "No power";
+        public string Name => "Toggle no power cost";
 
         public bool Apply(SaveObjectModel rootItem)
         {
