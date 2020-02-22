@@ -9,7 +9,7 @@
         x:Name="CheatInventoryCountWindow"
         WindowStartupLocation="CenterOwner"
         DataContext="{Binding CheatInventoryViewModel, Source={StaticResource Locator}, Mode=OneTime}"
-        Title="Set Bonus Slot Count" Height="160" Width="400" ResizeMode="NoResize">
+        Title="Set Slot Count" Height="160" Width="400" ResizeMode="NoResize">
     <DockPanel Margin="5">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>

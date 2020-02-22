@@ -111,6 +111,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Cheats\ArmSlotsCheat.cs" />
     <Compile Include="Cheats\ICheat.cs" />
     <Compile Include="Cheats\DeleteEnemiesCheat.cs" />
     <Compile Include="Cheats\KillPlayersCheat.cs" />

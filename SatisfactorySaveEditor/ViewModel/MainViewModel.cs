@@ -120,7 +120,8 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new ResearchUnlockCheat());
             CheatMenuItems.Add(new UnlockMapCheat());
             CheatMenuItems.Add(new RevealMapCheat());
-            //CheatMenuItems.Add(new InventorySlotsCheat()); //inventory size can no longer be expanded by save editing as of 6/23/2019
+            CheatMenuItems.Add(new InventorySlotsCheat()); //inventory slot count works again (but is in a different place) as of Update 3
+            CheatMenuItems.Add(new ArmSlotsCheat()); //inventory slot count works again (but is in a different place) as of Update 3
             CheatMenuItems.Add(new KillPlayersCheat());
             DeleteEnemiesCheat deleteEnemiesCheat = new DeleteEnemiesCheat();
             CheatMenuItems.Add(deleteEnemiesCheat);

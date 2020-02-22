@@ -8,18 +8,18 @@ namespace SatisfactorySaveEditor.Cheats
 {
     public class InventorySlotsCheat : ICheat
     {
-        public string Name => "Set bonus inventory slots...";
+        public string Name => "Set inventory slot count...";
 
         public bool Apply(SaveObjectModel rootItem)
         {
-            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.UnlockSubsystem", false);
             if (gameState == null)
             {
-                MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("This save does not contain a UnlockSubsystem.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find UnlockSubsystem", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
-            var numAdditionalSlots = gameState.FindOrCreateField<IntPropertyViewModel>("mNumAdditionalInventorySlots");
+            var numAdditionalSlots = gameState.FindOrCreateField<IntPropertyViewModel>("mNumTotalInventorySlots");
 
             var dialog = new CheatInventoryWindow
             {
@@ -32,12 +32,12 @@ namespace SatisfactorySaveEditor.Cheats
 
             if (cvm.NumberChosen < 0 || cvm.NumberChosen == numAdditionalSlots.Value)
             {
-                MessageBox.Show("Bonus inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Inventory slot count unchanged", "Unchanged", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
 
             numAdditionalSlots.Value = cvm.NumberChosen;
-            MessageBox.Show($"Bonus inventory set to {cvm.NumberChosen} slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Inventory slot count set to {cvm.NumberChosen} slots.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             return true;
         }
     }
