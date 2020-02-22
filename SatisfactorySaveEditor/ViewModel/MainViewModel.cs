@@ -226,6 +226,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <param name="cheat">The cheat to run</param>
         private void Cheat(ICheat cheat)
         {
+            log.Info($"Applying cheat {cheat.Name}");
             if (cheat.Apply(rootItem))
                 HasUnsavedChanges = true;
         }
@@ -319,6 +320,8 @@ namespace SatisfactorySaveEditor.ViewModel
             string tempFilePath = saveFileDirectory + tempDirectoryName + Path.GetFileName(saveGame.FileName);
             string backupFileFullPath = saveFileDirectory + @"\" + Path.GetFileNameWithoutExtension(saveGame.FileName) + "_" + DateTimeOffset.Now.ToUnixTimeMilliseconds() + ".SSEbkup.zip";
 
+            log.Info($"Creating a {(manual ? "manual " : "")}backup for {saveGame.FileName}");
+
             try
             {
                 //Satisfactory save files compress exceedingly well, so compress all backups so that they take up less space.
@@ -327,10 +330,11 @@ namespace SatisfactorySaveEditor.ViewModel
                 File.Copy(saveGame.FileName, tempFilePath, true); 
                 ZipFile.CreateFromDirectory(pathToZipFrom, backupFileFullPath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //should never be reached, but hopefully any users that encounter an error here will report it 
-                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error.");
+                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error, or report it on the Github Issues page with your log file and save file attached.");
+                log.Error($"Error encountered during backup process:\n{ex.StackTrace}");
                 throw;
             }
             finally
