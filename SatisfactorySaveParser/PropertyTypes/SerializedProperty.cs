@@ -94,6 +94,10 @@ namespace SatisfactorySaveParser.PropertyTypes
                     overhead = 1;
                     result = Int64Property.Parse(propertyName, index, reader);
                     break;
+                case InterfaceProperty.TypeName:
+                    overhead = 1;
+                    result = InterfaceProperty.Parse(propertyName, index, reader);
+                    break;
                 default:
                     throw new NotImplementedException(fieldType);
             }
