@@ -20,6 +20,7 @@ using SatisfactorySaveEditor.View;
 using System.IO.Compression;
 using System.Windows.Threading;
 using AsyncAwaitBestPractices.MVVM;
+using NLog;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -31,6 +32,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private string searchText;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private bool isBusyInternal = false;
         public bool IsBusy
@@ -523,8 +525,32 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void LoadFileAsync(string path)
         {
-            //MessageBox.Show("Loading file...");
-            saveGame = new SatisfactorySave(path);
+            try
+            {
+                saveGame = new SatisfactorySave(path);
+            }
+            catch (Exception ex)
+            {
+                if (ex is FileNotFoundException)
+                {
+                    MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    log.Info($"Removing save file {path} from recent saves list");
+                    if (LastFiles != null && LastFiles.Contains(path))
+                    {
+                        Properties.Settings.Default.LastSaves.Remove(path);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            LastFiles.Remove(path);
+                        });
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"An error occurred while opening the file:\n{ex.Message}\n\nCheck the logs for more details.\n\nIf this issue persists, please report it via \"Help > Report an Issue\", and attach the log file and save file you were trying to open.", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                return;
+            }
+            
             Application.Current.Dispatcher.Invoke(() =>
             {
                 //manually raise these for the AsyncCommand library to pick up on it (ask virusek20 or Robb)
