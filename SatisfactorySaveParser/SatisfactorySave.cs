@@ -46,67 +46,61 @@ namespace SatisfactorySaveParser
             log.Info($"Opening save file: {file}");
 
             FileName = Environment.ExpandEnvironmentVariables(file);
-            try
+
+            using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var reader = new BinaryReader(stream))
             {
-                using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var reader = new BinaryReader(stream))
+                Header = FSaveHeader.Parse(reader);
+
+                if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
                 {
-                    Header = FSaveHeader.Parse(reader);
+                    LoadData(reader);
+                }
+                else
+                {
+                    using (var buffer = new MemoryStream())
+                    {
+                        var uncompressedSize = 0L;
 
-                    if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
-                    {
-                        LoadData(reader);
-                    }
-                    else
-                    {
-                        using (var buffer = new MemoryStream())
+                        while (stream.Position < stream.Length)
                         {
-                            var uncompressedSize = 0L;
+                            var header = reader.ReadChunkInfo();
+                            Trace.Assert(header.CompressedSize == ChunkInfo.Magic);
 
-                            while (stream.Position < stream.Length)
+                            var summary = reader.ReadChunkInfo();
+
+                            var subChunk = reader.ReadChunkInfo();
+                            Trace.Assert(subChunk.UncompressedSize == summary.UncompressedSize);
+
+                            var startPosition = stream.Position;
+                            using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
                             {
-                                var header = reader.ReadChunkInfo();
-                                Trace.Assert(header.CompressedSize == ChunkInfo.Magic);
-
-                                var summary = reader.ReadChunkInfo();
-
-                                var subChunk = reader.ReadChunkInfo();
-                                Trace.Assert(subChunk.UncompressedSize == summary.UncompressedSize);
-
-                                var startPosition = stream.Position;
-                                using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
-                                {
-                                    zStream.CopyTo(buffer);
-                                }
-
-                                // ZlibStream appears to read more bytes than it uses (because of buffering probably) so we need to manually fix the input stream position
-                                stream.Position = startPosition + subChunk.CompressedSize;
-
-                                uncompressedSize += subChunk.UncompressedSize;
+                                zStream.CopyTo(buffer);
                             }
 
+                            // ZlibStream appears to read more bytes than it uses (because of buffering probably) so we need to manually fix the input stream position
+                            stream.Position = startPosition + subChunk.CompressedSize;
 
-                            buffer.Position = 0;
+                            uncompressedSize += subChunk.UncompressedSize;
+                        }
+
+
+                        buffer.Position = 0;
 
 #if DEBUG
-                            //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
+                        //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
 #endif
 
 
-                            using (var bufferReader = new BinaryReader(buffer))
-                            {
-                                var dataLength = bufferReader.ReadInt32();
-                                Trace.Assert(uncompressedSize == dataLength + 4);
+                        using (var bufferReader = new BinaryReader(buffer))
+                        {
+                            var dataLength = bufferReader.ReadInt32();
+                            Trace.Assert(uncompressedSize == dataLength + 4);
 
-                                LoadData(bufferReader);
-                            }
+                            LoadData(bufferReader);
                         }
                     }
                 }
-            }
-            catch (Exception ex) {
-                log.Error($"Error occurred in opening save file: {ex.Message}\n{ex.StackTrace}");
-                throw new FileNotFoundException();
             }
         }
 

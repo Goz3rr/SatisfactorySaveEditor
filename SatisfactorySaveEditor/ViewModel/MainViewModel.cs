@@ -533,25 +533,24 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 saveGame = new SatisfactorySave(path);
             }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
+                log.Info($"Removing save file {path} from recent saves list");
+                if (LastFiles != null && LastFiles.Contains(path))
+                {
+                    Properties.Settings.Default.LastSaves.Remove(path);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        LastFiles.Remove(path);
+                    });
+                }
+                return;
+            }
             catch (Exception ex)
             {
-                if (ex is FileNotFoundException)
-                {
-                    MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    log.Info($"Removing save file {path} from recent saves list");
-                    if (LastFiles != null && LastFiles.Contains(path))
-                    {
-                        Properties.Settings.Default.LastSaves.Remove(path);
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            LastFiles.Remove(path);
-                        });
-                    }
-                }
-                else
-                {
-                    MessageBox.Show($"An error occurred while opening the file:\n{ex.Message}\n\nCheck the logs for more details.\n\nIf this issue persists, please report it via \"Help > Report an Issue\", and attach the log file and save file you were trying to open.", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show($"An error occurred while opening the file:\n{ex.Message}\n\nCheck the logs for more details.\n\nIf this issue persists, please report it via \"Help > Report an Issue\", and attach the log file and save file you were trying to open.", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(ex);
                 return;
             }
             
