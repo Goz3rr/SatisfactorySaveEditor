@@ -115,6 +115,18 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
+            bool modified = false;
+            foreach (string filePath in savedFiles) //silently remove files that no longer exist from the list in Properties
+            {
+                if (!File.Exists(filePath))
+                {
+                    modified = true;
+                    log.Info($"Removing save file {filePath} from recent saves list since it wasn't found on disk");
+                    Properties.Settings.Default.LastSaves.Remove(filePath);
+                }
+            }
+            if(modified) //regenerate list since a save was not found when first built
+                savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
             if (savedFiles == null) LastFiles = new ObservableCollection<string>();
             else LastFiles = new ObservableCollection<string>(savedFiles);
 
@@ -535,10 +547,10 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
-                log.Info($"Removing save file {path} from recent saves list since it wasn't found on disk");
-                if (LastFiles != null && LastFiles.Contains(path))
+                if (LastFiles != null && LastFiles.Contains(path)) //if the save file that failed to open was on the last found list, remove it. this should only occur when people move save files around and leave the editor open.
                 {
+                    MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    log.Info($"Removing save file {path} from recent saves list since it wasn't found on disk");
                     Properties.Settings.Default.LastSaves.Remove(path);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
