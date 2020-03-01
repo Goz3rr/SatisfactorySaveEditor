@@ -334,7 +334,7 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 //should never be reached, but hopefully any users that encounter an error here will report it 
                 MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error, or report it on the Github Issues page with your log file and save file attached.");
-                log.Error($"Error encountered during backup process:\n{ex.StackTrace}");
+                log.Error(ex);
                 throw;
             }
             finally
@@ -533,10 +533,10 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 saveGame = new SatisfactorySave(path);
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
-                log.Info($"Removing save file {path} from recent saves list");
+                log.Info($"Removing save file {path} from recent saves list since it wasn't found on disk");
                 if (LastFiles != null && LastFiles.Contains(path))
                 {
                     Properties.Settings.Default.LastSaves.Remove(path);
