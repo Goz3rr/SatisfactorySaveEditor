@@ -30,12 +30,14 @@ namespace SatisfactorySaveEditor.Converter
                     return "Name";
                 case ObjectPropertyViewModel obp:
                     return "Object";
-                case StrPropertyViewModel strip:
+                case StrPropertyViewModel strip: // nsfw
                     return "String";
                 case StructPropertyViewModel strup:
                     return $"Struct ({strup.Type})";
                 case TextPropertyViewModel tep:
-                    return "text";
+                    return "Text";
+                case InterfacePropertyViewModel itp:
+                    return "Interface";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }

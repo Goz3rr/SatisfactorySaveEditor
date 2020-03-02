@@ -23,7 +23,8 @@ namespace SatisfactorySaveEditor.ViewModel
             Object,
             String,
             Struct,
-            Text
+            Text,
+            Interface
         }
 
         private AddTypeEnum type = AddTypeEnum.Array;
@@ -109,6 +110,8 @@ namespace SatisfactorySaveEditor.ViewModel
                     return new StructProperty(name);
                 case AddTypeEnum.Text:
                     return new TextProperty(name);
+                case AddTypeEnum.Interface:
+                    return new InterfaceProperty(name);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -142,6 +145,8 @@ namespace SatisfactorySaveEditor.ViewModel
                     return "StructProperty";
                 case AddTypeEnum.Text:
                     return "TextProperty";
+                case AddTypeEnum.Interface:
+                    return "InterfaceProperty";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -175,6 +180,8 @@ namespace SatisfactorySaveEditor.ViewModel
                     return AddTypeEnum.Struct;
                 case "TextProperty":
                     return AddTypeEnum.Text;
+                case "InterfaceProperty":
+                    return AddTypeEnum.Interface;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stringType), stringType, null);
             }
