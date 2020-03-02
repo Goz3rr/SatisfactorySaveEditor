@@ -115,20 +115,25 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
-            bool modified = false;
-            foreach (string filePath in savedFiles) //silently remove files that no longer exist from the list in Properties
+            
+            if(savedFiles != null)
             {
-                if (!File.Exists(filePath))
+                bool modified = false;
+                foreach (string filePath in savedFiles) //silently remove files that no longer exist from the list in Properties
                 {
-                    modified = true;
-                    log.Info($"Removing save file {filePath} from recent saves list since it wasn't found on disk");
-                    Properties.Settings.Default.LastSaves.Remove(filePath);
+                    if (!File.Exists(filePath))
+                    {
+                        modified = true;
+                        log.Info($"Removing save file {filePath} from recent saves list since it wasn't found on disk");
+                        Properties.Settings.Default.LastSaves.Remove(filePath);
+                    }
                 }
-            }
-            if(modified) //regenerate list since a save was not found when first built
-                savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
-            if (savedFiles == null) LastFiles = new ObservableCollection<string>();
-            else LastFiles = new ObservableCollection<string>(savedFiles);
+                if (modified) //regenerate list since a save was not found when first built
+                    savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
+                LastFiles = new ObservableCollection<string>(savedFiles);
+            } 
+            else //create a new empty collection for the list since there isn't anything there
+                LastFiles = new ObservableCollection<string>();
 
             // TODO: load this dynamically
             CheatMenuItems.Add(new ResearchUnlockCheat());
