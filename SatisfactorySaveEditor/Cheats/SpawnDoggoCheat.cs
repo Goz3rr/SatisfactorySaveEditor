@@ -17,7 +17,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     class SpawnDoggoCheat : ICheat
     {
-        public string Name => "Spawn Doggos...";
+        public string Name => "Spawn doggos...";
 
         private DeleteEnemiesCheat deleteEnemiesCheat; //uses the add doggo code from delete enemies to avoid duplicating code
 
