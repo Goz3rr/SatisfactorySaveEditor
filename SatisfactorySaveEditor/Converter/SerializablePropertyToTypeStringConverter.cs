@@ -36,6 +36,8 @@ namespace SatisfactorySaveEditor.Converter
                     return $"Struct ({strup.Type})";
                 case TextPropertyViewModel tep:
                     return "text";
+                case Int64PropertyViewModel i64p:
+                    return "Int64";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }

@@ -46,6 +46,7 @@ namespace SatisfactorySaveParser
             log.Info($"Opening save file: {file}");
 
             FileName = Environment.ExpandEnvironmentVariables(file);
+
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
