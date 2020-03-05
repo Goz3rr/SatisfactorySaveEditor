@@ -24,6 +24,7 @@ namespace SatisfactorySaveEditor.ViewModel
             String,
             Struct,
             Text,
+            Interface,
             Int64
         }
 
@@ -110,6 +111,8 @@ namespace SatisfactorySaveEditor.ViewModel
                     return new StructProperty(name);
                 case AddTypeEnum.Text:
                     return new TextProperty(name);
+                case AddTypeEnum.Interface:
+                    return new InterfaceProperty(name);
                 case AddTypeEnum.Int64:
                     return new Int64Property(name);
                 default:
@@ -145,6 +148,8 @@ namespace SatisfactorySaveEditor.ViewModel
                     return "StructProperty";
                 case AddTypeEnum.Text:
                     return "TextProperty";
+                case AddTypeEnum.Interface:
+                    return "InterfaceProperty";
                 case AddTypeEnum.Int64:
                     return "Int64Property";
                 default:
@@ -180,6 +185,8 @@ namespace SatisfactorySaveEditor.ViewModel
                     return AddTypeEnum.Struct;
                 case "TextProperty":
                     return AddTypeEnum.Text;
+                case "InterfaceProperty":
+                    return AddTypeEnum.Interface;
                 case "Int64Property":
                     return AddTypeEnum.Int64;
                 default:

@@ -127,6 +127,26 @@
             </DockPanel>
         </StackPanel>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type property:InterfacePropertyViewModel}">
+        <!-- You may be wondering 'why did he use 2 dock panels in a stack panel' and 'this is so wrong'. Why? Because this is copied and edited from ObjectPropertyViewModel -->
+        <StackPanel Orientation="Vertical">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=ParentBox}" Content="Parent:"/>
+                <TextBox DockPanel.Dock="Left" x:Name="ParentBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str1, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=TargetBox}" Content="Target:"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" DockPanel.Dock="Left" x:Name="TargetBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Str2, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type view:MainWindow}}, Path=DataContext.JumpCommand}" CommandParameter="{Binding Str2}" DockPanel.Dock="Right"  Height="20" VerticalContentAlignment="Center" Content="Jump"/>
+                </Grid>
+            </DockPanel>
+        </StackPanel>
+    </DataTemplate>
     <DataTemplate DataType="{x:Type property:StrPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
@@ -205,6 +225,9 @@
             <Label Grid.Column="0" Grid.Row="3" DockPanel.Dock="Left" VerticalContentAlignment="Center" Target="{Binding ElementName=Unknown3Box}" Content="Unknown3:"/>
             <TextBox Grid.Column="1" Grid.Row="3" DockPanel.Dock="Left" x:Name="Unknown3Box" Margin="4" VerticalContentAlignment="Center" Text="{Binding Unknown3}"/>
         </Grid>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:FluidBox}">
+        <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: FluidBox PropertyTemplate"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:LinearColor}">
         <control:LinearColorPicker LinearColor="{Binding .}"/>
