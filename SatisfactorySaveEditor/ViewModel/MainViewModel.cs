@@ -142,6 +142,7 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new InventorySlotsCheat()); //inventory slot count works again (but is in a different place) as of Update 3
             CheatMenuItems.Add(new ArmSlotsCheat()); //inventory slot count works again (but is in a different place) as of Update 3
             CheatMenuItems.Add(new KillPlayersCheat());
+            CheatMenuItems.Add(new CouponChangerCheat());
             DeleteEnemiesCheat deleteEnemiesCheat = new DeleteEnemiesCheat();
             CheatMenuItems.Add(deleteEnemiesCheat);
             CheatMenuItems.Add(new SpawnDoggoCheat(deleteEnemiesCheat));
