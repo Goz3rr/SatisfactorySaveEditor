@@ -38,6 +38,8 @@ namespace SatisfactorySaveEditor.Converter
                     return "Text";
                 case InterfacePropertyViewModel itp:
                     return "Interface";
+                case Int64PropertyViewModel i64p:
+                    return "Int64";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }
