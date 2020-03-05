@@ -127,6 +127,7 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(deleteEnemiesCheat);
             CheatMenuItems.Add(new SpawnDoggoCheat(deleteEnemiesCheat));
             CheatMenuItems.Add(new MassDismantleCheat());
+            CheatMenuItems.Add(new CrateSummonCheat());
             CheatMenuItems.Add(new NoCostCheat());
             CheatMenuItems.Add(new NoPowerCheat());
             
