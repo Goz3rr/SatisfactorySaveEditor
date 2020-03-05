@@ -234,6 +234,7 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK2.ResourceSink_WallPowerPolesMK2_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK3.ResourceSink_WallPowerPolesMK3_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WindowedWalls.ResourceSink_WindowedWalls_C" />
+  <Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_HyperTubeWallAttachements.ResourceSink_HyperTubeWallAttachements_C" />
 
 	<!-- New AWESOME Shop one time part purchases. These don't actually do anything when granted. No parts appear in the 'Purchases' section of the store or anything like that. -->
 	<!--

@@ -20,6 +20,7 @@ using SatisfactorySaveEditor.View;
 using System.IO.Compression;
 using System.Windows.Threading;
 using AsyncAwaitBestPractices.MVVM;
+using NLog;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -31,6 +32,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private string searchText;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private ObservableCollection<SaveObjectModel> rootItems = new ObservableCollection<SaveObjectModel>();
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private bool isBusyInternal = false;
         public bool IsBusy
@@ -113,8 +115,25 @@ namespace SatisfactorySaveEditor.ViewModel
             }
 
             var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
-            if (savedFiles == null) LastFiles = new ObservableCollection<string>();
-            else LastFiles = new ObservableCollection<string>(savedFiles);
+            
+            if(savedFiles != null)
+            {
+                bool modified = false;
+                foreach (string filePath in savedFiles) //silently remove files that no longer exist from the list in Properties
+                {
+                    if (!File.Exists(filePath))
+                    {
+                        modified = true;
+                        log.Info($"Removing save file {filePath} from recent saves list since it wasn't found on disk");
+                        Properties.Settings.Default.LastSaves.Remove(filePath);
+                    }
+                }
+                if (modified) //regenerate list since a save was not found when first built
+                    savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
+                LastFiles = new ObservableCollection<string>(savedFiles);
+            } 
+            else //create a new empty collection for the list since there isn't anything there
+                LastFiles = new ObservableCollection<string>();
 
             // TODO: load this dynamically
             CheatMenuItems.Add(new ResearchUnlockCheat());
@@ -128,6 +147,7 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(deleteEnemiesCheat);
             CheatMenuItems.Add(new SpawnDoggoCheat(deleteEnemiesCheat));
             CheatMenuItems.Add(new MassDismantleCheat());
+            CheatMenuItems.Add(new CrateSummonCheat());
             CheatMenuItems.Add(new NoCostCheat());
             CheatMenuItems.Add(new NoPowerCheat());
             
@@ -225,6 +245,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <param name="cheat">The cheat to run</param>
         private void Cheat(ICheat cheat)
         {
+            log.Info($"Applying cheat {cheat.Name}");
             if (cheat.Apply(rootItem))
                 HasUnsavedChanges = true;
         }
@@ -318,6 +339,8 @@ namespace SatisfactorySaveEditor.ViewModel
             string tempFilePath = saveFileDirectory + tempDirectoryName + Path.GetFileName(saveGame.FileName);
             string backupFileFullPath = saveFileDirectory + @"\" + Path.GetFileNameWithoutExtension(saveGame.FileName) + "_" + DateTimeOffset.Now.ToUnixTimeMilliseconds() + ".SSEbkup.zip";
 
+            log.Info($"Creating a {(manual ? "manual " : "")}backup for {saveGame.FileName}");
+
             try
             {
                 //Satisfactory save files compress exceedingly well, so compress all backups so that they take up less space.
@@ -326,10 +349,11 @@ namespace SatisfactorySaveEditor.ViewModel
                 File.Copy(saveGame.FileName, tempFilePath, true); 
                 ZipFile.CreateFromDirectory(pathToZipFrom, backupFileFullPath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //should never be reached, but hopefully any users that encounter an error here will report it 
-                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error.");
+                MessageBox.Show("An error occurred while creating a backup. The error message will appear when you press 'Ok'.\nPlease tell Goz3rr, Robb, or virusek20 the contents of the error, or report it on the Github Issues page with your log file and save file attached.");
+                log.Error(ex);
                 throw;
             }
             finally
@@ -524,8 +548,31 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void LoadFileAsync(string path)
         {
-            //MessageBox.Show("Loading file...");
-            saveGame = new SatisfactorySave(path);
+            try
+            {
+                saveGame = new SatisfactorySave(path);
+            }
+            catch (FileNotFoundException)
+            {
+                if (LastFiles != null && LastFiles.Contains(path)) //if the save file that failed to open was on the last found list, remove it. this should only occur when people move save files around and leave the editor open.
+                {
+                    MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    log.Info($"Removing save file {path} from recent saves list since it wasn't found on disk");
+                    Properties.Settings.Default.LastSaves.Remove(path);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        LastFiles.Remove(path);
+                    });
+                }
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while opening the file:\n{ex.Message}\n\nCheck the logs for more details.\n\nIf this issue persists, please report it via \"Help > Report an Issue\", and attach the log file and save file you were trying to open.", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(ex);
+                return;
+            }
+            
             Application.Current.Dispatcher.Invoke(() =>
             {
                 //manually raise these for the AsyncCommand library to pick up on it (ask virusek20 or Robb)

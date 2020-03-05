@@ -28,7 +28,7 @@
 	<TypeTooltip Type="Game" Tooltip="Contains the FactoryGame tag and nothing else">
 		<TypeTooltip Type="FactoryGame" Tooltip="Contains multiple persistent objects such as story progress, Paleberry bush locations, the game time manager, etc.">
 			<TypeTooltip Type="Equipment" Tooltip="Contains data about equipment such as placed beacons, portable miners, chainsaws, destructible rocks, etc.\nEach tool that exists in the save contains its own tag here, regardless of its location (storage box, equipped, dropped in world)" />
-			<TypeTooltip Type="-Shared" Tooltip="Contains Blueprints (see blueprint tag for more info) and Personal Storage Box inventories">
+			<TypeTooltip Type="-Shared" Tooltip="Contains Blueprints (see blueprint tag for more info) and Crate location data">
 				<TypeTooltip Type="Blueprint" Tooltip="Contains single-instance systems such as non-standard Color Gun color choices, the Game State tracker, in-game time tracking, etc.">
 					<TypeTooltip Type="BP_BuildableSubsystem.BP_BuildableSubsystem_C" Tooltip="Stores non-standard Color Gun color pairs" />
 					<!--<TypeTooltip Type="BP_CircuitSubsystem.BP_CircuitSubsystem_C" Tooltip="Currently unknown purpose." />-->
@@ -37,11 +37,11 @@
 					<TypeTooltip Type="BP_TimeOfDaySubsystem.BP_TimeOfDaySubsystem_C" Tooltip="Stores the current time progress in the in-game day (in seconds) as well as the number of in-game days elapsed" />
 					<TypeTooltip Type="BP_TutorialIntroManager.BP_TutorialIntroManager_C" Tooltip="Stores progress through the initial setup sequence of the game (building the HUB from the drop pod parts, progress through HUB tier 0 requirements, etc." />
 					<TypeTooltip Type="BP_GameMode.BP_GameMode_C" Tooltip="Stores last autosave number, save session name (presumably the one that appears when joining in multiplayer), and the name of the starting location (effects of changing this unknown)" />
-					<!--<TypeTooltip Type="BP_GameState.BP_GameState_C" Tooltip="Currently unknown purpose." />-->
+					<TypeTooltip Type="BP_GameState.BP_GameState_C" Tooltip="Stores links to other subsystems and game state data such as no cost and no power cheats" />
 					<!--<TypeTooltip Type="BP_TutorialSubsystem.BP_TutorialSubsystem_C" Tooltip="Currently unknown purpose." />-->
 				</TypeTooltip>
-				<TypeTooltip Type="Crate" Tooltip="Contains Personal Storage Box building info">
-					<TypeTooltip Type="BP_Crate.BP_Crate_C" Tooltip="Stores a Personal Storage Box's location and links it to its inventory, which is stored in Root > Script > FGInventoryComponent" />
+				<TypeTooltip Type="Crate" Tooltip="Contains locations and links to the inventory of death crates and 'inventory too full to pick up' item crates">
+					<TypeTooltip Type="BP_Crate.BP_Crate_C" Tooltip="Stores a Crate's (not Personal Storage) location and links it to its inventory, which is stored in Root > Script > FGInventoryComponent" />
 				</TypeTooltip>
 			</TypeTooltip>
 			<TypeTooltip Type="Schematics" Tooltip="Contains the Progression tag and nothing else">
@@ -77,5 +77,7 @@
 			</TypeTooltip>
 		</TypeTooltip>
 	</TypeTooltip>
-	<TypeTooltip Type="Script" Tooltip="Contains most building and vehicle power network, inventory, and settings-related, information" />
+	<TypeTooltip Type="Script" Tooltip="Contains most building and vehicle power network, inventory, and settings-related, information">
+		<TypeTooltip Type="FactoryGame.FGInventoryComponent" Tooltip="Stores information regarding the contents of machine buffers, crates, crash site drop pods, player and doggo inventories, etc." />
+	</TypeTooltip>
 </TypeTooltip>
