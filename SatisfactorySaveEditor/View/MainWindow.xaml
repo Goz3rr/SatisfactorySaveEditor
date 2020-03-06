@@ -115,7 +115,7 @@
             <DockPanel Grid.Column="0">
                 <Grid DockPanel.Dock="Top">
                     <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="SearchTermTextBox" Margin="0,2"/>
-                    <TextBlock IsHitTestVisible="False" Text="Search save" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6,0,0,0" Foreground="DarkGray">
+                    <TextBlock IsHitTestVisible="False" Text="Search Save Entity and Component names" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6,0,0,0" Foreground="DarkGray">
                         <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
