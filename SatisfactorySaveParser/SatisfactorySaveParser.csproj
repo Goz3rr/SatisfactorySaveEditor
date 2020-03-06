@@ -56,6 +56,9 @@
     <Compile Include="Data\Research.cs">
       <DependentUpon>Research.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Data\Resource.cs">
+      <DependentUpon>ResourcesUnfiltered.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Exceptions\FatalSaveException.cs" />
     <Compile Include="Exceptions\UnknownBuildVersionException.cs" />
     <Compile Include="Exceptions\UnknownSaveVersionException.cs" />
@@ -109,9 +112,15 @@
     <Content Include="Data\Research.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\ResourcesUnfiltered.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Research.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Data\ResourcesUnfiltered.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
