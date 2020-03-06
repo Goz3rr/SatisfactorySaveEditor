@@ -17,7 +17,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Mass dismantle...";
 
-        private int GetNextStorageID(int currentId, SaveObjectModel rootItem)
+        public int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
             while (rootItem.FindChild($"Persistent_Level:PersistentLevel.BP_Crate_C_{currentId}.inventory", false) != null)
                 currentId++;
@@ -217,12 +217,19 @@ namespace SatisfactorySaveEditor.Cheats
             MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                inventory = ArrangeInventory(inventory);
-                int currentStorageID = GetNextStorageID(0, rootItem);
-                SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
-                {
-                    ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
-                    DataFields = new SerializedFields()
+                CreateCrateEntityFromInventory(rootItem, inventory);
+            }
+            return true;
+        }
+
+        public SaveEntityModel CreateCrateEntityFromInventory(SaveObjectModel rootItem, ArrayProperty inventory)
+        {
+            inventory = ArrangeInventory(inventory);
+            int currentStorageID = GetNextStorageID(0, rootItem);
+            SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
+            {
+                ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
+                DataFields = new SerializedFields()
                     {
                         inventory,
                         new ArrayProperty("mArbitrarySlotSizes")
@@ -240,35 +247,35 @@ namespace SatisfactorySaveEditor.Cheats
                             Value = false
                         }
                     }
-                };
-                rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
-                SaveEntity player = (SaveEntity)rootItem.FindChild("Char_Player.Char_Player_C", false).DescendantSelf[0];
-                SaveEntity newSaveObject = new SaveEntity("/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
-                {
-                    NeedTransform = true,
-                    Rotation = player.Rotation,
-                    Position = new Vector3() { X = player.Position.X, Y = player.Position.Y + 100, Z = player.Position.Z },
-                    Scale = new Vector3() { X = 1, Y = 1, Z = 1 },
-                    WasPlacedInLevel = false,
-                    ParentObjectName = "",
-                    ParentObjectRoot = ""
-                };
-                newSaveObject.DataFields = new SerializedFields()
+            };
+            rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
+            SaveEntity player = (SaveEntity)rootItem.FindChild("Char_Player.Char_Player_C", false).DescendantSelf[0];
+            SaveEntity newSaveObject = new SaveEntity("/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
+            {
+                NeedTransform = true,
+                Rotation = player.Rotation,
+                Position = new Vector3() { X = player.Position.X, Y = player.Position.Y + 100, Z = player.Position.Z },
+                Scale = new Vector3() { X = 1, Y = 1, Z = 1 },
+                WasPlacedInLevel = false,
+                ParentObjectName = "",
+                ParentObjectRoot = ""
+            };
+            newSaveObject.DataFields = new SerializedFields()
                 {
                     new ObjectProperty("mInventory", 0) { LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory" }
                 };
-                if (rootItem.FindChild("Crate", false) == null)
-                    rootItem.FindChild("-Shared", false).Items.Add(new SaveObjectModel("Crate"));
-                if (rootItem.FindChild("BP_Crate.BP_Crate_C", false) == null)
-                    rootItem.FindChild("Crate", false).Items.Add(new SaveObjectModel("BP_Crate.BP_Crate_C"));
-                rootItem.FindChild("BP_Crate.BP_Crate_C", false).Items.Add(new SaveEntityModel(newSaveObject));
-            }
-            return true;
+            if (rootItem.FindChild("Crate", false) == null)
+                rootItem.FindChild("-Shared", false).Items.Add(new SaveObjectModel("Crate"));
+            if (rootItem.FindChild("BP_Crate.BP_Crate_C", false) == null)
+                rootItem.FindChild("Crate", false).Items.Add(new SaveObjectModel("BP_Crate.BP_Crate_C"));
+            var crate = new SaveEntityModel(newSaveObject);
+            rootItem.FindChild("BP_Crate.BP_Crate_C", false).Items.Add(crate);
+            return crate;
         }
 
 
 
-        private ArrayProperty ArrangeInventory(ArrayProperty inventory)
+        public ArrayProperty ArrangeInventory(ArrayProperty inventory)
         {
             SortedDictionary<string, int> stacks = new SortedDictionary<string, int>();
             foreach (StructProperty inventoryStruct in inventory.Elements.Cast<StructProperty>())
