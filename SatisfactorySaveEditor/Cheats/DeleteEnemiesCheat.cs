@@ -20,7 +20,7 @@ namespace SatisfactorySaveEditor.Cheats
 
         private int currentDoggoID = 0;
 
-        private SaveObjectModel FindOrCreatePath(SaveObjectModel start, string[] path, int index = 0)
+        private static SaveObjectModel FindOrCreatePath(SaveObjectModel start, string[] path, int index = 0)
         {
             if (index == path.Length)
                 return start;
@@ -29,14 +29,14 @@ namespace SatisfactorySaveEditor.Cheats
             return FindOrCreatePath(start.FindChild(path[index], false), path, index + 1);
         }
 
-        private int GetNextDoggoID(int currentId, SaveObjectModel rootItem)
+        private static int GetNextDoggoID(int currentId, SaveObjectModel rootItem)
         {
             while (rootItem.FindChild($"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentId}", false) != null)
                 currentId++;
             return currentId;
         }
 
-        public byte[] PrepareForParse(string itemPath, int itemAmount)
+        public static byte[] PrepareForParse(string itemPath, int itemAmount)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -178,7 +178,7 @@ namespace SatisfactorySaveEditor.Cheats
             return true;
         }
 
-        private double Distance(Vector3 a, Vector3 b)
+        private static double Distance(Vector3 a, Vector3 b)
         {
             return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y) + (a.Z - b.Z) * (a.Z - b.Z));
         }

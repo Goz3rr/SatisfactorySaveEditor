@@ -17,13 +17,6 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Create crate with all items";
 
-        private MassDismantleCheat massDismantleCheat; //reuses code from mass dismantle to avoid duplicating code
-
-        public EverythingBoxCheat(MassDismantleCheat dismantler)
-        {
-            massDismantleCheat = dismantler;
-        }
-
         public bool Apply(SaveObjectModel rootItem)
         {
 
@@ -59,7 +52,7 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     //MessageBox.Show($"Processing resource {resource}");
                     int itemAmount = 500;// ((IntProperty)itemAmountStruct.Fields[1]).Value;
-                    byte[] bytes = massDismantleCheat.PrepareForParse(resource, itemAmount); //reuse mass dismantle cheat's parsing method
+                    byte[] bytes = MassDismantleCheat.PrepareForParse(resource, itemAmount); //reuse mass dismantle cheat's parsing method
                     using (MemoryStream ms = new MemoryStream(bytes))
                     using (BinaryReader reader = new BinaryReader(ms))
                     {
@@ -76,7 +69,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
 
             //Use Mass Dismantle Cheat's crate creation function to package the items into a crate entity
-            massDismantleCheat.CreateCrateEntityFromInventory(rootItem, inventory);
+            MassDismantleCheat.CreateCrateEntityFromInventory(rootItem, inventory);
 
             //MessageBox.Show("Player name " + playerEntityModel.Title);
             MessageBox.Show($"Crate created. Skipped the following items marked as radioactive:\n\n{skipped}");

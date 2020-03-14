@@ -17,14 +17,14 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Mass dismantle...";
 
-        public int GetNextStorageID(int currentId, SaveObjectModel rootItem)
+        public static int GetNextStorageID(int currentId, SaveObjectModel rootItem)
         {
             while (rootItem.FindChild($"Persistent_Level:PersistentLevel.BP_Crate_C_{currentId}.inventory", false) != null)
                 currentId++;
             return currentId;
         }
 
-        public bool IsPointInPolygon(Vector3 p, Vector3[] polygon)
+        public static bool IsPointInPolygon(Vector3 p, Vector3[] polygon)
         {
             float minX = polygon[0].X;
             float maxX = polygon[0].X;
@@ -87,7 +87,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
         }
 
-        public byte[] PrepareForParse(string itemPath, int itemAmount)
+        public static byte[] PrepareForParse(string itemPath, int itemAmount)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -222,7 +222,7 @@ namespace SatisfactorySaveEditor.Cheats
             return true;
         }
 
-        public SaveEntityModel CreateCrateEntityFromInventory(SaveObjectModel rootItem, ArrayProperty inventory)
+        public static SaveEntityModel CreateCrateEntityFromInventory(SaveObjectModel rootItem, ArrayProperty inventory)
         {
             inventory = ArrangeInventory(inventory);
             int currentStorageID = GetNextStorageID(0, rootItem);
@@ -275,7 +275,7 @@ namespace SatisfactorySaveEditor.Cheats
 
 
 
-        public ArrayProperty ArrangeInventory(ArrayProperty inventory)
+        public static ArrayProperty ArrangeInventory(ArrayProperty inventory)
         {
             SortedDictionary<string, int> stacks = new SortedDictionary<string, int>();
             foreach (StructProperty inventoryStruct in inventory.Elements.Cast<StructProperty>())
