@@ -30,7 +30,70 @@
 	</TypeTooltip>
 	<TypeTooltip Type="Game" Tooltip="Contains the FactoryGame tag and nothing else">
 		<TypeTooltip Type="FactoryGame" Tooltip="Contains multiple persistent objects such as story progress, Paleberry bush locations, the game time manager, etc.">
-			<TypeTooltip Type="Equipment" Tooltip="Contains data about equipment such as placed beacons, portable miners, chainsaws, destructible rocks, etc.\nEach tool that exists in the save contains its own tag here, regardless of its location (storage box, equipped, dropped in world)" />
+			<TypeTooltip Type="Equipment" Tooltip="Contains data about equipment such as placed beacons, portable miners, chainsaws, destructible rocks, etc.\nEach tool that exists in the save contains its own tag here, regardless of its location (storage box, equipped, dropped in world)">
+				<TypeTooltip Type="Beacon" Tooltip="Contains data about placed and equipped beacons">
+					<TypeTooltip Type="BP_Beacon.BP_Beacon_C" Tooltip="Contains data about beacons placed in world: name, color, position" />
+					<TypeTooltip Type="Equip_Beacon.Equip_Beacon_C" Tooltip="Stores beacon equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="Cup" Tooltip="Contains data about Cups">
+					<TypeTooltip Type="Equip_Cup.Equip_Cup_C" Tooltip="Stores Cup equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="C4Dispenser" Tooltip="Contains data about destructible rocks">
+					<TypeTooltip Type="BP_DestructibleLargeRock.BP_DestructibleLargeRock_C" Tooltip="Contains data about the position of large destructible rocks" />
+					<TypeTooltip Type="BP_DestructibleSmallRock.BP_DestructibleSmallRock_C" Tooltip="Contains data about the position of small destructible rocks" />
+				</TypeTooltip>
+				<TypeTooltip Type="Chainsaw" Tooltip="Contains data about chainsaws">
+					<TypeTooltip Type="Equip_Chainsaw.Equip_Chainsaw_C" Tooltip="Contains data about chainsaw stored fuel" />
+				</TypeTooltip>
+				<TypeTooltip Type="Decoration" Tooltip="Contains data about statues">
+					<TypeTooltip Type="Equip_Decoration.Equip_Decoration_C" Tooltip="Stores statue equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="Medkit" Tooltip="Contains data about Medicinal Inhalers">
+					<TypeTooltip Type="Equip_MedKit.Equip_MedKit_C" Tooltip="Stores Medicinal Inhaler equipped in active arm slot" />
+				</TypeTooltip>
+				<!--<TypeTooltip Type="-Shared" Tooltip="Currently_unknown_purpose" /> --><!--Maybe under StunSpear or over medkit-->
+					<!--<TypeTooltip Type="Consumeable" Tooltip="Contains data about consumables" /> -->
+						<!--<TypeTooltip Type="BP_ConsumeableEquipment.BP_ConsumeableEquipment_C" Tooltip="Currently_unknown_purpose" /> -->
+				<TypeTooltip Type="StunSpear" Tooltip="Contains data about Xeno-Bashers">
+					<TypeTooltip Type="Equip_StunSpear.Equip_StunSpear_C" Tooltip="Stores Xeno-Basher equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="GasMask" Tooltip="Contains data about Gas Masks">
+					<!-- <TypeTooltip Type="Equip_GasMask.Equip_GasMask_C" Tooltip="Gas Mask(s?) with boolean 'is working' (probably if using filter)" />  -->
+				</TypeTooltip>
+				<TypeTooltip Type="GolfCart" Tooltip="Contains data about Factory Carts">
+					<TypeTooltip Type="Equip_GolfCartDispenser.Equip_GolfCartDispenser_C" Tooltip="Stores Factory Cart equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="JetPack" Tooltip="Contains data about Jetpacks">
+					<TypeTooltip Type="Equip_JetPack.Equip_JetPack_C" Tooltip="Stores Jetpack equipped in body slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="JumpingStilts" Tooltip="Contains data about Blade Runners">
+					<TypeTooltip Type="Equip_JumpingStilts.Equip_JumpingStilts_C" Tooltip="Stores Blade Runners equipped in body slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="ObjectScanner" Tooltip="Contains data about Object Scanners">
+					<TypeTooltip Type="Equip_ObjectScanner.Equip_ObjectScanner_C" Tooltip="Stores Object Scanner equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="HazmatSuit" Tooltip="Contains data about Hazmat Suits">
+					<TypeTooltip Type="Equip_HazmatSuit.Equip_HazmatSuit_C" Tooltip="Stores Hazmat Suit equipped in body slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="Parachute" Tooltip="Contains data about Parachutes">
+					<TypeTooltip Type="Equip_Parachute.Equip_Parachute_C" Tooltip="Stores Parachute equipped in body slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="PortableMiner" Tooltip="Contains data about Portable Miners">
+					<TypeTooltip Type="Equip_PortableMinerDispenser.Equip_PortableMinerDispenser_C" Tooltip="Stores Portable Miner equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="Rifle" Tooltip="Contains data about Rifles">
+					<TypeTooltip Type="Equip_Rifle.Equip_Rifle_C" Tooltip="Contains data about Rifles ammo and if is loaded" />
+				</TypeTooltip>
+				<TypeTooltip Type="ShockShank" Tooltip="Contains data about Xeno-Zappers">
+					<TypeTooltip Type="Equip_ShockShank.Equip_ShockShank_C" Tooltip="Stores Xeno-Zapper equipped in active arm slot" />
+				</TypeTooltip>
+				<TypeTooltip Type="RebarGun" Tooltip="Contains data about Rebar Guns">
+					<TypeTooltip Type="Equip_RebarGun_Projectile.Equip_RebarGun_Projectile_C" Tooltip="Contains data about Rebar Guns current ammo" />
+				</TypeTooltip>
+				<TypeTooltip Type="ColorGun" Tooltip="Contains data about Color Guns">
+					<TypeTooltip Type="Equip_ColorGun.Equip_ColorGun_C" Tooltip="Contains data about Color Guns ammo and selected color slot" />
+				</TypeTooltip>
+			</TypeTooltip>
 			<TypeTooltip Type="Buildable" Tooltip="Contains buildable items like Vehicles, Buildings, Machines">
 				<TypeTooltip Type="Building" Tooltip="Contains buildable items like foundations, ramps and so on">
 					<TypeTooltip Type="Foundation" Tooltip="Contains list of all foundations placed in the world">
