@@ -13,7 +13,7 @@
 	   about yet, increasing the chance that someone can figure out what it probably does.
 -->
 
-<!--<TypeTooltip Type="PUT_TAG_TYPE_NAME_HERE" Tooltip="Currently_unknown_purpose" /> -->
+<!-- <TypeTooltip Type="PUT_TAG_TYPE_NAME_HERE" Tooltip="Currently_unknown_purpose" /> -->
 
 <!--
   3. For tags which contain one or more sub-tags, use the word 'Contains.' For tags which contain a 
@@ -51,14 +51,14 @@
 				<TypeTooltip Type="Medkit" Tooltip="Contains data about Medicinal Inhalers">
 					<TypeTooltip Type="Equip_MedKit.Equip_MedKit_C" Tooltip="Stores Medicinal Inhaler equipped in active arm slot" />
 				</TypeTooltip>
-				<!--<TypeTooltip Type="-Shared" Tooltip="Currently_unknown_purpose" /> --><!--Maybe under StunSpear or over medkit-->
-					<!--<TypeTooltip Type="Consumeable" Tooltip="Contains data about consumables" /> -->
-						<!--<TypeTooltip Type="BP_ConsumeableEquipment.BP_ConsumeableEquipment_C" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- <TypeTooltip Type="-Shared" Tooltip="Currently_unknown_purpose" /> --><!-- Maybe under StunSpear or over medkit -->
+					<!-- <TypeTooltip Type="Consumeable" Tooltip="Contains data about consumables" /> -->
+						<!-- <TypeTooltip Type="BP_ConsumeableEquipment.BP_ConsumeableEquipment_C" Tooltip="Currently_unknown_purpose" /> -->
 				<TypeTooltip Type="StunSpear" Tooltip="Contains data about Xeno-Bashers">
 					<TypeTooltip Type="Equip_StunSpear.Equip_StunSpear_C" Tooltip="Stores Xeno-Basher equipped in active arm slot" />
 				</TypeTooltip>
 				<TypeTooltip Type="GasMask" Tooltip="Contains data about Gas Masks">
-					<!-- <TypeTooltip Type="Equip_GasMask.Equip_GasMask_C" Tooltip="Gas Mask(s?) with boolean 'is working' (probably if using filter)" />  -->
+					<!-- <TypeTooltip Type="Equip_GasMask.Equip_GasMask_C" Tooltip="Gas Mask(s?) with boolean 'is working' (probably if using filter)" /> -->
 				</TypeTooltip>
 				<TypeTooltip Type="GolfCart" Tooltip="Contains data about Factory Carts">
 					<TypeTooltip Type="Equip_GolfCartDispenser.Equip_GolfCartDispenser_C" Tooltip="Stores Factory Cart equipped in active arm slot" />
@@ -125,14 +125,14 @@
 				</TypeTooltip>
 				<TypeTooltip Type="Blueprint" Tooltip="Contains single-instance systems such as non-standard Color Gun color choices, the Game State tracker, in-game time tracking, etc.">
 					<TypeTooltip Type="BP_BuildableSubsystem.BP_BuildableSubsystem_C" Tooltip="Stores non-standard Color Gun color pairs" />
-					<!--<TypeTooltip Type="BP_CircuitSubsystem.BP_CircuitSubsystem_C" Tooltip="Currently unknown purpose." />-->
-					<!--<TypeTooltip Type="BP_RailroadSubsystem.BP_RailroadSubsystem_C." Tooltip="Currently unknown purpose." />-->
-					<!--<TypeTooltip Type="BP_StorySubsystem.BP_StorySubsystem_C" Tooltip="Currently unknown purpose." />-->
+					<!-- <TypeTooltip Type="BP_CircuitSubsystem.BP_CircuitSubsystem_C" Tooltip="Currently unknown purpose." /> -->
+					<!-- <TypeTooltip Type="BP_RailroadSubsystem.BP_RailroadSubsystem_C." Tooltip="Currently unknown purpose." /> -->
+					<!-- <TypeTooltip Type="BP_StorySubsystem.BP_StorySubsystem_C" Tooltip="Currently unknown purpose." /> -->
 					<TypeTooltip Type="BP_TimeOfDaySubsystem.BP_TimeOfDaySubsystem_C" Tooltip="Stores the current time progress in the in-game day (in seconds) as well as the number of in-game days elapsed" />
 					<TypeTooltip Type="BP_TutorialIntroManager.BP_TutorialIntroManager_C" Tooltip="Stores progress through the initial setup sequence of the game (building the HUB from the drop pod parts, progress through HUB tier 0 requirements, etc." />
 					<TypeTooltip Type="BP_GameState.BP_GameState_C" Tooltip="Stores links to other subsystems and game state data such as no cost and no power cheats" />
 					<TypeTooltip Type="BP_GameMode.BP_GameMode_C" Tooltip="Stores last autosave number, save session name (presumably the one that appears when joining in multiplayer), and the name of the starting location (effects of changing this unknown)" />
-					<!--<TypeTooltip Type="BP_TutorialSubsystem.BP_TutorialSubsystem_C" Tooltip="Currently unknown purpose." />-->
+					<!-- <TypeTooltip Type="BP_TutorialSubsystem.BP_TutorialSubsystem_C" Tooltip="Currently unknown purpose." /> -->
 				</TypeTooltip>
 			</TypeTooltip>
 			<TypeTooltip Type="Schematics" Tooltip="Contains the Progression tag and nothing else">
