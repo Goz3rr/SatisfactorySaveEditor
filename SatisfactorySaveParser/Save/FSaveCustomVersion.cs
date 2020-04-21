@@ -72,8 +72,8 @@
         // For example save old number of inventory and arm slots to new system
         BU3SaveCompatibility,
 
-		// 2020-03-19: Factory Colors have been converted to Linear Color. The buildable subsystem needs to convert from FColor to Linear Color overriding the defaults
-		BuildingColorConversion,
+        // 2020-03-19: Factory Colors have been converted to Linear Color. The buildable subsystem needs to convert from FColor to Linear Color overriding the defaults
+        BuildingColorConversion,
 
         // -----<new versions can be added above this line>-------------------------------------------------
         VersionPlusOne,
