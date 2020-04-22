@@ -86,12 +86,12 @@ namespace SatisfactorySaveParser.Save
                 SaveDateTime = reader.ReadInt64()
             };
 
-            log.Debug($"Read save header: Version={header.HeaderVersion}, Build={(int)header.SaveVersion}, Magic={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}");
+            log.Debug($"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={(int)header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}");
 
             if (header.HeaderVersion > SaveHeaderVersion.LatestVersion)
                 throw new UnknownSaveVersionException(header.HeaderVersion);
 
-            if (header.SaveVersion < FSaveCustomVersion.WireSpanFromConnnectionComponents || header.SaveVersion > FSaveCustomVersion.LatestVersion)
+            if (header.SaveVersion < FSaveCustomVersion.DROPPED_WireSpanFromConnnectionComponents || header.SaveVersion > FSaveCustomVersion.LatestVersion)
                 throw new UnknownBuildVersionException(header.SaveVersion);
 
             if (header.HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility)
