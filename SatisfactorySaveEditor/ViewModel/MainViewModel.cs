@@ -21,6 +21,7 @@ using System.IO.Compression;
 using System.Windows.Threading;
 using AsyncAwaitBestPractices.MVVM;
 using NLog;
+using System.ComponentModel;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -88,7 +89,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<SaveObjectModel> TreeSelectCommand { get; }
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand JumpMenuCommand { get; }
-        public RelayCommand ExitCommand { get; }
+        public RelayCommand<CancelEventArgs> ExitCommand { get; }
         public RelayCommand<string> OpenCommand { get; }
         public RelayCommand Help_ViewGithubCommand { get; }
         public RelayCommand Help_ReportIssueCommand { get; }
@@ -156,7 +157,7 @@ namespace SatisfactorySaveEditor.ViewModel
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
             JumpMenuCommand = new RelayCommand(JumpMenu, () => CanSave(false)); //disallow menu jumping if no save is loaded
-            ExitCommand = new RelayCommand(Exit);
+            ExitCommand = new RelayCommand<CancelEventArgs>(Exit);
             OpenCommand = new RelayCommand<string>(async (fileName) => await Open(fileName) );
             AboutCommand = new RelayCommand(About);
             Help_ViewGithubCommand = new RelayCommand(Help_ViewGithub);
@@ -469,15 +470,19 @@ namespace SatisfactorySaveEditor.ViewModel
         /// TODO: Mark as unsaved when property fileds are changed
         /// TODO: Check this when pressing alt+f4 and clicking the red x
         /// </summary>
-        private void Exit()
+        private void Exit(CancelEventArgs args = null)
         {
             if (HasUnsavedChanges)
             {
                 MessageBoxResult result = MessageBox.Show("You have unsaved changes. Close and abandon changes?\n\nNote: Changes made in the data text fields are not yet tracked as saved/unsaved but are still saved.", "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
+                {
                     Application.Current.Shutdown();
+                }
                 else
-                    return;
+                {
+                    if (args != null) args.Cancel = true;
+                }
             }
             else
             {
