@@ -715,8 +715,8 @@ namespace SatisfactorySaveEditor.ViewModel
         public void Drop(IDropInfo dropInfo)
         {
             var fileName = ((DataObject)dropInfo.Data).GetFileDropList()[0];
-            var task = LoadFile(fileName);
-            task.Wait();
+            _ = LoadFile(fileName);
+            // No need to wait for it to finish, since that blocks the dispatcher thread and causes a deadlock
         }
     }
 }
