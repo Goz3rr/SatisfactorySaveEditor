@@ -13,12 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.13.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.4">
+    <PackageReference Include="DotNetZip" Version="1.13.7" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0-beta3.final">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog" Version="4.7.0" />
   </ItemGroup>
 
 </Project>

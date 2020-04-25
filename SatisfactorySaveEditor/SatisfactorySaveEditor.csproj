@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="NLog.Config" Version="4.6.7" />
+    <PackageReference Include="NLog" Version="4.7.0" />
+    <PackageReference Include="NLog.Config" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
