@@ -73,6 +73,20 @@ namespace SatisfactorySaveParser.Save.Properties
                     }
                     break;
 
+                case FloatProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var value = reader.ReadSingle();
+                            result.Elements.Add(new FloatProperty(null)
+                            {
+                                Value = value
+                            });
+                        }
+                    }
+                    break;
+
                 case IntProperty.TypeName:
                     {
                         var count = reader.ReadInt32();
@@ -86,6 +100,19 @@ namespace SatisfactorySaveParser.Save.Properties
                     }
                     break;
 
+                case InterfaceProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            result.Elements.Add(new InterfaceProperty(null)
+                            {
+                                Reference = reader.ReadObjectReference()
+                            });
+                        }
+                    }
+                    break;
+
                 case ObjectProperty.TypeName:
                     {
                         var count = reader.ReadInt32();
@@ -94,6 +121,20 @@ namespace SatisfactorySaveParser.Save.Properties
                             result.Elements.Add(new ObjectProperty(null)
                             {
                                 Reference = reader.ReadObjectReference()
+                            });
+                        }
+                    }
+                    break;
+
+                case StrProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var str = reader.ReadLengthPrefixedString();
+                            result.Elements.Add(new StrProperty(null)
+                            {
+                                Value = str
                             });
                         }
                     }
@@ -127,6 +168,16 @@ namespace SatisfactorySaveParser.Save.Properties
                             {
                                 Data = structObj
                             });
+                        }
+                    }
+                    break;
+
+                case TextProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            result.Elements.Add(TextProperty.Deserialize(reader, null, 0, true));
                         }
                     }
                     break;

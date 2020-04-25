@@ -11,7 +11,7 @@ namespace SatisfactorySaveParser.Game.Structs
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private static readonly List<string> missingTypes = new List<string>();
+        private static readonly HashSet<string> missingTypes = new HashSet<string>();
         private static readonly Dictionary<string, Type> structTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(GameStructAttribute), false))
                 .SelectMany(t => t.GetCustomAttributes<GameStructAttribute>(false).Select(attr => new { Attribute = attr, Type = t }))
                 .ToDictionary(x => x.Attribute.StructName, x => x.Type);

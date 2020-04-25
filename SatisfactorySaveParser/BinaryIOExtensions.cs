@@ -156,6 +156,60 @@ namespace SatisfactorySaveParser
         }
 
         /// <summary>
+        ///     Read an UE4 FCompressedChunkInfo
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public static FCompressedChunkInfo ReadCompressedChunkInfo(this BinaryReader reader)
+        {
+            return new FCompressedChunkInfo()
+            {
+                CompressedSize = reader.ReadInt64(),
+                UncompressedSize = reader.ReadInt64()
+            };
+        }
+
+        /// <summary>
+        ///     Write an UE4 FCompressedChunkInfo
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="chunkInfo"></param>
+        public static void Write(this BinaryWriter writer, FCompressedChunkInfo chunkInfo)
+        {
+            writer.Write(chunkInfo.CompressedSize);
+            writer.Write(chunkInfo.UncompressedSize);
+        }
+
+        /// <summary>
+        ///     Read an UE4 FCompressedChunkHeader
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public static FCompressedChunkHeader ReadCompressedChunkHeader(this BinaryReader reader)
+        {
+            return new FCompressedChunkHeader()
+            {
+                PackageTag = reader.ReadInt64(),
+                BlockSize = reader.ReadInt64(),
+                CompressedSize = reader.ReadInt64(),
+                UncompressedSize = reader.ReadInt64()
+            };
+        }
+
+        /// <summary>
+        ///     Write an UE4 FCompressedChunkHeader
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="chunkInfo"></param>
+        public static void Write(this BinaryWriter writer, FCompressedChunkHeader chunkHeader)
+        {
+            writer.Write(chunkHeader.PackageTag);
+            writer.Write(chunkHeader.BlockSize);
+            writer.Write(chunkHeader.CompressedSize);
+            writer.Write(chunkHeader.UncompressedSize);
+        }
+
+        /// <summary>
         ///     Write a UE4 Object Reference (Level, Path)
         /// </summary>
         /// <param name="writer"></param>
@@ -164,16 +218,6 @@ namespace SatisfactorySaveParser
         {
             writer.WriteLengthPrefixedString(objectReference.LevelName);
             writer.WriteLengthPrefixedString(objectReference.PathName);
-        }
-
-        /// <summary>
-        ///     Get the serialized length of an ObjectReference in bytes
-        /// </summary>
-        /// <param name="objRef"></param>
-        /// <returns></returns>
-        public static int GetSerializedLength(this ObjectReference objRef)
-        {
-            return objRef.LevelName.GetSerializedLength() + objRef.PathName.GetSerializedLength();
         }
 
         public static bool IsSuspicious(this Vector3 vector)

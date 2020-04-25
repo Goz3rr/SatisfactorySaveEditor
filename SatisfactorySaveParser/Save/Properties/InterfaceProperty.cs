@@ -4,9 +4,9 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class ObjectProperty : SerializedProperty
+    public class InterfaceProperty : SerializedProperty
     {
-        public const string TypeName = nameof(ObjectProperty);
+        public const string TypeName = nameof(InterfaceProperty);
         public override string PropertyType => TypeName;
 
         public override Type BackingType => typeof(ObjectReference);
@@ -16,18 +16,18 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public ObjectReference Reference { get; set; }
 
-        public ObjectProperty(string propertyName, int index = 0) : base(propertyName, index)
+        public InterfaceProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
         }
 
         public override string ToString()
         {
-            return $"Object {PropertyName}: {Reference}";
+            return $"Interface {PropertyName}: {Reference}";
         }
 
-        public static ObjectProperty Deserialize(BinaryReader reader, string propertyName, int index)
+        public static InterfaceProperty Deserialize(BinaryReader reader, string propertyName, int index)
         {
-            var result = new ObjectProperty(propertyName, index);
+            var result = new InterfaceProperty(propertyName, index);
 
             var nullByte = reader.ReadByte();
             Trace.Assert(nullByte == 0);

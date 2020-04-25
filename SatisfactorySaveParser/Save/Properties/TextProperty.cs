@@ -75,12 +75,15 @@ namespace SatisfactorySaveParser.Save.Properties
             }
         }
 
-        public static TextProperty Deserialize(BinaryReader reader, string propertyName, int index)
+        public static TextProperty Deserialize(BinaryReader reader, string propertyName, int index, bool inArray = false)
         {
             var result = new TextProperty(propertyName, index);
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
+            if (!inArray)
+            {
+                var nullByte = reader.ReadByte();
+                Trace.Assert(nullByte == 0);
+            }
 
             result.Text = ParseTextEntry(reader);
 

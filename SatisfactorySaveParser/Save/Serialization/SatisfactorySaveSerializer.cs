@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
+using Ionic.Zlib;
+
 using NLog;
 
 using SatisfactorySaveParser.Game.Enums;
@@ -17,79 +19,119 @@ namespace SatisfactorySaveParser.Save.Serialization
     public class SatisfactorySaveSerializer : ISaveSerializer
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly HashSet<string> missingProperties = new HashSet<string>();
 
         public FGSaveSession Deserialize(Stream stream)
         {
             var sw = Stopwatch.StartNew();
+            using var reader = new BinaryReader(stream);
 
-            using (var reader = new BinaryReader(stream))
+            var save = new FGSaveSession
             {
-                var save = new FGSaveSession
-                {
-                    Header = DeserializeHeader(reader)
-                };
+                Header = DeserializeHeader(reader)
+            };
 
-                // Does not need to be a public property because it's equal to Entries.Count
-                var totalSaveObjects = reader.ReadUInt32();
-                log.Info($"Save contains {totalSaveObjects} object headers");
-
-                for (int i = 0; i < totalSaveObjects; i++)
-                {
-                    save.Objects.Add(DeserializeObjectHeader(reader));
-                }
-
-                var totalSaveObjectData = reader.ReadInt32();
-                log.Info($"Save contains {totalSaveObjectData} object data");
-
-                Trace.Assert(save.Objects.Count == totalSaveObjects);
-                Trace.Assert(save.Objects.Count == totalSaveObjectData);
-
-                for (int i = 0; i < save.Objects.Count; i++)
-                {
-                    DeserializeObjectData(save.Objects[i], reader);
-                }
-
-                save.DestroyedActors.AddRange(DeserializeDestroyedActors(reader));
-
-                log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
-                Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
-
-                sw.Stop();
-                log.Info($"Parsing save took {sw.ElapsedMilliseconds / 1000f}s");
-
-                return save;
+            log.Info($"Save is {(save.Header.IsCompressed ? "compressed" : "not compressed")}");
+            if (!save.Header.IsCompressed)
+            {
+                DeserializeSaveData(save, reader);
             }
+            else
+            {
+                using var uncompressedBuffer = new MemoryStream();
+                var uncompressedSize = 0L;
+
+                while (stream.Position < stream.Length)
+                {
+                    var chunkHeader = reader.ReadCompressedChunkHeader();
+                    Trace.Assert(chunkHeader.PackageTag == FCompressedChunkHeader.Magic);
+
+                    var chunkInfo = reader.ReadCompressedChunkInfo();
+                    Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
+
+                    var startPosition = stream.Position;
+                    using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
+                    {
+                        zStream.CopyTo(uncompressedBuffer);
+                    }
+
+                    // ZlibStream appears to read more bytes than it uses (because of buffering probably) so we need to manually fix the input stream position
+                    stream.Position = startPosition + chunkInfo.CompressedSize;
+
+                    uncompressedSize += chunkInfo.UncompressedSize;
+                }
+
+                uncompressedBuffer.Position = 0;
+                using (var uncompressedReader = new BinaryReader(uncompressedBuffer))
+                {
+                    var dataLength = uncompressedReader.ReadInt32();
+                    Trace.Assert(uncompressedSize == dataLength + 4);
+
+                    DeserializeSaveData(save, uncompressedReader);
+                }
+            }
+
+            sw.Stop();
+            log.Info($"Parsing save took {sw.ElapsedMilliseconds / 1000f}s");
+
+            return save;
+        }
+
+        private static void DeserializeSaveData(FGSaveSession save, BinaryReader reader)
+        {
+            // Does not need to be a public property because it's equal to Entries.Count
+            var totalSaveObjects = reader.ReadUInt32();
+            log.Info($"Save contains {totalSaveObjects} object headers");
+
+            for (int i = 0; i < totalSaveObjects; i++)
+            {
+                save.Objects.Add(DeserializeObjectHeader(reader));
+            }
+
+            var totalSaveObjectData = reader.ReadInt32();
+            log.Info($"Save contains {totalSaveObjectData} object data");
+
+            Trace.Assert(save.Objects.Count == totalSaveObjects);
+            Trace.Assert(save.Objects.Count == totalSaveObjectData);
+
+            for (int i = 0; i < save.Objects.Count; i++)
+            {
+                DeserializeObjectData(save.Objects[i], reader);
+            }
+
+            save.DestroyedActors.AddRange(DeserializeDestroyedActors(reader));
+
+            log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
+            Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
         }
 
         public void Serialize(FGSaveSession save, Stream stream)
         {
-            using (var writer = new BinaryWriter(stream))
-            {
-                SerializeHeader(save.Header, writer);
+            using var writer = new BinaryWriter(stream);
+
+            SerializeHeader(save.Header, writer);
+
+            writer.Write(save.Objects.Count);
+
+            var actors = save.Objects.Where(e => e is SaveActor).ToArray();
+            foreach (var actor in actors)
+                SerializeObjectHeader(actor, writer);
+
+            var components = save.Objects.Where(e => e is SaveComponent).ToArray();
+            foreach (var component in components)
+                SerializeObjectHeader(component, writer);
 
 
-                writer.Write(save.Objects.Count);
+            writer.Write(actors.Length + components.Length);
 
-                var actors = save.Objects.Where(e => e is SaveActor).ToArray();
-                foreach (var actor in actors)
-                    SerializeObjectHeader(actor, writer);
+            foreach (var actor in actors)
+                SerializeObjectData(actor, writer);
 
-                var components = save.Objects.Where(e => e is SaveComponent).ToArray();
-                foreach (var component in components)
-                    SerializeObjectHeader(component, writer);
+            foreach (var component in components)
+                SerializeObjectData(component, writer);
 
 
-                writer.Write(actors.Length + components.Length);
-
-                foreach (var actor in actors)
-                    SerializeObjectData(actor, writer);
-
-                foreach (var component in components)
-                    SerializeObjectData(component, writer);
-
-
-                SerializeDestroyedActors(save.DestroyedActors, writer);
-            }
+            SerializeDestroyedActors(save.DestroyedActors, writer);
         }
 
         public static FSaveHeader DeserializeHeader(BinaryReader reader)
@@ -117,7 +159,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 SaveDateTime = reader.ReadInt64()
             };
 
-            var logStr = $"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, Session={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}";
+            var logStr = $"Read save header: HeaderVersion={header.HeaderVersion}, SaveVersion={header.SaveVersion}, BuildVersion={header.BuildVersion}, MapName={header.MapName}, MapOpts={header.MapOptions}, SessionName={header.SessionName}, PlayTime={header.PlayDuration}, SaveTime={header.SaveDateTime}";
 
             if (header.SupportsSessionVisibility)
             {
@@ -220,7 +262,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
                     break;
 
-                case SaveComponent component:
+                case SaveComponent _:
                     break;
 
                 default:
@@ -230,7 +272,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             SerializedProperty prop;
             while ((prop = DeserializeProperty(reader)) != null)
             {
-                var (objProperty, objPropertyAttr) = prop.GetMatchingSaveProperty(saveObject.GetType());
+                var (objProperty, _) = prop.GetMatchingSaveProperty(saveObject.GetType());
 
                 if (objProperty == null)
                 {
@@ -240,10 +282,16 @@ namespace SatisfactorySaveParser.Save.Serialization
                     if (prop is StructProperty structProp)
                         propType += $" ({structProp.Data.GetType().Name})";
 
-                    if (type == typeof(SaveActor) || type == typeof(SaveComponent))
-                        log.Warn($"Missing property for {propType} {prop.PropertyName} on {saveObject.TypePath}");
-                    else
-                        log.Warn($"Missing property for {propType} {prop.PropertyName} on {type.Name}");
+                    var propertyUniqueName = $"{saveObject.TypePath}.{prop.PropertyName}:{propType}";
+                    if (!missingProperties.Contains(propertyUniqueName))
+                    {
+                        if (type == typeof(SaveActor) || type == typeof(SaveComponent))
+                            log.Warn($"Missing property for {propType} {prop.PropertyName} on {saveObject.TypePath}");
+                        else
+                            log.Warn($"Missing property for {propType} {prop.PropertyName} on {type.Name}");
+
+                        missingProperties.Add(propertyUniqueName);
+                    }
 
                     saveObject.DynamicProperties.Add(prop);
                     continue;
@@ -257,7 +305,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 log.Warn($"Read extra {extra} after {saveObject.TypePath} @ {reader.BaseStream.Position - 4}");
 
             var remaining = dataLength - (int)(reader.BaseStream.Position - before);
-            if(remaining > 0)
+            if (remaining > 0)
                 saveObject.DeserializeNativeData(reader, remaining);
 
             var after = reader.BaseStream.Position;
@@ -267,33 +315,32 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         public static void SerializeObjectData(SaveObject saveObject, BinaryWriter writer)
         {
-            // TODO: Replace this with proper size calculations?
-            using (var ms = new MemoryStream())
-            using (var dataWriter = new BinaryWriter(ms))
+            // TODO: Replace this with proper size calculations
+            using var ms = new MemoryStream();
+            using var dataWriter = new BinaryWriter(ms);
+
+            switch (saveObject)
             {
-                switch (saveObject)
-                {
-                    case SaveActor actor:
-                        dataWriter.Write(actor.ParentObject);
-                        dataWriter.Write(actor.Components.Count);
-                        foreach (var component in actor.Components)
-                            dataWriter.Write(component);
+                case SaveActor actor:
+                    dataWriter.Write(actor.ParentObject);
+                    dataWriter.Write(actor.Components.Count);
+                    foreach (var component in actor.Components)
+                        dataWriter.Write(component);
 
-                        break;
+                    break;
 
-                    case SaveComponent component:
-                        break;
+                case SaveComponent component:
+                    break;
 
-                    default:
-                        throw new NotImplementedException($"Unknown SaveObject kind {saveObject.ObjectKind}");
-                }
-
-                // TODO: serialize properties
-
-                var bytes = ms.ToArray();
-                writer.Write(bytes.Length);
-                writer.Write(bytes);
+                default:
+                    throw new NotImplementedException($"Unknown SaveObject kind {saveObject.ObjectKind}");
             }
+
+            // TODO: serialize properties
+
+            var bytes = ms.ToArray();
+            writer.Write(bytes.Length);
+            writer.Write(bytes);
         }
 
         public static SerializedProperty DeserializeProperty(BinaryReader reader)
@@ -332,6 +379,9 @@ namespace SatisfactorySaveParser.Save.Serialization
                     break;
                 case IntProperty.TypeName:
                     result = IntProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case Int64Property.TypeName:
+                    result = Int64Property.Deserialize(reader, propertyName, index);
                     break;
                 case MapProperty.TypeName:
                     result = MapProperty.Deserialize(reader, propertyName, index, out overhead);

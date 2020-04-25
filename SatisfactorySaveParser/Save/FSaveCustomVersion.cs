@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CA1707 // Identifiers should not contain underscores
+#pragma warning disable CA1069 // Enums values should not be duplicated
 
 namespace SatisfactorySaveParser.Save
 {

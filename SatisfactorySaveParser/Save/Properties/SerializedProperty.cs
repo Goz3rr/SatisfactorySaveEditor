@@ -275,22 +275,23 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public static Type GetPropertyTypeFromName(string name)
         {
-            switch (name)
+            return name switch
             {
-                case ArrayProperty.TypeName: return typeof(ArrayProperty);
-                case BoolProperty.TypeName: return typeof(BoolProperty);
-                case ByteProperty.TypeName: return typeof(ByteProperty);
-                case EnumProperty.TypeName: return typeof(EnumProperty);
-                case FloatProperty.TypeName: return typeof(FloatProperty);
-                case IntProperty.TypeName: return typeof(IntProperty);
-                case MapProperty.TypeName: return typeof(MapProperty);
-                case NameProperty.TypeName: return typeof(NameProperty);
-                case ObjectProperty.TypeName: return typeof(ObjectProperty);
-                case StrProperty.TypeName: return typeof(StrProperty);
-                case StructProperty.TypeName: return typeof(StructProperty);
-                case TextProperty.TypeName: return typeof(TextProperty);
-                default: throw new NotImplementedException($"Unknown PropertyType {name}");
-            }
+                ArrayProperty.TypeName => typeof(ArrayProperty),
+                BoolProperty.TypeName => typeof(BoolProperty),
+                ByteProperty.TypeName => typeof(ByteProperty),
+                EnumProperty.TypeName => typeof(EnumProperty),
+                FloatProperty.TypeName => typeof(FloatProperty),
+                Int64Property.TypeName => typeof(Int64Property),
+                IntProperty.TypeName => typeof(IntProperty),
+                MapProperty.TypeName => typeof(MapProperty),
+                NameProperty.TypeName => typeof(NameProperty),
+                ObjectProperty.TypeName => typeof(ObjectProperty),
+                StrProperty.TypeName => typeof(StrProperty),
+                StructProperty.TypeName => typeof(StructProperty),
+                TextProperty.TypeName => typeof(TextProperty),
+                _ => throw new NotImplementedException($"Unknown PropertyType {name}"),
+            };
         }
     }
 }

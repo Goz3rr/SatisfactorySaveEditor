@@ -11,7 +11,7 @@ namespace SatisfactorySaveParser.Save
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private static readonly List<string> missingTypes = new List<string>();
+        private static readonly HashSet<string> missingTypes = new HashSet<string>();
         private static readonly Dictionary<string, Type> objectTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(SaveObjectClassAttribute), false))
                 .SelectMany(t => t.GetCustomAttributes<SaveObjectClassAttribute>(false).Select(attr => new { Attribute = attr, Type = t }))
                 .ToDictionary(x => x.Attribute.ClassPath, x => x.Type);

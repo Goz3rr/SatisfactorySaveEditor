@@ -1,4 +1,6 @@
-﻿namespace SatisfactorySaveParser.Save
+﻿#pragma warning disable CA1069 // Enums values should not be duplicated
+
+namespace SatisfactorySaveParser.Save
 {
     /// <summary>
     ///     Enum taken from the game headers which is used to version the header

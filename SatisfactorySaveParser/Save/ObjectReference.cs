@@ -24,6 +24,11 @@ namespace SatisfactorySaveParser.Save
 
         public bool IsInLevel => !String.IsNullOrEmpty(LevelName);
 
+        /// <summary>
+        ///     Get the serialized length of this ObjectReference in bytes
+        /// </summary>
+        public int SerializedLength => LevelName.GetSerializedLength() + PathName.GetSerializedLength();
+
         public ObjectReference(string level, string path)
         {
             LevelName = level;

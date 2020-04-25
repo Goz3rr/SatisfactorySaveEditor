@@ -11,6 +11,7 @@ namespace SatisfactorySaveParser.Game.Structs
     public abstract class GameStruct : IPropertyContainer
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly HashSet<string> missingProperties = new HashSet<string>();
 
         public virtual int SerializedLength => 0;
         public abstract string StructName { get; }
@@ -31,10 +32,16 @@ namespace SatisfactorySaveParser.Game.Structs
                 {
                     if (GetType() != typeof(DynamicGameStruct))
                     {
-                        if (prop is StructProperty structProp)
-                            log.Warn($"Missing property for {prop.PropertyType} ({structProp.Data.GetType().Name}) {prop.PropertyName} on struct {GetType().Name}");
-                        else
-                            log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on struct {GetType().Name}");
+                        var propertyUniqueName = $"{GetType().Name}.{prop.PropertyName}:{prop.PropertyType}";
+                        if (!missingProperties.Contains(propertyUniqueName))
+                        {
+                            if (prop is StructProperty structProp)
+                                log.Warn($"Missing property for {prop.PropertyType} ({structProp.Data.GetType().Name}) {prop.PropertyName} on struct {GetType().Name}");
+                            else
+                                log.Warn($"Missing property for {prop.PropertyType} {prop.PropertyName} on struct {GetType().Name}");
+
+                            missingProperties.Add(propertyUniqueName);
+                        }
                     }
 
                     DynamicProperties.Add(prop);
