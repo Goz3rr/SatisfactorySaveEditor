@@ -4,6 +4,7 @@ namespace SatisfactorySaveParser.Save
 {
     /// <summary>
     ///     Enum taken from the game headers which is used to version the save
+    ///     If a custom version is no longer supported and has been cleaned up, add the prefix DROPPED_.
     /// </summary>
     public enum FSaveCustomVersion
     {
@@ -44,22 +45,22 @@ namespace SatisfactorySaveParser.Save
         DROPPED_DockingStationSingleInventory,
 
         // 2018-03-06: Saving build shortcuts
-        SavingBuildShortcuts,
+        DROPPED_SavingBuildShortcuts,
 
         // 2018-04-05 Game Phase manager has been added and functionality has been moved from GameState.
         DROPPED_GamePhaseManagerAdded,
 
         // 2018-10-25 No longer save relative transforms for UFGConnectionComponent.
-        RemovedRelativeTransformsFromConnectionComponents,
+        DROPPED_RemovedRelativeTransformsFromConnectionComponents,
 
         // 2018-11-19 OnlineSubsystemMCP - Restore a lost pawn since we didn't have peoples EpicID
-        MCP_RestoreLostPawn,
+        DROPPED_MCP_RestoreLostPawn,
 
         // 2018-11-19 Wires no longer save locations, they span between connection components instead
-        WireSpanFromConnnectionComponents,
+        DROPPED_WireSpanFromConnnectionComponents,
 
         // 2019-01-30 Renamed SaveSessionId
-        RenamedSaveSessionId,
+        DROPPED_RenamedSaveSessionId,
 
         // 2019-06-20 GeoThermal generators didn't save resource nodes prior to this which results with issues when being dismantled
         ChangedGeoThermalGeneratorSaved,
@@ -69,6 +70,19 @@ namespace SatisfactorySaveParser.Save
 
         // 2019-07-24 Due to a bug in the network optimizations the legs data where trashed, reseting the legs to zero is the best option.
         ResetFactoryLegs,
+
+        // 2019-08-28 The large portion of the save file is now compressed. The header is still intact at the start of the file but after that it is compressed with ZLIB.
+        SaveFileIsCompressed,
+
+        // 2020-02-09: This is so we can check if a save is older than BU3 and do certain migrations. 
+        // For example save old number of inventory and arm slots to new system
+        BU3SaveCompatibility,
+
+        // 2020-03-19: Factory Colors have been converted to Linear Color. The buildable subsystem needs to convert from FColor to Linear Color overriding the defaults
+        BuildingColorConversion,
+
+        // 2020-04-21 Lizard doggos that had the friend status set but did not have a valid spawner saved will be recoupled with their spawner so that they are not killed bc of orphan status
+        RescuedFriendDoggos,
 
         // -----<new versions can be added above this line>-------------------------------------------------
         VersionPlusOne,

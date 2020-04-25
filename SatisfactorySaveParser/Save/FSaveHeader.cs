@@ -77,5 +77,10 @@ namespace SatisfactorySaveParser.Save
         ///     Helper property that indicates if this save header supports SessionVisibility
         /// </summary>
         public bool SupportsSessionVisibility => HeaderVersion >= FSaveHeaderVersion.AddedSessionVisibility;
+
+        /// <summary>
+        ///     Helper property that indicates if this save is compressed
+        /// </summary>
+        public bool IsCompressed => SaveVersion >= FSaveCustomVersion.SaveFileIsCompressed;
     }
 }
