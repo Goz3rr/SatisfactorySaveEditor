@@ -4,7 +4,7 @@ using System.IO;
 namespace SatisfactorySaveParser.Game.Structs.Native
 {
     [GameStruct("Guid")]
-    class FGuid : GameStruct
+    public class FGuid : GameStruct
     {
         public override string StructName => "Guid";
         public override int SerializedLength => 16;

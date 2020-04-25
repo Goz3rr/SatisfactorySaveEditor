@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 using NLog;
@@ -16,6 +17,8 @@ namespace SatisfactorySaveParser.Save
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly List<string> missingDeserializers = new List<string>();
         private static readonly List<string> missingSerializers = new List<string>();
+
+        private List<SerializedProperty> dynamicProperties = null;
 
         /// <summary>
         ///     Type of save object
@@ -36,7 +39,7 @@ namespace SatisfactorySaveParser.Save
         /// <summary>
         ///     Fallback list of properties that had no matching class property
         /// </summary>
-        public List<SerializedProperty> DynamicProperties { get; } = new List<SerializedProperty>();
+        public ReadOnlyCollection<SerializedProperty> DynamicProperties => dynamicProperties?.AsReadOnly();
 
         /// <summary>
         ///     Fallback array of native bytes that are only used for certain objects when serialization logic is missing, ideally always empty
@@ -46,6 +49,14 @@ namespace SatisfactorySaveParser.Save
         public override string ToString()
         {
             return TypePath;
+        }
+
+        public void AddDynamicProperty(SerializedProperty prop)
+        {
+            if (dynamicProperties is null)
+                dynamicProperties = new List<SerializedProperty>();
+
+            dynamicProperties.Add(prop);
         }
 
         /// <summary>

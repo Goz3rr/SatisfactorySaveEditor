@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Numerics;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 using SatisfactorySaveParser.Save;
@@ -21,22 +23,21 @@ namespace SatisfactorySaveParser
             var count = reader.ReadInt32();
             if (count == 0) return String.Empty;
 
+            var length = count > 0 ? count : count * -2;
+            var buffer = length <= 1024 ? stackalloc byte[length] : new byte[length];
+
+            var read = reader.Read(buffer);
+            if (buffer[read - 1] != 0)
+                throw new FatalSaveException($"Read non null terminated string", reader.BaseStream.Position - length);
+
             // If count is negative the string is UTF16, otherwise it's ASCII
             if (count > 0)
             {
-                var bytes = reader.ReadBytes(count);
-                if (bytes.Last() != 0)
-                    throw new FatalSaveException($"Read non null terminated string", reader.BaseStream.Position - count);
-
-                return Encoding.ASCII.GetString(bytes).TrimEnd('\0');
+                return Encoding.ASCII.GetString(buffer[0..^1]);
             }
             else
             {
-                var bytes = reader.ReadBytes(count * -2);
-                if (bytes.Last() != 0)
-                    throw new FatalSaveException($"Read non null terminated string", reader.BaseStream.Position - count);
-
-                return Encoding.Unicode.GetString(bytes).TrimEnd('\0');
+                return Encoding.Unicode.GetString(buffer[0..^2]);
             }
         }
 

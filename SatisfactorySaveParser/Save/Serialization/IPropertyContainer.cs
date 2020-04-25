@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 
 using SatisfactorySaveParser.Save.Properties;
 
@@ -6,6 +6,8 @@ namespace SatisfactorySaveParser.Save.Serialization
 {
     public interface IPropertyContainer
     {
-        List<SerializedProperty> DynamicProperties { get; }
+        ReadOnlyCollection<SerializedProperty> DynamicProperties { get; }
+
+        void AddDynamicProperty(SerializedProperty prop);
     }
 }

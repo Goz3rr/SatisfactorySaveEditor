@@ -31,8 +31,8 @@ namespace SatisfactorySaveParser.Save
 
         public ObjectReference(string level, string path)
         {
-            LevelName = level;
-            PathName = path;
+            LevelName = string.Intern(level);
+            PathName = string.Intern(path);
         }
 
         public override string ToString()

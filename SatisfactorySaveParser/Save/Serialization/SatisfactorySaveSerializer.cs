@@ -192,7 +192,7 @@ namespace SatisfactorySaveParser.Save.Serialization
         public static SaveObject DeserializeObjectHeader(BinaryReader reader)
         {
             var kind = (SaveObjectKind)reader.ReadInt32();
-            var className = reader.ReadLengthPrefixedString();
+            var className = string.Intern(reader.ReadLengthPrefixedString());
 
             var saveObject = SaveObjectFactory.CreateFromClass(kind, className);
             saveObject.Instance = reader.ReadObjectReference();
@@ -293,7 +293,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                         missingProperties.Add(propertyUniqueName);
                     }
 
-                    saveObject.DynamicProperties.Add(prop);
+                    saveObject.AddDynamicProperty(prop);
                     continue;
                 }
 

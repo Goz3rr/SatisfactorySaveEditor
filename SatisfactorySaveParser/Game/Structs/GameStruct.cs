@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 using NLog;
@@ -13,13 +14,23 @@ namespace SatisfactorySaveParser.Game.Structs
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly HashSet<string> missingProperties = new HashSet<string>();
 
+        private List<SerializedProperty> dynamicProperties = null;
+
         public virtual int SerializedLength => 0;
         public abstract string StructName { get; }
 
         /// <summary>
         ///     Fallback list of properties that had no matching class property
         /// </summary>
-        public List<SerializedProperty> DynamicProperties { get; } = new List<SerializedProperty>();
+        public ReadOnlyCollection<SerializedProperty> DynamicProperties => dynamicProperties?.AsReadOnly();
+
+        public void AddDynamicProperty(SerializedProperty prop)
+        {
+            if (dynamicProperties is null)
+                dynamicProperties = new List<SerializedProperty>();
+
+            dynamicProperties.Add(prop);
+        }
 
         public virtual void Deserialize(BinaryReader reader)
         {
@@ -44,7 +55,7 @@ namespace SatisfactorySaveParser.Game.Structs
                         }
                     }
 
-                    DynamicProperties.Add(prop);
+                    AddDynamicProperty(prop);
                     continue;
                 }
 

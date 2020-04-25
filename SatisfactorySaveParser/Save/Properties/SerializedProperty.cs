@@ -96,7 +96,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         if (info.PropertyType.GetGenericTypeDefinition() != typeof(List<>))
                         {
                             log.Error($"Attempted to assign array {PropertyName} to non list field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.DynamicProperties.Add(this);
+                            saveObject.AddDynamicProperty(this);
                             break;
                         }
 
@@ -117,7 +117,7 @@ namespace SatisfactorySaveParser.Save.Properties
                             case EnumProperty.TypeName:
                                 {
                                     // TODO
-                                    saveObject.DynamicProperties.Add(this);
+                                    saveObject.AddDynamicProperty(this);
                                 }
                                 break;
 
@@ -151,7 +151,7 @@ namespace SatisfactorySaveParser.Save.Properties
                             default:
                                 {
                                     log.Warn($"Attempted to assign array {PropertyName} of unknown type {arrayProperty.Type}");
-                                    saveObject.DynamicProperties.Add(this);
+                                    saveObject.AddDynamicProperty(this);
                                 }
                                 break;
                         }
@@ -170,7 +170,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         if (structProperty.Data.GetType() != info.PropertyType)
                         {
                             log.Error($"Attempted to assign struct {PropertyName} ({structProperty.Data.GetType().Name}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.DynamicProperties.Add(this);
+                            saveObject.AddDynamicProperty(this);
                             break;
                         }
 
@@ -183,7 +183,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         if (enumProperty.Type != info.PropertyType.Name)
                         {
                             log.Error($"Attempted to assign enum {PropertyName} ({enumProperty.Type}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.DynamicProperties.Add(this);
+                            saveObject.AddDynamicProperty(this);
                             break;
                         }
 
@@ -191,7 +191,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         if (!Enum.TryParse(info.PropertyType, enumProperty.Value.Split(':').Last(), true, out object enumValue))
                         {
                             log.Error($"Failed to parse \"{enumProperty.Value}\" as {info.PropertyType.Name}");
-                            saveObject.DynamicProperties.Add(this);
+                            saveObject.AddDynamicProperty(this);
                             break;
                         }
 
@@ -206,7 +206,7 @@ namespace SatisfactorySaveParser.Save.Properties
                             if (!info.PropertyType.IsGenericType || info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>))
                             {
                                 log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                                saveObject.DynamicProperties.Add(this);
+                                saveObject.AddDynamicProperty(this);
                                 break;
                             }
 
@@ -214,14 +214,14 @@ namespace SatisfactorySaveParser.Save.Properties
                             if (enumType.Name != byteProperty.EnumType)
                             {
                                 log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                                saveObject.DynamicProperties.Add(this);
+                                saveObject.AddDynamicProperty(this);
                                 break;
                             }
 
                             if (!Enum.TryParse(enumType, byteProperty.EnumValue, true, out object enumValue))
                             {
                                 log.Error($"Failed to parse \"{byteProperty.EnumValue}\" as {enumType.Name}");
-                                saveObject.DynamicProperties.Add(this);
+                                saveObject.AddDynamicProperty(this);
                                 break;
                             }
 
@@ -234,7 +234,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         if (info.PropertyType != typeof(byte))
                         {
                             log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.DynamicProperties.Add(this);
+                            saveObject.AddDynamicProperty(this);
                             break;
                         }
 
@@ -245,7 +245,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 case MapProperty mapProperty:
                     {
                         // TODO
-                        saveObject.DynamicProperties.Add(this);
+                        saveObject.AddDynamicProperty(this);
                     }
                     break;
 
@@ -261,7 +261,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         if (info.PropertyType != BackingType)
                         {
                             log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.DynamicProperties.Add(this);
+                            saveObject.AddDynamicProperty(this);
                             break;
                         }
 
