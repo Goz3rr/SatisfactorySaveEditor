@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SatisfactorySaveParser.Save.Serialization
 {
@@ -7,6 +8,12 @@ namespace SatisfactorySaveParser.Save.Serialization
     /// </summary>
     public interface ISaveSerializer
     {
+        event EventHandler<StageChangedEventArgs> SerializationStageChanged;
+        event EventHandler<StageProgressedEventArgs> SerializationStageProgressed;
+
+        event EventHandler<StageChangedEventArgs> DeserializationStageChanged;
+        event EventHandler<StageProgressedEventArgs> DeserializationStageProgressed;
+
         /// <summary>
         ///     Serialize the specific save out to the the specified stream
         /// </summary>

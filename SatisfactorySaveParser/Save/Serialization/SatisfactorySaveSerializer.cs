@@ -21,11 +21,27 @@ namespace SatisfactorySaveParser.Save.Serialization
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly HashSet<string> missingProperties = new HashSet<string>();
 
+        public event EventHandler<StageChangedEventArgs> SerializationStageChanged;
+        public event EventHandler<StageProgressedEventArgs> SerializationStageProgressed;
+        public event EventHandler<StageChangedEventArgs> DeserializationStageChanged;
+        public event EventHandler<StageProgressedEventArgs> DeserializationStageProgressed;
+
+        private void SetSerializationStage(SerializerStage stage)
+        {
+            SerializationStageChanged?.Invoke(this, new StageChangedEventArgs()
+            {
+                Stage = stage
+            });
+        }
+
         public FGSaveSession Deserialize(Stream stream)
         {
+            SetSerializationStage(SerializerStage.FileOpen);
+
             var sw = Stopwatch.StartNew();
             using var reader = new BinaryReader(stream);
 
+            SetSerializationStage(SerializerStage.ParseHeader);
             var save = new FGSaveSession
             {
                 Header = DeserializeHeader(reader)
@@ -38,6 +54,8 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
             else
             {
+                SetSerializationStage(SerializerStage.Decompressing);
+
                 using var uncompressedBuffer = new MemoryStream();
                 var uncompressedSize = 0L;
 
@@ -50,6 +68,8 @@ namespace SatisfactorySaveParser.Save.Serialization
                     Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
 
                     var startPosition = stream.Position;
+                    var uncompressedStartPosition = uncompressedBuffer.Position;
+
                     using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
                     {
                         zStream.CopyTo(uncompressedBuffer);
@@ -72,13 +92,16 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
 
             sw.Stop();
+            SetSerializationStage(SerializerStage.Done);
             log.Info($"Parsing save took {sw.ElapsedMilliseconds / 1000f}s");
 
             return save;
         }
 
-        private static void DeserializeSaveData(FGSaveSession save, BinaryReader reader)
+        private void DeserializeSaveData(FGSaveSession save, BinaryReader reader)
         {
+            SetSerializationStage(SerializerStage.ReadObjects);
+
             // Does not need to be a public property because it's equal to Entries.Count
             var totalSaveObjects = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjects} object headers");
@@ -87,6 +110,8 @@ namespace SatisfactorySaveParser.Save.Serialization
             {
                 save.Objects.Add(DeserializeObjectHeader(reader));
             }
+
+            SetSerializationStage(SerializerStage.ReadObjectData);
 
             var totalSaveObjectData = reader.ReadInt32();
             log.Info($"Save contains {totalSaveObjectData} object data");
@@ -98,6 +123,8 @@ namespace SatisfactorySaveParser.Save.Serialization
             {
                 DeserializeObjectData(save.Objects[i], reader);
             }
+
+            SetSerializationStage(SerializerStage.ReadDestroyedObjects);
 
             save.DestroyedActors.AddRange(DeserializeDestroyedActors(reader));
 
