@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -81,8 +80,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
             if (!inArray)
             {
-                var nullByte = reader.ReadByte();
-                Trace.Assert(nullByte == 0);
+                reader.AssertNullByte();
             }
 
             result.Text = ParseTextEntry(reader);

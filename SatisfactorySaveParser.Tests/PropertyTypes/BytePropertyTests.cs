@@ -22,84 +22,80 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void BytePropertyEnumRead()
         {
-            using (var stream = new MemoryStream(ByteEnumBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ByteProperty;
+            using var stream = new MemoryStream(ByteEnumBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ByteProperty;
 
-                Assert.AreEqual(ByteEnumName, prop.PropertyName);
-                Assert.AreEqual(ByteProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(ByteEnumName, prop.PropertyName);
+            Assert.AreEqual(ByteProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(true, prop.IsEnum);
-                Assert.AreEqual(ByteEnumType, prop.EnumType);
-                Assert.AreEqual(ByteEnumValue, prop.EnumValue);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(true, prop.IsEnum);
+            Assert.AreEqual(ByteEnumType, prop.EnumType);
+            Assert.AreEqual(ByteEnumValue, prop.EnumValue);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void BytePropertyEnumWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new ByteProperty(ByteEnumName)
             {
-                var prop = new ByteProperty(ByteEnumName)
-                {
-                    EnumType = ByteEnumType,
-                    EnumValue = ByteEnumValue
-                };
+                EnumType = ByteEnumType,
+                EnumValue = ByteEnumValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(16, prop.SerializedLength);
-                CollectionAssert.AreEqual(ByteEnumBytes, stream.ToArray());
-            }
+            Assert.AreEqual(16, prop.SerializedLength);
+            CollectionAssert.AreEqual(ByteEnumBytes, stream.ToArray());
         }
 
         [TestMethod]
         public void BytePropertyNumberRead()
         {
-            using (var stream = new MemoryStream(ByteNumberBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ByteProperty;
+            using var stream = new MemoryStream(ByteNumberBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ByteProperty;
 
-                Assert.AreEqual(ByteNumberName, prop.PropertyName);
-                Assert.AreEqual(ByteProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(ByteNumberName, prop.PropertyName);
+            Assert.AreEqual(ByteProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(false, prop.IsEnum);
-                Assert.AreEqual(ByteNumberValue, prop.ByteValue);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(false, prop.IsEnum);
+            Assert.AreEqual(ByteNumberValue, prop.ByteValue);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void BytePropertyNumberWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new ByteProperty(ByteNumberName)
             {
-                var prop = new ByteProperty(ByteNumberName)
-                {
-                    EnumType = "None",
-                    ByteValue = 0
-                };
+                EnumType = "None",
+                ByteValue = 0
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(1, prop.SerializedLength);
-                CollectionAssert.AreEqual(ByteNumberBytes, stream.ToArray());
-            }
+            Assert.AreEqual(1, prop.SerializedLength);
+            CollectionAssert.AreEqual(ByteNumberBytes, stream.ToArray());
         }
     }
 }

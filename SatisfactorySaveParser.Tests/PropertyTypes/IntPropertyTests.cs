@@ -17,40 +17,38 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void IntPropertyRead()
         {
-            using (var stream = new MemoryStream(IntBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as IntProperty;
+            using var stream = new MemoryStream(IntBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as IntProperty;
 
-                Assert.AreEqual(IntName, prop.PropertyName);
-                Assert.AreEqual(IntProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(IntName, prop.PropertyName);
+            Assert.AreEqual(IntProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(IntValue, prop.Value);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(IntValue, prop.Value);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void IntPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new IntProperty(IntName)
             {
-                var prop = new IntProperty(IntName)
-                {
-                    Value = IntValue
-                };
+                Value = IntValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(4, prop.SerializedLength);
-                CollectionAssert.AreEqual(IntBytes, stream.ToArray());
-            }
+            Assert.AreEqual(4, prop.SerializedLength);
+            CollectionAssert.AreEqual(IntBytes, stream.ToArray());
         }
     }
 }

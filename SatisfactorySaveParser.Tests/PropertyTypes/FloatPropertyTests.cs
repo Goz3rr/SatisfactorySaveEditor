@@ -17,40 +17,38 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void FloatPropertyRead()
         {
-            using (var stream = new MemoryStream(FloatBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as FloatProperty;
+            using var stream = new MemoryStream(FloatBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as FloatProperty;
 
-                Assert.AreEqual(FloatName, prop.PropertyName);
-                Assert.AreEqual(FloatProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(FloatName, prop.PropertyName);
+            Assert.AreEqual(FloatProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(FloatValue, prop.Value);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(FloatValue, prop.Value);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void FloatPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new FloatProperty(FloatName)
             {
-                var prop = new FloatProperty(FloatName)
-                {
-                    Value = FloatValue
-                };
+                Value = FloatValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(4, prop.SerializedLength);
-                CollectionAssert.AreEqual(FloatBytes, stream.ToArray());
-            }
+            Assert.AreEqual(4, prop.SerializedLength);
+            CollectionAssert.AreEqual(FloatBytes, stream.ToArray());
         }
 
         [TestMethod]
@@ -62,7 +60,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                 Value = MappingTestActor.TestFloatValue * 2
             };
 
-            var (objProperty, objPropertyAttr) = prop.GetMatchingSaveProperty(saveObject.GetType());
+            var (objProperty, _) = prop.GetMatchingSaveProperty(saveObject.GetType());
 
             Assert.AreEqual(nameof(saveObject.TestFloat), objProperty.Name);
 

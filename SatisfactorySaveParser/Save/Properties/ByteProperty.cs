@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -53,8 +52,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 EnumType = reader.ReadLengthPrefixedString()
             };
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
+            reader.AssertNullByte();
 
             if (result.IsEnum)
             {

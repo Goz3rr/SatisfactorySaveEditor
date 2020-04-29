@@ -17,40 +17,38 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void BoolPropertyRead()
         {
-            using (var stream = new MemoryStream(BoolTrueBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as BoolProperty;
+            using var stream = new MemoryStream(BoolTrueBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as BoolProperty;
 
-                Assert.AreEqual(BoolTrueName, prop.PropertyName);
-                Assert.AreEqual(BoolProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(BoolTrueName, prop.PropertyName);
+            Assert.AreEqual(BoolProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(BoolTrueValue, prop.Value);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(BoolTrueValue, prop.Value);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void BoolPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new BoolProperty(BoolTrueName)
             {
-                var prop = new BoolProperty(BoolTrueName)
-                {
-                    Value = BoolTrueValue
-                };
+                Value = BoolTrueValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(0, prop.SerializedLength);
-                CollectionAssert.AreEqual(BoolTrueBytes, stream.ToArray());
-            }
+            Assert.AreEqual(0, prop.SerializedLength);
+            CollectionAssert.AreEqual(BoolTrueBytes, stream.ToArray());
         }
     }
 }

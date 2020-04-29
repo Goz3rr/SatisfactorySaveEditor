@@ -18,42 +18,40 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void EnumPropertyRead()
         {
-            using (var stream = new MemoryStream(EnumBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as EnumProperty;
+            using var stream = new MemoryStream(EnumBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as EnumProperty;
 
-                Assert.AreEqual(EnumName, prop.PropertyName);
-                Assert.AreEqual(EnumProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(EnumName, prop.PropertyName);
+            Assert.AreEqual(EnumProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(EnumType, prop.Type);
-                Assert.AreEqual(EnumValue, prop.Value);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(EnumType, prop.Type);
+            Assert.AreEqual(EnumValue, prop.Value);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void EnumPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new EnumProperty(EnumName)
             {
-                var prop = new EnumProperty(EnumName)
-                {
-                    Type = EnumType,
-                    Value = EnumValue
-                };
+                Type = EnumType,
+                Value = EnumValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(34, prop.SerializedLength);
-                CollectionAssert.AreEqual(EnumBytes, stream.ToArray());
-            }
+            Assert.AreEqual(34, prop.SerializedLength);
+            CollectionAssert.AreEqual(EnumBytes, stream.ToArray());
         }
     }
 }

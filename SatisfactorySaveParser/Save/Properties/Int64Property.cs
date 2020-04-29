@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -29,10 +28,9 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new Int64Property(propertyName, index);
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
-
+            reader.AssertNullByte();
             result.Value = reader.ReadInt64();
+
             return result;
         }
 
