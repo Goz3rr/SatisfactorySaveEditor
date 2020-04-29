@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -35,8 +34,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
             overhead = result.Type.GetSerializedLength() + 1;
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
+            reader.AssertNullByte();
 
             result.Value = reader.ReadLengthPrefixedString();
 

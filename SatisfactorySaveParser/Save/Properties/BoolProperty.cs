@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -29,11 +28,10 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new BoolProperty(propertyName, index)
             {
-                Value = reader.ReadByte() > 0
+                Value = reader.ReadByte() != 0
             };
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
+            reader.AssertNullByte();
 
             return result;
         }

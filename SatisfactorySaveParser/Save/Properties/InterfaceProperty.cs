@@ -29,10 +29,9 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new InterfaceProperty(propertyName, index);
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
-
+            reader.AssertNullByte();
             result.Reference = reader.ReadObjectReference();
+
             return result;
         }
 

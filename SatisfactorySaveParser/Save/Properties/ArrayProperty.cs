@@ -131,10 +131,9 @@ namespace SatisfactorySaveParser.Save.Properties
                         var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            var str = reader.ReadLengthPrefixedString();
                             result.Elements.Add(new StrProperty(null)
                             {
-                                Value = str
+                                Value = reader.ReadLengthPrefixedString()
                             });
                         }
                     }

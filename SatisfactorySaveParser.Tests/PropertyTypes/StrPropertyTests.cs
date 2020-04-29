@@ -17,40 +17,38 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void StrPropertyRead()
         {
-            using (var stream = new MemoryStream(StrBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as StrProperty;
+            using var stream = new MemoryStream(StrBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as StrProperty;
 
-                Assert.AreEqual(StrName, prop.PropertyName);
-                Assert.AreEqual(StrProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(StrName, prop.PropertyName);
+            Assert.AreEqual(StrProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(StrValue, prop.Value);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(StrValue, prop.Value);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void StrPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new StrProperty(StrName)
             {
-                var prop = new StrProperty(StrName)
-                {
-                    Value = StrValue
-                };
+                Value = StrValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(14, prop.SerializedLength);
-                CollectionAssert.AreEqual(StrBytes, stream.ToArray());
-            }
+            Assert.AreEqual(14, prop.SerializedLength);
+            CollectionAssert.AreEqual(StrBytes, stream.ToArray());
         }
     }
 }

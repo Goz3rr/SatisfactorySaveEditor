@@ -235,7 +235,7 @@ namespace SatisfactorySaveParser
         public static void AssertNullInt32(this BinaryReader reader)
         {
             var nullInt = reader.ReadInt32();
-            Trace.Assert(nullInt == 0, $"Expected null int32, got {nullInt} instead at {reader.BaseStream.Position - 1}");
+            Trace.Assert(nullInt == 0, $"Expected null int32, got {nullInt} instead at {reader.BaseStream.Position - 4}");
         }
     }
 }

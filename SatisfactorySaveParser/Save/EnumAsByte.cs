@@ -13,7 +13,7 @@ namespace SatisfactorySaveParser.Save
 
         public override string ToString()
         {
-            return $"EnumAsByte {Value.ToString()}";
+            return $"EnumAsByte {Value}";
         }
     }
 }

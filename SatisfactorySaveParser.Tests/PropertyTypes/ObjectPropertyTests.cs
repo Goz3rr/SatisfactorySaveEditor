@@ -18,40 +18,38 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void ObjectPropertyRead()
         {
-            using (var stream = new MemoryStream(ObjectBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ObjectProperty;
+            using var stream = new MemoryStream(ObjectBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ObjectProperty;
 
-                Assert.AreEqual(ObjectName, prop.PropertyName);
-                Assert.AreEqual(ObjectProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(ObjectName, prop.PropertyName);
+            Assert.AreEqual(ObjectProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(ObjectValue, prop.Reference);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(ObjectValue, prop.Reference);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void ObjectPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new ObjectProperty(ObjectName)
             {
-                var prop = new ObjectProperty(ObjectName)
-                {
-                    Reference = ObjectValue
-                };
+                Reference = ObjectValue
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(74, prop.SerializedLength);
-                CollectionAssert.AreEqual(ObjectBytes, stream.ToArray());
-            }
+            Assert.AreEqual(74, prop.SerializedLength);
+            CollectionAssert.AreEqual(ObjectBytes, stream.ToArray());
         }
     }
 }

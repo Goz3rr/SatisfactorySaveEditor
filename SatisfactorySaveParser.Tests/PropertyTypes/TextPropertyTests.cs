@@ -48,186 +48,186 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void TextPropertyRead()
         {
-            using (var stream = new MemoryStream(TextBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
+            using var stream = new MemoryStream(TextBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
 
-                Assert.AreEqual(TextName, prop.PropertyName);
-                Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(TextName, prop.PropertyName);
+            Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
 
-                var text = prop.Text as BaseTextEntry;
-                Assert.AreNotEqual(null, text);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(TextValue, text.Value);
-                Assert.AreEqual(TextFlags, text.Flags);
+            var text = prop.Text as BaseTextEntry;
+            Assert.AreNotEqual(null, text);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(TextValue, text.Value);
+            Assert.AreEqual(TextFlags, text.Flags);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void TextPropertyWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new TextProperty(TextName)
             {
-                var prop = new TextProperty(TextName)
+                Text = new BaseTextEntry(TextFlags)
                 {
-                    Text = new BaseTextEntry(TextFlags)
-                    {
-                        Value = TextValue
-                    }
-                };
+                    Value = TextValue
+                }
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(21, prop.SerializedLength);
-                CollectionAssert.AreEqual(TextBytes, stream.ToArray());
-            }
+            Assert.AreEqual(21, prop.SerializedLength);
+            CollectionAssert.AreEqual(TextBytes, stream.ToArray());
         }
 
         [TestMethod]
         public void TextPropertyAltRead()
         {
-            using (var stream = new MemoryStream(AltTextBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
+            using var stream = new MemoryStream(AltTextBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
 
-                Assert.AreEqual(AltTextName, prop.PropertyName);
-                Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(AltTextName, prop.PropertyName);
+            Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
 
-                var text = prop.Text as BaseTextEntry;
-                Assert.AreNotEqual(null, text);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(AltTextKey, text.Key);
-                Assert.AreEqual(AltTextValue, text.Value);
-                Assert.AreEqual(AltTextFlags, text.Flags);
+            var text = prop.Text as BaseTextEntry;
+            Assert.AreNotEqual(null, text);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(AltTextKey, text.Key);
+            Assert.AreEqual(AltTextValue, text.Value);
+            Assert.AreEqual(AltTextFlags, text.Flags);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void TextPropertyAltWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new TextProperty(AltTextName)
             {
-                var prop = new TextProperty(AltTextName)
+                Text = new BaseTextEntry(AltTextFlags)
                 {
-                    Text = new BaseTextEntry(AltTextFlags)
-                    {
-                        Key = AltTextKey,
-                        Value = AltTextValue
-                    }
-                };
+                    Key = AltTextKey,
+                    Value = AltTextValue
+                }
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(57, prop.SerializedLength);
-                CollectionAssert.AreEqual(AltTextBytes, stream.ToArray());
-            }
+            Assert.AreEqual(57, prop.SerializedLength);
+            CollectionAssert.AreEqual(AltTextBytes, stream.ToArray());
         }
 
         [TestMethod]
         public void TextPropertyAlt2Read()
         {
-            using (var stream = new MemoryStream(Alt2TextBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
+            using var stream = new MemoryStream(Alt2TextBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
 
-                Assert.AreEqual(Alt2TextName, prop.PropertyName);
-                Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(Alt2TextName, prop.PropertyName);
+            Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
 
-                var text = prop.Text as ArgumentFormatTextEntry;
-                Assert.AreNotEqual(null, text);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(Alt2TextFlags, text.Flags);
+            var text = prop.Text as ArgumentFormatTextEntry;
+            Assert.AreNotEqual(null, text);
 
-                Assert.AreEqual(Alt2TextKey, text.SourceFormat.Key);
-                Assert.AreEqual(Alt2TextValue, text.SourceFormat.Value);
-                Assert.AreEqual(Alt2TextSourceFlags, text.SourceFormat.Flags);
+            Assert.AreEqual(Alt2TextFlags, text.Flags);
 
-                var eq = Alt2ArgumentFormat.Equals(text.Arguments[0]);
+            Assert.AreEqual(Alt2TextKey, text.SourceFormat.Key);
+            Assert.AreEqual(Alt2TextValue, text.SourceFormat.Value);
+            Assert.AreEqual(Alt2TextSourceFlags, text.SourceFormat.Flags);
 
-                CollectionAssert.AreEqual(new List<ArgumentFormat>(new[] { Alt2ArgumentFormat }), text.Arguments);
+            var eq = Alt2ArgumentFormat.Equals(text.Arguments[0]);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            CollectionAssert.AreEqual(new List<ArgumentFormat>(new[] { Alt2ArgumentFormat }), text.Arguments);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void TextPropertyAlt2Write()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new TextProperty(Alt2TextName)
             {
-                var prop = new TextProperty(Alt2TextName)
+                Text = new ArgumentFormatTextEntry(Alt2TextFlags)
                 {
-                };
+                    SourceFormat = new BaseTextEntry(Alt2TextSourceFlags)
+                    {
+                        Key = Alt2TextKey,
+                        Value = Alt2TextValue
+                    }
+                }
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(111, prop.SerializedLength);
-                CollectionAssert.AreEqual(Alt2TextBytes, stream.ToArray());
-            }
+            Assert.AreEqual(111, prop.SerializedLength);
+            CollectionAssert.AreEqual(Alt2TextBytes, stream.ToArray());
         }
 
         [TestMethod]
         public void TextPropertyNoneRead()
         {
-            using (var stream = new MemoryStream(NoneTextBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
+            using var stream = new MemoryStream(NoneTextBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as TextProperty;
 
-                Assert.AreEqual(NoneTextName, prop.PropertyName);
-                Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(NoneTextName, prop.PropertyName);
+            Assert.AreEqual(TextProperty.TypeName, prop.PropertyType);
 
-                var text = prop.Text as NoneTextEntry;
-                Assert.AreNotEqual(null, text);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(NoneTextFlags, text.Flags);
+            var text = prop.Text as NoneTextEntry;
+            Assert.AreNotEqual(null, text);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(NoneTextFlags, text.Flags);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void TextPropertyNoneWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var prop = new TextProperty(NoneTextName)
             {
-                var prop = new TextProperty(NoneTextName)
-                {
-                    Text = new NoneTextEntry(NoneTextFlags)
-                };
+                Text = new NoneTextEntry(NoneTextFlags)
+            };
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
-                Assert.AreEqual(5, prop.SerializedLength);
-                CollectionAssert.AreEqual(NoneTextBytes, stream.ToArray());
-            }
+            Assert.AreEqual(5, prop.SerializedLength);
+            CollectionAssert.AreEqual(NoneTextBytes, stream.ToArray());
         }
     }
 }
