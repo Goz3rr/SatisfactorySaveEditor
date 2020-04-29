@@ -3,7 +3,7 @@ using System.IO;
 
 using SatisfactorySaveParser.Save.Serialization;
 
-namespace SatisfactorySaveEditor
+namespace SatisfactorySaveEditorCli
 {
     class Program
     {

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+===============================================================================================================
+										Formatting Standards	
+										
+	1. Parent in this file matches parent type in the save file tree. For example, this means that since 
+	   'Game' is the child of root 'Root' in the save, 'Game' is the child of tag 'Root' in the XML.
+	   
+	2. If you discover a tag not listed in this file in your save, but cannot determine its purpose, insert 
+	   the below template where it should go in the tree. Do not uncomment the template until a tooltip 
+	   has been written. By doing this, people can share tags that their save has that others might not know
+	   about yet, increasing the chance that someone can figure out what it probably does.
+-->
+
+<!--<TypeTooltip Type="PUT_TAG_TYPE_NAME_HERE" Tooltip="Currently_unknown_purpose" /> -->
+
+<!--
+  3. For tags which contain one or more sub-tags, use the word 'Contains.' For tags which contain a 
+	   singular data tag, use the word 'Stores.' For example, the FactoryGame tag "Contains multiple 
+	   persistent objects..." and the BP_BuildableSubsystem.BP_BuildableSubsystem_C tag "Stores non-
+	   standard Color Gun color pairs."
+	   
+	4. Don't conclude tooltips with a period unless it is the period in an abbreviation such as "etc." or "M.A.M."
+-->
+
+<TypeTooltip xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Type="Root" Tooltip="Main object containing all save data">
+	<TypeTooltip Type="Game" Tooltip="Contains the FactoryGame tag and nothing else">
+		<TypeTooltip Type="FactoryGame" Tooltip="Contains multiple persistent objects such as story progress, Paleberry bush locations, the game time manager, etc.">
+			<TypeTooltip Type="Equipment" Tooltip="Contains data about equipment such as placed beacons, portable miners, chainsaws, destructible rocks, etc.\nEach tool that exists in the save contains its own tag here, regardless of its location (storage box, equipped, dropped in world)" />
+			<TypeTooltip Type="-Shared" Tooltip="Contains Blueprints (see blueprint tag for more info) and Crate location data">
+				<TypeTooltip Type="Blueprint" Tooltip="Contains single-instance systems such as non-standard Color Gun color choices, the Game State tracker, in-game time tracking, etc.">
+					<TypeTooltip Type="BP_BuildableSubsystem.BP_BuildableSubsystem_C" Tooltip="Stores non-standard Color Gun color pairs" />
+					<!--<TypeTooltip Type="BP_CircuitSubsystem.BP_CircuitSubsystem_C" Tooltip="Currently unknown purpose." />-->
+					<!--<TypeTooltip Type="BP_RailroadSubsystem.BP_RailroadSubsystem_C." Tooltip="Currently unknown purpose." />-->
+					<!--<TypeTooltip Type="BP_StorySubsystem.BP_StorySubsystem_C" Tooltip="Currently unknown purpose." />-->
+					<TypeTooltip Type="BP_TimeOfDaySubsystem.BP_TimeOfDaySubsystem_C" Tooltip="Stores the current time progress in the in-game day (in seconds) as well as the number of in-game days elapsed" />
+					<TypeTooltip Type="BP_TutorialIntroManager.BP_TutorialIntroManager_C" Tooltip="Stores progress through the initial setup sequence of the game (building the HUB from the drop pod parts, progress through HUB tier 0 requirements, etc." />
+					<TypeTooltip Type="BP_GameMode.BP_GameMode_C" Tooltip="Stores last autosave number, save session name (presumably the one that appears when joining in multiplayer), and the name of the starting location (effects of changing this unknown)" />
+					<TypeTooltip Type="BP_GameState.BP_GameState_C" Tooltip="Stores links to other subsystems and game state data such as no cost and no power cheats" />
+					<!--<TypeTooltip Type="BP_TutorialSubsystem.BP_TutorialSubsystem_C" Tooltip="Currently unknown purpose." />-->
+				</TypeTooltip>
+				<TypeTooltip Type="Crate" Tooltip="Contains locations and links to the inventory of death crates and 'inventory too full to pick up' item crates">
+					<TypeTooltip Type="BP_Crate.BP_Crate_C" Tooltip="Stores a Crate's (not Personal Storage) location and links it to its inventory, which is stored in Root > Script > FGInventoryComponent" />
+				</TypeTooltip>
+			</TypeTooltip>
+			<TypeTooltip Type="Schematics" Tooltip="Contains the Progression tag and nothing else">
+				<TypeTooltip Type="Progression" Tooltip="Contains managers related to game progression">
+					<TypeTooltip Type="BP_GamePhaseManager.BP_GamePhaseManager_C" Tooltip="Stores Space Elevator phase costs by name and remaining material counts towards each phase" />
+					<TypeTooltip Type="BP_SchematicManager.BP_SchematicManager_C" Tooltip="Stores unlocked milestones, available milestones, selected milestone, progress towards selected milestone, and time since drop ship landing(?)" />
+				</TypeTooltip>
+			</TypeTooltip>
+			<TypeTooltip Type="Buildable" Tooltip="Contains buildable items like Vehicles, Buildings, Machines">
+				<TypeTooltip Type="Building" Tooltip="Contains buildable items like foundations, ramps and so on">
+					<TypeTooltip Type="Stair" Tooltip="Contains list of all stairs placed in the world">
+						<TypeTooltip Type="Build_Stairs_Left_01.Build_Stairs_Left_01_C" Tooltip="Stores Stair going left" />
+						<TypeTooltip Type="Build_Stairs_Right_01.Build_Stairs_Right_01_C" Tooltip="Stores Stair going right" />
+					</TypeTooltip>
+					<TypeTooltip Type="Ramp" Tooltip="Contains list of all ramps placed in the world">
+						<TypeTooltip Type="Build_Ramp_8x2_01.Build_Ramp_8x2_01_C" Tooltip="Stores Ramp 8x2" />
+						<TypeTooltip Type="Build_Ramp_8x4_01.Build_Ramp_8x4_01_C" Tooltip="Stores Ramp 8x4" />
+					</TypeTooltip>
+					<TypeTooltip Type="Foundation" Tooltip="Contains list of all foundations placed in the world">
+						<TypeTooltip Type="Build_Foundation_8x2_01.Build_Foundation_8x2_01_C" Tooltip="Stores Foundations 8x2" />
+						<TypeTooltip Type="Build_Foundation_8x4_01.Build_Foundation_8x4_01_C" Tooltip="Stores Foundations 8x4" />
+					</TypeTooltip>
+					<TypeTooltip Type="Wall" Tooltip="Contains list of all walls placed in the world">
+						<!-- #TODO: Have to setup a new save without walls to figure out which is which -->
+						<!-- <TypeTooltip Type="Build_Wall_8x4_01.Build_Wall_8x4_01_C" Tooltip="Stores Wall 8x4" /> -->
+						<!-- <TypeTooltip Type="Build_Wall_8x4_02.Build_Wall_8x4_02_C" Tooltip="Stores Wall 8x4" /> -->
+						<!-- <TypeTooltip Type="Build_Wall_Door_8x4_01.Build_Wall_Door_8x4_01_C" Tooltip="Stores Wall with doorway 8x4" /> -->
+					</TypeTooltip>
+					<TypeTooltip Type="Walkway" Tooltip="Contains list of all walkways placed in the world">
+						<TypeTooltip Type="Build_WalkwayCross.Build_WalkwayCross_C" Tooltip="Stores Walkway crossing" />
+					</TypeTooltip>
+				</TypeTooltip>
+			</TypeTooltip>
+		</TypeTooltip>
+	</TypeTooltip>
+	<TypeTooltip Type="Script" Tooltip="Contains most building and vehicle power network, inventory, and settings-related, information">
+		<TypeTooltip Type="FactoryGame.FGInventoryComponent" Tooltip="Stores information regarding the contents of machine buffers, crates, crash site drop pods, player and doggo inventories, etc." />
+	</TypeTooltip>
+</TypeTooltip>
