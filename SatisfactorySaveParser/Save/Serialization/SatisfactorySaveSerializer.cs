@@ -68,8 +68,6 @@ namespace SatisfactorySaveParser.Save.Serialization
                     Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
 
                     var startPosition = stream.Position;
-                    var uncompressedStartPosition = uncompressedBuffer.Position;
-
                     using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
                     {
                         zStream.CopyTo(uncompressedBuffer);

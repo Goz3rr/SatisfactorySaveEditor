@@ -12,7 +12,7 @@ namespace SatisfactorySaveParser.Save
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private static readonly HashSet<string> missingTypes = new HashSet<string>();
-        private static readonly Dictionary<string, Type> objectTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(SaveObjectClassAttribute), false))
+        public static readonly Dictionary<string, Type> SaveObjectTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(SaveObjectClassAttribute), false))
                 .SelectMany(t => t.GetCustomAttributes<SaveObjectClassAttribute>(false).Select(attr => new { Attribute = attr, Type = t }))
                 .ToDictionary(x => x.Attribute.ClassPath, x => x.Type);
 
@@ -24,7 +24,7 @@ namespace SatisfactorySaveParser.Save
         /// <returns></returns>
         public static SaveObject CreateFromClass(SaveObjectKind kind, string className)
         {
-            if (!objectTypes.TryGetValue(className, out Type type))
+            if (!SaveObjectTypes.TryGetValue(className, out Type type))
             {
                 if (!missingTypes.Contains(className))
                 {

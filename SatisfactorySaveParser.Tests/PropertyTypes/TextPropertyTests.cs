@@ -172,17 +172,20 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             using var stream = new MemoryStream();
             using var writer = new BinaryWriter(stream);
 
-            var prop = new TextProperty(Alt2TextName)
+            var text = new ArgumentFormatTextEntry(Alt2TextFlags)
             {
-                Text = new ArgumentFormatTextEntry(Alt2TextFlags)
+                SourceFormat = new BaseTextEntry(Alt2TextSourceFlags)
                 {
-                    SourceFormat = new BaseTextEntry(Alt2TextSourceFlags)
-                    {
-                        Key = Alt2TextKey,
-                        Value = Alt2TextValue
-                    }
+                    Key = Alt2TextKey,
+                    Value = Alt2TextValue
                 }
             };
+            text.Arguments.Add(Alt2ArgumentFormat);
+
+            var prop = new TextProperty(Alt2TextName)
+            {
+                Text = text
+            };            
 
             SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
