@@ -40,6 +40,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         public FGSaveSession Deserialize(Stream stream)
         {
+            currentDeserializationStage = 0;
             IncrementDeserializationStage(SerializerStage.FileOpen);
 
             var sw = Stopwatch.StartNew();
