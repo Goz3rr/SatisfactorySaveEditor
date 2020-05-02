@@ -26,36 +26,40 @@ namespace SatisfactorySaveParser.Save.Serialization
         public event EventHandler<StageChangedEventArgs> DeserializationStageChanged;
         public event EventHandler<StageProgressedEventArgs> DeserializationStageProgressed;
 
-        private void SetDeserializationStage(SerializerStage stage)
+        private int currentDeserializationStage = 0;
+
+        private void IncrementDeserializationStage(SerializerStage stage)
         {
             DeserializationStageChanged?.Invoke(this, new StageChangedEventArgs()
             {
-                Stage = stage
+                Stage = stage,
+                Current = currentDeserializationStage++,
+                Total = 7
             });
         }
 
         public FGSaveSession Deserialize(Stream stream)
         {
-            SetDeserializationStage(SerializerStage.FileOpen);
+            IncrementDeserializationStage(SerializerStage.FileOpen);
 
             var sw = Stopwatch.StartNew();
             using var reader = new BinaryReader(stream);
 
-            SetDeserializationStage(SerializerStage.ParseHeader);
+            IncrementDeserializationStage(SerializerStage.ParseHeader);
             var save = new FGSaveSession
             {
                 Header = DeserializeHeader(reader)
             };
 
             log.Info($"Save is {(save.Header.IsCompressed ? "compressed" : "not compressed")}");
+            // Go through the stage either way to make the UI consistent
+            IncrementDeserializationStage(SerializerStage.Decompressing);
             if (!save.Header.IsCompressed)
             {
                 DeserializeSaveData(save, reader);
             }
             else
             {
-                SetDeserializationStage(SerializerStage.Decompressing);
-
                 using var uncompressedBuffer = new MemoryStream();
                 var uncompressedSize = 0L;
 
@@ -90,7 +94,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
 
             sw.Stop();
-            SetDeserializationStage(SerializerStage.Done);
+            IncrementDeserializationStage(SerializerStage.Done);
             log.Info($"Parsing save took {sw.ElapsedMilliseconds / 1000f}s");
 
             return save;
@@ -98,7 +102,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         private void DeserializeSaveData(FGSaveSession save, BinaryReader reader)
         {
-            SetDeserializationStage(SerializerStage.ReadObjects);
+            IncrementDeserializationStage(SerializerStage.ReadObjects);
 
             // Does not need to be a public property because it's equal to Entries.Count
             var totalSaveObjects = reader.ReadUInt32();
@@ -109,7 +113,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 save.Objects.Add(DeserializeObjectHeader(reader));
             }
 
-            SetDeserializationStage(SerializerStage.ReadObjectData);
+            IncrementDeserializationStage(SerializerStage.ReadObjectData);
 
             var totalSaveObjectData = reader.ReadInt32();
             log.Info($"Save contains {totalSaveObjectData} object data");
@@ -122,7 +126,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 DeserializeObjectData(save.Objects[i], reader);
             }
 
-            SetDeserializationStage(SerializerStage.ReadDestroyedObjects);
+            IncrementDeserializationStage(SerializerStage.ReadDestroyedObjects);
 
             save.DestroyedActors.AddRange(DeserializeDestroyedActors(reader));
 
