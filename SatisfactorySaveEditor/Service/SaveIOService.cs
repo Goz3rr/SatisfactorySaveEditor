@@ -17,9 +17,11 @@ namespace SatisfactorySaveEditor.Service
         private static readonly SatisfactorySaveSerializer _serializer = new SatisfactorySaveSerializer();
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public static (SaveObjectTreeModel root, FGSaveSession saveGame) Load(string fileName)
+        public static (SaveObjectTreeModel root, FGSaveSession saveGame) Load(string fileName, IOProgressModel progressModel)
         {
             FGSaveSession saveGame;
+            _serializer.DeserializationStageChanged += progressModel.UpdateStatusLoad;
+            _serializer.DeserializationStageProgressed += progressModel.UpdateStatusLoad;
 
             try
             {
@@ -68,6 +70,8 @@ namespace SatisfactorySaveEditor.Service
                 item.IsExpanded = true;
             }
 
+            _serializer.DeserializationStageChanged -= progressModel.UpdateStatusLoad;
+            _serializer.DeserializationStageProgressed -= progressModel.UpdateStatusLoad;
             return (root, saveGame);
         }
 

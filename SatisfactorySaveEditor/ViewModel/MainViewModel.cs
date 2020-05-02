@@ -1,4 +1,4 @@
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
@@ -107,6 +107,8 @@ namespace SatisfactorySaveEditor.ViewModel
         }
 
         public bool HasUnsavedChanges { get; set; }
+
+        public IOProgressModel ProgressModel { get; } = new IOProgressModel();
 
         public MainViewModel()
         {
@@ -500,7 +502,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 return;
             }
 
-            var (root, saveGame) = SaveIOService.Load(fileName);
+            var (root, saveGame) = SaveIOService.Load(fileName, ProgressModel);
 
             Application.Current.Dispatcher.Invoke(() =>
             {

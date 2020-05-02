@@ -435,7 +435,7 @@
                     <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding ProgressModel.TopText}" HorizontalAlignment="Center" FontSize="24" Foreground="#7EFFFFFF"/>
                     <ProgressBar Height="20" Value="{Binding ProgressModel.TopProgress}"/>
                     <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding ProgressModel.BottomText}" HorizontalAlignment="Center" FontSize="24" Foreground="#7EFFFFFF"/>
-                    <ProgressBar Height="20" Value="{Binding ProgressModel.BottomProgress}"/>
+                    <ProgressBar IsIndeterminate="{Binding ProgressModel.BottomIndeterminate}" Height="20" Value="{Binding ProgressModel.BottomProgress}"/>
                 </StackPanel>
             </Border>
         </Grid>
