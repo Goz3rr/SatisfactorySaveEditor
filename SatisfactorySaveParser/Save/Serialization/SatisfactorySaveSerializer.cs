@@ -38,15 +38,28 @@ namespace SatisfactorySaveParser.Save.Serialization
             });
         }
 
+        private void UpdateDeserializationProgress(long current, long total)
+        {
+            var progress = (float)current / total * 100;
+            DeserializationStageProgressed?.Invoke(this, new StageProgressedEventArgs()
+            {
+                Current = current,
+                Total = total,
+                Progress = progress
+            });
+        }
+
         public FGSaveSession Deserialize(Stream stream)
         {
             currentDeserializationStage = 0;
             IncrementDeserializationStage(SerializerStage.FileOpen);
+            UpdateDeserializationProgress(0, -1);
 
             var sw = Stopwatch.StartNew();
             using var reader = new BinaryReader(stream);
 
             IncrementDeserializationStage(SerializerStage.ParseHeader);
+            UpdateDeserializationProgress(0, -1);
             var save = new FGSaveSession
             {
                 Header = DeserializeHeader(reader)
@@ -63,6 +76,10 @@ namespace SatisfactorySaveParser.Save.Serialization
             {
                 using var uncompressedBuffer = new MemoryStream();
                 var uncompressedSize = 0L;
+
+                var minimumProgressUpdate = stream.Length / 100;
+                var lastProgressUpdate = 0L;
+                UpdateDeserializationProgress(0, stream.Length);
 
                 while (stream.Position < stream.Length)
                 {
@@ -81,6 +98,12 @@ namespace SatisfactorySaveParser.Save.Serialization
                     // ZlibStream appears to read more bytes than it uses (because of buffering probably) so we need to manually fix the input stream position
                     stream.Position = startPosition + chunkInfo.CompressedSize;
 
+                    if (stream.Position - lastProgressUpdate > minimumProgressUpdate)
+                    {
+                        UpdateDeserializationProgress(stream.Position, stream.Length);
+                        lastProgressUpdate = stream.Position;
+                    }
+
                     uncompressedSize += chunkInfo.UncompressedSize;
                 }
 
@@ -96,6 +119,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
             sw.Stop();
             IncrementDeserializationStage(SerializerStage.Done);
+            UpdateDeserializationProgress(0, -1);
             log.Info($"Parsing save took {sw.ElapsedMilliseconds / 1000f}s");
 
             return save;
@@ -109,15 +133,29 @@ namespace SatisfactorySaveParser.Save.Serialization
             var totalSaveObjects = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjects} object headers");
 
+            UpdateDeserializationProgress(0, totalSaveObjects);
+            var minimumProgressUpdate = totalSaveObjects / 100;
+            var lastProgressUpdate = 0L;
+
             for (int i = 0; i < totalSaveObjects; i++)
             {
                 save.Objects.Add(DeserializeObjectHeader(reader));
+
+                if (i - lastProgressUpdate > minimumProgressUpdate)
+                {
+                    UpdateDeserializationProgress(i, totalSaveObjects);
+                    lastProgressUpdate = i;
+                }
             }
 
             IncrementDeserializationStage(SerializerStage.ReadObjectData);
 
-            var totalSaveObjectData = reader.ReadInt32();
+            var totalSaveObjectData = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjectData} object data");
+
+            UpdateDeserializationProgress(0, totalSaveObjectData);
+            minimumProgressUpdate = totalSaveObjectData / 100;
+            lastProgressUpdate = 0L;
 
             Trace.Assert(save.Objects.Count == totalSaveObjects);
             Trace.Assert(save.Objects.Count == totalSaveObjectData);
@@ -125,9 +163,16 @@ namespace SatisfactorySaveParser.Save.Serialization
             for (int i = 0; i < save.Objects.Count; i++)
             {
                 DeserializeObjectData(save.Objects[i], reader);
+
+                if (i - lastProgressUpdate > minimumProgressUpdate)
+                {
+                    UpdateDeserializationProgress(i, totalSaveObjectData);
+                    lastProgressUpdate = i;
+                }
             }
 
             IncrementDeserializationStage(SerializerStage.ReadDestroyedObjects);
+            UpdateDeserializationProgress(0, -1);
 
             save.DestroyedActors.AddRange(DeserializeDestroyedActors(reader));
 

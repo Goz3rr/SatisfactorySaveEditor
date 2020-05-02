@@ -12,11 +12,12 @@ namespace SatisfactorySaveParser.Save.Serialization
         /// <summary>
         ///     How much of the current stage has been completed
         /// </summary>
-        public int Current { get; set; }
+        public long Current { get; set; }
 
         /// <summary>
-        ///     The target amount of progress to be made before the current stage is done
+        ///     The target amount of progress to be made before the current stage is done.
+        ///     Can be -1 in case the current stage does not have incrementing progress and should instead be considered to take an indetermined amount of time
         /// </summary>
-        public int Total { get; set; }
+        public long Total { get; set; }
     }
 }
