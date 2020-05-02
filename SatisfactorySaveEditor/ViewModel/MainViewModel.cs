@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
@@ -29,7 +29,9 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private string _searchText;
+        private string _jumpSearchText;
         private bool _isBusy = false;
+        private bool _isJumping = false;
         private FGSaveSession _saveGame;
         private SaveObjectTreeModel _root;
         private string _saveFileName;
@@ -50,6 +52,9 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<string> OpenCommand { get; }
         public RelayCommand<bool> SaveCommand { get; }
         public RelayCommand ManualBackupCommand { get; }
+        public RelayCommand<string> JumpCommand { get; }
+        public RelayCommand<string> JumpSearchCommand { get; }
+        public RelayCommand JumpMenuCommand { get; }
 
         public SaveObjectTreeModel SelectedItem
         {
@@ -65,6 +70,12 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             get => _isBusy;
             set => Set(() => IsBusy, ref _isBusy, value);
+        }
+
+        public bool IsJumping
+        {
+            get => _isJumping;
+            set => Set(() => IsJumping, ref _isJumping, value);
         }
 
         public string FileName
@@ -87,6 +98,12 @@ namespace SatisfactorySaveEditor.ViewModel
                 _tokenSource = new CancellationTokenSource();
                 Task.Factory.StartNew(() => Filter(value), _tokenSource.Token);
             }
+        }
+
+        public string JumpSearchText
+        {
+            get => _jumpSearchText;
+            set => Set(() => JumpSearchText, ref _jumpSearchText, value);
         }
 
         public bool HasUnsavedChanges { get; set; }
@@ -127,6 +144,9 @@ namespace SatisfactorySaveEditor.ViewModel
             SaveCommand = new RelayCommand<bool>((saveAs) => Save(saveAs),(saveAs) => CanSave());
             ManualBackupCommand = new RelayCommand(() => CreateBackup(true), CanSave);
             ResetSearchCommand = new RelayCommand(ResetSearch);
+            JumpCommand = new RelayCommand<string>(Jump, CanJump);
+            JumpSearchCommand = new RelayCommand<string>(JumpSearch);
+            JumpMenuCommand = new RelayCommand(JumpMenu, CanSave);
 
             CheckUpdatesCommand = new RelayCommand(() =>
             {
@@ -135,6 +155,48 @@ namespace SatisfactorySaveEditor.ViewModel
             PreferencesCommand = new RelayCommand(OpenPreferences);
 
             CheckForUpdate(false).ConfigureAwait(false);
+        }
+
+        private void JumpMenu()
+        {
+            IsJumping = true;
+            JumpSearchText = string.Empty;
+        }
+
+        /// <summary>
+        /// Checks if it's possible to jump to the passed EntityName string
+        /// </summary>
+        /// <param name="target">The EntityName to jump to, in string format</param>
+        /// <returns>True if rootItem contains the EntitiyName, false otherwise.</returns>
+        private bool CanJump(string target) => _root.Children.Traverse(c => c.Children).Any(vm => vm.Name == target);
+
+        /// <summary>
+        /// Select the specified entity in the tree view
+        /// </summary>
+        /// <param name="target">EntityName of the entity to jump to</param>
+        private void Jump(string target)
+        {
+            if (SelectedItem != null) SelectedItem.IsSelected = false;
+            SelectedItem = _root.Children.Traverse(c => c.Children).First(vm => vm.Name == target);
+        }
+
+        /// <summary>
+        /// Search for an entity in the tree view and select the first match if it exists
+        /// </summary>
+        /// <param name="target">EntityName of the entity to jump to</param>
+        private void JumpSearch(string target)
+        {
+            IsJumping = false;
+
+            if (SelectedItem != null) SelectedItem.IsSelected = false;
+            SelectedItem = _root.Children.Traverse(c => c.Children).First(vm => vm.Name.ToLower().Contains(target.ToLower()));
+
+            var currentOpened = SelectedItem;
+            while (currentOpened != null)
+            {
+                currentOpened.IsExpanded = true;
+                currentOpened = currentOpened.Parent;
+            }
         }
 
         /// <summary>
@@ -155,8 +217,8 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             model.Parent.Children.Remove(model);
 
-            foreach (var child in model.Children.Traverse(m => m.Children)) _saveGame.Objects.Remove(child.Model);
-            _saveGame.Objects.Remove(model.Model);
+            foreach (var child in model.Children.Traverse(m => m.Children)) _saveGame.RemoveObject(child.Model);
+            _saveGame.RemoveObject(model.Model);
         }
 
         private void Filter(string value)

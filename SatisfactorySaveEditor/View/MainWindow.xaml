@@ -14,6 +14,8 @@
         dd:DragDrop.IsDropTarget="True"
         dd:DragDrop.DropHandler="{Binding .}"
         Closed="Window_Closed"
+        MinWidth="1280"
+        MinHeight="720"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Title="{Binding FileName, StringFormat='Satisfactory Save Editor{0}'}">
     <i:Interaction.Triggers>
@@ -28,6 +30,20 @@
         <converter:TypeTooltipConverter x:Key="TypeTooltipConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="O" Command="{Binding OpenCommand}" />
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Boolean>False</sys:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+        <KeyBinding Key="F12" Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Boolean>True</sys:Boolean>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+        <KeyBinding Modifiers="Control" Key="J" Command="{Binding JumpMenuCommand}" />
+    </Window.InputBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
             <MenuItem Header="_File">
@@ -53,11 +69,7 @@
                 </MenuItem>
                 <MenuItem Header="_Create backup" Command="{Binding ManualBackupCommand}"/>
                 <Separator/>
-                <MenuItem Header="Jump to tag..." InputGestureText="Ctrl+J" Command="{Binding JumpMenuCommand}">
-                    <MenuItem.CommandParameter>
-                        <sys:Boolean>False</sys:Boolean>
-                    </MenuItem.CommandParameter>
-                </MenuItem>
+                <MenuItem Header="Jump to tag..." InputGestureText="Ctrl+J" Command="{Binding JumpMenuCommand}"/>
                 <Separator/>
                 <MenuItem Header="Preferences" Command="{Binding PreferencesCommand}"/>
                 <MenuItem Header="_Exit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
@@ -398,10 +410,33 @@
                     </DataTemplate>
                 </ContentControl.Resources>-->
             </ContentControl>
-            <Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="1" Grid.ColumnSpan="3">
-                <Grid>
-                    <TextBlock Margin="0" TextWrapping="Wrap" Text="Please Wait..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="#7EFFFFFF"/>
-                </Grid>
+            <StackPanel Margin="5" Visibility="{Binding IsJumping, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="1" Grid.ColumnSpan="3">
+                <Border HorizontalAlignment="Center" Padding="5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                    <StackPanel>
+                        <TextBlock VerticalAlignment="Top" FontSize="18" HorizontalAlignment="Center" Text="Enter class name to jump to"/>
+                        <TextBox x:Name="SearchBox" Text="{Binding JumpSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" Padding="5" Width="600" FontSize="22" util:FocusExtension.IsFocused="{Binding IsJumping}" VerticalAlignment="Top" HorizontalAlignment="Center">
+                            <TextBox.InputBindings>
+                                <KeyBinding Command="{Binding JumpSearchCommand}" CommandParameter="{Binding ElementName=SearchBox, Path=Text}" Key="Return"/>
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <Border BorderBrush="Black" BorderThickness="1" Background="#80000000" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="1" Grid.ColumnSpan="3" Padding="100">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Margin" Value="0,0,0,10"/>
+                        </Style>
+                        <Style TargetType="{x:Type ProgressBar}">
+                            <Setter Property="Margin" Value="0,5,0,20"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding ProgressModel.TopText}" HorizontalAlignment="Center" FontSize="24" Foreground="#7EFFFFFF"/>
+                    <ProgressBar Height="20" Value="{Binding ProgressModel.TopProgress}"/>
+                    <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding ProgressModel.BottomText}" HorizontalAlignment="Center" FontSize="24" Foreground="#7EFFFFFF"/>
+                    <ProgressBar Height="20" Value="{Binding ProgressModel.BottomProgress}"/>
+                </StackPanel>
             </Border>
         </Grid>
     </DockPanel>
