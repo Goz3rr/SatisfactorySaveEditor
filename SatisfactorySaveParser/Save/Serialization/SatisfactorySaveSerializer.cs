@@ -18,6 +18,8 @@ namespace SatisfactorySaveParser.Save.Serialization
     /// </summary>
     public class SatisfactorySaveSerializer : ISaveSerializer
     {
+        private const int ProgressionReportModifier = 20;
+
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly HashSet<string> missingProperties = new HashSet<string>();
 
@@ -77,7 +79,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 using var uncompressedBuffer = new MemoryStream();
                 var uncompressedSize = 0L;
 
-                var minimumProgressUpdate = stream.Length / 100;
+                var minimumProgressUpdate = stream.Length / ProgressionReportModifier;
                 var lastProgressUpdate = 0L;
                 UpdateDeserializationProgress(0, stream.Length);
 
@@ -134,7 +136,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             log.Info($"Save contains {totalSaveObjects} object headers");
 
             UpdateDeserializationProgress(0, totalSaveObjects);
-            var minimumProgressUpdate = totalSaveObjects / 100;
+            var minimumProgressUpdate = totalSaveObjects / ProgressionReportModifier;
             var lastProgressUpdate = 0L;
 
             for (int i = 0; i < totalSaveObjects; i++)
@@ -154,7 +156,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             log.Info($"Save contains {totalSaveObjectData} object data");
 
             UpdateDeserializationProgress(0, totalSaveObjectData);
-            minimumProgressUpdate = totalSaveObjectData / 100;
+            minimumProgressUpdate = totalSaveObjectData / ProgressionReportModifier;
             lastProgressUpdate = 0L;
 
             Trace.Assert(save.Objects.Count == totalSaveObjects);
