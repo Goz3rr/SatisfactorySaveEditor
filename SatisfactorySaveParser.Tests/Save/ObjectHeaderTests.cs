@@ -32,95 +32,90 @@ namespace SatisfactorySaveParser.Tests.Save
         [TestMethod]
         public void ObjectHeaderReading()
         {
-            using (var stream = new MemoryStream(ActorHeaderBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var header = SatisfactorySaveSerializer.DeserializeObjectHeader(reader);
+            using var stream = new MemoryStream(ActorHeaderBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreEqual(ActorHeaderTypePath, header.TypePath);
-                Assert.AreEqual(ActorHeaderLevelName, header.Instance.LevelName);
-                Assert.AreEqual(ActorHeaderPathName, header.Instance.PathName);
+            var header = SatisfactorySaveSerializer.DeserializeObjectHeader(reader);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(ActorHeaderTypePath, header.TypePath);
+            Assert.AreEqual(ActorHeaderLevelName, header.Instance.LevelName);
+            Assert.AreEqual(ActorHeaderPathName, header.Instance.PathName);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void ActorHeaderReading()
         {
-            using (var stream = new MemoryStream(ActorHeaderBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var header = (SaveActor)SatisfactorySaveSerializer.DeserializeObjectHeader(reader);
+            using var stream = new MemoryStream(ActorHeaderBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreEqual(ActorHeaderKind, header.ObjectKind);
-                Assert.AreEqual(ActorNeedTransform, header.NeedTransform);
-                Assert.AreEqual(ActorRotation, header.Rotation);
-                Assert.AreEqual(ActorPosition, header.Position);
-                Assert.AreEqual(ActorScale, header.Scale);
-                Assert.AreEqual(ActorWasPlacedInLevel, header.WasPlacedInLevel);
+            var header = (SaveActor)SatisfactorySaveSerializer.DeserializeObjectHeader(reader);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(ActorHeaderKind, header.ObjectKind);
+            Assert.AreEqual(ActorNeedTransform, header.NeedTransform);
+            Assert.AreEqual(ActorRotation, header.Rotation);
+            Assert.AreEqual(ActorPosition, header.Position);
+            Assert.AreEqual(ActorScale, header.Scale);
+            Assert.AreEqual(ActorWasPlacedInLevel, header.WasPlacedInLevel);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void ActorHeaderWriting()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var header = new SaveActor
             {
-                var header = new SaveActor
-                {
-                    TypePath = ActorHeaderTypePath,
-                    Instance = new ObjectReference(ActorHeaderLevelName, ActorHeaderPathName),
+                TypePath = ActorHeaderTypePath,
+                Instance = new ObjectReference(ActorHeaderLevelName, ActorHeaderPathName),
 
-                    NeedTransform = ActorNeedTransform,
-                    Rotation = ActorRotation,
-                    Position = ActorPosition,
-                    Scale = ActorScale,
-                    WasPlacedInLevel = ActorWasPlacedInLevel
-                };
+                NeedTransform = ActorNeedTransform,
+                Rotation = ActorRotation,
+                Position = ActorPosition,
+                Scale = ActorScale,
+                WasPlacedInLevel = ActorWasPlacedInLevel
+            };
 
-                SatisfactorySaveSerializer.SerializeObjectHeader(header, writer);
+            SatisfactorySaveSerializer.SerializeObjectHeader(header, writer);
 
-                CollectionAssert.AreEqual(ActorHeaderBytes, stream.ToArray());
-            }
+            CollectionAssert.AreEqual(ActorHeaderBytes, stream.ToArray());
         }
 
         [TestMethod]
         public void ComponentHeaderReading()
         {
-            using (var stream = new MemoryStream(ComponentHeaderBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var header = (SaveComponent)SatisfactorySaveSerializer.DeserializeObjectHeader(reader);
+            using var stream = new MemoryStream(ComponentHeaderBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreEqual(ComponentHeaderKind, header.ObjectKind);
-                Assert.AreEqual(ComponentHeaderParentEntityName, header.ParentEntityName);
+            var header = (SaveComponent)SatisfactorySaveSerializer.DeserializeObjectHeader(reader);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(ComponentHeaderKind, header.ObjectKind);
+            Assert.AreEqual(ComponentHeaderParentEntityName, header.ParentEntityName);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void ComponentHeaderWriting()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var header = new SaveComponent
             {
-                var header = new SaveComponent
-                {
-                    TypePath = ComponentHeaderTypePath,
-                    Instance = new ObjectReference(ComponentHeaderLevelName, ComponentHeaderPathName),
+                TypePath = ComponentHeaderTypePath,
+                Instance = new ObjectReference(ComponentHeaderLevelName, ComponentHeaderPathName),
 
-                    ParentEntityName = ComponentHeaderParentEntityName
-                };
+                ParentEntityName = ComponentHeaderParentEntityName
+            };
 
-                SatisfactorySaveSerializer.SerializeObjectHeader(header, writer);
+            SatisfactorySaveSerializer.SerializeObjectHeader(header, writer);
 
-                CollectionAssert.AreEqual(ComponentHeaderBytes, stream.ToArray());
-            }
+            CollectionAssert.AreEqual(ComponentHeaderBytes, stream.ToArray());
         }
     }
 }

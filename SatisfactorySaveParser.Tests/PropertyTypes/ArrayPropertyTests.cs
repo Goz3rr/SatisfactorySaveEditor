@@ -17,42 +17,40 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void ArrayPropertyObjectRead()
         {
-            using (var stream = new MemoryStream(ObjectArrayBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ArrayProperty;
+            using var stream = new MemoryStream(ObjectArrayBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as ArrayProperty;
 
-                Assert.AreEqual(ObjectArrayName, prop.PropertyName);
-                Assert.AreEqual(ArrayProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(ObjectArrayName, prop.PropertyName);
+            Assert.AreEqual(ArrayProperty.TypeName, prop.PropertyType);
 
-                Assert.AreEqual(10, prop.Elements.Count);
-                for (int i = 0; i < 10; i++)
-                    Assert.AreEqual(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"), ((ObjectProperty)prop.Elements[i]).Reference);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(10, prop.Elements.Count);
+            for (int i = 0; i < 10; i++)
+                Assert.AreEqual(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"), ((ObjectProperty)prop.Elements[i]).Reference);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void ArrayPropertyObjectWrite()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                var prop = new ArrayProperty(ObjectArrayName);
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
 
-                //for (int i = 0; i < 10; i++)
-                //    prop.Elements.Add(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"));
+            var prop = new ArrayProperty(ObjectArrayName);
 
-                SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+            //for (int i = 0; i < 10; i++)
+            //    prop.Elements.Add(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"));
 
-                Assert.AreEqual(0, prop.SerializedLength);
-                CollectionAssert.AreEqual(ObjectArrayBytes, stream.ToArray());
-            }
+            SatisfactorySaveSerializer.SerializeProperty(prop, writer);
+
+            Assert.AreEqual(0, prop.SerializedLength);
+            CollectionAssert.AreEqual(ObjectArrayBytes, stream.ToArray());
         }
 
         [TestMethod]

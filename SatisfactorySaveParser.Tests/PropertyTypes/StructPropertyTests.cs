@@ -22,29 +22,28 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         [TestMethod]
         public void StructPropertyTypedRead()
         {
-            using (var stream = new MemoryStream(StructTypedBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as StructProperty;
+            using var stream = new MemoryStream(StructTypedBytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreNotEqual(null, prop);
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as StructProperty;
 
-                Assert.AreEqual(StructTypedName, prop.PropertyName);
-                Assert.AreEqual(StructProperty.TypeName, prop.PropertyType);
+            Assert.AreNotEqual(null, prop);
 
-                Assert.AreEqual(0, prop.Index);
+            Assert.AreEqual(StructTypedName, prop.PropertyName);
+            Assert.AreEqual(StructProperty.TypeName, prop.PropertyType);
 
-                var color = prop.Data as FLinearColor;
-                Assert.AreNotEqual(null, color);
+            Assert.AreEqual(0, prop.Index);
 
-                Assert.AreEqual(StructTypedType, color.StructName);
-                Assert.AreEqual(StructTypedDataR, color.R);
-                Assert.AreEqual(StructTypedDataG, color.G);
-                Assert.AreEqual(StructTypedDataB, color.B);
-                Assert.AreEqual(StructTypedDataA, color.A);
+            var color = prop.Data as FLinearColor;
+            Assert.AreNotEqual(null, color);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(StructTypedType, color.StructName);
+            Assert.AreEqual(StructTypedDataR, color.R);
+            Assert.AreEqual(StructTypedDataG, color.G);
+            Assert.AreEqual(StructTypedDataB, color.B);
+            Assert.AreEqual(StructTypedDataA, color.A);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]

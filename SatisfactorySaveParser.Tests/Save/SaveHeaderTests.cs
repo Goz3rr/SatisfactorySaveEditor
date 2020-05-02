@@ -2,6 +2,7 @@
 using System.IO;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Save.Serialization;
@@ -35,101 +36,97 @@ namespace SatisfactorySaveParser.Tests.Save
         [TestMethod]
         public void SaveHeaderV5Reading()
         {
-            using (var stream = new MemoryStream(SaveHeaderV5Bytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var header = SatisfactorySaveSerializer.DeserializeHeader(reader);
+            using var stream = new MemoryStream(SaveHeaderV5Bytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreEqual(SaveHeaderV5HeaderVersion, header.HeaderVersion);
-                Assert.AreEqual(SaveHeaderV5SaveVersion, header.SaveVersion);
-                Assert.AreEqual(SaveHeaderV5BuildVersion, header.BuildVersion);
+            var header = SatisfactorySaveSerializer.DeserializeHeader(reader);
 
-                Assert.AreEqual(SaveHeaderV5MapName, header.MapName);
-                Assert.AreEqual(SaveHeaderV5MapOptions, header.MapOptions);
-                Assert.AreEqual(SaveHeaderV5SessionName, header.SessionName);
+            Assert.AreEqual(SaveHeaderV5HeaderVersion, header.HeaderVersion);
+            Assert.AreEqual(SaveHeaderV5SaveVersion, header.SaveVersion);
+            Assert.AreEqual(SaveHeaderV5BuildVersion, header.BuildVersion);
 
-                Assert.AreEqual(SaveHeaderV5PlayDuration, header.PlayDuration);
-                Assert.AreEqual(SaveHeaderV5SaveDateTime, header.SaveDateTime);
-                Assert.AreEqual(SaveHeaderV5SessionVisibility, header.SessionVisibility);
+            Assert.AreEqual(SaveHeaderV5MapName, header.MapName);
+            Assert.AreEqual(SaveHeaderV5MapOptions, header.MapOptions);
+            Assert.AreEqual(SaveHeaderV5SessionName, header.SessionName);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(SaveHeaderV5PlayDuration, header.PlayDuration);
+            Assert.AreEqual(SaveHeaderV5SaveDateTime, header.SaveDateTime);
+            Assert.AreEqual(SaveHeaderV5SessionVisibility, header.SessionVisibility);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void SaveHeaderV5Writing()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var header = new FSaveHeader
             {
-                var header = new FSaveHeader
-                {
-                    HeaderVersion = SaveHeaderV5HeaderVersion,
-                    SaveVersion = SaveHeaderV5SaveVersion,
-                    BuildVersion = SaveHeaderV5BuildVersion,
+                HeaderVersion = SaveHeaderV5HeaderVersion,
+                SaveVersion = SaveHeaderV5SaveVersion,
+                BuildVersion = SaveHeaderV5BuildVersion,
 
-                    MapName = SaveHeaderV5MapName,
-                    MapOptions = SaveHeaderV5MapOptions,
-                    SessionName = SaveHeaderV5SessionName,
+                MapName = SaveHeaderV5MapName,
+                MapOptions = SaveHeaderV5MapOptions,
+                SessionName = SaveHeaderV5SessionName,
 
-                    PlayDuration = SaveHeaderV5PlayDuration,
-                    SaveDateTime = SaveHeaderV5SaveDateTime,
-                    SessionVisibility = SaveHeaderV5SessionVisibility
-                };
+                PlayDuration = SaveHeaderV5PlayDuration,
+                SaveDateTime = SaveHeaderV5SaveDateTime,
+                SessionVisibility = SaveHeaderV5SessionVisibility
+            };
 
-                SatisfactorySaveSerializer.SerializeHeader(header, writer);
+            SatisfactorySaveSerializer.SerializeHeader(header, writer);
 
-                CollectionAssert.AreEqual(SaveHeaderV5Bytes, stream.ToArray());
-            }
+            CollectionAssert.AreEqual(SaveHeaderV5Bytes, stream.ToArray());
         }
 
         [TestMethod]
         public void SaveHeaderV4Reading()
         {
-            using (var stream = new MemoryStream(SaveHeaderV4Bytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var header = SatisfactorySaveSerializer.DeserializeHeader(reader);
+            using var stream = new MemoryStream(SaveHeaderV4Bytes);
+            using var reader = new BinaryReader(stream);
 
-                Assert.AreEqual(SaveHeaderV4HeaderVersion, header.HeaderVersion);
-                Assert.AreEqual(SaveHeaderV4SaveVersion, header.SaveVersion);
-                Assert.AreEqual(SaveHeaderV4BuildVersion, header.BuildVersion);
+            var header = SatisfactorySaveSerializer.DeserializeHeader(reader);
 
-                Assert.AreEqual(SaveHeaderV4MapName, header.MapName);
-                Assert.AreEqual(SaveHeaderV4MapOptions, header.MapOptions);
-                Assert.AreEqual(SaveHeaderV4SessionName, header.SessionName);
+            Assert.AreEqual(SaveHeaderV4HeaderVersion, header.HeaderVersion);
+            Assert.AreEqual(SaveHeaderV4SaveVersion, header.SaveVersion);
+            Assert.AreEqual(SaveHeaderV4BuildVersion, header.BuildVersion);
 
-                Assert.AreEqual(SaveHeaderV4PlayDuration, header.PlayDuration);
-                Assert.AreEqual(SaveHeaderV4SaveDateTime, header.SaveDateTime);
+            Assert.AreEqual(SaveHeaderV4MapName, header.MapName);
+            Assert.AreEqual(SaveHeaderV4MapOptions, header.MapOptions);
+            Assert.AreEqual(SaveHeaderV4SessionName, header.SessionName);
 
-                Assert.AreEqual(stream.Length, stream.Position);
-            }
+            Assert.AreEqual(SaveHeaderV4PlayDuration, header.PlayDuration);
+            Assert.AreEqual(SaveHeaderV4SaveDateTime, header.SaveDateTime);
+
+            Assert.AreEqual(stream.Length, stream.Position);
         }
 
         [TestMethod]
         public void SaveHeaderV4Writing()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            var header = new FSaveHeader
             {
-                var header = new FSaveHeader
-                {
-                    HeaderVersion = SaveHeaderV4HeaderVersion,
-                    SaveVersion = SaveHeaderV4SaveVersion,
-                    BuildVersion = SaveHeaderV4BuildVersion,
+                HeaderVersion = SaveHeaderV4HeaderVersion,
+                SaveVersion = SaveHeaderV4SaveVersion,
+                BuildVersion = SaveHeaderV4BuildVersion,
 
-                    MapName = SaveHeaderV4MapName,
-                    MapOptions = SaveHeaderV4MapOptions,
-                    SessionName = SaveHeaderV4SessionName,
+                MapName = SaveHeaderV4MapName,
+                MapOptions = SaveHeaderV4MapOptions,
+                SessionName = SaveHeaderV4SessionName,
 
-                    PlayDuration = SaveHeaderV4PlayDuration,
-                    SaveDateTime = SaveHeaderV4SaveDateTime
-                };
+                PlayDuration = SaveHeaderV4PlayDuration,
+                SaveDateTime = SaveHeaderV4SaveDateTime
+            };
 
-                SatisfactorySaveSerializer.SerializeHeader(header, writer);
+            SatisfactorySaveSerializer.SerializeHeader(header, writer);
 
-                CollectionAssert.AreEqual(SaveHeaderV4Bytes, stream.ToArray());
-            }
+            CollectionAssert.AreEqual(SaveHeaderV4Bytes, stream.ToArray());
         }
 
         [TestMethod]

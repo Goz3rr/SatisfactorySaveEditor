@@ -16,24 +16,22 @@ namespace SatisfactorySaveParser.Tests
         [TestMethod]
         public void LengthPrefixedASCIIReading()
         {
-            using (var stream = new MemoryStream(PersistentLevelStringBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var str = reader.ReadLengthPrefixedString();
-                Assert.AreEqual(PersistentLevelString, str);
-                Assert.AreEqual(reader.BaseStream.Length, reader.BaseStream.Position);
-            }
+            using var stream = new MemoryStream(PersistentLevelStringBytes);
+            using var reader = new BinaryReader(stream);
+
+            var str = reader.ReadLengthPrefixedString();
+            Assert.AreEqual(PersistentLevelString, str);
+            Assert.AreEqual(reader.BaseStream.Length, reader.BaseStream.Position);
         }
 
         [TestMethod]
         public void LengthPrefixedASCIIWriting()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                writer.WriteLengthPrefixedString(PersistentLevelString);
-                CollectionAssert.AreEqual(PersistentLevelStringBytes, stream.ToArray());
-            }
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            writer.WriteLengthPrefixedString(PersistentLevelString);
+            CollectionAssert.AreEqual(PersistentLevelStringBytes, stream.ToArray());
         }
 
         [TestMethod]
@@ -45,24 +43,22 @@ namespace SatisfactorySaveParser.Tests
         [TestMethod]
         public void LengthPrefixedUnicodeReading()
         {
-            using (var stream = new MemoryStream(UnicodeTestStringBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var str = reader.ReadLengthPrefixedString();
-                Assert.AreEqual(UnicodeTestString, str);
-                Assert.AreEqual(reader.BaseStream.Length, reader.BaseStream.Position);
-            }
+            using var stream = new MemoryStream(UnicodeTestStringBytes);
+            using var reader = new BinaryReader(stream);
+
+            var str = reader.ReadLengthPrefixedString();
+            Assert.AreEqual(UnicodeTestString, str);
+            Assert.AreEqual(reader.BaseStream.Length, reader.BaseStream.Position);
         }
 
         [TestMethod]
         public void LengthPrefixedUnicodeWriting()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                writer.WriteLengthPrefixedString(UnicodeTestString);
-                CollectionAssert.AreEqual(UnicodeTestStringBytes, stream.ToArray());
-            }
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            writer.WriteLengthPrefixedString(UnicodeTestString);
+            CollectionAssert.AreEqual(UnicodeTestStringBytes, stream.ToArray());
         }
 
         [TestMethod]
@@ -74,24 +70,22 @@ namespace SatisfactorySaveParser.Tests
         [TestMethod]
         public void EmptyStringReading()
         {
-            using (var stream = new MemoryStream(EmptyStringBytes))
-            using (var reader = new BinaryReader(stream))
-            {
-                var str = reader.ReadLengthPrefixedString();
-                Assert.AreEqual(string.Empty, str);
-                Assert.AreEqual(reader.BaseStream.Length, reader.BaseStream.Position);
-            }
+            using var stream = new MemoryStream(EmptyStringBytes);
+            using var reader = new BinaryReader(stream);
+
+            var str = reader.ReadLengthPrefixedString();
+            Assert.AreEqual(string.Empty, str);
+            Assert.AreEqual(reader.BaseStream.Length, reader.BaseStream.Position);
         }
 
         [TestMethod]
         public void EmptyStringWriting()
         {
-            using (var stream = new MemoryStream())
-            using (var writer = new BinaryWriter(stream))
-            {
-                writer.WriteLengthPrefixedString(string.Empty);
-                CollectionAssert.AreEqual(EmptyStringBytes, stream.ToArray());
-            }
+            using var stream = new MemoryStream();
+            using var writer = new BinaryWriter(stream);
+
+            writer.WriteLengthPrefixedString(string.Empty);
+            CollectionAssert.AreEqual(EmptyStringBytes, stream.ToArray());
         }
     }
 }
