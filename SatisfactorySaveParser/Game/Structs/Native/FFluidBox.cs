@@ -3,7 +3,7 @@
 namespace SatisfactorySaveParser.Game.Structs.Native
 {
     [GameStruct("FluidBox")]
-    public class FluidBox : GameStruct
+    public class FFluidBox : GameStruct
     {
         public override string StructName => "FluidBox";
         public override int SerializedLength => 4;

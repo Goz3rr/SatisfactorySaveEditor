@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatisfactorySaveParser.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatisfactorySaveEditorCli", "SatisfactorySaveEditorCli\SatisfactorySaveEditorCli.csproj", "{4568CD4B-EF7F-45B6-8228-A111A4BCAA26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SatisfactorySaveEditor", "SatisfactorySaveEditor\SatisfactorySaveEditor.csproj", "{F8A0CC1C-AC62-4FD0-841D-8DC988518CFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SatisfactorySaveEditor", "SatisfactorySaveEditor\SatisfactorySaveEditor.csproj", "{F8A0CC1C-AC62-4FD0-841D-8DC988518CFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

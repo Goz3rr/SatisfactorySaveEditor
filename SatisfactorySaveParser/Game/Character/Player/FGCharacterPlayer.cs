@@ -1,4 +1,6 @@
-﻿using SatisfactorySaveParser.Game.Structs.Native;
+﻿#pragma warning disable CA1707 // Identifiers should not contain underscores
+
+using SatisfactorySaveParser.Game.Structs.Native;
 using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Character.Player

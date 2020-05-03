@@ -2,7 +2,7 @@
 
 namespace SatisfactorySaveParser.Game.Buildable.Factory
 {
-    public abstract class FGBuildablePole : FGBuildable
+    public abstract class FGBuildablePole : FGBuildablePoleBase
     {
         [SaveProperty("mHeight")]
         public float Height { get; set; }

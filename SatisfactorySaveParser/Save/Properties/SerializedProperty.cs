@@ -148,6 +148,15 @@ namespace SatisfactorySaveParser.Save.Properties
                                 }
                                 break;
 
+                            case InterfaceProperty.TypeName:
+                                {
+                                    foreach (var obj in arrayProperty.Elements.Cast<InterfaceProperty>())
+                                    {
+                                        addMethod.Invoke(list, new[] { obj.Reference });
+                                    }
+                                }
+                                break;
+
                             default:
                                 {
                                     log.Warn($"Attempted to assign array {PropertyName} of unknown type {arrayProperty.Type}");

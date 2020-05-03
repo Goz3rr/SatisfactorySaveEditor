@@ -223,7 +223,7 @@ namespace SatisfactorySaveParser
 
         public static bool IsSuspicious(this Vector3 vector)
         {
-            return vector.X < 1E-8 || vector.Y < 1E-8 || vector.Y < 1E-8;
+            return (vector.X > 0 && vector.X < 1E-8) || (vector.Y > 0 && vector.Y < 1E-8) || (vector.Z > 0 && vector.Z < 1E-8);
         }
 
         public static void AssertNullByte(this BinaryReader reader)

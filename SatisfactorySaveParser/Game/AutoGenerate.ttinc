@@ -1,0 +1,59 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#+
+    private void SaveOutput(string outputFileName) {
+        var templateDirectory = Path.GetDirectoryName(Host.TemplateFile);
+        var outputFilePath = Path.Combine(templateDirectory, outputFileName);
+        File.WriteAllText(outputFilePath, this.GenerationEnvironment.ToString(), Encoding.UTF8); 
+        this.GenerationEnvironment.Remove(0, this.GenerationEnvironment.Length);
+    }
+
+    private string MakeClassName(string typePath) {
+        var tmp = typePath.Split('.').Last();
+        if (tmp.StartsWith("Build_"))
+            tmp = tmp.Substring(6);
+
+        if (tmp.EndsWith("_C"))
+            tmp = tmp.Substring(0, tmp.Length - 2);
+
+        return tmp;
+    }
+
+    // TODO: this doesn't work :(
+    private object GetNamespace() {
+        var dte = (this.Host as IServiceProvider).GetService(typeof(DTE)) as DTE;
+        var project = dte.Solution.FindProjectItem(this.Host.TemplateFile).ContainingProject as Project;
+        return dte.Solution.FindProjectItem(this.Host.TemplateFile).Properties.Item("DefaultNamespace").Value;
+    }
+
+    private void GenerateClassWrappers(List<string> types, string baseType, string namespaceStr, string folder = null) {
+        namespaceStr = folder == null ? namespaceStr : $"{namespaceStr}.{folder}";
+        foreach(var type in types) {
+            var className = MakeClassName(type);
+#>
+#pragma warning disable CA1707 // Identifiers should not contain underscores
+
+using System.CodeDom.Compiler;
+
+using SatisfactorySaveParser.Save;
+
+namespace <#= namespaceStr #>
+{
+    [SaveObjectClass("<#= type #>"), GeneratedCode("T4", "0.1")]
+    public class <#= className #> : <#= baseType #>
+    {
+    }
+}
+<#+
+            if(folder == null)
+                SaveOutput($"{className}.cs");
+            else
+                SaveOutput($"{folder}/{className}.cs");
+        }
+    }
+#>

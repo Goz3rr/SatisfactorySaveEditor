@@ -19,5 +19,11 @@ namespace SatisfactorySaveParser.Game.Structs
 
         [StructProperty("KilledOnDayNr")]
         public int KilledOnDayNr { get; set; }
+
+        [StructProperty("CreatureClassOverride")]
+        public ObjectReference CreatureClassOverride { get; set; }
+
+        [StructProperty("SpawnWeight")]
+        public float SpawnWeight { get; set; }
     }
 }

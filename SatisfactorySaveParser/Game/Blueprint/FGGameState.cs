@@ -3,6 +3,8 @@ using System.IO;
 
 using SatisfactorySaveParser.Save;
 
+// FGGameState.h
+
 namespace SatisfactorySaveParser.Game.Blueprint
 {
     [SaveObjectClass("/Game/FactoryGame/-Shared/Blueprint/BP_GameState.BP_GameState_C")]
@@ -41,15 +43,39 @@ namespace SatisfactorySaveParser.Game.Blueprint
         [SaveProperty("mMapManager")]
         public ObjectReference MapManager { get; set; }
 
+        [SaveProperty("mPipeSubsystem")]
+        public ObjectReference PipeSubsystem { get; set; }
+
+        [SaveProperty("mUnlockSubsystem")]
+        public ObjectReference UnlockSubsystem { get; set; }
+
+        [SaveProperty("mResourceSinkSubsystem")]
+        public ObjectReference ResourceSinkSubsystem { get; set; }
+
         [SaveProperty("mScannableResources")]
         public List<ObjectReference> ScannableResources { get; } = new List<ObjectReference>();
 
+        /// <summary>
+        ///     This array keeps track of what map areas have been visited this game
+        /// </summary>
         [SaveProperty("mVisitedMapAreas")]
         public List<ObjectReference> VisitedMapAreas { get; } = new List<ObjectReference>();
 
+        /// <summary>
+        ///     All items we have picked up that also are relevant to know if we picked up
+        /// </summary>
+        [SaveProperty("mPickedUpItems")]
+        public List<ObjectReference> PickedUpItems { get; } = new List<ObjectReference>();
+
+        /// <summary>
+        ///     Cheat bool for having no cost for stuff
+        /// </summary>
         [SaveProperty("mCheatNoCost")]
         public bool CheatNoCost { get; set; }
 
+        /// <summary>
+        ///     Cheat bool for not requiring power
+        /// </summary>
         [SaveProperty("mCheatNoPower")]
         public bool CheatNoPower { get; set; }
 
@@ -65,21 +91,36 @@ namespace SatisfactorySaveParser.Game.Blueprint
         [SaveProperty("mIsBuildingOverclockUnlocked")]
         public bool IsBuildingOverclockUnlocked { get; set; }
 
+        /// <summary>
+        ///     There can only be one trading post in the game, so we keep track it here so that we also can replicate it to client
+        /// </summary>
         [SaveProperty("mIsTradingPostBuilt")]
         public bool IsTradingPostBuilt { get; set; }
 
+        /// <summary>
+        ///     The first time you build a trading post we want the landing animation to play
+        /// </summary>
         [SaveProperty("mHasInitalTradingPostLandAnimPlayed")]
         public bool HasInitalTradingPostLandAnimPlayed { get; set; }
 
+        /// <summary>
+        ///     There can only be one tow truck in the game, so we keep track it here so that we also can replicate it to client
+        /// </summary>
         [SaveProperty("mIsSpaceElevatorBuilt")]
         public bool IsSpaceElevatorBuilt { get; set; }
 
+        /// <summary>
+        ///     The total play time when loaded this save
+        /// </summary>
         [SaveProperty("mPlayDurationWhenLoaded")]
         public int PlayDurationWhenLoaded { get; set; }
 
         [SaveProperty("mReplicatedSessionName")]
         public string ReplicatedSessionName { get; set; }
 
+        /// <summary>
+        ///     Track if a hub part is needed for adding to player inventory when they respawn
+        /// </summary>
         [SaveProperty("mForceAddHubPartOnSpawn")]
         public bool ForceAddHubPartOnSpawn { get; set; }
 

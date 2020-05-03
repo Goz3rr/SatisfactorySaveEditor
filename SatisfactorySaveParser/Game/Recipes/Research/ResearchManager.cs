@@ -5,6 +5,9 @@ using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Recipes.Research
 {
+    /// <summary>
+    ///     The research manager handles everything research related 
+    /// </summary>
     [SaveObjectClass("/Game/FactoryGame/Recipes/Research/BP_ResearchManager.BP_ResearchManager_C")]
     public class ResearchManager : SaveActor
     {

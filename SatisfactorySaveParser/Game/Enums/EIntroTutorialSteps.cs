@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CA1707 // Identifiers should not contain underscores
+#pragma warning disable CA1717 // Only FlagsAttribute enums should have plural names
 
 namespace SatisfactorySaveParser.Game.Enums
 {
