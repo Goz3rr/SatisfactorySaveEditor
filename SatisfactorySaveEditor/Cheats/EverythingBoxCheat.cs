@@ -7,6 +7,7 @@ using SatisfactorySaveParser.Data;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
 using SatisfactorySaveParser.Structures;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -15,7 +16,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     class EverythingBoxCheat : ICheat
     {
-        public string Name => "Create crate with all items";
+        public string Name => "Create crate with all items...";
 
         public bool Apply(SaveObjectModel rootItem)
         {
@@ -27,6 +28,38 @@ namespace SatisfactorySaveEditor.Cheats
                 return false;
             }
             var playerEntityModel = (SaveEntityModel)hostPlayerModel.Items[0];
+
+            int itemStackQuantity = 500;
+
+            var dialog = new StringPromptWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            var cvm = (StringPromptViewModel)dialog.DataContext;
+            cvm.WindowTitle = "Enter quantity of each item to spawn";
+            cvm.PromptMessage = "Count (integer):";
+            cvm.ValueChosen = "500";
+            cvm.OldValueMessage = "";
+            dialog.ShowDialog();
+
+            try
+            {
+                itemStackQuantity = int.Parse(cvm.ValueChosen);
+
+                if (itemStackQuantity <= 0)
+                {
+                    MessageBox.Show("The quantity you entered is invalid.");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                if (!(cvm.ValueChosen == "cancel"))
+                {
+                    MessageBox.Show("Could not parse: " + cvm.ValueChosen);
+                }
+                return false;
+            }
 
             ArrayProperty inventory = new ArrayProperty("mInventoryStacks")
             {
@@ -51,8 +84,7 @@ namespace SatisfactorySaveEditor.Cheats
                 if (!radioactiveStrings.Contains(resource))//because duplicates can be in the xml file in order, still need to check every string here for radioactivity
                 {
                     //MessageBox.Show($"Processing resource {resource}");
-                    int itemAmount = 500;// ((IntProperty)itemAmountStruct.Fields[1]).Value;
-                    byte[] bytes = MassDismantleCheat.PrepareForParse(resource, itemAmount); //reuse mass dismantle cheat's parsing method
+                    byte[] bytes = MassDismantleCheat.PrepareForParse(resource, itemStackQuantity); //reuse mass dismantle cheat's parsing method
                     using (MemoryStream ms = new MemoryStream(bytes))
                     using (BinaryReader reader = new BinaryReader(ms))
                     {
@@ -72,7 +104,7 @@ namespace SatisfactorySaveEditor.Cheats
             MassDismantleCheat.CreateCrateEntityFromInventory(rootItem, inventory);
 
             //MessageBox.Show("Player name " + playerEntityModel.Title);
-            MessageBox.Show($"Crate created. Skipped the following items marked as radioactive:\n\n{skipped}");
+            MessageBox.Show($"Crate created.\nNote that normally unstackable items will visually display as being stacked to 1. Use Ctrl+Click to transfer items out of the crate without deleting part of the stack.\n\nSkipped the following items marked as radioactive:\n\n{skipped}", $"Processed {resourceStrings.Count} resource paths");
 
             //Ask the player if they'd like the be equipped with a hazmat suit and filters since the box will be radioactive
             /*MessageBoxResult result = MessageBox.Show("A crate with all resources has been generated at your feet. This includes radioactive items. Would you like a Hazmat suit and filters? They will replace your current equipment and first inventory item.", $"Processed {resourceStrings.Count} resource paths", MessageBoxButton.YesNo, MessageBoxImage.Question);
