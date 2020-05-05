@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveParser.Save;
@@ -106,27 +106,30 @@ namespace SatisfactorySaveEditor.Model
 
         public override string ToString()
         {
-            var totalCount = Children.Traverse(obj => obj.Children).Count(obj => obj.Children.Count == 0);
-            var count = Children.Count;
-            string formatString;
+            string name = Name;
+            if (Properties.Settings.Default.ShortenNames) name = string.Intern(name.Split('.', StringSplitOptions.RemoveEmptyEntries).Last());
+            if (Children.Count == 0) return name;
 
-            switch (count)
+            var targetType = ObjectKind == SaveObjectTreeKind.Actor ? SaveObjectTreeKind.Component : SaveObjectTreeKind.Actor;
+            var totalCount = Children.Traverse(obj => obj.Children).Count(obj => obj.ObjectKind == targetType);
+            
+
+            if (targetType == SaveObjectTreeKind.Actor)
             {
-                case 0:
-                    return $"{Name}";
-                case 1:
-                    formatString = $"{Name} (1 entry, ";
-                    break;
-                default:
-                    formatString = $"{Name} ({count} entries, ";
-                    break;
+                return totalCount switch
+                {
+                    1 => $"{name} ({totalCount} object)",
+                    _ => $"{name} ({totalCount} objects)",
+                };
             }
-
-            return totalCount switch
+            else
             {
-                1 => formatString + $"{totalCount} object)",
-                _ => formatString + $"{totalCount} objects)",
-            };
+                return totalCount switch
+                {
+                    1 => $"{name} ({totalCount} component)",
+                    _ => $"{name} ({totalCount} components)",
+                };
+            }
         }
 
         private static void CopyName(SaveObjectTreeModel model)

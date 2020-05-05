@@ -9,6 +9,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private bool canApply;
         private bool autoUpdate;
         private bool autoBackup;
+        private bool shortenNames;
         //private int backupCount; //Future
 
 
@@ -28,6 +29,16 @@ namespace SatisfactorySaveEditor.ViewModel
             set
             {
                 Set(() => AutoBackup, ref autoBackup, value);
+                Set(() => CanApply, ref canApply, true);
+            }
+        }
+
+        public bool ShortenNames
+        {
+            get => shortenNames;
+            set
+            {
+                Set(() => ShortenNames, ref shortenNames, value);
                 Set(() => CanApply, ref canApply, true);
             }
         }
@@ -57,6 +68,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             autoUpdate = Properties.Settings.Default.AutoUpdate;
             autoBackup = Properties.Settings.Default.AutoBackup;
+            shortenNames = Properties.Settings.Default.ShortenNames;
         }
 
         private void Accept(Window window)
@@ -69,6 +81,7 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             Properties.Settings.Default.AutoUpdate = autoUpdate;
             Properties.Settings.Default.AutoBackup = autoBackup;
+            Properties.Settings.Default.ShortenNames = shortenNames;
 
             Properties.Settings.Default.Save();
             Set(() => CanApply, ref canApply, false);

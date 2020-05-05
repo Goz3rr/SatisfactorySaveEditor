@@ -18,6 +18,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -25,16 +26,18 @@
 
         <Label Grid.Column="0" Grid.Row="0" Target="{Binding ElementName=AutoUpdateCheckbox}" Content="Enable auto update check:"/>
         <Label Grid.Column="0" Grid.Row="1" Target="{Binding ElementName=AutoBackupCheckbox}" Content="Enable auto backups:"/>
+        <Label Grid.Column="0" Grid.Row="2" Target="{Binding ElementName=ShortenNamesCheckbox}" Content="Shorten names in tree overview:"/>
         
         <CheckBox Grid.Column="1" Grid.Row="0" x:Name="AutoUpdateCheckbox" VerticalAlignment="Center" IsChecked="{Binding AutoUpdate}"/>
         <CheckBox Grid.Column="1" Grid.Row="1" x:Name="AutoBackupCheckbox" VerticalAlignment="Center" IsChecked="{Binding AutoBackup}"/>
+        <CheckBox Grid.Column="1" Grid.Row="2" x:Name="ShortenNamesCheckbox" VerticalAlignment="Center" IsChecked="{Binding ShortenNames}"/>
         <!-- Future stuff
         <Label Grid.Column="0" Grid.Row="1" Target="{Binding ElementName=BackupBox}" Content="Max backup count:"/>
         <TextBox Grid.Column="1" Grid.Row="1" x:Name="BackupBox" VerticalAlignment="Center" Text="{Binding BackupCount}"/>
         -->
 
-        <Separator Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" Margin="0,5"/>
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Separator Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Margin="0,5"/>
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Margin="5,0" Padding="20,3" Content="OK" Command="{Binding AcceptCommand}" CommandParameter="{Binding ElementName=PreferencesWin}"/>
             <Button Margin="5,0" Padding="20,3" Content="Cancel" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=PreferencesWin}"/>
             <Button Margin="5,0" Padding="20,3" Content="Apply" Command="{Binding ApplyCommand}" IsEnabled="{Binding CanApply}"/>
