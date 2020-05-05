@@ -1,5 +1,6 @@
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveParser.Save;
 using System;
@@ -25,6 +26,7 @@ namespace SatisfactorySaveEditor.Model
 
         private bool _isExpanded;
         private bool _isSelected;
+        private bool? _isMultiSelected = false;
 
         public SaveObject Model { get; }
 
@@ -40,10 +42,26 @@ namespace SatisfactorySaveEditor.Model
             set => Set(() => IsExpanded, ref _isExpanded, value);
         }
 
+        /// <summary>
+        /// Gets or sets whether the current node is selected in the left tree
+        /// </summary>
         public bool IsSelected
         {
             get => _isSelected;
             set => Set(() => IsSelected, ref _isSelected, value);
+        }
+
+        /// <summary>
+        /// Gets or sets whether the current node is part of the current multi-node operation
+        /// </summary>
+        public bool? IsMultiSelected
+        {
+            get => _isMultiSelected;
+            set
+            {
+                MultiSelectChildren(value ?? false, true);
+                Parent?.MultiSelectCheck(value ?? false);
+            }
         }
 
         public string DisplayName => ToString();
@@ -82,6 +100,27 @@ namespace SatisfactorySaveEditor.Model
         private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             RaisePropertyChanged(() => DisplayName);
+        }
+
+        public void MultiSelectChildren(bool value, bool source)
+        {
+            Set(() => IsMultiSelected, ref _isMultiSelected, value);
+            foreach (var child in Children) child.MultiSelectChildren(value, false);
+
+            if (source) 
+                Messenger.Default.Send(new NotificationMessage(this, "LastMultiSelect"));
+        }
+
+        private void MultiSelectCheck(bool value)
+        {
+            var checkedCount = Children.Count(c => c.IsMultiSelected == true || c.IsMultiSelected == null);
+            var hasFullChildren = !Children.Any(c => c.IsMultiSelected == null);
+
+            if (checkedCount == Children.Count && hasFullChildren) Set(() => IsMultiSelected, ref _isMultiSelected, true);
+            else if (checkedCount == 0) Set(() => IsMultiSelected, ref _isMultiSelected, false);
+            else Set(() => IsMultiSelected, ref _isMultiSelected, null);
+
+            Parent?.MultiSelectCheck(value);
         }
 
         public SaveObjectTreeModel AddChild(SaveObject child, ReadOnlySpan<string> currentPath)

@@ -196,6 +196,7 @@
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type model:SaveObjectTreeModel}" ItemsSource="{Binding Children}">
                             <StackPanel Orientation="Horizontal">
+                                <CheckBox IsThreeState="True" IsChecked="{Binding IsMultiSelected}" Margin="0,1,2,0"/>
                                 <TextBlock>
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">

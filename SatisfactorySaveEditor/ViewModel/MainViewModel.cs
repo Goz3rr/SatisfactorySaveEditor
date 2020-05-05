@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using NLog;
@@ -20,6 +21,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -36,6 +38,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private SaveObjectTreeModel _root;
         private string _saveFileName;
         private SaveObjectTreeModel _selectedItem;
+        private SaveObjectTreeModel _lastMultiSelect;
 
         public ObservableCollection<SaveObjectTreeModel> RootItems { get; } = new ObservableCollection<SaveObjectTreeModel>();
         public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
@@ -156,7 +159,43 @@ namespace SatisfactorySaveEditor.ViewModel
             });
             PreferencesCommand = new RelayCommand(OpenPreferences);
 
+            MessengerInstance.Register<NotificationMessage>(this, MultiSelectHandler);
+
             CheckForUpdate(false).ConfigureAwait(false);
+        }
+
+        private void MultiSelectHandler(NotificationMessage obj)
+        {
+            if (obj.Notification != "LastMultiSelect") return;
+            if (!(obj.Sender is SaveObjectTreeModel node))
+            {
+                log.Error("Invalid sender for 'LastMultiSelect' notification. These can be only raised by SaveObjectTreeModel.");
+                return;
+            }
+
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                if (_lastMultiSelect != null && _lastMultiSelect != node)
+                {
+                    if (_lastMultiSelect.Parent == node.Parent)
+                    {
+                        var parent = node.Parent;
+                        var startIndex = parent.Children.IndexOf(_lastMultiSelect);
+                        var endIndex = parent.Children.IndexOf(node);
+
+                        if (startIndex > endIndex)
+                        {
+                            var temp = startIndex;
+                            startIndex = endIndex;
+                            endIndex = temp;
+                        }
+
+                        for (int i = startIndex; i < endIndex; i++) parent.Children[i].MultiSelectChildren(true, false);
+                    }
+                }
+            }
+
+            _lastMultiSelect = node;
         }
 
         private void JumpMenu()
@@ -275,6 +314,9 @@ namespace SatisfactorySaveEditor.ViewModel
             };
 
             window.ShowDialog();
+
+            // We have to force a tree redraw in case the user changes the naming scheme
+            foreach (var child in _root.Children.Traverse(c => c.Children)) child.RaisePropertyChanged(() => child.DisplayName);
         }
 
         /// <summary>
