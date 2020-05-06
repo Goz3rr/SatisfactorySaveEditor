@@ -1,5 +1,6 @@
 ﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight.Ioc;
+using SatisfactorySaveEditor.Service.Toast;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -12,6 +13,8 @@ namespace SatisfactorySaveEditor.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<PreferencesWindowViewModel>();
             SimpleIoc.Default.Register<AboutWindowViewModel>();
+
+            SimpleIoc.Default.Register<ToastService>();
         }
 
         public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();

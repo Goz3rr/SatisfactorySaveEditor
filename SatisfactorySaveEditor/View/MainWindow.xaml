@@ -12,6 +12,9 @@
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:toast="clr-namespace:SatisfactorySaveEditor.Service.Toast"
+        xmlns:draw="clr-namespace:System.Drawing;assembly=System.Drawing"
+        xmlns:control="clr-namespace:SatisfactorySaveEditor.View.Control"
         mc:Ignorable="d"
         dd:DragDrop.IsDropTarget="True"
         dd:DragDrop.DropHandler="{Binding .}"
@@ -79,9 +82,10 @@
             <MenuItem Header="_Cheats" ItemsSource="{Binding CheatMenuItems}">
                 <MenuItem.ItemContainerStyle>
                     <Style TargetType="{x:Type MenuItem}">
-                        <Setter Property="Header" Value="{Binding Path=Name}" />
-                        <Setter Property="Command" Value="{Binding DataContext.CheatCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}, AncestorLevel=1}}" />
-                        <Setter Property="CommandParameter" Value="{Binding}" />
+                        <Setter Property="ToolTip.Content" Value="{Binding Description}" />
+                        <Setter Property="Header" Value="{Binding Name}" />
+                        <Setter Property="Command" Value="{Binding Source={StaticResource Proxy}, Path=Data.CheatCommand}" />
+                        <Setter Property="CommandParameter" Value="{Binding Type}" />
                     </Style>
                 </MenuItem.ItemContainerStyle>
             </MenuItem>
@@ -104,6 +108,14 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition MinWidth="390" Width="3*"/>
             </Grid.ColumnDefinitions>
+
+            <ItemsControl VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.ColumnSpan="3" ItemsSource="{Binding ToastService.ActiveToasts}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type toast:ToastViewModel}">
+                        <control:Toast Title="{Binding Title}" Text="{Binding Text}" Icon="{Binding Icon}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
             <DockPanel Grid.Column="0">
                 <Grid DockPanel.Dock="Top">

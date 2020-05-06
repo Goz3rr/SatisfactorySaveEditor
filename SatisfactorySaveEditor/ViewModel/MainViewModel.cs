@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using GongSolutions.Wpf.DragDrop;
@@ -110,10 +110,14 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public bool HasUnsavedChanges { get; set; }
 
+        public ToastService ToastService { get; }
+
         public IOProgressModel ProgressModel { get; } = new IOProgressModel();
 
-        public MainViewModel()
+        public MainViewModel(ToastService toastService)
         {
+            ToastService = toastService;
+
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1]))
             {
