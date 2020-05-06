@@ -17,7 +17,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -471,8 +470,10 @@ namespace SatisfactorySaveEditor.ViewModel
         /// </summary>
         private void About()
         {
-            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            MessageBox.Show($"Satisfactory Save Editor{Environment.NewLine}{version}", "About");
+            new AboutWindow
+            {
+                Owner = Application.Current.MainWindow
+            }.ShowDialog();
         }
 
         /// <summary>
@@ -508,13 +509,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         private void OpenBrowser(string url)
         {
-            bool result = Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-            Trace.Assert(result, "Can we not launch programs with this command");
-
-            Process.Start(new ProcessStartInfo("cmd", $"/c start {url}")
-            {
-                CreateNoWindow = true
-            });
+            BrowserUtil.OpenBrowser(url);
         }
 
         private void Save(string fileName)

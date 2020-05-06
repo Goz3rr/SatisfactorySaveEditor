@@ -11,10 +11,12 @@ namespace SatisfactorySaveEditor.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<PreferencesWindowViewModel>();
+            SimpleIoc.Default.Register<AboutWindowViewModel>();
         }
 
         public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();
         public PreferencesWindowViewModel PreferencesWindowViewModel => ServiceLocator.Current.GetInstance<PreferencesWindowViewModel>();
+        public AboutWindowViewModel AboutWindowViewModel => ServiceLocator.Current.GetInstance<AboutWindowViewModel>();
 
         public static void Cleanup()
         {
