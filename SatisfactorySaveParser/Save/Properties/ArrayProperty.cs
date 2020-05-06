@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Properties.ArrayValues;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
@@ -12,7 +13,7 @@ namespace SatisfactorySaveParser.Save.Properties
         public const string TypeName = nameof(ArrayProperty);
         public override string PropertyType => TypeName;
 
-        public override Type BackingType => typeof(List<SerializedProperty>);
+        public override Type BackingType => typeof(List<IArrayElement>);
         public override object BackingObject => Elements;
 
         public override int SerializedLength => 0;
@@ -25,7 +26,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// <summary>
         ///     Actual content of the array
         /// </summary>
-        public List<SerializedProperty> Elements { get; } = new List<SerializedProperty>();
+        public List<IArrayElement> Elements { get; } = new List<IArrayElement>();
 
         public ArrayProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
@@ -38,19 +39,19 @@ namespace SatisfactorySaveParser.Save.Properties
                 Type = reader.ReadLengthPrefixedString()
             };
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
+            reader.AssertNullByte();
 
             overhead = result.Type.GetSerializedLength() + 1;
+
+            var count = reader.ReadInt32();
 
             switch (result.Type)
             {
                 case ByteProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(new ByteProperty(null)
+                            result.Elements.Add(new ByteArrayValue()
                             {
                                 ByteValue = reader.ReadByte()
                             });
@@ -60,11 +61,10 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case EnumProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
                             var str = reader.ReadLengthPrefixedString();
-                            result.Elements.Add(new EnumProperty(null)
+                            result.Elements.Add(new EnumArrayValue()
                             {
                                 Type = str.Split(':')[0],
                                 Value = str
@@ -75,11 +75,10 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case FloatProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
                             var value = reader.ReadSingle();
-                            result.Elements.Add(new FloatProperty(null)
+                            result.Elements.Add(new FloatArrayValue()
                             {
                                 Value = value
                             });
@@ -89,10 +88,9 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case IntProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(new IntProperty(null)
+                            result.Elements.Add(new IntArrayValue()
                             {
                                 Value = reader.ReadInt32()
                             });
@@ -102,10 +100,9 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case InterfaceProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(new InterfaceProperty(null)
+                            result.Elements.Add(new InterfaceArrayValue()
                             {
                                 Reference = reader.ReadObjectReference()
                             });
@@ -115,10 +112,9 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case ObjectProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(new ObjectProperty(null)
+                            result.Elements.Add(new ObjectArrayValue()
                             {
                                 Reference = reader.ReadObjectReference()
                             });
@@ -128,10 +124,9 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case StrProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(new StrProperty(null)
+                            result.Elements.Add(new StrArrayValue()
                             {
                                 Value = reader.ReadLengthPrefixedString()
                             });
@@ -141,7 +136,6 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case StructProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         var name = reader.ReadLengthPrefixedString();
 
                         var propertyType = reader.ReadLengthPrefixedString();
@@ -163,7 +157,7 @@ namespace SatisfactorySaveParser.Save.Properties
                             var structObj = GameStructFactory.CreateFromType(structType);
                             structObj.Deserialize(reader);
 
-                            result.Elements.Add(new StructProperty(null)
+                            result.Elements.Add(new StructArrayValue()
                             {
                                 Data = structObj
                             });
@@ -173,10 +167,12 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case TextProperty.TypeName:
                     {
-                        var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(TextProperty.Deserialize(reader, null, 0, true));
+                            result.Elements.Add(new TextArrayValue()
+                            {
+                                Text = TextProperty.ParseTextEntry(reader)
+                            });
                         }
                     }
                     break;

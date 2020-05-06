@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class InterfaceProperty : SerializedProperty
+    public class InterfaceProperty : SerializedProperty, IInterfacePropertyValue
     {
         public const string TypeName = nameof(InterfaceProperty);
         public override string PropertyType => TypeName;

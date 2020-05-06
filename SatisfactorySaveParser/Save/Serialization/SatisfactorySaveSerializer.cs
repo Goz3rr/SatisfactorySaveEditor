@@ -442,8 +442,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                     result = ArrayProperty.Parse(reader, propertyName, index, out overhead);
                     break;
                 case BoolProperty.TypeName:
-                    overhead = 2;
-                    result = BoolProperty.Deserialize(reader, propertyName, index);
+                    result = BoolProperty.Deserialize(reader, propertyName, index, out overhead);
                     break;
                 case ByteProperty.TypeName:
                     result = ByteProperty.Deserialize(reader, propertyName, index, out overhead);

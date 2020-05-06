@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class BoolProperty : SerializedProperty
+    public class BoolProperty : SerializedProperty, IBoolPropertyValue
     {
         public const string TypeName = nameof(BoolProperty);
         public override string PropertyType => TypeName;
@@ -24,7 +24,7 @@ namespace SatisfactorySaveParser.Save.Properties
             return $"Bool {PropertyName}: {Value}";
         }
 
-        public static BoolProperty Deserialize(BinaryReader reader, string propertyName, int index)
+        public static BoolProperty Deserialize(BinaryReader reader, string propertyName, int index, out int overhead)
         {
             var result = new BoolProperty(propertyName, index)
             {
@@ -33,6 +33,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
             reader.AssertNullByte();
 
+            overhead = 2;
             return result;
         }
 

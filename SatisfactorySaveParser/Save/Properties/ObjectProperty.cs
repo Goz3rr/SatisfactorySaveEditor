@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class ObjectProperty : SerializedProperty
+    public class ObjectProperty : SerializedProperty, IObjectPropertyValue
     {
         public const string TypeName = nameof(ObjectProperty);
         public override string PropertyType => TypeName;

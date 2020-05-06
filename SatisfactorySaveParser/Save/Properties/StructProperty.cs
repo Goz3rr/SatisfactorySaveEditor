@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
+
 using SatisfactorySaveParser.Game.Structs;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class StructProperty : SerializedProperty
+    public class StructProperty : SerializedProperty, IStructPropertyValue
     {
         public const string TypeName = nameof(StructProperty);
         public override string PropertyType => TypeName;

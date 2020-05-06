@@ -1,4 +1,6 @@
-﻿using SatisfactorySaveParser.Save;
+﻿#pragma warning disable CA1707 // Identifiers should not contain underscores
+
+using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Equipment
 {

@@ -31,6 +31,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// </summary>
         public int Index { get; }
 
+        // TODO
         public byte HasPropertyGuid { get; private set; }
 
         public abstract Type BackingType { get; }

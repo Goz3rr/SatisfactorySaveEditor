@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 using SatisfactorySaveParser.Game.Structs;
@@ -45,9 +44,7 @@ namespace SatisfactorySaveParser.Save.Properties
             var valueType = GetPropertyTypeFromName(result.ValueType);
             result.Elements = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType));
 
-            var nullByte = reader.ReadByte();
-            Trace.Assert(nullByte == 0);
-
+            reader.AssertNullByte();
             reader.AssertNullInt32();
 
             var count = reader.ReadInt32();

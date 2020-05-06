@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class TextProperty : SerializedProperty
+    public class TextProperty : SerializedProperty, ITextPropertyValue
     {
         public const string TypeName = nameof(TextProperty);
         public override string PropertyType => TypeName;
@@ -29,7 +29,7 @@ namespace SatisfactorySaveParser.Save.Properties
             return $"Text {PropertyName}: {Text}";
         }
 
-        private static TextEntry ParseTextEntry(BinaryReader reader)
+        public static TextEntry ParseTextEntry(BinaryReader reader)
         {
             var flags = reader.ReadInt32();
             var historyType = (ETextHistoryType)reader.ReadByte();
@@ -74,15 +74,11 @@ namespace SatisfactorySaveParser.Save.Properties
             }
         }
 
-        public static TextProperty Deserialize(BinaryReader reader, string propertyName, int index, bool inArray = false)
+        public static TextProperty Deserialize(BinaryReader reader, string propertyName, int index)
         {
             var result = new TextProperty(propertyName, index);
 
-            if (!inArray)
-            {
-                reader.AssertNullByte();
-            }
-
+            reader.AssertNullByte();
             result.Text = ParseTextEntry(reader);
 
             return result;

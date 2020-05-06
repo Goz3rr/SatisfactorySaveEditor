@@ -31,7 +31,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
 
             Assert.AreEqual(10, prop.Elements.Count);
             for (int i = 0; i < 10; i++)
-                Assert.AreEqual(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"), ((ObjectProperty)prop.Elements[i]).Reference);
+                Assert.AreEqual(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"), ((IObjectPropertyValue)prop.Elements[i]).Reference);
 
             Assert.AreEqual(stream.Length, stream.Position);
         }

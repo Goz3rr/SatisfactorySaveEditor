@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
-    public class EnumProperty : SerializedProperty
+    public class EnumProperty : SerializedProperty, IEnumPropertyValue
     {
         public const string TypeName = nameof(EnumProperty);
         public override string PropertyType => TypeName;
