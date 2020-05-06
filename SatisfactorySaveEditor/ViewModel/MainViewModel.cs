@@ -1,22 +1,27 @@
+﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using NLog;
+using SatisfactorySaveEditor.Cheat;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.Service;
+using SatisfactorySaveEditor.Service.Toast;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.Save;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,6 +46,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public ObservableCollection<SaveObjectTreeModel> RootItems { get; } = new ObservableCollection<SaveObjectTreeModel>();
         public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
+        public List<CheatViewModel> CheatMenuItems { get; } = new List<CheatViewModel>();
 
         public RelayCommand<SaveObjectTreeModel> TreeSelectCommand { get; }
         public RelayCommand AboutCommand { get; }
@@ -57,6 +63,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<string> JumpCommand { get; }
         public RelayCommand<string> JumpSearchCommand { get; }
         public RelayCommand JumpMenuCommand { get; }
+        public RelayCommand<Type> CheatCommand { get; }
 
         public SaveObjectTreeModel SelectedItem
         {
@@ -156,6 +163,9 @@ namespace SatisfactorySaveEditor.ViewModel
             JumpSearchCommand = new RelayCommand<string>(JumpSearch);
             JumpMenuCommand = new RelayCommand(JumpMenu, CanSave);
 
+            CheatCommand = new RelayCommand<Type>(RunCheat, (t) => CanSave());
+            LoadCheats();
+
             CheckUpdatesCommand = new RelayCommand(() =>
             {
                 CheckForUpdate(true).ConfigureAwait(false);
@@ -165,6 +175,56 @@ namespace SatisfactorySaveEditor.ViewModel
             MessengerInstance.Register<NotificationMessage>(this, MultiSelectHandler);
 
             CheckForUpdate(false).ConfigureAwait(false);
+        }
+
+        private void LoadCheats()
+        {
+            var cheatTypes = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(m => m.IsClass && m.GetInterface(nameof(ICheat)) != null);
+
+            foreach (var cheatType in cheatTypes)
+            {
+                var info = cheatType.GetCustomAttribute<CheatInfoAttribute>();
+                if (info == null)
+                {
+                    CheatMenuItems.Add(new CheatViewModel
+                    {
+                        Name = "MISSING INFO ATTRIBUTE",
+                        Description = "ADD A CheatInfo ATTRIBUTE TO YOUR CHEAT CLASS",
+                        Type = cheatType
+                    });
+                }
+                else
+                {
+                    CheatMenuItems.Add(new CheatViewModel
+                    {
+                        Name = info.Name,
+                        Description = info.Description,
+                        Type = cheatType
+                    });
+                }
+            }
+        }
+
+        private void RunCheat(Type cheatType)
+        {
+            // TODO: Yeah no
+            var constructor = cheatType.GetConstructors().First(c => c.IsPublic);
+            var parameters = constructor.GetParameters();
+
+            var services = new object[parameters.Length];
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                ParameterInfo parameter = parameters[i];
+                services[i] = ServiceLocator.Current.GetInstance(parameter.ParameterType);
+            }
+            var cheat = (ICheat) Activator.CreateInstance(cheatType, services);
+
+            var multiSelected = _root.Children.Traverse(c => c.Children).Where(c => c.IsMultiSelected == true && c.Model != null).Select(c => c.Model).ToList();
+
+            if (cheat.CanExecute(_saveGame, SelectedItem?.Model, multiSelected)) cheat.Execute(_saveGame, SelectedItem?.Model, multiSelected);
         }
 
         private void MultiSelectHandler(NotificationMessage obj)
