@@ -24,6 +24,7 @@ namespace SatisfactorySaveEditor.Util
         {
             return await GetHttpResponseAsync(ReleasesEndpoint);
         }
+
         private static async Task<string> GetHttpResponseAsync(string url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

@@ -458,18 +458,12 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <param name="path">The path of the file to add</param>
         private void AddRecentFileEntry(string path)
         {
-            if (Properties.Settings.Default.LastSaves == null)
-            {
-                Properties.Settings.Default.LastSaves = new StringCollection();
-            }
+            Properties.Settings.Default.LastSaves ??= new StringCollection();
 
             if (LastFiles.Contains(path)) // No duplicates
             {
                 Properties.Settings.Default.LastSaves.Remove(path);
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    LastFiles.Remove(path);
-                });
+                Application.Current.Dispatcher.Invoke(() => LastFiles.Remove(path));
             }
 
             Properties.Settings.Default.LastSaves.Add(path);
