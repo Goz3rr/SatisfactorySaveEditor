@@ -1,4 +1,4 @@
-using CommonServiceLocator;
+﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Ioc;
@@ -9,6 +9,7 @@ using NLog;
 using SatisfactorySaveEditor.Cheat;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.Service;
+using SatisfactorySaveEditor.Service.Cheat;
 using SatisfactorySaveEditor.Service.Toast;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveEditor.View;
@@ -47,7 +48,6 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public ObservableCollection<SaveObjectTreeModel> RootItems { get; } = new ObservableCollection<SaveObjectTreeModel>();
         public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
-        public List<CheatViewModel> CheatMenuItems { get; } = new List<CheatViewModel>();
 
         public RelayCommand<SaveObjectTreeModel> TreeSelectCommand { get; }
         public RelayCommand AboutCommand { get; }
@@ -119,12 +119,14 @@ namespace SatisfactorySaveEditor.ViewModel
         public bool HasUnsavedChanges { get; set; }
 
         public ToastService ToastService { get; }
+        public CheatService CheatService { get; }
 
         public IOProgressModel ProgressModel { get; } = new IOProgressModel();
 
-        public MainViewModel(ToastService toastService)
+        public MainViewModel(ToastService toastService, CheatService cheatService)
         {
             ToastService = toastService;
+            CheatService = cheatService;
 
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1]))
@@ -152,7 +154,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             TreeSelectCommand = new RelayCommand<SaveObjectTreeModel>(SelectNode);
             AboutCommand = new RelayCommand(About);
-            OpenBrowserCommand = new RelayCommand<string>(OpenBrowser);
+            OpenBrowserCommand = new RelayCommand<string>(BrowserUtil.OpenBrowser);
             ExitCommand = new RelayCommand<CancelEventArgs>(Exit);
             DeleteCommand = new RelayCommand<SaveObjectTreeModel>(Delete, CanDelete);
 
@@ -165,7 +167,6 @@ namespace SatisfactorySaveEditor.ViewModel
             JumpMenuCommand = new RelayCommand(JumpMenu, CanSave);
 
             CheatCommand = new RelayCommand<Type>(RunCheat, (t) => CanSave());
-            LoadCheats();
 
             CheckUpdatesCommand = new RelayCommand(() =>
             {
@@ -178,54 +179,10 @@ namespace SatisfactorySaveEditor.ViewModel
             CheckForUpdate(false).ConfigureAwait(false);
         }
 
-        private void LoadCheats()
-        {
-            var cheatTypes = Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(m => m.IsClass && m.GetInterface(nameof(ICheat)) != null);
-
-            foreach (var cheatType in cheatTypes)
-            {
-                var info = cheatType.GetCustomAttribute<CheatInfoAttribute>();
-                if (info == null)
-                {
-                    CheatMenuItems.Add(new CheatViewModel
-                    {
-                        Name = "MISSING INFO ATTRIBUTE",
-                        Description = "ADD A CheatInfo ATTRIBUTE TO YOUR CHEAT CLASS",
-                        Type = cheatType
-                    });
-                }
-                else
-                {
-                    CheatMenuItems.Add(new CheatViewModel
-                    {
-                        Name = info.Name,
-                        Description = info.Description,
-                        Type = cheatType
-                    });
-                }
-            }
-        }
-
         private void RunCheat(Type cheatType)
         {
-            // TODO: Yeah no
-            var constructor = cheatType.GetConstructors().First(c => c.IsPublic);
-            var parameters = constructor.GetParameters();
-
-            var services = new object[parameters.Length];
-
-            for (int i = 0; i < parameters.Length; i++)
-            {
-                ParameterInfo parameter = parameters[i];
-                services[i] = ServiceLocator.Current.GetInstance(parameter.ParameterType);
-            }
-            var cheat = (ICheat) Activator.CreateInstance(cheatType, services);
-
             var multiSelected = _root.Children.Traverse(c => c.Children).Where(c => c.IsMultiSelected == true && c.Model != null).Select(c => c.Model).ToList();
-
-            if (cheat.CanExecute(_saveGame, SelectedItem?.Model, multiSelected)) cheat.Execute(_saveGame, SelectedItem?.Model, multiSelected);
+            CheatService.RunCheat(cheatType, _saveGame, SelectedItem?.Model, multiSelected);
         }
 
         private void MultiSelectHandler(NotificationMessage obj)
@@ -572,11 +529,6 @@ namespace SatisfactorySaveEditor.ViewModel
             {
                 MessageBox.Show("You are already using the latest version.", "Update", MessageBoxButton.OK);
             }
-        }
-
-        private void OpenBrowser(string url)
-        {
-            BrowserUtil.OpenBrowser(url);
         }
 
         private void Save(string fileName)
