@@ -4,7 +4,7 @@ using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Buildable.Factory
 {
-    public class FGBuildableResourceExtractor : FGBuildableFactory
+    public abstract class FGBuildableResourceExtractor : FGBuildableFactory
     {
         /// <summary>
         ///     How much time we have left of the start up time for the extraction process (mExtractStartupTime). 

@@ -22,7 +22,7 @@ namespace SatisfactorySaveParser.Game.Buildable.Factory
         /// <summary>
         ///     Used so clients know how if they have available fuel or not. Could be removed later if we start syncing the production indicator state
         /// </summary>
-        [SaveProperty("mHasFuelCached")]
+        [SaveProperty("mHasFuelCached")] // TODO mHasFuleCached
         public bool HasFuelCached { get; set; }
 
         /// <summary>

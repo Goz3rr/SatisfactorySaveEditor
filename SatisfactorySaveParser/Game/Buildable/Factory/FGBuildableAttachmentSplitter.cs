@@ -7,5 +7,8 @@ namespace SatisfactorySaveParser.Game.Buildable.Factory
     {
         [SaveProperty("mCurrentOutputIndex")]
         public int CurrentOutputIndex { get; set; }
+
+        [SaveProperty("mCurrentInventoryIndex")]
+        public int CurrentInventoryIndex { get; set; }
     }
 }

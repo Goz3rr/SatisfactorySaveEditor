@@ -5,7 +5,7 @@ using SatisfactorySaveParser.Save;
 namespace SatisfactorySaveParser.Game.Buildable.Factory
 {
     [SaveObjectClass("/Game/FactoryGame/Buildable/Factory/TradingPost/Build_TradingPost.Build_TradingPost_C")]
-    public class FGBuildableTradingPost : FGBuildableFactory
+    public class TradingPost : FGBuildableFactory
     {
         [SaveProperty("mGenerators")]
         public List<ObjectReference> Generators { get; } = new List<ObjectReference>();
