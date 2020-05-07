@@ -17,7 +17,7 @@ namespace SatisfactorySaveEditor.Service
         private static readonly SatisfactorySaveSerializer _serializer = new SatisfactorySaveSerializer();
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public static (SaveObjectTreeModel root, FGSaveSession saveGame) Load(string fileName, IOProgressModel progressModel)
+        public static (SaveObjectTreeModel root, SaveObjectTreeModel deletedRoot, FGSaveSession saveGame) Load(string fileName, IOProgressModel progressModel)
         {
             FGSaveSession saveGame;
             _serializer.DeserializationStageChanged += progressModel.UpdateStatusLoad;
@@ -32,7 +32,7 @@ namespace SatisfactorySaveEditor.Service
             {
                 MessageBox.Show($"An error occurred while opening the file:\n{ex.Message}\n\nCheck the logs for more details.\n\nIf this issue persists, please report it via \"Help > Report an Issue\", and attach the log file and save file you were trying to open.", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
                 log.Error(ex);
-                return (null, null);
+                return (null, null, null);
             }
 
             var root = new SaveObjectTreeModel(saveGame.Header.SessionName, null, true);
@@ -70,9 +70,15 @@ namespace SatisfactorySaveEditor.Service
                 item.IsExpanded = true;
             }
 
+            var deletedRoot = new SaveObjectTreeModel("Deleted objects", null, true);
+            foreach (var item in saveGame.DestroyedActors)
+            {
+                deletedRoot.Children.Add(new SaveObjectTreeModel(item, deletedRoot));
+            }
+
             _serializer.DeserializationStageChanged -= progressModel.UpdateStatusLoad;
             _serializer.DeserializationStageProgressed -= progressModel.UpdateStatusLoad;
-            return (root, saveGame);
+            return (root, deletedRoot, saveGame);
         }
 
         public static void Save(string fileName, FGSaveSession saveGame)

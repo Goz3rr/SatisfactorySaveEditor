@@ -1,4 +1,4 @@
-﻿using CommonServiceLocator;
+using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Ioc;
@@ -40,6 +40,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private bool _isJumping = false;
         private FGSaveSession _saveGame;
         private SaveObjectTreeModel _root;
+        private SaveObjectTreeModel _deletedRoot;
         private string _saveFileName;
         private SaveObjectTreeModel _selectedItem;
         private SaveObjectTreeModel _lastMultiSelect;
@@ -272,7 +273,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// </summary>
         /// <param name="target">The EntityName to jump to, in string format</param>
         /// <returns>True if rootItem contains the EntitiyName, false otherwise.</returns>
-        private bool CanJump(string target) => _root.Children.Traverse(c => c.Children).Any(vm => vm.Name == target);
+        private bool CanJump(string target) => _root.Children.Traverse(c => c.Children).Any(vm => vm.Name == target) || _deletedRoot.Children.Traverse(c => c.Children).Any(vm => vm.Name == target);
 
         /// <summary>
         /// Select the specified entity in the tree view
@@ -281,7 +282,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Jump(string target)
         {
             if (SelectedItem != null) SelectedItem.IsSelected = false;
-            SelectedItem = _root.Children.Traverse(c => c.Children).First(vm => vm.Name == target);
+            SelectedItem = _root.Children.Traverse(c => c.Children).FirstOrDefault(vm => vm.Name == target) ?? _deletedRoot.Children.Traverse(c => c.Children).First(vm => vm.Name == target);
         }
 
         /// <summary>
@@ -293,7 +294,7 @@ namespace SatisfactorySaveEditor.ViewModel
             IsJumping = false;
 
             if (SelectedItem != null) SelectedItem.IsSelected = false;
-            SelectedItem = _root.Children.Traverse(c => c.Children).First(vm => vm.Name.ToLower().Contains(target.ToLower()));
+            SelectedItem = _root.Children.Traverse(c => c.Children).FirstOrDefault(vm => vm.Name.ToLower().Contains(target.ToLower())) ?? _root.Children.Traverse(c => c.Children).FirstOrDefault(vm => vm.Name.ToLower().Contains(target.ToLower()));
 
             var currentOpened = SelectedItem;
             while (currentOpened != null)
@@ -335,12 +336,13 @@ namespace SatisfactorySaveEditor.ViewModel
                 {
                     RootItems.Clear();
                     RootItems.Add(_root);
+                    RootItems.Add(_deletedRoot);
                 });
             }
             else
             {
                 var valueLower = value.ToLower(CultureInfo.InvariantCulture);
-                var filter = _root.Children.Traverse(c => c.Children).WithCancellation(_tokenSource.Token).Where(vm => vm.Name.ToLower(CultureInfo.InvariantCulture).Contains(valueLower)).ToHashSet();
+                var filter = _root.Children.Traverse(c => c.Children).Union(_deletedRoot.Children.Traverse(c => c.Children)).WithCancellation(_tokenSource.Token).Where(vm => vm.Name.ToLower(CultureInfo.InvariantCulture).Contains(valueLower)).ToHashSet();
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     SaveObjectTreeModel searchResultNode;
@@ -380,6 +382,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             // We have to force a tree redraw in case the user changes the naming scheme
             foreach (var child in _root.Children.Traverse(c => c.Children)) child.RaisePropertyChanged(() => child.DisplayName);
+            foreach (var child in _deletedRoot.Children.Traverse(c => c.Children)) child.RaisePropertyChanged(() => child.DisplayName);
         }
 
         /// <summary>
@@ -603,7 +606,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 return;
             }
 
-            var (root, saveGame) = SaveIOService.Load(fileName, ProgressModel);
+            var (root, deletedRoot, saveGame) = SaveIOService.Load(fileName, ProgressModel);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -612,6 +615,7 @@ namespace SatisfactorySaveEditor.ViewModel
             });
 
             _root = root;
+            _deletedRoot = deletedRoot;
             _saveGame = saveGame;
             _saveFileName = fileName;
 

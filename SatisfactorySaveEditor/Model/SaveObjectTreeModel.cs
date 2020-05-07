@@ -29,6 +29,7 @@ namespace SatisfactorySaveEditor.Model
         private bool? _isMultiSelected = false;
 
         public SaveObject Model { get; }
+        public ObjectReference DeletedActor { get; }
 
         public SaveObjectTreeModel Parent { get; }
         public ObservableCollection<SaveObjectTreeModel> Children { get; } = new ObservableCollection<SaveObjectTreeModel>();
@@ -83,6 +84,17 @@ namespace SatisfactorySaveEditor.Model
             ObjectKind = (SaveObjectTreeKind) model.ObjectKind;
 
             Name = model.Instance.PathName;
+
+            Children.CollectionChanged += Children_CollectionChanged;
+        }
+
+        public SaveObjectTreeModel(ObjectReference deletedActor, SaveObjectTreeModel parent = null)
+        {
+            DeletedActor = deletedActor;
+            Parent = parent;
+            ObjectKind = SaveObjectTreeKind.Actor;
+
+            Name = deletedActor.PathName;
 
             Children.CollectionChanged += Children_CollectionChanged;
         }
