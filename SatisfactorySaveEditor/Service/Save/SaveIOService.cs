@@ -9,15 +9,14 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows;
 
-namespace SatisfactorySaveEditor.Service
+namespace SatisfactorySaveEditor.Service.Save
 {
-    // While not a real service I tried to separate as much IO and data manipulation from the actual viewmodel
-    public static class SaveIOService
+    public class SaveIOService
     {
-        private static readonly SatisfactorySaveSerializer _serializer = new SatisfactorySaveSerializer();
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly SatisfactorySaveSerializer _serializer = new SatisfactorySaveSerializer();
+        private readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public static (SaveObjectTreeModel root, SaveObjectTreeModel deletedRoot, FGSaveSession saveGame) Load(string fileName, IOProgressModel progressModel)
+        public (SaveObjectTreeModel root, SaveObjectTreeModel deletedRoot, FGSaveSession saveGame) Load(string fileName, IOProgressModel progressModel)
         {
             FGSaveSession saveGame;
             _serializer.DeserializationStageChanged += progressModel.UpdateStatusLoad;
@@ -81,13 +80,13 @@ namespace SatisfactorySaveEditor.Service
             return (root, deletedRoot, saveGame);
         }
 
-        public static void Save(string fileName, FGSaveSession saveGame)
+        public void Save(string fileName, FGSaveSession saveGame)
         {
             using var file = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.Write);
             _serializer.Serialize(saveGame, file);
         }
 
-        public static void CreateBackup(string fileName)
+        public void CreateBackup(string fileName)
         {
             string saveFileDirectory = Path.GetDirectoryName(fileName);
             string tempDirectoryName = @"\SSEtemp\";

@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Ioc;
 using SatisfactorySaveEditor.Service.Cheat;
 using SatisfactorySaveEditor.Service.Toast;
+using SatisfactorySaveEditor.Service.Save;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -17,6 +18,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
             SimpleIoc.Default.Register<ToastService>();
             SimpleIoc.Default.Register<CheatService>();
+            SimpleIoc.Default.Register<SaveIOService>();
         }
 
         public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();

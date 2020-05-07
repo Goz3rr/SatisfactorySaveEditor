@@ -1,28 +1,23 @@
-﻿using CommonServiceLocator;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using NLog;
-using SatisfactorySaveEditor.Cheat;
 using SatisfactorySaveEditor.Model;
-using SatisfactorySaveEditor.Service;
 using SatisfactorySaveEditor.Service.Cheat;
+using SatisfactorySaveEditor.Service.Save;
 using SatisfactorySaveEditor.Service.Toast;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.Save;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -118,13 +113,16 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public bool HasUnsavedChanges { get; set; }
 
+        private readonly SaveIOService _saveService;
         public ToastService ToastService { get; }
         public CheatService CheatService { get; }
 
         public IOProgressModel ProgressModel { get; } = new IOProgressModel();
 
-        public MainViewModel(ToastService toastService, CheatService cheatService)
+        public MainViewModel(ToastService toastService, CheatService cheatService, SaveIOService saveService)
         {
+            _saveService = saveService;
+
             ToastService = toastService;
             CheatService = cheatService;
 
@@ -410,7 +408,7 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             IsBusy = true;
             log.Info($"Creating a {(manual ? "manual " : "")}backup for {_saveFileName}");
-            SaveIOService.CreateBackup(_saveFileName);
+            _saveService.CreateBackup(_saveFileName);
 
             if (manual) MessageBox.Show("Backup created. You can find it in your save file folder.", "Backup created");
             IsBusy = false;
@@ -534,7 +532,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Save(string fileName)
         {
             IsBusy = true;
-            SaveIOService.Save(fileName, _saveGame);
+            _saveService.Save(fileName, _saveGame);
             IsBusy = false;
         }
 
@@ -558,7 +556,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 return;
             }
 
-            var (root, deletedRoot, saveGame) = SaveIOService.Load(fileName, ProgressModel);
+            var (root, deletedRoot, saveGame) = _saveService.Load(fileName, ProgressModel);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
