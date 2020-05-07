@@ -2,9 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Numerics;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 using SatisfactorySaveParser.Save;

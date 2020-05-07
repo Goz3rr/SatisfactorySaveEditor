@@ -108,7 +108,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         {
                             case ByteProperty.TypeName:
                                 {
-                                    foreach (var obj in arrayProperty.Elements.Cast<ByteProperty>())
+                                    foreach (var obj in arrayProperty.Elements.Cast<IBytePropertyValue>())
                                     {
                                         addMethod.Invoke(list, new[] { (object)obj.ByteValue });
                                     }
@@ -124,7 +124,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
                             case IntProperty.TypeName:
                                 {
-                                    foreach (var prop in arrayProperty.Elements.Cast<IntProperty>())
+                                    foreach (var prop in arrayProperty.Elements.Cast<IIntPropertyValue>())
                                     {
                                         addMethod.Invoke(list, new[] { (object)prop.Value });
                                     }
@@ -133,7 +133,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
                             case ObjectProperty.TypeName:
                                 {
-                                    foreach (var obj in arrayProperty.Elements.Cast<ObjectProperty>())
+                                    foreach (var obj in arrayProperty.Elements.Cast<IObjectPropertyValue>())
                                     {
                                         addMethod.Invoke(list, new[] { obj.Reference });
                                     }
@@ -142,7 +142,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
                             case StructProperty.TypeName:
                                 {
-                                    foreach (var obj in arrayProperty.Elements.Cast<StructProperty>())
+                                    foreach (var obj in arrayProperty.Elements.Cast<IStructPropertyValue>())
                                     {
                                         addMethod.Invoke(list, new[] { obj.Data });
                                     }
@@ -151,7 +151,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
                             case InterfaceProperty.TypeName:
                                 {
-                                    foreach (var obj in arrayProperty.Elements.Cast<InterfaceProperty>())
+                                    foreach (var obj in arrayProperty.Elements.Cast<IInterfacePropertyValue>())
                                     {
                                         addMethod.Invoke(list, new[] { obj.Reference });
                                     }
