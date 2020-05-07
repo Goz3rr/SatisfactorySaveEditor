@@ -1,4 +1,4 @@
-﻿namespace SatisfactorySaveParser.Save.Properties
+﻿namespace SatisfactorySaveParser.Save.Properties.Abstractions
 {
     public interface IIntPropertyValue
     {

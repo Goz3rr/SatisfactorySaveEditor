@@ -1,10 +1,18 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
+
+using NLog;
+
+using SatisfactorySaveParser.Save.Properties.Abstractions;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
     public class ByteProperty : SerializedProperty, IBytePropertyValue
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         public const string TypeName = nameof(ByteProperty);
         public override string PropertyType => TypeName;
 
@@ -81,6 +89,48 @@ namespace SatisfactorySaveParser.Save.Properties
             {
                 writer.Write(ByteValue);
             }
+        }
+
+        public override void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
+        {
+            if (IsEnum)
+            {
+                if (!info.PropertyType.IsGenericType || info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>))
+                {
+                    log.Error($"Attempted to assign {PropertyType} ({EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                    saveObject.AddDynamicProperty(this);
+                    return;
+                }
+
+                var enumType = info.PropertyType.GenericTypeArguments[0];
+                if (enumType.Name != EnumType)
+                {
+                    log.Error($"Attempted to assign {PropertyType} ({EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                    saveObject.AddDynamicProperty(this);
+                    return;
+                }
+
+                if (!Enum.TryParse(enumType, EnumValue, true, out object enumValue))
+                {
+                    log.Error($"Failed to parse \"{EnumValue}\" as {enumType.Name}");
+                    saveObject.AddDynamicProperty(this);
+                    return;
+                }
+
+                var enumAsByteType = typeof(EnumAsByte<>).MakeGenericType(new[] { enumType });
+                var instance = Activator.CreateInstance(enumAsByteType, enumValue);
+                info.SetValue(saveObject, instance);
+                return;
+            }
+
+            if (info.PropertyType != typeof(byte))
+            {
+                log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
+            info.SetValue(saveObject, ByteValue);
         }
     }
 }

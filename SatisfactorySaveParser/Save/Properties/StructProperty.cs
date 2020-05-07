@@ -1,12 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
+
+using NLog;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Properties.Abstractions;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
     public class StructProperty : SerializedProperty, IStructPropertyValue
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         public const string TypeName = nameof(StructProperty);
         public override string PropertyType => TypeName;
 
@@ -61,6 +68,25 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             throw new NotImplementedException();
+        }
+
+        public override void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
+        {
+            if (info.PropertyType.IsArray && Data.GetType() == info.PropertyType.GetElementType())
+            {
+                var array = (Array)info.GetValue(saveObject);
+                array.SetValue(Data, Index);
+                return;
+            }
+
+            if (Data.GetType() != info.PropertyType)
+            {
+                log.Error($"Attempted to assign struct {PropertyName} ({Data.GetType().Name}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
+            info.SetValue(saveObject, Data);
         }
     }
 }

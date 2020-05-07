@@ -6,7 +6,7 @@ namespace SatisfactorySaveParser.Game.Script
     public class FGTrainPlatformConnection : SaveComponent
     {
         [SaveProperty("mComponentDirection")]
-        public bool  ComponentDirection { get; set; }
+        public bool ComponentDirection { get; set; }
 
         [SaveProperty("platformOwner")]
         public ObjectReference PlatformOwner { get; set; }

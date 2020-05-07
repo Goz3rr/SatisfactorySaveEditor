@@ -1,6 +1,6 @@
 ﻿using SatisfactorySaveParser.Game.Structs;
 
-namespace SatisfactorySaveParser.Save.Properties
+namespace SatisfactorySaveParser.Save.Properties.Abstractions
 {
     public interface IStructPropertyValue
     {

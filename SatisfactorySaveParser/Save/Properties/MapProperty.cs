@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
@@ -107,6 +109,12 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             throw new NotImplementedException();
+        }
+
+        public override void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
+        {
+            // TODO
+            saveObject.AddDynamicProperty(this);
         }
     }
 }

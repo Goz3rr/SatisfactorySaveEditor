@@ -1,10 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+
+using NLog;
+
+using SatisfactorySaveParser.Save.Properties.Abstractions;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
     public class EnumProperty : SerializedProperty, IEnumPropertyValue
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         public const string TypeName = nameof(EnumProperty);
         public override string PropertyType => TypeName;
 
@@ -46,6 +55,26 @@ namespace SatisfactorySaveParser.Save.Properties
             writer.WriteLengthPrefixedString(Type);
             writer.Write((byte)0);
             writer.WriteLengthPrefixedString(Value);
+        }
+
+        public override void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
+        {
+            if (Type != info.PropertyType.Name)
+            {
+                log.Error($"Attempted to assign enum {PropertyName} ({Type}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
+            // TODO: should probably already be in BackingObject
+            if (!Enum.TryParse(info.PropertyType, Value.Split(':').Last(), true, out object enumValue))
+            {
+                log.Error($"Failed to parse \"{Value}\" as {info.PropertyType.Name}");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
+            info.SetValue(saveObject, enumValue);
         }
     }
 }

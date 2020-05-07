@@ -90,195 +90,21 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public virtual void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
         {
-            switch (this)
+            if (info.PropertyType.IsArray && BackingType == info.PropertyType.GetElementType())
             {
-                case ArrayProperty arrayProperty:
-                    {
-                        if (info.PropertyType.GetGenericTypeDefinition() != typeof(List<>))
-                        {
-                            log.Error($"Attempted to assign array {PropertyName} to non list field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.AddDynamicProperty(this);
-                            break;
-                        }
-
-                        var list = info.GetValue(saveObject);
-                        var addMethod = info.PropertyType.GetMethod(nameof(List<object>.Add));
-
-                        switch (arrayProperty.Type)
-                        {
-                            case ByteProperty.TypeName:
-                                {
-                                    foreach (var obj in arrayProperty.Elements.Cast<IBytePropertyValue>())
-                                    {
-                                        addMethod.Invoke(list, new[] { (object)obj.ByteValue });
-                                    }
-                                }
-                                break;
-
-                            case EnumProperty.TypeName:
-                                {
-                                    // TODO
-                                    saveObject.AddDynamicProperty(this);
-                                }
-                                break;
-
-                            case IntProperty.TypeName:
-                                {
-                                    foreach (var prop in arrayProperty.Elements.Cast<IIntPropertyValue>())
-                                    {
-                                        addMethod.Invoke(list, new[] { (object)prop.Value });
-                                    }
-                                }
-                                break;
-
-                            case ObjectProperty.TypeName:
-                                {
-                                    foreach (var obj in arrayProperty.Elements.Cast<IObjectPropertyValue>())
-                                    {
-                                        addMethod.Invoke(list, new[] { obj.Reference });
-                                    }
-                                }
-                                break;
-
-                            case StructProperty.TypeName:
-                                {
-                                    foreach (var obj in arrayProperty.Elements.Cast<IStructPropertyValue>())
-                                    {
-                                        addMethod.Invoke(list, new[] { obj.Data });
-                                    }
-                                }
-                                break;
-
-                            case InterfaceProperty.TypeName:
-                                {
-                                    foreach (var obj in arrayProperty.Elements.Cast<IInterfacePropertyValue>())
-                                    {
-                                        addMethod.Invoke(list, new[] { obj.Reference });
-                                    }
-                                }
-                                break;
-
-                            default:
-                                {
-                                    log.Warn($"Attempted to assign array {PropertyName} of unknown type {arrayProperty.Type}");
-                                    saveObject.AddDynamicProperty(this);
-                                }
-                                break;
-                        }
-                    }
-                    break;
-
-                case StructProperty structProperty:
-                    {
-                        if (info.PropertyType.IsArray && structProperty.Data.GetType() == info.PropertyType.GetElementType())
-                        {
-                            var array = (Array)info.GetValue(saveObject);
-                            array.SetValue(structProperty.Data, Index);
-                            break;
-                        }
-
-                        if (structProperty.Data.GetType() != info.PropertyType)
-                        {
-                            log.Error($"Attempted to assign struct {PropertyName} ({structProperty.Data.GetType().Name}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.AddDynamicProperty(this);
-                            break;
-                        }
-
-                        info.SetValue(saveObject, structProperty.Data);
-                    }
-                    break;
-
-                case EnumProperty enumProperty:
-                    {
-                        if (enumProperty.Type != info.PropertyType.Name)
-                        {
-                            log.Error($"Attempted to assign enum {PropertyName} ({enumProperty.Type}) to mismatched property {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.AddDynamicProperty(this);
-                            break;
-                        }
-
-                        // TODO: should probably already be in BackingObject
-                        if (!Enum.TryParse(info.PropertyType, enumProperty.Value.Split(':').Last(), true, out object enumValue))
-                        {
-                            log.Error($"Failed to parse \"{enumProperty.Value}\" as {info.PropertyType.Name}");
-                            saveObject.AddDynamicProperty(this);
-                            break;
-                        }
-
-                        info.SetValue(saveObject, enumValue);
-                    }
-                    break;
-
-                case ByteProperty byteProperty:
-                    {
-                        if (byteProperty.IsEnum)
-                        {
-                            if (!info.PropertyType.IsGenericType || info.PropertyType.GetGenericTypeDefinition() != typeof(EnumAsByte<>))
-                            {
-                                log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                                saveObject.AddDynamicProperty(this);
-                                break;
-                            }
-
-                            var enumType = info.PropertyType.GenericTypeArguments[0];
-                            if (enumType.Name != byteProperty.EnumType)
-                            {
-                                log.Error($"Attempted to assign {PropertyType} ({byteProperty.EnumType}) {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                                saveObject.AddDynamicProperty(this);
-                                break;
-                            }
-
-                            if (!Enum.TryParse(enumType, byteProperty.EnumValue, true, out object enumValue))
-                            {
-                                log.Error($"Failed to parse \"{byteProperty.EnumValue}\" as {enumType.Name}");
-                                saveObject.AddDynamicProperty(this);
-                                break;
-                            }
-
-                            var enumAsByteType = typeof(EnumAsByte<>).MakeGenericType(new[] { enumType });
-                            var instance = Activator.CreateInstance(enumAsByteType, enumValue);
-                            info.SetValue(saveObject, instance);
-                            break;
-                        }
-
-                        if (info.PropertyType != typeof(byte))
-                        {
-                            log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.AddDynamicProperty(this);
-                            break;
-                        }
-
-                        info.SetValue(saveObject, byteProperty.ByteValue);
-                    }
-                    break;
-
-                case MapProperty mapProperty:
-                    {
-                        // TODO
-                        saveObject.AddDynamicProperty(this);
-                    }
-                    break;
-
-                default:
-                    {
-                        if (info.PropertyType.IsArray && BackingType == info.PropertyType.GetElementType())
-                        {
-                            var array = (Array)info.GetValue(saveObject);
-                            array.SetValue(BackingObject, Index);
-                            break;
-                        }
-
-                        if (info.PropertyType != BackingType)
-                        {
-                            log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
-                            saveObject.AddDynamicProperty(this);
-                            break;
-                        }
-
-                        info.SetValue(saveObject, BackingObject);
-                    }
-                    break;
+                var array = (Array)info.GetValue(saveObject);
+                array.SetValue(BackingObject, Index);
+                return;
             }
+
+            if (info.PropertyType != BackingType)
+            {
+                log.Error($"Attempted to assign {PropertyType} {PropertyName} to incompatible backing field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
+            info.SetValue(saveObject, BackingObject);
         }
 
         public abstract void Serialize(BinaryWriter writer);
@@ -293,6 +119,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 EnumProperty.TypeName => typeof(EnumProperty),
                 FloatProperty.TypeName => typeof(FloatProperty),
                 Int64Property.TypeName => typeof(Int64Property),
+                InterfaceProperty.TypeName => typeof(InterfaceProperty),
                 IntProperty.TypeName => typeof(IntProperty),
                 MapProperty.TypeName => typeof(MapProperty),
                 NameProperty.TypeName => typeof(NameProperty),

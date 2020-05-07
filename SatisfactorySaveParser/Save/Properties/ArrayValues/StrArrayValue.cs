@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using SatisfactorySaveParser.Save.Properties.Abstractions;
+
 namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
     public class StrArrayValue : IStrPropertyValue, IArrayElement

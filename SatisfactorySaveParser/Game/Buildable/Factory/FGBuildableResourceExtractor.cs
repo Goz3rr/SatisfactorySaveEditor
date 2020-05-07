@@ -1,4 +1,5 @@
 ﻿using System;
+
 using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.Game.Buildable.Factory

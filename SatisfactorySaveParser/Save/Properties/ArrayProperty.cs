@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+
+using NLog;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Properties.Abstractions;
 using SatisfactorySaveParser.Save.Properties.ArrayValues;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
     public class ArrayProperty : SerializedProperty
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         public const string TypeName = nameof(ArrayProperty);
         public override string PropertyType => TypeName;
 
@@ -187,6 +195,81 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             throw new NotImplementedException();
+        }
+
+        public override void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
+        {
+            if (info.PropertyType.GetGenericTypeDefinition() != typeof(List<>))
+            {
+                log.Error($"Attempted to assign array {PropertyName} to non list field {info.DeclaringType}.{info.Name} ({info.PropertyType.Name})");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
+            var list = info.GetValue(saveObject);
+            var addMethod = info.PropertyType.GetMethod(nameof(List<object>.Add));
+
+            switch (Type)
+            {
+                case ByteProperty.TypeName:
+                    {
+                        foreach (var obj in Elements.Cast<IBytePropertyValue>())
+                        {
+                            addMethod.Invoke(list, new[] { (object)obj.ByteValue });
+                        }
+                    }
+                    break;
+
+                case EnumProperty.TypeName:
+                    {
+                        // TODO
+                        saveObject.AddDynamicProperty(this);
+                    }
+                    break;
+
+                case IntProperty.TypeName:
+                    {
+                        foreach (var prop in Elements.Cast<IIntPropertyValue>())
+                        {
+                            addMethod.Invoke(list, new[] { (object)prop.Value });
+                        }
+                    }
+                    break;
+
+                case ObjectProperty.TypeName:
+                    {
+                        foreach (var obj in Elements.Cast<IObjectPropertyValue>())
+                        {
+                            addMethod.Invoke(list, new[] { obj.Reference });
+                        }
+                    }
+                    break;
+
+                case StructProperty.TypeName:
+                    {
+                        foreach (var obj in Elements.Cast<IStructPropertyValue>())
+                        {
+                            addMethod.Invoke(list, new[] { obj.Data });
+                        }
+                    }
+                    break;
+
+                case InterfaceProperty.TypeName:
+                    {
+                        foreach (var obj in Elements.Cast<IInterfacePropertyValue>())
+                        {
+                            addMethod.Invoke(list, new[] { obj.Reference });
+                        }
+                    }
+                    break;
+
+                default:
+                    {
+                        log.Warn($"Attempted to assign array {PropertyName} of unknown type {Type}");
+                        saveObject.AddDynamicProperty(this);
+                    }
+                    break;
+            }
         }
     }
 }

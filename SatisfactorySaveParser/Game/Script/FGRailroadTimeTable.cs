@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using SatisfactorySaveParser.Game.Structs;
 using SatisfactorySaveParser.Save;
 

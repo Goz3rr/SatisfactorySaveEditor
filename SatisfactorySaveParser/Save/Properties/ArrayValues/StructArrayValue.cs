@@ -2,6 +2,7 @@
 using System.IO;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Properties.Abstractions;
 
 namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {

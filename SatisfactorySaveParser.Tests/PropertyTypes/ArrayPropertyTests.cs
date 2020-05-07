@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Save.Properties;
+using SatisfactorySaveParser.Save.Properties.Abstractions;
+using SatisfactorySaveParser.Save.Properties.ArrayValues;
 using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Tests.PropertyTypes
@@ -44,8 +46,11 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
 
             var prop = new ArrayProperty(ObjectArrayName);
 
-            //for (int i = 0; i < 10; i++)
-            //    prop.Elements.Add(new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}"));
+            for (int i = 0; i < 10; i++)
+                prop.Elements.Add(new ObjectArrayValue()
+                {
+                    Reference = new ObjectReference("Persistent_Level", $"Persistent_Level:PersistentLevel.BP_PlayerState_C_0.FGRecipeShortcut_{i}")
+                });
 
             SatisfactorySaveSerializer.SerializeProperty(prop, writer);
 
@@ -81,6 +86,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
         public void ArrayPropertyByteRead()
         {
             Assert.Fail();
+
         }
 
         [TestMethod]

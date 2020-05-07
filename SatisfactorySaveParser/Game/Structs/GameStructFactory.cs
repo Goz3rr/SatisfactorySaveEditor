@@ -27,7 +27,7 @@ namespace SatisfactorySaveParser.Game.Structs
                 }
 
                 return new DynamicGameStruct(structName);
-            }               
+            }
 
             var obj = (GameStruct)Activator.CreateInstance(type);
 
