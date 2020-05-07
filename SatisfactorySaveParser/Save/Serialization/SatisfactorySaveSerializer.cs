@@ -28,7 +28,7 @@ namespace SatisfactorySaveParser.Save.Serialization
         public event EventHandler<StageChangedEventArgs> DeserializationStageChanged;
         public event EventHandler<StageProgressedEventArgs> DeserializationStageProgressed;
 
-        private int currentDeserializationStage = 0;
+        private int currentDeserializationStage, currentSerializationStage = 0;
 
         private void IncrementDeserializationStage(SerializerStage stage)
         {
@@ -44,6 +44,27 @@ namespace SatisfactorySaveParser.Save.Serialization
         {
             var progress = (float)current / total * 100;
             DeserializationStageProgressed?.Invoke(this, new StageProgressedEventArgs()
+            {
+                Current = current,
+                Total = total,
+                Progress = progress
+            });
+        }
+
+        private void IncrementSerializationStage(SerializerStage stage)
+        {
+            SerializationStageChanged?.Invoke(this, new StageChangedEventArgs()
+            {
+                Stage = stage,
+                Current = currentSerializationStage++,
+                Total = 7
+            });
+        }
+
+        private void UpdateSerializationProgress(long current, long total)
+        {
+            var progress = (float)current / total * 100;
+            SerializationStageProgressed?.Invoke(this, new StageProgressedEventArgs()
             {
                 Current = current,
                 Total = total,
@@ -68,14 +89,14 @@ namespace SatisfactorySaveParser.Save.Serialization
             };
 
             log.Info($"Save is {(save.Header.IsCompressed ? "compressed" : "not compressed")}");
-            // Go through the stage either way to make the UI consistent
-            IncrementDeserializationStage(SerializerStage.Decompressing);
             if (!save.Header.IsCompressed)
             {
                 DeserializeSaveData(save, reader);
             }
             else
             {
+                IncrementDeserializationStage(SerializerStage.Decompressing);
+
                 using var uncompressedBuffer = new MemoryStream();
                 var uncompressedSize = 0L;
 
@@ -131,7 +152,7 @@ namespace SatisfactorySaveParser.Save.Serialization
         {
             IncrementDeserializationStage(SerializerStage.ReadObjects);
 
-            // Does not need to be a public property because it's equal to Entries.Count
+            // Does not need to be a public property because it's equal to Objects.Count
             var totalSaveObjects = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjects} object headers");
 
@@ -151,7 +172,6 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
 
             IncrementDeserializationStage(SerializerStage.ReadObjectData);
-
             var totalSaveObjectData = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjectData} object data");
 
@@ -175,7 +195,6 @@ namespace SatisfactorySaveParser.Save.Serialization
 
             IncrementDeserializationStage(SerializerStage.ReadDestroyedObjects);
             UpdateDeserializationProgress(0, -1);
-
             save.DestroyedActors.AddRange(DeserializeDestroyedActors(reader));
 
             log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
@@ -184,30 +203,148 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         public void Serialize(FGSaveSession save, Stream stream)
         {
+            currentSerializationStage = 0;
+            IncrementSerializationStage(SerializerStage.FileOpen);
+            UpdateSerializationProgress(0, -1);
+
+            var sw = Stopwatch.StartNew();
             using var writer = new BinaryWriter(stream);
 
+            IncrementSerializationStage(SerializerStage.WriteHeader);
+            UpdateSerializationProgress(0, -1);
             SerializeHeader(save.Header, writer);
 
-            writer.Write(save.Objects.Count);
+            if (!save.Header.IsCompressed)
+            {
+                SerializeSaveData(save, writer);
+            }
+            else
+            {
+                using var uncompressedBuffer = new MemoryStream();
+                using var uncompressedBufferWriter = new BinaryWriter(uncompressedBuffer);
 
-            var actors = save.Objects.Where(e => e is SaveActor).ToArray();
-            foreach (var actor in actors)
-                SerializeObjectHeader(actor, writer);
+                uncompressedBufferWriter.Write(0); // Placeholder size
 
-            var components = save.Objects.Where(e => e is SaveComponent).ToArray();
-            foreach (var component in components)
-                SerializeObjectHeader(component, writer);
+                SerializeSaveData(save, uncompressedBufferWriter);
 
+                uncompressedBuffer.Position = 0;
+                uncompressedBufferWriter.Write((int)uncompressedBuffer.Length - 4);
+                uncompressedBuffer.Position = 0;
 
-            writer.Write(actors.Length + components.Length);
+                var uncompressedSize = 0L;
 
-            foreach (var actor in actors)
-                SerializeObjectData(actor, writer);
+                var minimumProgressUpdate = stream.Length / ProgressionReportModifier;
+                var lastProgressUpdate = 0L;
 
-            foreach (var component in components)
-                SerializeObjectData(component, writer);
+                IncrementSerializationStage(SerializerStage.Compressing);
+                UpdateSerializationProgress(0, uncompressedBuffer.Length);
 
+                for (var i = 0; i < (int)Math.Ceiling((double)uncompressedBuffer.Length / FCompressedChunkHeader.ChunkSize); i++)
+                {
+                    using var zBuffer = new MemoryStream();
 
+                    var remaining = (int)Math.Min(FCompressedChunkHeader.ChunkSize, uncompressedBuffer.Length - (FCompressedChunkHeader.ChunkSize * i));
+
+                    using (var zStream = new ZlibStream(zBuffer, CompressionMode.Compress, CompressionLevel.Level6, true))
+                    {
+                        var tmpBuf = new byte[remaining];
+                        uncompressedBuffer.Read(tmpBuf, 0, remaining);
+                        zStream.Write(tmpBuf, 0, remaining);
+                    }
+
+                    writer.Write(new FCompressedChunkHeader()
+                    {
+                        PackageTag = FCompressedChunkHeader.Magic,
+                        BlockSize = remaining,
+                        CompressedSize = zBuffer.Length,
+                        UncompressedSize = remaining
+                    });
+
+                    writer.Write(new FCompressedChunkInfo()
+                    {
+                        CompressedSize = zBuffer.Length,
+                        UncompressedSize = remaining
+                    });
+
+                    writer.Write(zBuffer.ToArray());
+
+                    uncompressedSize += remaining;
+                    if (uncompressedBuffer.Position - lastProgressUpdate > minimumProgressUpdate)
+                    {
+                        UpdateSerializationProgress(uncompressedBuffer.Position, uncompressedBuffer.Length);
+                        lastProgressUpdate = uncompressedBuffer.Position;
+                    }
+                }
+            }
+
+            sw.Stop();
+            IncrementSerializationStage(SerializerStage.Done);
+            UpdateSerializationProgress(0, -1);
+            log.Info($"Serializing save took {sw.ElapsedMilliseconds / 1000f}s");
+        }
+
+        private static int OrderOnSaveObjectType(SaveObject saveObject)
+        {
+            return saveObject switch
+            {
+                SaveActor _ => 0,
+                SaveComponent _ => 1,
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        private void SerializeSaveData(FGSaveSession save, BinaryWriter writer)
+        {
+            IncrementSerializationStage(SerializerStage.WriteObjects);
+
+            // Sort the list so Actors are serialized before Components
+            var sortedObjects = save.Objects.OrderBy(OrderOnSaveObjectType);
+            var totalSaveObjects = sortedObjects.Count();
+            log.Info($"Writing {totalSaveObjects} object headers to save");
+
+            UpdateSerializationProgress(0, totalSaveObjects);
+            var minimumProgressUpdate = totalSaveObjects / ProgressionReportModifier;
+            var lastProgressUpdate = 0L;
+            var count = 0;
+
+            writer.Write(totalSaveObjects);
+
+            foreach (var saveObject in sortedObjects)
+            {
+                SerializeObjectHeader(saveObject, writer);
+
+                if (count - lastProgressUpdate > minimumProgressUpdate)
+                {
+                    UpdateSerializationProgress(count, totalSaveObjects);
+                    lastProgressUpdate = count;
+                }
+                count++;
+            }
+
+            IncrementSerializationStage(SerializerStage.WriteObjectData);
+            log.Info($"Writing {totalSaveObjects} object data to save");
+
+            UpdateSerializationProgress(0, totalSaveObjects);
+            minimumProgressUpdate = totalSaveObjects / ProgressionReportModifier;
+            lastProgressUpdate = 0L;
+            count = 0;
+
+            writer.Write(totalSaveObjects);
+
+            foreach (var saveObject in sortedObjects)
+            {
+                SerializeObjectData(saveObject, writer);
+
+                if (count - lastProgressUpdate > minimumProgressUpdate)
+                {
+                    UpdateSerializationProgress(count, totalSaveObjects);
+                    lastProgressUpdate = count;
+                }
+                count++;
+            }
+
+            IncrementSerializationStage(SerializerStage.WriteDestroyedObjects);
+            UpdateSerializationProgress(0, -1);
             SerializeDestroyedActors(save.DestroyedActors, writer);
         }
 
