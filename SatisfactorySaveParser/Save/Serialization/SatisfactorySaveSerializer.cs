@@ -72,6 +72,45 @@ namespace SatisfactorySaveParser.Save.Serialization
             });
         }
 
+        public MemoryStream DumpCompressedData(Stream stream)
+        {
+            using var reader = new BinaryReader(stream);
+
+            var save = new FGSaveSession
+            {
+                Header = DeserializeHeader(reader)
+            };
+
+            if (!save.Header.IsCompressed)
+                throw new InvalidOperationException("Save is not compressed");
+
+            var uncompressedBuffer = new MemoryStream();
+            var uncompressedSize = 0L;
+
+            while (stream.Position < stream.Length)
+            {
+                var chunkHeader = reader.ReadCompressedChunkHeader();
+                Trace.Assert(chunkHeader.PackageTag == FCompressedChunkHeader.Magic);
+
+                var chunkInfo = reader.ReadCompressedChunkInfo();
+                Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
+
+                var startPosition = stream.Position;
+                using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
+                {
+                    zStream.CopyTo(uncompressedBuffer);
+                }
+
+                // ZlibStream appears to read more bytes than it uses (because of buffering probably) so we need to manually fix the input stream position
+                stream.Position = startPosition + chunkInfo.CompressedSize;
+
+                uncompressedSize += chunkInfo.UncompressedSize;
+            }
+
+            uncompressedBuffer.Position = 0;
+            return uncompressedBuffer;
+        }
+
         public FGSaveSession Deserialize(Stream stream)
         {
             currentDeserializationStage = 0;
@@ -607,6 +646,9 @@ namespace SatisfactorySaveParser.Save.Serialization
                     break;
                 case ObjectProperty.TypeName:
                     result = ObjectProperty.Deserialize(reader, propertyName, index);
+                    break;
+                case SetProperty.TypeName:
+                    result = SetProperty.Parse(reader, propertyName, index, out overhead);
                     break;
                 case StrProperty.TypeName:
                     result = StrProperty.Deserialize(reader, propertyName, index);

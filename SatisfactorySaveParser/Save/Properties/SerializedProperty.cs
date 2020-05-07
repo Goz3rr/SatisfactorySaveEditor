@@ -7,6 +7,7 @@ using System.Reflection;
 using NLog;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Properties.ArrayValues;
 using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -31,7 +32,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// </summary>
         public int Index { get; }
 
-        // TODO
+        // TODO: not currently assigned/used/implemented
         public byte HasPropertyGuid { get; private set; }
 
         public abstract Type BackingType { get; }
@@ -124,11 +125,31 @@ namespace SatisfactorySaveParser.Save.Properties
                 MapProperty.TypeName => typeof(MapProperty),
                 NameProperty.TypeName => typeof(NameProperty),
                 ObjectProperty.TypeName => typeof(ObjectProperty),
+                SetProperty.TypeName => typeof(SetProperty),
                 StrProperty.TypeName => typeof(StrProperty),
                 StructProperty.TypeName => typeof(StructProperty),
                 TextProperty.TypeName => typeof(TextProperty),
                 _ => throw new NotImplementedException($"Unknown PropertyType {name}"),
             };
+        }
+
+        public static Type GetPropertyValueTypeFromName(string name)
+        {
+            return name switch
+            {
+                ByteProperty.TypeName => typeof(ByteArrayValue),
+                EnumProperty.TypeName => typeof(EnumArrayValue),
+                FloatProperty.TypeName => typeof(FloatArrayValue),
+                InterfaceProperty.TypeName => typeof(InterfaceArrayValue),
+                IntProperty.TypeName => typeof(IntArrayValue),
+                NameProperty.TypeName => typeof(NameArrayValue),
+                ObjectProperty.TypeName => typeof(ObjectArrayValue),
+                StrProperty.TypeName => typeof(StrArrayValue),
+                StructProperty.TypeName => typeof(StructArrayValue),
+                TextProperty.TypeName => typeof(TextArrayValue),
+                _ => throw new NotImplementedException($"Unknown PropertyType {name}"),
+            };
+
         }
     }
 }

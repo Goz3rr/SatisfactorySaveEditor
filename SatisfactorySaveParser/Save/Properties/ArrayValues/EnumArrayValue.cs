@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
     public class EnumArrayValue : IEnumPropertyValue, IArrayElement
     {
+        public Type BackingType => typeof(Enum);
+
         public string Type { get; set; }
         public string Value { get; set; }
 

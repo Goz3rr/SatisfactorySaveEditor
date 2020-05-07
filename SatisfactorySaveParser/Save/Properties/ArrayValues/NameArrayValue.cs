@@ -5,11 +5,11 @@ using SatisfactorySaveParser.Save.Properties.Abstractions;
 
 namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
-    public class ObjectArrayValue : IObjectPropertyValue, IArrayElement
+    public class NameArrayValue : INamePropertyValue, IArrayElement
     {
-        public Type BackingType => typeof(ObjectReference);
+        public Type BackingType => typeof(string);
 
-        public ObjectReference Reference { get; set; }
+        public string Value { get; set; }
 
         public void ArraySerialize(BinaryWriter writer)
         {

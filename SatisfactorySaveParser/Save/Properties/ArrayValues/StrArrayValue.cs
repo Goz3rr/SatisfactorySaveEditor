@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
     public class StrArrayValue : IStrPropertyValue, IArrayElement
     {
+        public Type BackingType => typeof(string);
+
         public string Value { get; set; }
 
         public void ArraySerialize(BinaryWriter writer)

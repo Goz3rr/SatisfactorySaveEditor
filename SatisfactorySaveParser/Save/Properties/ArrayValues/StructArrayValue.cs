@@ -8,6 +8,8 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
     public class StructArrayValue : IStructPropertyValue, IArrayElement
     {
+        public Type BackingType => Data.GetType();
+
         public GameStruct Data { get; set; }
 
         public void ArraySerialize(BinaryWriter writer)

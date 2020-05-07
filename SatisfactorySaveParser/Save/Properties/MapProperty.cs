@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 
 using SatisfactorySaveParser.Game.Structs;
+using SatisfactorySaveParser.Save.Properties.ArrayValues;
 using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
@@ -42,8 +43,8 @@ namespace SatisfactorySaveParser.Save.Properties
 
             overhead = result.KeyType.GetSerializedLength() + result.ValueType.GetSerializedLength() + 1;
 
-            var keyType = GetPropertyTypeFromName(result.KeyType);
-            var valueType = GetPropertyTypeFromName(result.ValueType);
+            var keyType = GetPropertyValueTypeFromName(result.KeyType);
+            var valueType = GetPropertyValueTypeFromName(result.ValueType);
             result.Elements = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType));
 
             reader.AssertNullByte();
@@ -58,7 +59,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 {
                     case IntProperty.TypeName:
                         {
-                            key = new IntProperty(null)
+                            key = new IntArrayValue()
                             {
                                 Value = reader.ReadInt32()
                             };
@@ -66,9 +67,17 @@ namespace SatisfactorySaveParser.Save.Properties
                         break;
                     case ObjectProperty.TypeName:
                         {
-                            key = new ObjectProperty(null)
+                            key = new ObjectArrayValue()
                             {
                                 Reference = reader.ReadObjectReference()
+                            };
+                        }
+                        break;
+                    case StrProperty.TypeName:
+                        {
+                            key = new StrArrayValue()
+                            {
+                                Value = reader.ReadLengthPrefixedString()
                             };
                         }
                         break;
@@ -80,7 +89,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 {
                     case ByteProperty.TypeName:
                         {
-                            value = new ByteProperty(null)
+                            value = new ByteArrayValue()
                             {
                                 ByteValue = reader.ReadByte()
                             };
@@ -90,7 +99,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         {
                             var gameStruct = new DynamicGameStruct(null);
                             gameStruct.Deserialize(reader);
-                            value = new StructProperty(null)
+                            value = new StructArrayValue()
                             {
                                 Data = gameStruct
                             };
@@ -113,7 +122,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override void AssignToProperty(IPropertyContainer saveObject, PropertyInfo info)
         {
-            // TODO
+            // TODO: add assigning of maps
             saveObject.AddDynamicProperty(this);
         }
     }

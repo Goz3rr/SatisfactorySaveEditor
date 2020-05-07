@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
     public class ByteArrayValue : IBytePropertyValue, IArrayElement
     {
+        public Type BackingType => typeof(byte);
+
         public string EnumType { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
         public string EnumValue { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 

@@ -206,6 +206,15 @@ namespace SatisfactorySaveParser.Save.Properties
                 return;
             }
 
+            var propertyType = info.PropertyType.GetGenericArguments()[0];
+            var mismatchedType = Elements.FirstOrDefault(e => !e.BackingType.IsAssignableFrom(propertyType));
+            if (mismatchedType != null)
+            {
+                log.Error($"Attempted to insert {mismatchedType.BackingType} into {info.DeclaringType}.{info.Name} of {propertyType}");
+                saveObject.AddDynamicProperty(this);
+                return;
+            }
+
             var list = info.GetValue(saveObject);
             var addMethod = info.PropertyType.GetMethod(nameof(List<object>.Add));
 
@@ -222,7 +231,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
                 case EnumProperty.TypeName:
                     {
-                        // TODO
+                        // TODO: add assigning of enums
                         saveObject.AddDynamicProperty(this);
                     }
                     break;

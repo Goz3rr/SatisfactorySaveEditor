@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 {
     public class InterfaceArrayValue : IInterfacePropertyValue, IArrayElement
     {
+        public Type BackingType => typeof(ObjectReference);
+
         public ObjectReference Reference { get; set; }
 
         public void ArraySerialize(BinaryWriter writer)
