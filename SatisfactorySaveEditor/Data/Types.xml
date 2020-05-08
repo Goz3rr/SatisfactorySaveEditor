@@ -95,22 +95,73 @@
 				</TypeTooltip>
 			</TypeTooltip>
 			<TypeTooltip Type="Buildable" Tooltip="Contains buildable items like Vehicles, Buildings, Machines">
+				<!-- <TypeTooltip Type="Factory" Tooltip="Currently_unknown_purpose" /> -->
 				<TypeTooltip Type="Building" Tooltip="Contains buildable items like foundations, ramps and so on">
 					<TypeTooltip Type="Foundation" Tooltip="Contains list of all foundations placed in the world">
-						<TypeTooltip Type="Build_Foundation_8x2_01.Build_Foundation_8x2_01_C" Tooltip="Stores Foundations 8x2" />
 						<TypeTooltip Type="Build_Foundation_8x4_01.Build_Foundation_8x4_01_C" Tooltip="Stores Foundations 8x4" />
+						<TypeTooltip Type="Build_Foundation_8x2_01.Build_Foundation_8x2_01_C" Tooltip="Stores Foundations 8x2" />
+						<TypeTooltip Type="Build_Foundation_8x1_01.Build_Foundation_8x1_01_C" Tooltip="Stores Foundations 8x1" />
+						<TypeTooltip Type="Build_QuarterPipeCorner_04.Build_QuarterPipeCorner_04_C" Tooltip="Stores Inverted Outer-Corner Quarter Pipe" />
+						<TypeTooltip Type="Build_QuarterPipeCorner_03.Build_QuarterPipeCorner_03_C" Tooltip="Stores Outer-Corner Quarter Pipe" />
+						<TypeTooltip Type="Build_QuarterPipeCorner_02.Build_QuarterPipeCorner_02_C" Tooltip="Stores Inverted Inner-Corner Quarter Pipe" />
+						<TypeTooltip Type="Build_QuarterPipeCorner_01.Build_QuarterPipeCorner_01_C" Tooltip="Stores Inner-Corner Quarter Pipe" />
+						<TypeTooltip Type="Build_QuarterPipe_02.Build_QuarterPipe_02_C" Tooltip="Stores Inverted Quarter Pipe" />
+						<TypeTooltip Type="Build_QuarterPipe.Build_QuarterPipe_C" Tooltip="Stores Quarter Pipe" />
+						<TypeTooltip Type="Build_PillarTop.Build_PillarTop_C" Tooltip="Stores Pillar Top" />
+						<TypeTooltip Type="Build_PillarMiddle.Build_PillarMiddle_C" Tooltip="Stores Pillar Middle" />
+						<TypeTooltip Type="Build_PillarBase.Build_PillarBase_C" Tooltip="Stores Pillar Base" />
+						<TypeTooltip Type="Build_FoundationGlass_01.Build_FoundationGlass_01_C" Tooltip="Stores Glass Foundation" />
+						<TypeTooltip Type="Build_Foundation_Frame_01.Build_Foundation_Frame_01_C" Tooltip="Stores Foundation Frame" />
 					</TypeTooltip>
 					<TypeTooltip Type="Ramp" Tooltip="Contains list of all ramps placed in the world">
+						<TypeTooltip Type="Build_Ramp_8x1_01.Build_Ramp_8x1_01_C" Tooltip="Stores Ramp 8x1" />
 						<TypeTooltip Type="Build_Ramp_8x2_01.Build_Ramp_8x2_01_C" Tooltip="Stores Ramp 8x2" />
 						<TypeTooltip Type="Build_Ramp_8x4_01.Build_Ramp_8x4_01_C" Tooltip="Stores Ramp 8x4" />
+						<TypeTooltip Type="Build_Ramp_Diagonal_8x1_02.Build_Ramp_Diagonal_8x1_02_C" Tooltip="Stores Corner Ramp Up 8x1" />
+						<TypeTooltip Type="Build_Ramp_Diagonal_8x1_01.Build_Ramp_Diagonal_8x1_01_C" Tooltip="Stores Corner Ramp Down 8x1" />
+						<TypeTooltip Type="Build_Ramp_Diagonal_8x2_02.Build_Ramp_Diagonal_8x2_02_C" Tooltip="Stores Corner Ramp Up 8x2" />
+						<TypeTooltip Type="Build_Ramp_Diagonal_8x2_01.Build_Ramp_Diagonal_8x2_01_C" Tooltip="Stores Corner Ramp Down 8x2" />
+						<TypeTooltip Type="Build_Ramp_Diagonal_8x4_02.Build_Ramp_Diagonal_8x4_02_C" Tooltip="Stores Corner Ramp Up 8x4" />
+						<TypeTooltip Type="Build_Ramp_Diagonal_8x4_01.Build_Ramp_Diagonal_8x4_01_C" Tooltip="Stores Corner Ramp Down 8x4" />
+						<TypeTooltip Type="Build_RampDouble_8x1.Build_RampDouble_8x1_C" Tooltip="Stores Double Ramp 8x2" />
+						<TypeTooltip Type="Build_RampDouble.Build_RampDouble_C" Tooltip="Stores Double Ramp 8x4" />
+						<TypeTooltip Type="Build_Ramp_8x8x8.Build_Ramp_8x8x8_C" Tooltip="Stores Double Ramp 8x8" />
+						<TypeTooltip Type="Build_RampInverted_8x1_Corner_01.Build_RampInverted_8x1_Corner_01_C" Tooltip="Stores Inverted Ramp Corner 8x1" />
+						<TypeTooltip Type="Build_RampInverted_8x2_Corner_01.Build_RampInverted_8x2_Corner_01_C" Tooltip="Stores Inverted Ramp Corner 8x2" />
+						<TypeTooltip Type="Build_RampInverted_8x4_Corner_01.Build_RampInverted_8x4_Corner_01_C" Tooltip="Stores Inverted Ramp Corner 8x4" />
+						<TypeTooltip Type="Build_RampInverted_8x1.Build_RampInverted_8x1_C" Tooltip="Stores Inverted Ramp 8x1" />
+						<TypeTooltip Type="Build_RampInverted_8x2_01.Build_RampInverted_8x2_01_C" Tooltip="Stores Inverted Ramp 8x2" />
+						<TypeTooltip Type="Build_Ramp_8x4_Inverted_01.Build_Ramp_8x4_Inverted_01_C" Tooltip="Stores Inverted Ramp 8x4" />
+					</TypeTooltip>
+					<TypeTooltip Type="Fence" Tooltip="Contains list of all fences placed in the world">
+						<TypeTooltip Type="Build_Fence_01.Build_Fence_01_C" Tooltip="Stores Fence" />
 					</TypeTooltip>
 					<TypeTooltip Type="Wall" Tooltip="Contains list of all walls placed in the world">
-						<!-- #TODO: Have to setup a new save without walls to figure out which is which -->
-						<!-- <TypeTooltip Type="Build_Wall_8x4_01.Build_Wall_8x4_01_C" Tooltip="Stores Wall 8x4" /> -->
-						<!-- <TypeTooltip Type="Build_Wall_8x4_02.Build_Wall_8x4_02_C" Tooltip="Stores Wall 8x4" /> -->
-						<!-- <TypeTooltip Type="Build_Wall_Door_8x4_01.Build_Wall_Door_8x4_01_C" Tooltip="Stores Wall with doorway 8x4" /> -->
+						<TypeTooltip Type="Build_Wall_8x4_01.Build_Wall_8x4_01_C" Tooltip="Stores Wall (Plating)" />
+						<TypeTooltip Type="Build_Wall_8x4_02.Build_Wall_8x4_02_C" Tooltip="Stores Wall (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Conveyor_8x4_03_Steel.Build_Wall_Conveyor_8x4_03_Steel_C" Tooltip="Stores Wall Conveyor x1 (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Conveyor_8x4_02_Steel.Build_Wall_Conveyor_8x4_02_Steel_C" Tooltip="Stores Wall Conveyor x2 (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Conveyor_8x4_01_Steel.Build_Wall_Conveyor_8x4_01_Steel_C" Tooltip="Stores Wall Conveyor x3 (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Conveyor_8x4_01.Build_Wall_Conveyor_8x4_01_C" Tooltip="Stores Wall Conveyor x3 (Plating)" />
+						<TypeTooltip Type="Build_Wall_Conveyor_8x4_02.Build_Wall_Conveyor_8x4_02_C" Tooltip="Stores Wall Conveyor x2 (Plating)" />
+						<TypeTooltip Type="Build_Wall_Conveyor_8x4_03.Build_Wall_Conveyor_8x4_03_C" Tooltip="Stores Wall Conveyor x1 (Plating)" />
+						<TypeTooltip Type="Build_Wall_Door_8x4_03_Steel.Build_Wall_Door_8x4_03_Steel_C" Tooltip="Stores Wall Door Right (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Door_8x4_02_Steel.Build_Wall_Door_8x4_02_Steel_C" Tooltip="Stores Wall Door Left (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Door_8x4_01_Steel.Build_Wall_Door_8x4_01_Steel_C" Tooltip="Stores Wall Door Center (Sheet Metal)" />
+						<TypeTooltip Type="Build_Wall_Door_8x4_01.Build_Wall_Door_8x4_01_C" Tooltip="Stores Wall Door Center (Plating)" />
+						<TypeTooltip Type="Build_Wall_Door_8x4_02.Build_Wall_Door_8x4_02_C" Tooltip="Stores Wall Door Left (Plating)" />
+						<TypeTooltip Type="Build_Wall_Door_8x4_03.Build_Wall_Door_8x4_03_C" Tooltip="Stores Wall Door Right (Plating)" />
+						<TypeTooltip Type="Build_Wall_Gate_8x4_01.Build_Wall_Gate_8x4_01_C" Tooltip="Stores Wall Gate (Plating)" />
+						<TypeTooltip Type="Build_Wall_Window_8x4_04.Build_Wall_Window_8x4_04_C" Tooltip="Stores Wall Window 04" />
+						<TypeTooltip Type="Build_Wall_Window_8x4_03.Build_Wall_Window_8x4_03_C" Tooltip="Stores Wall Window 03" />
+						<TypeTooltip Type="Build_Wall_Window_8x4_02.Build_Wall_Window_8x4_02_C" Tooltip="Stores Wall Window 02" />
+						<TypeTooltip Type="Build_Wall_Window_8x4_01.Build_Wall_Window_8x4_01_C" Tooltip="Stores Wall Window 01" />
 					</TypeTooltip>
 					<TypeTooltip Type="Walkway" Tooltip="Contains list of all walkways placed in the world">
+						<TypeTooltip Type="Build_WalkwayTrun.Build_WalkwayTrun_C" Tooltip="Stores Walkway Turn" />
+						<TypeTooltip Type="Build_WalkwayT.Build_WalkwayT_C" Tooltip="Stores Walkway T-Crossing" />
+						<TypeTooltip Type="Build_WalkwayStraight.Build_WalkwayStraight_C" Tooltip="Stores Walkway Straight" />
+						<TypeTooltip Type="Build_WalkwayRamp.Build_WalkwayRamp_C" Tooltip="Stores Walkway Ramp" />
 						<TypeTooltip Type="Build_WalkwayCross.Build_WalkwayCross_C" Tooltip="Stores Walkway crossing" />
 					</TypeTooltip>
 					<TypeTooltip Type="Stair" Tooltip="Contains list of all stairs placed in the world">
