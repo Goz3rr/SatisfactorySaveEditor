@@ -213,8 +213,9 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CyberWagon.ResourceSink_CyberWagon_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CyberWagon_Unlock.ResourceSink_CyberWagon_Unlock_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DiagonalRamps.ResourceSink_DiagonalRamps_C" />
-  <Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedRampPack.ResourceSink_InvertedRampPack_C" />
-  <Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DoorWalls_Metal.ResourceSink_DoorWalls_Metal_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedCornerRamps.ResourceSink_InvertedCornerRamps_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedRampPack.ResourceSink_InvertedRampPack_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DoorWalls_Metal.ResourceSink_DoorWalls_Metal_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DoorWalls_Normal.ResourceSink_DoorWalls_Normal_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FactoryCart.ResourceSink_FactoryCart_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FactoryRailing.ResourceSink_FactoryRailing_C" />
@@ -235,7 +236,7 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK2.ResourceSink_WallPowerPolesMK2_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK3.ResourceSink_WallPowerPolesMK3_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WindowedWalls.ResourceSink_WindowedWalls_C" />
-  <Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_HyperTubeWallAttachements.ResourceSink_HyperTubeWallAttachements_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_HyperTubeWallAttachements.ResourceSink_HyperTubeWallAttachements_C" />
 
 	<!-- New AWESOME Shop one time part purchases. These don't actually do anything when granted. No parts appear in the 'Purchases' section of the store or anything like that. -->
 	<!--
