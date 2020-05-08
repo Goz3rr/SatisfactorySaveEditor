@@ -26,7 +26,27 @@
 
 <TypeTooltip xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Type="Root" Tooltip="Main object containing all save data">
 	<TypeTooltip Type="Script" Tooltip="Contains most building and vehicle power network, inventory, and settings-related, information">
+		<!-- <TypeTooltip Type="FactoryGame.FGFoliageRemoval" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGPipeNetwork" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGItemPickup_Spawnable" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGFoundationSubsystem" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGMapManager" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGPipeSubsystem" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGRecipeManager" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGResourceSinkSubsystem" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGWorldSettings" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGFactoryLegsComponent" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGFactoryConnectionComponent" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGPowerInfoComponent" Tooltip="Currently_unknown_purpose" /> -->
 		<TypeTooltip Type="FactoryGame.FGInventoryComponent" Tooltip="Stores information regarding the contents of machine buffers, crates, crash site drop pods, player and doggo inventories, etc." />
+		<!-- <TypeTooltip Type="FactoryGame.FGPowerConnectionComponent" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGPowerCircuit" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGRecipeShortcut" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGPipeConnectionComponent" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGPipeConnectionFactory" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGInventoryComponentTrash" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGInventoryComponentEquipment" Tooltip="Currently_unknown_purpose" /> -->
+		<!-- <TypeTooltip Type="FactoryGame.FGHealthComponent" Tooltip="Currently_unknown_purpose" /> -->
 	</TypeTooltip>
 	<TypeTooltip Type="Game" Tooltip="Contains the FactoryGame tag and nothing else">
 		<TypeTooltip Type="FactoryGame" Tooltip="Contains multiple persistent objects such as story progress, Paleberry bush locations, the game time manager, etc.">
@@ -95,7 +115,114 @@
 				</TypeTooltip>
 			</TypeTooltip>
 			<TypeTooltip Type="Buildable" Tooltip="Contains buildable items like Vehicles, Buildings, Machines">
-				<!-- <TypeTooltip Type="Factory" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- <TypeTooltip Type="Factory" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="WorkBench" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_WorkBenchIntegrated.Build_WorkBenchIntegrated_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- <TypeTooltip Type="Build_WorkBench.Build_WorkBench_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="Workshop" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_Workshop.Build_Workshop_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="Mam" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_Mam.Build_Mam_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorPoleWall" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorPoleWall.Build_ConveyorPoleWall_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="LookoutTower" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_LookoutTower.Build_LookoutTower_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="HubTerminal" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_HubTerminal.Build_HubTerminal_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="PowerPoleMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_PowerPoleMk1.Build_PowerPoleMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="PowerLine" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_PowerLine.Build_PowerLine_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConstructorMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConstructorMk1.Build_ConstructorMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="SmelterMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_SmelterMk1.Build_SmelterMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="AssemblerMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_AssemblerMk1.Build_AssemblerMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="IndustrialFluidContainer" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_IndustrialTank.Build_IndustrialTank_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="WaterPump" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_WaterPump.Build_WaterPump_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="MinerMK1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_MinerMk1.Build_MinerMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ResourceSink" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ResourceSink.Build_ResourceSink_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ResourceSinkShop" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ResourceSinkShop.Build_ResourceSinkShop_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="SpaceElevator" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_SpaceElevator.Build_SpaceElevator_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="StoragePlayer" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_StorageIntegrated.Build_StorageIntegrated_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- <TypeTooltip Type="Build_StoragePlayer.Build_StoragePlayer_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="StorageContainerMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_StorageContainerMk1.Build_StorageContainerMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="StorageContainerMk2" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_StorageContainerMk2.Build_StorageContainerMk2_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="TradingPost" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_TradingPost.Build_TradingPost_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorBeltMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorBeltMk1.Build_ConveyorBeltMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorLiftMk1" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorLiftMk1.Build_ConveyorLiftMk1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="Pipeline" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_Pipeline.Build_Pipeline_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="PipelineSupport" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_PipelineSupport.Build_PipelineSupport_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- <TypeTooltip Type="Build_PipeSupportStackable.Build_PipeSupportStackable_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorPole" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorPole.Build_ConveyorPole_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="PowerPoleMk3" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_PowerPoleMk3.Build_PowerPoleMk3_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="CA_Merger" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorAttachmentMerger.Build_ConveyorAttachmentMerger_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="CA_Splitter" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorAttachmentSplitter.Build_ConveyorAttachmentSplitter_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="GeneratorBiomass" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_GeneratorIntegratedBiomass.Build_GeneratorIntegratedBiomass_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- <TypeTooltip Type="Build_GeneratorBiomass.Build_GeneratorBiomass_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="PipePump" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_PipelinePump.Build_PipelinePump_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorBeltMk2" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorBeltMk2.Build_ConveyorBeltMk2_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorLiftMk2" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorLiftMk2.Build_ConveyorLiftMk2_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="ConveyorPoleStackable" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Build_ConveyorPoleStackable.Build_ConveyorPoleStackable_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+				<!-- </TypeTooltip> -->
 				<TypeTooltip Type="Building" Tooltip="Contains buildable items like foundations, ramps and so on">
 					<TypeTooltip Type="Foundation" Tooltip="Contains list of all foundations placed in the world">
 						<TypeTooltip Type="Build_Foundation_8x4_01.Build_Foundation_8x4_01_C" Tooltip="Stores Foundations 8x4" />
@@ -170,6 +297,76 @@
 					</TypeTooltip>
 				</TypeTooltip>
 			</TypeTooltip>
+			<!-- <TypeTooltip Type="Character" Tooltip="Currently_unknown_purpose"> -->
+				<!-- <TypeTooltip Type="Creature" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="BP_CreatureSpawner.BP_CreatureSpawner_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- <TypeTooltip Type="Wildlife" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="SpaceGiraffe" Tooltip="Currently_unknown_purpose"> -->
+							<!-- <TypeTooltip Type="Char_SpaceGiraffe.Char_SpaceGiraffe_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- </TypeTooltip> -->
+						<!-- <TypeTooltip Type="SpaceRabbit" Tooltip="Currently_unknown_purpose"> -->
+							<!-- <TypeTooltip Type="Char_SpaceRabbit.Char_SpaceRabbit_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- </TypeTooltip> -->
+						<!-- <TypeTooltip Type="NonFlyingBird" Tooltip="Currently_unknown_purpose"> -->
+							<!-- <TypeTooltip Type="Char_NonFlyingBird.Char_NonFlyingBird_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- </TypeTooltip> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="Enemy" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="Hog" Tooltip="Currently_unknown_purpose"> -->
+							<!-- <TypeTooltip Type="Char_Hog.Char_Hog_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- </TypeTooltip> -->
+						<!-- <TypeTooltip Type="Spitter" Tooltip="Currently_unknown_purpose"> -->
+							<!-- <TypeTooltip Type="SmallSpitter" Tooltip="Currently_unknown_purpose"> -->
+								<!-- <TypeTooltip Type="Char_Spitter_Small.Char_Spitter_Small_C" Tooltip="Currently_unknown_purpose" /> -->
+							<!-- </TypeTooltip> -->
+							<!-- <TypeTooltip Type="AlternativeSpitter" Tooltip="Currently_unknown_purpose"> -->
+								<!-- <TypeTooltip Type="Char_Spitter_Alternative.Char_Spitter_Alternative_C" Tooltip="Currently_unknown_purpose" /> -->
+							<!-- </TypeTooltip> -->
+						<!-- </TypeTooltip> -->
+					<!-- </TypeTooltip> -->
+				<!-- <TypeTooltip Type="Player" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="BP_PlayerState.BP_PlayerState_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- <TypeTooltip Type="Char_Player.Char_Player_C" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- </TypeTooltip> -->
+			<!-- <TypeTooltip Type="World" Tooltip="Currently_unknown_purpose"> -->
+				<!-- <TypeTooltip Type="Benefit" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="DropPod" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="BP_DropPod.BP_DropPod_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="NutBush" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="BP_NutBush.BP_NutBush_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="BerryBush" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="BP_BerryBush.BP_BerryBush_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+					<!-- <TypeTooltip Type="Mushroom" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="BP_Shroom_01.BP_Shroom_01_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+				<!-- </TypeTooltip> -->
+				<!-- <TypeTooltip Type="Hazard" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="SporeCloudPlant" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="BP_SporeFlower.BP_SporeFlower_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+				<!-- </TypeTooltip> -->
+			<!-- </TypeTooltip> -->
+			<!-- <TypeTooltip Type="Resource" Tooltip="Currently_unknown_purpose"> -->
+				<!-- <TypeTooltip Type="BP_ResourceNode.BP_ResourceNode_C" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- <TypeTooltip Type="Environment" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="Crystal" Tooltip="Currently_unknown_purpose"> -->
+						<!-- <TypeTooltip Type="BP_Crystal.BP_Crystal_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- <TypeTooltip Type="BP_Crystal_mk2.BP_Crystal_mk2_C" Tooltip="Currently_unknown_purpose" /> -->
+						<!-- <TypeTooltip Type="BP_Crystal_mk3.BP_Crystal_mk3_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- </TypeTooltip> -->
+				<!-- </TypeTooltip> -->
+				<!-- <TypeTooltip Type="BP_ResourceDeposit.BP_ResourceDeposit_C" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- <TypeTooltip Type="BP_ResourceNodeGeyser.BP_ResourceNodeGeyser_C" Tooltip="Currently_unknown_purpose" /> -->
+			<!-- </TypeTooltip> -->
+			<!-- <TypeTooltip Type="Prototype" Tooltip="Currently_unknown_purpose"> -->
+				<!-- <TypeTooltip Type="WAT" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="BP_WAT1.BP_WAT1_C" Tooltip="Currently_unknown_purpose" /> -->
+					<!-- <TypeTooltip Type="BP_WAT2.BP_WAT2_C" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- </TypeTooltip> -->
+			<!-- </TypeTooltip> -->
 			<TypeTooltip Type="-Shared" Tooltip="Contains Blueprints (see blueprint tag for more info) and Crate location data">
 				<TypeTooltip Type="Crate" Tooltip="Contains locations and links to the inventory of death crates and 'inventory too full to pick up' item crates">
 					<TypeTooltip Type="BP_Crate.BP_Crate_C" Tooltip="Stores a Crate's (not Personal Storage) location and links it to its inventory, which is stored in Root > Script > FGInventoryComponent" />
@@ -192,6 +389,14 @@
 					<TypeTooltip Type="BP_SchematicManager.BP_SchematicManager_C" Tooltip="Stores unlocked milestones, available milestones, selected milestone, progress towards selected milestone, and time since drop ship landing(?)" />
 				</TypeTooltip>
 			</TypeTooltip>
+			<!-- <TypeTooltip Type="Recipes" Tooltip="Currently_unknown_purpose"> -->
+				<!-- <TypeTooltip Type="Research" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="BP_ResearchManager.BP_ResearchManager_C" Tooltip="Currently_unknown_purpose" /> -->
+				<!-- </TypeTooltip> -->
+			<!-- </TypeTooltip> -->
+			<!-- <TypeTooltip Type="Unlocks" Tooltip="Currently_unknown_purpose"> -->
+					<!-- <TypeTooltip Type="BP_UnlockSubsystem.BP_UnlockSubsystem_C" Tooltip="Currently_unknown_purpose" /> -->
+			<!-- </TypeTooltip> -->
 		</TypeTooltip>
 	</TypeTooltip>
 </TypeTooltip>
