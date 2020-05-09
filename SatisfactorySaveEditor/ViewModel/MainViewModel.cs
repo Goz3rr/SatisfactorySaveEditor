@@ -13,7 +13,6 @@ using SatisfactorySaveEditor.View;
 using SatisfactorySaveParser.Save;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -41,8 +40,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private SaveObjectTreeModel _selectedItem;
         private SaveObjectTreeModel _lastMultiSelect;
 
-        public ObservableCollection<SaveObjectTreeModel> RootItems { get; } = new ObservableCollection<SaveObjectTreeModel>();
-        public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
+        public ObservableCollection<SaveObjectTreeModel> RootItems { get; } = new ObservableCollection<SaveObjectTreeModel>(); 
 
         public RelayCommand<SaveObjectTreeModel> TreeSelectCommand { get; }
         public RelayCommand AboutCommand { get; }
@@ -113,7 +111,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public bool HasUnsavedChanges { get; set; }
 
-        private readonly SaveIOService _saveService;
+        public SaveIOService SaveService { get; }
         public ToastService ToastService { get; }
         public CheatService CheatService { get; }
 
@@ -121,8 +119,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public MainViewModel(ToastService toastService, CheatService cheatService, SaveIOService saveService)
         {
-            _saveService = saveService;
-
+            SaveService = saveService;
             ToastService = toastService;
             CheatService = cheatService;
 
@@ -130,24 +127,6 @@ namespace SatisfactorySaveEditor.ViewModel
             if (args.Length > 1 && File.Exists(args[1]))
             {
                 Task.Run(() => Load(args[1]));
-            }
-
-            var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
-            if (savedFiles != null)
-            {
-                bool modified = false;
-                foreach (string filePath in savedFiles) //silently remove files that no longer exist from the list in Properties
-                {
-                    if (!File.Exists(filePath))
-                    {
-                        modified = true;
-                        log.Info($"Removing save file {filePath} from recent saves list since it wasn't found on disk");
-                        Properties.Settings.Default.LastSaves.Remove(filePath);
-                    }
-                }
-                if (modified) //regenerate list since a save was not found when first built
-                    savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().ToList();
-                LastFiles = new ObservableCollection<string>(savedFiles);
             }
 
             TreeSelectCommand = new RelayCommand<SaveObjectTreeModel>(SelectNode);
@@ -384,8 +363,6 @@ namespace SatisfactorySaveEditor.ViewModel
                 if (dialog.ShowDialog() == true)
                 {
                     _saveFileName = dialog.FileName;
-
-                    AddRecentFileEntry(dialog.FileName);
                     RaisePropertyChanged(() => FileName);
                 }
                 else return;
@@ -408,7 +385,7 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             IsBusy = true;
             log.Info($"Creating a {(manual ? "manual " : "")}backup for {_saveFileName}");
-            _saveService.CreateBackup(_saveFileName);
+            SaveService.CreateBackup(_saveFileName);
 
             if (manual) MessageBox.Show("Backup created. You can find it in your save file folder.", "Backup created");
             IsBusy = false;
@@ -450,35 +427,6 @@ namespace SatisfactorySaveEditor.ViewModel
                 Task.Run(() => Load(dialog.FileName));
                 HasUnsavedChanges = false;
             }
-        }
-
-        /// <summary>
-        /// Adds a recently opened file to the list
-        /// </summary>
-        /// <param name="path">The path of the file to add</param>
-        private void AddRecentFileEntry(string path)
-        {
-            Properties.Settings.Default.LastSaves ??= new StringCollection();
-
-            if (LastFiles.Contains(path)) // No duplicates
-            {
-                Properties.Settings.Default.LastSaves.Remove(path);
-                Application.Current.Dispatcher.Invoke(() => LastFiles.Remove(path));
-            }
-
-            Properties.Settings.Default.LastSaves.Add(path);
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                LastFiles.Add(path);
-
-                while (Properties.Settings.Default.LastSaves.Count >= 6) // Keeps only 5 most recent saves
-                {
-                    LastFiles.RemoveAt(0);
-                    Properties.Settings.Default.LastSaves.RemoveAt(0);
-                }
-            });
-
-            Properties.Settings.Default.Save();
         }
 
         /// <summary>
@@ -526,7 +474,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Save(string fileName)
         {
             IsBusy = true;
-            _saveService.Save(fileName, _saveGame);
+            SaveService.Save(fileName, _saveGame);
             IsBusy = false;
         }
 
@@ -534,23 +482,12 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             IsBusy = true;
 
-            if (!File.Exists(fileName))
+            var (root, deletedRoot, saveGame) = SaveService.Load(fileName, ProgressModel);
+            if (root == null)
             {
-                MessageBox.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-                if (LastFiles != null && LastFiles.Contains(fileName)) //if the save file that failed to open was on the last found list, remove it. this should only occur when people move save files around and leave the editor open.
-                {
-                    log.Info($"Removing save file {fileName} from recent saves list since it wasn't found on disk");
-                    Properties.Settings.Default.LastSaves.Remove(fileName);
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        LastFiles.Remove(fileName);
-                    });
-                }
+                IsBusy = false;
                 return;
             }
-
-            var (root, deletedRoot, saveGame) = _saveService.Load(fileName, ProgressModel);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -567,7 +504,6 @@ namespace SatisfactorySaveEditor.ViewModel
             SearchText = null;
 
             RaisePropertyChanged(() => FileName);
-            AddRecentFileEntry(fileName);
 
             IsBusy = false;
         }

@@ -1,12 +1,16 @@
 ﻿using NLog;
 using SatisfactorySaveEditor.Model;
+using SatisfactorySaveEditor.Service.Toast;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Save.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Service.Save
@@ -14,10 +18,41 @@ namespace SatisfactorySaveEditor.Service.Save
     public class SaveIOService
     {
         private readonly SatisfactorySaveSerializer _serializer = new SatisfactorySaveSerializer();
+        private readonly ToastService _toastService;
         private readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        public ObservableCollection<string> LastFiles { get; } = new ObservableCollection<string>();
+
+        public SaveIOService(ToastService toastService)
+        {
+            _toastService = toastService;
+
+            var savedFiles = Properties.Settings.Default.LastSaves?.Cast<string>().Where(File.Exists).ToList() ?? new List<string>();
+            LastFiles = new ObservableCollection<string>(savedFiles);
+        }
+
+        public void Cleanup()
+        {
+            Properties.Settings.Default.LastSaves.Clear();
+            Properties.Settings.Default.LastSaves.AddRange(LastFiles.ToArray());
+            Properties.Settings.Default.Save();
+        }
 
         public (SaveObjectTreeModel root, SaveObjectTreeModel deletedRoot, FGSaveSession saveGame) Load(string fileName, IOProgressModel progressModel)
         {
+            if (!File.Exists(fileName))
+            {
+                _toastService.Show("That file could no longer be found on the disk.\nIt has been removed from the recent files list.", "File not present", SystemIcons.Warning);
+
+                if (LastFiles != null && LastFiles.Contains(fileName)) //if the save file that failed to open was on the last found list, remove it. this should only occur when people move save files around and leave the editor open.
+                {
+                    log.Info($"Removing save file {fileName} from recent saves list since it wasn't found on disk");
+                    Application.Current.Dispatcher.Invoke(() => LastFiles.Remove(fileName));
+                }
+
+                return (null, null, null);
+            }
+
             FGSaveSession saveGame;
             _serializer.DeserializationStageChanged += progressModel.UpdateStatusLoad;
             _serializer.DeserializationStageProgressed += progressModel.UpdateStatusLoad;
@@ -31,9 +66,13 @@ namespace SatisfactorySaveEditor.Service.Save
             {
                 MessageBox.Show($"An error occurred while opening the file:\n{ex.Message}\n\nCheck the logs for more details.\n\nIf this issue persists, please report it via \"Help > Report an Issue\", and attach the log file and save file you were trying to open.", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
                 log.Error(ex);
+
+                _serializer.DeserializationStageChanged -= progressModel.UpdateStatusLoad;
+                _serializer.DeserializationStageProgressed -= progressModel.UpdateStatusLoad;
                 return (null, null, null);
             }
 
+            AddRecentFileEntry(fileName);
             var root = new SaveObjectTreeModel(saveGame.Header.SessionName, null, true);
 
             var components = new HashSet<SaveComponent>();
@@ -83,6 +122,8 @@ namespace SatisfactorySaveEditor.Service.Save
         public void Save(string fileName, FGSaveSession saveGame)
         {
             using var file = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.Write);
+            AddRecentFileEntry(fileName);
+
             _serializer.Serialize(saveGame, file);
         }
 
@@ -116,6 +157,26 @@ namespace SatisfactorySaveEditor.Service.Save
                 File.Delete(tempFilePath);
                 Directory.Delete(pathToZipFrom);
             }
+        }
+
+        /// <summary>
+        /// Adds a recently opened file to the list
+        /// </summary>
+        /// <param name="path">The path of the file to add</param>
+        public void AddRecentFileEntry(string path)
+        {
+            if (LastFiles.Contains(path)) // No duplicates
+            {
+                Application.Current.Dispatcher.Invoke(() => LastFiles.Remove(path));
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                LastFiles.Add(path);
+
+                // Keeps only 5 most recent saves
+                while (Properties.Settings.Default.LastSaves.Count >= 6) LastFiles.RemoveAt(0);
+            });
         }
     }
 }

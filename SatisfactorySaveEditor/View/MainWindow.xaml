@@ -52,7 +52,7 @@
         <Menu DockPanel.Dock="Top" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open..." InputGestureText="Ctrl+O" Command="{Binding OpenCommand}"/>
-                <MenuItem Header="Open recent" ItemsSource="{Binding LastFiles}" Command="{Binding OpenCommand}">
+                <MenuItem Header="Open recent" ItemsSource="{Binding SaveService.LastFiles}" Command="{Binding OpenCommand}">
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="Command" Value="{Binding Source={StaticResource Proxy}, Path=Data.OpenCommand}"/>

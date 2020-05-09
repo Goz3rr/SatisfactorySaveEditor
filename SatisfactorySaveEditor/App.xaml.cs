@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SatisfactorySaveEditor.ViewModel;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +20,8 @@ namespace SatisfactorySaveEditor
             AppDomain.CurrentDomain.UnhandledException += (s, e) => log.Error(e.ExceptionObject);
             DispatcherUnhandledException += (s, e) => log.Error(e.Exception);
             TaskScheduler.UnobservedTaskException += (s, e) => log.Error(e.Exception);
+
+            Current.Exit += (s, e) => ViewModelLocator.Cleanup();
         }
     }
 }

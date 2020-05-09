@@ -27,6 +27,7 @@ namespace SatisfactorySaveEditor.ViewModel
 
         public static void Cleanup()
         {
+            ServiceLocator.Current.GetInstance<SaveIOService>().Cleanup();
         }
     }
 }
