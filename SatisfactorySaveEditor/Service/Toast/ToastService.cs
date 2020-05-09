@@ -27,12 +27,12 @@ namespace SatisfactorySaveEditor.Service.Toast
                 Application.Current.Dispatcher.Invoke(() => ActiveToasts.Remove(toast));
             });
 
-            ActiveToasts.Add(toast);
+            Application.Current.Dispatcher.Invoke(() => ActiveToasts.Add(toast));
         }
 
         public void Clear()
         {
-            ActiveToasts.Clear();
+            Application.Current.Dispatcher.Invoke(() => ActiveToasts.Clear());
         }
     }
 }
