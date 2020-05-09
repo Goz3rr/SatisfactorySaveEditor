@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Ioc;
 using SatisfactorySaveEditor.Service.Cheat;
 using SatisfactorySaveEditor.Service.Toast;
 using SatisfactorySaveEditor.Service.Save;
+using SatisfactorySaveEditor.Service.Undo;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -19,6 +20,7 @@ namespace SatisfactorySaveEditor.ViewModel
             SimpleIoc.Default.Register<ToastService>();
             SimpleIoc.Default.Register<CheatService>();
             SimpleIoc.Default.Register<SaveIOService>();
+            SimpleIoc.Default.Register<UndoService>();
         }
 
         public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();
