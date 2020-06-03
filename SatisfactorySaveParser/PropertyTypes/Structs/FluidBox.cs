@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace SatisfactorySaveParser.PropertyTypes.Structs
 {
@@ -11,7 +6,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
     {
         public float Unknown { get; set; }
 
-        public int SerializedLength => 25;
+        public int SerializedLength => 4;
         public string Type => "FluidBox";
 
         public FluidBox(BinaryReader reader)
