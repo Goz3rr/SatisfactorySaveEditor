@@ -40,6 +40,8 @@ namespace SatisfactorySaveEditor.Util
                     return new InterfacePropertyViewModel(ifp);
                 case Int64Property i64p:
                     return new Int64PropertyViewModel(i64p);
+                case Int8Property i8p:
+                    return new Int8PropertyViewModel(i8p);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(property), property, null);
             }
@@ -91,6 +93,9 @@ namespace SatisfactorySaveEditor.Util
 
             if (typeof(T) == typeof(Int64PropertyViewModel))
                 return new Int64PropertyViewModel(new Int64Property(propertyName));
+
+            if (typeof(T) == typeof(Int8PropertyViewModel))
+                return new Int8PropertyViewModel(new Int8Property(propertyName));
 
             throw new NotImplementedException($"Can't instantiate unknown property type {typeof(T)}");
         }

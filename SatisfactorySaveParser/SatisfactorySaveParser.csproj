@@ -68,6 +68,7 @@
     <Compile Include="PropertyTypes\ByteProperty.cs" />
     <Compile Include="PropertyTypes\EnumProperty.cs" />
     <Compile Include="PropertyTypes\FloatProperty.cs" />
+    <Compile Include="PropertyTypes\Int8Property.cs" />
     <Compile Include="PropertyTypes\InterfaceProperty.cs" />
     <Compile Include="PropertyTypes\Int64Property.cs" />
     <Compile Include="PropertyTypes\IntProperty.cs" />
