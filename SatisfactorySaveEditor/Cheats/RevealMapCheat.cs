@@ -2,6 +2,9 @@
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
+
+using SatisfactorySaveParser;
+
 using System;
 using System.Windows;
 
@@ -11,7 +14,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Uncover entire map";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             var mapManager = rootItem.FindChild("Persistent_Level:PersistentLevel.MapManager", false);
             if (mapManager == null)

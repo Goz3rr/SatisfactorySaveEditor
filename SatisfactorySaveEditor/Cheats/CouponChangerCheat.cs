@@ -2,6 +2,9 @@
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
+
+using SatisfactorySaveParser;
+
 using System;
 using System.Windows;
 using static System.Math;
@@ -22,7 +25,7 @@ namespace SatisfactorySaveEditor.Cheats
                 return (long) (Pow(Ceiling(tickets / 3.0), 2) * 1000);
         }
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             var sinkSubsystem = rootItem.FindChild("Persistent_Level:PersistentLevel.ResourceSinkSubsystem", false);
             if (sinkSubsystem == null)

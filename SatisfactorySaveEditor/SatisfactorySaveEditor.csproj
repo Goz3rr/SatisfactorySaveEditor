@@ -127,7 +127,9 @@
     </Compile>
     <Compile Include="Cheats\NoPowerCheat.cs" />
     <Compile Include="Cheats\NoCostCheat.cs" />
+    <Compile Include="Cheats\RemoveSlugsCheat.cs" />
     <Compile Include="Cheats\ResearchUnlockCheat.cs" />
+    <Compile Include="Cheats\RestoreSlugsCheat.cs" />
     <Compile Include="Cheats\RevealMapCheat.cs" />
     <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />

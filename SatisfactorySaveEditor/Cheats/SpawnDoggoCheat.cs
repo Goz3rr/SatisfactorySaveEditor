@@ -26,7 +26,7 @@ namespace SatisfactorySaveEditor.Cheats
             deleteEnemiesCheat = deleter;
         }
         
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             int doggocount = 1;
 

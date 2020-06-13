@@ -1,5 +1,8 @@
 ﻿using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.ViewModel.Property;
+
+using SatisfactorySaveParser;
+
 using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
@@ -8,7 +11,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Toggle no power cost";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
             if (gameState == null)

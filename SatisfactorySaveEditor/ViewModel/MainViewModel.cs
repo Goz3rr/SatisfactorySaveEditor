@@ -152,7 +152,8 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new CrateSummonCheat());
             CheatMenuItems.Add(new NoCostCheat());
             CheatMenuItems.Add(new NoPowerCheat());
-            
+            CheatMenuItems.Add(new RemoveSlugsCheat());
+            CheatMenuItems.Add(new RestoreSlugsCheat());
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
@@ -248,7 +249,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Cheat(ICheat cheat)
         {
             log.Info($"Applying cheat {cheat.Name}");
-            if (cheat.Apply(rootItem))
+            if (cheat.Apply(rootItem, saveGame))
                 HasUnsavedChanges = true;
         }
 

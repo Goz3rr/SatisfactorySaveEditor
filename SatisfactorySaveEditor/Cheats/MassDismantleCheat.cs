@@ -181,7 +181,7 @@ namespace SatisfactorySaveEditor.Cheats
             return count;
         }
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             BuildPolygon();
             if (polygon.Length < 2)

@@ -18,7 +18,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Create crate with all items...";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
 
             var hostPlayerModel = rootItem.FindChild("Char_Player.Char_Player_C", false);

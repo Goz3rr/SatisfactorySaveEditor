@@ -1,5 +1,7 @@
 ﻿using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.ViewModel.Property;
+
+using SatisfactorySaveParser;
 using SatisfactorySaveParser.Data;
 using SatisfactorySaveParser.PropertyTypes;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Unlock all research";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             var tutorialManager = rootItem.FindChild("Persistent_Level:PersistentLevel.TutorialIntroManager", false);
             if (tutorialManager == null)

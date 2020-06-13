@@ -13,7 +13,7 @@ namespace SatisfactorySaveEditor.Cheats
     {
         public string Name => "Teleport crates to host player";
 
-        public bool Apply(SaveObjectModel rootItem)
+        public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             var cratesList = rootItem.FindChild("BP_Crate.BP_Crate_C", false);
             if (cratesList == null)
