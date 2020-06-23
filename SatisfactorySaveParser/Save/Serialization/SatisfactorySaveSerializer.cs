@@ -635,6 +635,9 @@ namespace SatisfactorySaveParser.Save.Serialization
                 case Int64Property.TypeName:
                     result = Int64Property.Deserialize(reader, propertyName, index);
                     break;
+                case Int8Property.TypeName:
+                    result = Int8Property.Deserialize(reader, propertyName, index);
+                    break;
                 case InterfaceProperty.TypeName:
                     result = InterfaceProperty.Deserialize(reader, propertyName, index);
                     break;

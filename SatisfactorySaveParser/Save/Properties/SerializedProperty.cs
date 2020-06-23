@@ -120,6 +120,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 EnumProperty.TypeName => typeof(EnumProperty),
                 FloatProperty.TypeName => typeof(FloatProperty),
                 Int64Property.TypeName => typeof(Int64Property),
+                Int8Property.TypeName => typeof(Int8Property),
                 InterfaceProperty.TypeName => typeof(InterfaceProperty),
                 IntProperty.TypeName => typeof(IntProperty),
                 MapProperty.TypeName => typeof(MapProperty),

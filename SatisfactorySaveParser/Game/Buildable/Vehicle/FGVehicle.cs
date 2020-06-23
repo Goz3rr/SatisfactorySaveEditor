@@ -31,5 +31,11 @@ namespace SatisfactorySaveParser.Game.Buildable.Vehicle
         /// </summary>
         [SaveProperty("mSecondaryColor")]
         public FLinearColor SecondaryColor { get; set; }
+
+        /// <summary>
+        ///     Is the movement being simulated?
+        /// </summary>
+        [SaveProperty("mIsSimulated")]
+        public bool IsSimulated { get; set; }
     }
 }

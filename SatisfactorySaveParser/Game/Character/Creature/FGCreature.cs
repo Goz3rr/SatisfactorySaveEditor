@@ -9,5 +9,8 @@ namespace SatisfactorySaveParser.Game.Character.Creature
 
         [SaveProperty("mIsPersistent")]
         public bool IsPersistent { get; set; }
+
+        [SaveProperty("mOwningSpawner")]
+        public ObjectReference OwningSpawner { get; set; }
     }
 }
