@@ -19,6 +19,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         /// </summary>
         public string Index { get; set; }
 
+        public abstract string ShortName { get; }
+
         protected SerializedPropertyViewModel(SerializedProperty serializedProperty)
         {
             Model = serializedProperty;

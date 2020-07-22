@@ -25,6 +25,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => IsExpanded, ref isExpanded, value); }
         }
 
+        public override string ShortName => $"Array ({AddViewModel.FromStringType(Type)})";
+
         public ArrayPropertyViewModel(ArrayProperty arrayProperty) : base(arrayProperty)
         {
             model = arrayProperty;

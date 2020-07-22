@@ -14,6 +14,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Value, ref this.value, value); }
         }
 
+        public override string ShortName => "Int8";
+
         public Int8PropertyViewModel(Int8Property intProperty) : base(intProperty)
         {
             model = intProperty;

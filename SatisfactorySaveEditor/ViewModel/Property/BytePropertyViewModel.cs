@@ -21,6 +21,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Type, ref type, value); }
         }
 
+        public override string ShortName => "Byte";
+
         public BytePropertyViewModel(ByteProperty byteProperty) : base(byteProperty)
         {
             model = byteProperty;

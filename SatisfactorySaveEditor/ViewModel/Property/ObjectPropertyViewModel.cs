@@ -21,6 +21,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Str2, ref str2, value); }
         }
 
+        public override string ShortName => "Object";
+
         public ObjectPropertyViewModel(ObjectProperty objectProperty) : base(objectProperty)
         {
             model = objectProperty;

@@ -6,6 +6,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
     {
         private readonly MapProperty model;
 
+        public override string ShortName => "Map";
+
         public MapPropertyViewModel(MapProperty mapProperty) : base(mapProperty)
         {
             model = mapProperty;

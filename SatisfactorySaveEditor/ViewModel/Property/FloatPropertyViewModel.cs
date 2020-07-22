@@ -14,6 +14,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Value, ref this.value, value); }
         }
 
+        public override string ShortName => "Float";
+
         public FloatPropertyViewModel(FloatProperty floatProperty) : base(floatProperty)
         {
             model = floatProperty;

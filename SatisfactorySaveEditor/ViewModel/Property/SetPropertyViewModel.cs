@@ -12,6 +12,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
 
         private bool isExpanded;
 
+        public override string ShortName => "Set";
+
         public RelayCommand AddElementCommand { get; }
         public RelayCommand<SerializedPropertyViewModel> RemoveElementCommand { get; }
 

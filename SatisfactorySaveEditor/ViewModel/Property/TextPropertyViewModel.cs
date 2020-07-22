@@ -21,6 +21,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Unknown4, ref this.unknown4, value); }
         }
 
+        public override string ShortName => "Text";
+
         public TextPropertyViewModel(TextProperty textProperty) : base(textProperty)
         {
             model = textProperty;

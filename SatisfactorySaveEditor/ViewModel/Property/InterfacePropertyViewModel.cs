@@ -21,6 +21,8 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             set { Set(() => Str2, ref str2, value); }
         }
 
+        public override string ShortName => "Interface";
+
         public InterfacePropertyViewModel(InterfaceProperty interfaceProperty) : base(interfaceProperty)
         {
             model = interfaceProperty;

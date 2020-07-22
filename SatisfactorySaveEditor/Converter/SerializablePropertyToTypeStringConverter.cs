@@ -10,39 +10,10 @@ namespace SatisfactorySaveEditor.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch (value)
-            {
-                case ArrayPropertyViewModel arp:
-                    return $"Array ({AddViewModel.FromStringType(arp.Type)})";
-                case BoolPropertyViewModel bop:
-                    return "Boolean";
-                case BytePropertyViewModel byp:
-                    return "Byte";
-                case EnumPropertyViewModel enp:
-                    return "Enum";
-                case FloatPropertyViewModel flp:
-                    return "Float";
-                case IntPropertyViewModel inp:
-                    return "Int";
-                case MapPropertyViewModel map: // heh
-                    return "Map";
-                case NamePropertyViewModel nap: // THESE NAMES KEEP GETTING BETTER
-                    return "Name";
-                case ObjectPropertyViewModel obp:
-                    return "Object";
-                case StrPropertyViewModel strip: // nsfw
-                    return "String";
-                case StructPropertyViewModel strup:
-                    return $"Struct ({strup.Type})";
-                case TextPropertyViewModel tep:
-                    return "Text";
-                case InterfacePropertyViewModel itp:
-                    return "Interface";
-                case Int64PropertyViewModel i64p:
-                    return "Int64";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(value), value, null);
-            }
+            if (value is SerializedPropertyViewModel model)
+                return model.ShortName;
+
+            throw new ArgumentException("Object is not a SerializedPropertyViewModel", nameof(value));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
