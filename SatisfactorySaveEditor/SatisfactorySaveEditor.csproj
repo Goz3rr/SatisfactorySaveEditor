@@ -29,7 +29,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -406,11 +406,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
-  del "$(TargetDir)GalaSoft*.xml", "$(TargetDir)GalaSoft*.pdb"
-  del "$(TargetDir)GongSolutions*.xml", "$(TargetDir)GongSolutions*.pdb"
-  del "$(TargetDir)Newtonsoft*.xml", "$(TargetDir)Newtonsoft*.pdb"
-  del "$(TargetDir)NLog*.xml", "$(TargetDir)NLog*.pdb"
-  del "$(TargetDir)SatisfactorySave*.xml", "$(TargetDir)SatisfactorySave*.pdb"
+  del "$(TargetDir)GalaSoft*.xml","$(TargetDir)GongSolutions*.xml", "$(TargetDir)Newtonsoft*.xml", "$(TargetDir)NLog*.xml", "$(TargetDir)DotNetZip*.xml", "$(TargetDir)AsyncAwaitBestPractices*.xml", "$(TargetDir)System.*.xml"
+  del "$(TargetDir)*.pdb"
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>
