@@ -32,9 +32,14 @@ namespace SatisfactorySaveEditor.Model
         {
             base.ApplyChanges();
 
-            var model = (SaveComponent) Model;
+            var model = (SaveComponent)Model;
 
             model.ParentEntityName = ParentEntityName;
+        }
+
+        public ArrayPropertyViewModel Inventory
+        {
+           get => FindField<ArrayPropertyViewModel>("mInventoryStacks");
         }
 
         private void FillInventory()
@@ -44,7 +49,7 @@ namespace SatisfactorySaveEditor.Model
             dialog.ShowDialog();
 
             if(!fvm.IsConfirmed) return;
-            ArrayPropertyViewModel inv = FindField<ArrayPropertyViewModel>("mInventoryStacks");
+            ArrayPropertyViewModel inv = this.Inventory;
             foreach (StructPropertyViewModel element in inv.Elements)
             {
                 DynamicStructDataViewModel structData = (DynamicStructDataViewModel)element.StructData;
@@ -58,7 +63,7 @@ namespace SatisfactorySaveEditor.Model
 
         private void EmptyInventory()
         {
-            var inv = FindField<ArrayPropertyViewModel>("mInventoryStacks");
+            var inv = this.Inventory;
             foreach (StructPropertyViewModel element in inv.Elements)
             {
                 DynamicStructDataViewModel structData = (DynamicStructDataViewModel)element.StructData;
