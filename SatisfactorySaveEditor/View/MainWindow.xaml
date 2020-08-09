@@ -27,6 +27,7 @@
     <Window.Resources>
         <util:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converter:SaveNodeItemToStringConverter x:Key="SaveNodeItemToStringConverter"/>
+        <converter:SaveNodeInventoryToStringConverter x:Key="SaveNodeInventoryToStringConverter"/>
         <converter:MenuTextConverter x:Key="MenuTextConverter"/>
         <converter:TypeTooltipConverter x:Key="TypeTooltipConverter"/>
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -216,6 +217,13 @@
                                         <MultiBinding Converter="{StaticResource SaveNodeItemToStringConverter}">
                                             <Binding Path="Title"/>
                                             <Binding Path="Items"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock Foreground="Blue">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource SaveNodeInventoryToStringConverter}">
+                                            <Binding Path="Inventory"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
