@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
@@ -40,6 +44,23 @@ namespace SatisfactorySaveEditor.Model
         public ArrayPropertyViewModel Inventory
         {
            get => FindField<ArrayPropertyViewModel>("mInventoryStacks");
+        }
+
+        public override bool MatchesFilter(string filter)
+        {
+            return base.MatchesFilter(filter) || MatchesFilterInventory(filter);
+        }
+
+        private bool MatchesFilterInventory(string filter)
+        {
+
+            return Inventory?.Elements.Cast<StructPropertyViewModel>().Any(element =>
+            {
+                DynamicStructDataViewModel structData = (DynamicStructDataViewModel)element.StructData;
+                InventoryItem item = (InventoryItem)((StructPropertyViewModel) structData.Fields[0]).StructData;
+
+                return item.ItemType.ToLower(CultureInfo.InvariantCulture).Contains(filter);
+            }) ?? false;
         }
 
         private void FillInventory()

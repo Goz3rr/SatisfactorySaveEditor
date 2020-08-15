@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using GalaSoft.MvvmLight;
@@ -225,6 +226,11 @@ namespace SatisfactorySaveEditor.Model
             }
 
             throw new InvalidOperationException($"A field with the name {fieldName} already exists but with a different type ({field.GetType()} != {typeof(T)})");
+        }
+
+        public virtual bool MatchesFilter(string filter)
+        {
+            return this.Model?.InstanceName.ToLower(CultureInfo.InvariantCulture).Contains(filter) ?? false;
         }
 
         private void AddProperty()
