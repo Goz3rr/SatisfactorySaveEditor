@@ -691,7 +691,7 @@ namespace SatisfactorySaveEditor.ViewModel
             else
             {
                 var valueLower = value.ToLower(CultureInfo.InvariantCulture);
-                var filter = rootItem.DescendantSelfViewModel.WithCancellation(tokenSource.Token).Where(vm => vm.Model?.InstanceName.ToLower(CultureInfo.InvariantCulture).Contains(valueLower) ?? false);
+                var filter = rootItem.DescendantSelfViewModel.WithCancellation(tokenSource.Token).Where(vm => vm.MatchesFilter(valueLower));
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     RootItem = new ObservableCollection<SaveObjectModel>(filter);
