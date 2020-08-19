@@ -72,7 +72,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             });
         }
 
-        public MemoryStream DumpCompressedData(Stream stream)
+        public static MemoryStream DumpCompressedData(Stream stream)
         {
             using var reader = new BinaryReader(stream);
 
@@ -598,8 +598,6 @@ namespace SatisfactorySaveParser.Save.Serialization
 
         public static SerializedProperty DeserializeProperty(BinaryReader reader)
         {
-            SerializedProperty result;
-
             var propertyName = reader.ReadLengthPrefixedString();
             if (propertyName == "None")
                 return null;
@@ -612,59 +610,27 @@ namespace SatisfactorySaveParser.Save.Serialization
 
             int overhead = 1;
             var before = reader.BaseStream.Position;
-            switch (propertyType)
+            // TODO: make this not nasty
+            SerializedProperty result = propertyType switch
             {
-                case ArrayProperty.TypeName:
-                    result = ArrayProperty.Parse(reader, propertyName, index, out overhead);
-                    break;
-                case BoolProperty.TypeName:
-                    result = BoolProperty.Deserialize(reader, propertyName, index, out overhead);
-                    break;
-                case ByteProperty.TypeName:
-                    result = ByteProperty.Deserialize(reader, propertyName, index, out overhead);
-                    break;
-                case EnumProperty.TypeName:
-                    result = EnumProperty.Deserialize(reader, propertyName, index, out overhead);
-                    break;
-                case FloatProperty.TypeName:
-                    result = FloatProperty.Deserialize(reader, propertyName, index);
-                    break;
-                case IntProperty.TypeName:
-                    result = IntProperty.Deserialize(reader, propertyName, index);
-                    break;
-                case Int64Property.TypeName:
-                    result = Int64Property.Deserialize(reader, propertyName, index);
-                    break;
-                case Int8Property.TypeName:
-                    result = Int8Property.Deserialize(reader, propertyName, index);
-                    break;
-                case InterfaceProperty.TypeName:
-                    result = InterfaceProperty.Deserialize(reader, propertyName, index);
-                    break;
-                case MapProperty.TypeName:
-                    result = MapProperty.Deserialize(reader, propertyName, index, out overhead);
-                    break;
-                case NameProperty.TypeName:
-                    result = NameProperty.Deserialize(reader, propertyName, index);
-                    break;
-                case ObjectProperty.TypeName:
-                    result = ObjectProperty.Deserialize(reader, propertyName, index);
-                    break;
-                case SetProperty.TypeName:
-                    result = SetProperty.Parse(reader, propertyName, index, out overhead);
-                    break;
-                case StrProperty.TypeName:
-                    result = StrProperty.Deserialize(reader, propertyName, index);
-                    break;
-                case StructProperty.TypeName:
-                    result = StructProperty.Deserialize(reader, propertyName, size, index, out overhead);
-                    break;
-                case TextProperty.TypeName:
-                    result = TextProperty.Deserialize(reader, propertyName, index);
-                    break;
-                default:
-                    throw new NotImplementedException($"Unknown property type {propertyType} for property {propertyName}");
-            }
+                ArrayProperty.TypeName => ArrayProperty.Parse(reader, propertyName, index, out overhead),
+                BoolProperty.TypeName => BoolProperty.Deserialize(reader, propertyName, index, out overhead),
+                ByteProperty.TypeName => ByteProperty.Deserialize(reader, propertyName, index, out overhead),
+                EnumProperty.TypeName => EnumProperty.Deserialize(reader, propertyName, index, out overhead),
+                FloatProperty.TypeName => FloatProperty.Deserialize(reader, propertyName, index),
+                IntProperty.TypeName => IntProperty.Deserialize(reader, propertyName, index),
+                Int64Property.TypeName => Int64Property.Deserialize(reader, propertyName, index),
+                Int8Property.TypeName => Int8Property.Deserialize(reader, propertyName, index),
+                InterfaceProperty.TypeName => InterfaceProperty.Deserialize(reader, propertyName, index),
+                MapProperty.TypeName => MapProperty.Deserialize(reader, propertyName, index, out overhead),
+                NameProperty.TypeName => NameProperty.Deserialize(reader, propertyName, index),
+                ObjectProperty.TypeName => ObjectProperty.Deserialize(reader, propertyName, index),
+                SetProperty.TypeName => SetProperty.Parse(reader, propertyName, index, out overhead),
+                StrProperty.TypeName => StrProperty.Deserialize(reader, propertyName, index),
+                StructProperty.TypeName => StructProperty.Deserialize(reader, propertyName, size, index, out overhead),
+                TextProperty.TypeName => TextProperty.Deserialize(reader, propertyName, index),
+                _ => throw new NotImplementedException($"Unknown property type {propertyType} for property {propertyName}"),
+            };
             var after = reader.BaseStream.Position;
             var readBytes = (int)(after - before - overhead);
 

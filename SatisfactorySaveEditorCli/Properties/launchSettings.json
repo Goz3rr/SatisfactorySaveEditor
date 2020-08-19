@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SatisfactorySaveEditorCli": {
+      "commandName": "Project",
+      "commandLineArgs": "-o binary \"%USERPROFILE%/Downloads/satisfactory saves/3MANSTANDING_2006-040101.sav\""
+    }
+  }
+}

@@ -112,6 +112,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public static Type GetPropertyTypeFromName(string name)
         {
+            // TODO: make this not nasty
             return name switch
             {
                 ArrayProperty.TypeName => typeof(ArrayProperty),
