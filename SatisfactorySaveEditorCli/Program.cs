@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using CommandLine;
 
@@ -26,7 +25,7 @@ namespace SatisfactorySaveEditorCli
 
         static void Main(string[] args)
         {
-            var parser = new Parser(c =>
+            using var parser = new Parser(c =>
             {
                 c.EnableDashDash = true;
                 c.HelpWriter = Console.Error;

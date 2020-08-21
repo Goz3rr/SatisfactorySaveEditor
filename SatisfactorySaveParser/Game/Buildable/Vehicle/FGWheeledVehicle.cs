@@ -21,9 +21,6 @@ namespace SatisfactorySaveParser.Game.Buildable.Vehicle
         [SaveProperty("mCurrentFuelClass")]
         public ObjectReference CurrentFuelClass { get; set; }
 
-        [SaveProperty("mIsSimulated")]
-        public bool IsSimulated { get; set; }
-
         [SaveProperty("mFuelInventory")]
         public ObjectReference FuelInventory { get; set; }
 
