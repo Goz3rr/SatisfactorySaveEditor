@@ -12,11 +12,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NLog" Version="4.7.3" />
-    <PackageReference Include="NLog.Config" Version="4.7.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SatisfactorySaveParser\SatisfactorySaveParser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
