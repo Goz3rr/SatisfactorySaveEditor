@@ -53,7 +53,7 @@ namespace SatisfactorySaveEditorCli
             //var save = serializer.Deserialize(new MemoryStream(File.ReadAllBytes(Environment.ExpandEnvironmentVariables("%USERPROFILE%/Downloads/satisfactory saves/FTLNews284X.sav"))));
             //var save = LoadSave("%USERPROFILE%/Downloads/satisfactory saves/Mega Base Update 3.sav");
             var save = LoadSave("%USERPROFILE%/Downloads/satisfactory saves/3MANSTANDING_2006-040101.sav");
-            serializer.Serialize(save, File.OpenWrite(Environment.ExpandEnvironmentVariables("%USERPROFILE%/Downloads/satisfactory saves/3MANSTANDING_2006-040101-saved.sav")));
+            //serializer.Serialize(save, File.OpenWrite(Environment.ExpandEnvironmentVariables("%USERPROFILE%/Downloads/satisfactory saves/3MANSTANDING_2006-040101-saved3.sav")));
 
             //DumpCompressedSave("%USERPROFILE%/Downloads/satisfactory saves/Coastal_City_6.sav");
 
@@ -62,13 +62,15 @@ namespace SatisfactorySaveEditorCli
 
         private static FGSaveSession LoadSave(string path)
         {
-            return serializer.Deserialize(new MemoryStream(File.ReadAllBytes(Environment.ExpandEnvironmentVariables(path))));
+            using var ms = new MemoryStream(File.ReadAllBytes(Environment.ExpandEnvironmentVariables(path)));
+            return serializer.Deserialize(ms);
         }
 
         private static void DumpCompressedSave(string path)
         {
             var file = Environment.ExpandEnvironmentVariables(path);
-            var buffer = SatisfactorySaveSerializer.DumpCompressedData(new MemoryStream(File.ReadAllBytes(file)));
+            using var ms = new MemoryStream(File.ReadAllBytes(file));
+            var buffer = SatisfactorySaveSerializer.DumpCompressedData(ms);
             File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
         }
 
@@ -76,7 +78,8 @@ namespace SatisfactorySaveEditorCli
         {
             foreach (var file in Directory.GetFiles(Environment.ExpandEnvironmentVariables(path), "*.sav", SearchOption.AllDirectories))
             {
-                var save = serializer.Deserialize(new MemoryStream(File.ReadAllBytes(file)));
+                using var ms = new MemoryStream(File.ReadAllBytes(file));
+                var save = serializer.Deserialize(ms);
             }
         }
     }

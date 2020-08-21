@@ -4,12 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-using Ionic.Zlib;
-
 using NLog;
 
 using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Save.Properties;
+using SatisfactorySaveParser.ZLib;
 
 namespace SatisfactorySaveParser.Save.Serialization
 {
@@ -96,7 +95,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
 
                 var startPosition = stream.Position;
-                using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
+                using (var zStream = new ZLibStream(stream, CompressionMode.Decompress))
                 {
                     zStream.CopyTo(uncompressedBuffer);
                 }
@@ -152,7 +151,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                     Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
 
                     var startPosition = stream.Position;
-                    using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
+                    using (var zStream = new ZLibStream(stream, CompressionMode.Decompress))
                     {
                         zStream.CopyTo(uncompressedBuffer);
                     }
@@ -284,7 +283,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
                     var remaining = (int)Math.Min(FCompressedChunkHeader.ChunkSize, uncompressedBuffer.Length - (FCompressedChunkHeader.ChunkSize * i));
 
-                    using (var zStream = new ZlibStream(zBuffer, CompressionMode.Compress, CompressionLevel.Level6, true))
+                    using (var zStream = new ZLibStream(zBuffer, CompressionMode.Compress, CompressionLevel.Level6))
                     {
                         var tmpBuf = new byte[remaining];
                         uncompressedBuffer.Read(tmpBuf, 0, remaining);
