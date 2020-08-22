@@ -4,14 +4,20 @@ using System.IO;
 
 using CommandLine;
 
+using NLog;
+
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveEditorCli
 {
-    class Program
+    public static class Program
     {
-        private static readonly SatisfactorySaveSerializer serializer = new SatisfactorySaveSerializer();
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        private static readonly SatisfactorySaveSerializer gameSerializer = new SatisfactorySaveSerializer();
+        private static readonly BinarySaveSerializer binarySerializer = new BinarySaveSerializer();
+        private static readonly JsonSaveSerializer jsonSaveSerializer = new JsonSaveSerializer();
 
         private class Options
         {
@@ -23,7 +29,7 @@ namespace SatisfactorySaveEditorCli
         }
 
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             using var parser = new Parser(c =>
             {
@@ -35,7 +41,14 @@ namespace SatisfactorySaveEditorCli
 
             parser.ParseArguments<Options>(args).WithParsed(o =>
             {
+                //foreach (var file in o.Files)
+                //{
+                //    var type = GetFileTypeFromExtension(file);
+                //    var serializer = GetSerializeForType(type);
 
+                //    using var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+                //    var save = serializer.Deserialize(stream);
+                //}
             });
 
 
@@ -60,10 +73,32 @@ namespace SatisfactorySaveEditorCli
             //TryAllSaves("%USERPROFILE%/Downloads/satisfactory saves/");
         }
 
+        private static SaveFileType GetFileTypeFromExtension(string path)
+        {
+            return Path.GetExtension(path)?.ToUpperInvariant() switch
+            {
+                ".SAV" => SaveFileType.Game,
+                ".BIN" => SaveFileType.Binary,
+                ".JSON" => SaveFileType.Json,
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        private static ISaveSerializer GetSerializeForType(SaveFileType type)
+        {
+            return type switch
+            {
+                SaveFileType.Game => gameSerializer,
+                SaveFileType.Binary => binarySerializer,
+                SaveFileType.Json => jsonSaveSerializer,
+                _ => throw new NotImplementedException(),
+            };
+        }
+
         private static FGSaveSession LoadSave(string path)
         {
             using var ms = new MemoryStream(File.ReadAllBytes(Environment.ExpandEnvironmentVariables(path)));
-            return serializer.Deserialize(ms);
+            return gameSerializer.Deserialize(ms);
         }
 
         private static void DumpCompressedSave(string path)
@@ -79,7 +114,7 @@ namespace SatisfactorySaveEditorCli
             foreach (var file in Directory.GetFiles(Environment.ExpandEnvironmentVariables(path), "*.sav", SearchOption.AllDirectories))
             {
                 using var ms = new MemoryStream(File.ReadAllBytes(file));
-                var save = serializer.Deserialize(ms);
+                var save = gameSerializer.Deserialize(ms);
             }
         }
     }

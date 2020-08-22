@@ -27,7 +27,7 @@ namespace SatisfactorySaveParser.Save.Serialization
         public event EventHandler<StageChangedEventArgs> DeserializationStageChanged;
         public event EventHandler<StageProgressedEventArgs> DeserializationStageProgressed;
 
-        private int currentDeserializationStage, currentSerializationStage = 0;
+        private int currentDeserializationStage, currentSerializationStage;
 
         private void IncrementDeserializationStage(SerializerStage stage)
         {
