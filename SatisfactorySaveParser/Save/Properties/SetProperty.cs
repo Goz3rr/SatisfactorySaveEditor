@@ -56,6 +56,18 @@ namespace SatisfactorySaveParser.Save.Properties
                     }
                     break;
 
+                case ObjectProperty.TypeName:
+                    {
+                        for (var i = 0; i < count; i++)
+                        {
+                            result.Elements.Add(new ObjectArrayValue()
+                            {
+                                Reference = reader.ReadObjectReference()
+                            });
+                        }
+                    }
+                    break;
+
                 default:
                     throw new NotImplementedException($"Unimplemented Set type: {result.Type}");
             }
