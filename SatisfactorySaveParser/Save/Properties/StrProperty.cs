@@ -30,7 +30,7 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new StrProperty(propertyName, index);
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
             result.Value = reader.ReadLengthPrefixedString();
 
             return result;
@@ -38,7 +38,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override void Serialize(BinaryWriter writer)
         {
-            writer.Write((byte)0);
+            WritePropertyGuid(writer);
             writer.WriteLengthPrefixedString(Value);
         }
     }

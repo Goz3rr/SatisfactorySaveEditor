@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -32,8 +33,12 @@ namespace SatisfactorySaveParser.Save.Properties
         /// </summary>
         public int Index { get; }
 
-        // TODO: not currently assigned/used/implemented
-        public byte HasPropertyGuid { get; private set; }
+        /// <summary>
+        ///     Flag indicating whether or not this property has a GUID
+        ///     If false <see cref="PropertyGuid"/> won't be serialized
+        /// </summary>
+        public bool HasPropertyGuid { get; private set; }
+        public Guid PropertyGuid { get; set; }
 
         public abstract Type BackingType { get; }
         public abstract object BackingObject { get; }
@@ -44,6 +49,32 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             PropertyName = propertyName;
             Index = index;
+        }
+
+        /// <summary>
+        ///     Checks the HasPropertyGuid byte and reads PropertyGuid if needed
+        /// </summary>
+        /// <param name="reader"></param>
+        protected void ReadPropertyGuid(BinaryReader reader)
+        {
+            HasPropertyGuid = reader.ReadByte() != 0;
+
+            Trace.Assert(!HasPropertyGuid, "HasPropertyGuid != false");
+
+            if (HasPropertyGuid)
+                PropertyGuid = reader.ReadGuid();
+        }
+
+        /// <summary>
+        ///     Writes HasPropertyGuid byte and PropertyGuid if needed
+        /// </summary>
+        /// <param name="writer"></param>
+        protected void WritePropertyGuid(BinaryWriter writer)
+        {
+            writer.Write((byte)(HasPropertyGuid ? 1 : 0));
+
+            if (HasPropertyGuid)
+                writer.Write(PropertyGuid);
         }
 
         /// <summary>

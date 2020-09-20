@@ -177,6 +177,18 @@ namespace SatisfactorySaveParser
             return new ObjectReference(level: reader.ReadLengthPrefixedString(), path: reader.ReadLengthPrefixedString());
         }
 
+
+        /// <summary>
+        ///     Write a UE4 Object Reference (Level, Path)
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="objectReference"></param>
+        public static void Write(this BinaryWriter writer, ObjectReference objectReference)
+        {
+            writer.WriteLengthPrefixedString(objectReference.LevelName);
+            writer.WriteLengthPrefixedString(objectReference.PathName);
+        }
+
         /// <summary>
         ///     Read an UE4 FCompressedChunkInfo
         /// </summary>
@@ -232,14 +244,23 @@ namespace SatisfactorySaveParser
         }
 
         /// <summary>
-        ///     Write a UE4 Object Reference (Level, Path)
+        ///     Read a 16 byte GUID
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public static Guid ReadGuid(this BinaryReader reader)
+        {
+            return new Guid(reader.ReadBytes(16));
+        }
+
+        /// <summary>
+        ///     Write a GUID
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="objectReference"></param>
-        public static void Write(this BinaryWriter writer, ObjectReference objectReference)
+        /// <param name="guid"></param>
+        public static void Write(this BinaryWriter writer, Guid guid)
         {
-            writer.WriteLengthPrefixedString(objectReference.LevelName);
-            writer.WriteLengthPrefixedString(objectReference.PathName);
+            writer.Write(guid.ToByteArray());
         }
 
         public static bool IsSuspicious(this Vector3 vector)

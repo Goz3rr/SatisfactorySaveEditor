@@ -43,7 +43,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
             overhead = result.Type.GetSerializedLength() + 1;
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
 
             result.Value = reader.ReadLengthPrefixedString();
 
@@ -53,7 +53,7 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             writer.WriteLengthPrefixedString(Type);
-            writer.Write((byte)0);
+            WritePropertyGuid(writer);
             writer.WriteLengthPrefixedString(Value);
         }
 

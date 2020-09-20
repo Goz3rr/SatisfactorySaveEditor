@@ -37,7 +37,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 Type = reader.ReadLengthPrefixedString()
             };
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
             reader.AssertNullInt32();
 
             var count = reader.ReadInt32();

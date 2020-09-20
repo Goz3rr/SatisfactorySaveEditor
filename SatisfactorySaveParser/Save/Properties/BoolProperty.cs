@@ -33,7 +33,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 Value = reader.ReadByte() != 0
             };
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
 
             overhead = 2;
             return result;
@@ -42,7 +42,7 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             writer.Write((byte)(Value ? 1 : 0));
-            writer.Write((byte)0);
+            WritePropertyGuid(writer);
         }
     }
 }

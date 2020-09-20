@@ -80,7 +80,7 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new TextProperty(propertyName, index);
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
             result.Text = ParseTextEntry(reader);
 
             return result;
@@ -88,7 +88,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override void Serialize(BinaryWriter writer)
         {
-            writer.Write((byte)0);
+            WritePropertyGuid(writer);
             writer.Write(Text.Flags);
             writer.Write((byte)Text.HistoryType);
 

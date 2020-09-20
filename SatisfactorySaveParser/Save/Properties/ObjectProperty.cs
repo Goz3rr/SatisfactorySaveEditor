@@ -30,7 +30,7 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new ObjectProperty(propertyName, index);
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
             result.Reference = reader.ReadObjectReference();
 
             return result;
@@ -38,7 +38,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override void Serialize(BinaryWriter writer)
         {
-            writer.Write((byte)0);
+            WritePropertyGuid(writer);
             writer.Write(Reference);
         }
     }

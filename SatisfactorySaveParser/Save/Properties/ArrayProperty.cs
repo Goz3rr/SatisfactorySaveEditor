@@ -47,7 +47,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 Type = reader.ReadLengthPrefixedString()
             };
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
 
             overhead = result.Type.GetSerializedLength() + 1;
 

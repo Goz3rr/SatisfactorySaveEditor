@@ -60,7 +60,7 @@ namespace SatisfactorySaveParser.Save.Properties
                 EnumType = reader.ReadLengthPrefixedString()
             };
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
 
             if (result.IsEnum)
             {
@@ -79,7 +79,7 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             writer.WriteLengthPrefixedString(EnumType);
-            writer.Write((byte)0);
+            WritePropertyGuid(writer);
 
             if (IsEnum)
             {

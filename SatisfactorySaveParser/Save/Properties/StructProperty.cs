@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -22,11 +23,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override int SerializedLength => 0;
 
-        public int Unk1 { get; set; }
-        public int Unk2 { get; set; }
-        public int Unk3 { get; set; }
-        public int Unk4 { get; set; }
-        public byte Unk5 { get; set; }
+        public Guid StructGuid { get; set; }
 
         public GameStruct Data { get; set; }
 
@@ -45,11 +42,10 @@ namespace SatisfactorySaveParser.Save.Properties
             var structType = reader.ReadLengthPrefixedString();
             overhead = structType.Length + 22;
 
-            result.Unk1 = reader.ReadInt32();
-            result.Unk2 = reader.ReadInt32();
-            result.Unk3 = reader.ReadInt32();
-            result.Unk4 = reader.ReadInt32();
-            result.Unk5 = reader.ReadByte();
+            result.StructGuid = reader.ReadGuid();
+            Trace.Assert(result.StructGuid == Guid.Empty, "StructGuid not zero");
+
+            result.ReadPropertyGuid(reader);
 
             var before = reader.BaseStream.Position;
 

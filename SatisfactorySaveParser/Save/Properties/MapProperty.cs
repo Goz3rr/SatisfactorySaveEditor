@@ -47,7 +47,7 @@ namespace SatisfactorySaveParser.Save.Properties
             var valueType = GetPropertyValueTypeFromName(result.ValueType);
             result.Elements = (IDictionary)Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(keyType, valueType));
 
-            reader.AssertNullByte();
+            result.ReadPropertyGuid(reader);
             reader.AssertNullInt32();
 
             var count = reader.ReadInt32();
