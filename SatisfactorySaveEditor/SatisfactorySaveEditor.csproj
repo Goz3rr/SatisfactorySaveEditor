@@ -107,6 +107,7 @@
     <Compile Include="Cheats\ArmSlotsCheat.cs" />
     <Compile Include="Cheats\CouponChangerCheat.cs" />
     <Compile Include="Cheats\CrateSummonCheat.cs" />
+    <Compile Include="Cheats\DeduplicateSchematicsCheat.cs" />
     <Compile Include="Cheats\EverythingBoxCheat.cs" />
     <Compile Include="Cheats\UndoDeleteEnemiesCheat.cs" />
     <Compile Include="Cheats\ICheat.cs" />
