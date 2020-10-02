@@ -82,6 +82,7 @@
     <Compile Include="PropertyTypes\StructProperty.cs" />
     <Compile Include="PropertyTypes\Structs\Box.cs" />
     <Compile Include="PropertyTypes\Structs\DynamicStructData.cs" />
+    <Compile Include="PropertyTypes\Structs\FINNetworkTrace.cs" />
     <Compile Include="PropertyTypes\Structs\FluidBox.cs" />
     <Compile Include="PropertyTypes\Structs\Guid.cs" />
     <Compile Include="PropertyTypes\Structs\InventoryItem.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="PropertyTypes\Structs\Quat.cs" />
     <Compile Include="PropertyTypes\Structs\RailroadTrackPosition.cs" />
     <Compile Include="PropertyTypes\Structs\Rotator.cs" />
+    <Compile Include="PropertyTypes\Structs\Vector2D.cs" />
     <Compile Include="PropertyTypes\Structs\Vector.cs" />
     <Compile Include="PropertyTypes\TextProperty.cs" />
     <Compile Include="SatisfactoryConstants.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="SerializedFields.cs" />
     <Compile Include="Structures\IObjectReference.cs" />
     <Compile Include="Structures\ObjectReference.cs" />
+    <Compile Include="Structures\Vector2.cs" />
     <Compile Include="Structures\Vector3.cs" />
     <Compile Include="Structures\Vector4.cs" />
   </ItemGroup>

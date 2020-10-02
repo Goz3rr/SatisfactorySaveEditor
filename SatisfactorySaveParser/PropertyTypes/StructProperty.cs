@@ -121,6 +121,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new Rotator(reader);
                 case "Vector":
                     return new Vector(reader);
+                case "Vector2D":
+                    return new Vector2D(reader);
                 case "Box":
                     return new Box(reader);
                 case "Quat":
@@ -133,6 +135,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new GuidStruct(reader);
                 case "FluidBox":
                     return new FluidBox(reader);
+                case "FINNetworkTrace":
+                    return new FINNetworkTrace(reader);
                 /*
                 case "InventoryStack":
                 case "InventoryItem":

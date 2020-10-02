@@ -65,6 +65,21 @@ namespace SatisfactorySaveParser
             return str.Length + 5;
         }
 
+        public static Vector2 ReadVector2(this BinaryReader reader)
+        {
+            return new Vector2()
+            {
+                X = reader.ReadSingle(),
+                Y = reader.ReadSingle(),
+            };
+        }
+
+        public static void Write(this BinaryWriter writer, Vector2 vec)
+        {
+            writer.Write(vec.X);
+            writer.Write(vec.Y);
+        }
+
         public static Vector3 ReadVector3(this BinaryReader reader)
         {
             return new Vector3()
