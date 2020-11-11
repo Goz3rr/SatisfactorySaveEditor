@@ -1,6 +1,7 @@
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_AdheredIronPlate.Recipe_Alternate_AdheredIronPlate_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_BoltedFrame.Recipe_Alternate_BoltedFrame_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_CoatedCable.Recipe_Alternate_CoatedCable_C
+/Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_CoatedIronCanister.Recipe_Alternate_CoatedIronCanister_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_CoatedIronPlate.Recipe_Alternate_CoatedIronPlate_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_CokeSteelIngot.Recipe_Alternate_CokeSteelIngot_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_CopperAlloyIngot.Recipe_Alternate_CopperAlloyIngot_C
@@ -23,6 +24,7 @@
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_RecycledRubber.Recipe_Alternate_RecycledRubber_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_RubberConcrete.Recipe_Alternate_RubberConcrete_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_SteamedCopperSheet.Recipe_Alternate_SteamedCopperSheet_C
+/Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_SteelCanister.Recipe_Alternate_SteelCanister_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_SteelCoatedPlate.Recipe_Alternate_SteelCoatedPlate_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_SteelRod.Recipe_Alternate_SteelRod_C
 /Game/FactoryGame/Recipes/AlternateRecipes/New_Update3/Recipe_Alternate_TurboHeavyFuel.Recipe_Alternate_TurboHeavyFuel_C
@@ -110,6 +112,7 @@
 /Game/FactoryGame/Recipes/Buildings/Recipe_HyperTubeWallSupport.Recipe_HyperTubeWallSupport_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_IndustrialTank.Recipe_IndustrialTank_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_JumpPad.Recipe_JumpPad_C
+/Game/FactoryGame/Recipes/Buildings/Recipe_JumpPadAdjustable.Recipe_JumpPadAdjustable_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_JumpPadTilted.Recipe_JumpPadTilted_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_LookoutTower.Recipe_LookoutTower_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_Mam.Recipe_Mam_C
@@ -119,11 +122,14 @@
 /Game/FactoryGame/Recipes/Buildings/Recipe_MinerMk3.Recipe_MinerMk3_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_OilPump.Recipe_OilPump_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_OilRefinery.Recipe_OilRefinery_C
+/Game/FactoryGame/Recipes/Buildings/Recipe_Packager.Recipe_Packager_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipeHyper.Recipe_PipeHyper_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipeHyperSupport.Recipe_PipeHyperSupport_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_Pipeline.Recipe_Pipeline_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipelineJunction_Cross.Recipe_PipelineJunction_Cross_C
+/Game/FactoryGame/Recipes/Buildings/Recipe_PipelineMK2.Recipe_PipelineMK2_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipelinePump.Recipe_PipelinePump_C
+/Game/FactoryGame/Recipes/Buildings/Recipe_PipelinePumpMK2.Recipe_PipelinePumpMK2_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipeStorageTank.Recipe_PipeStorageTank_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipeSupport.Recipe_PipeSupport_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_PipeSupportStackable.Recipe_PipeSupportStackable_C
@@ -153,6 +159,7 @@
 /Game/FactoryGame/Recipes/Buildings/Recipe_TradingPost.Recipe_TradingPost_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_TruckStation.Recipe_TruckStation_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_UJellyLandingPad.Recipe_UJellyLandingPad_C
+/Game/FactoryGame/Recipes/Buildings/Recipe_Valve.Recipe_Valve_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_WaterPump.Recipe_WaterPump_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_WorkBench.Recipe_WorkBench_C
 /Game/FactoryGame/Recipes/Buildings/Recipe_WorkBenchIntegrated.Recipe_WorkBenchIntegrated_C
@@ -172,6 +179,7 @@
 /Game/FactoryGame/Recipes/Buildings/Foundations/Recipe_QuarterPipeCorner_03.Recipe_QuarterPipeCorner_03_C
 /Game/FactoryGame/Recipes/Buildings/Foundations/Recipe_QuarterPipeCorner_04.Recipe_QuarterPipeCorner_04_C
 /Game/FactoryGame/Recipes/Buildings/Foundations/Recipe_QuarterPipe_02.Recipe_QuarterPipe_02_C
+/Game/FactoryGame/Recipes/Buildings/Ladder/Recipe_Ladder.Recipe_Ladder_C
 /Game/FactoryGame/Recipes/Buildings/Ramps/Recipe_RampDouble.Recipe_RampDouble_C
 /Game/FactoryGame/Recipes/Buildings/Ramps/Recipe_RampDouble_8x1.Recipe_RampDouble_8x1_C
 /Game/FactoryGame/Recipes/Buildings/Ramps/Recipe_RampInverted_8x1.Recipe_RampInverted_8x1_C

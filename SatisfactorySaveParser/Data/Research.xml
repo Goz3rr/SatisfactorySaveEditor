@@ -10,12 +10,17 @@ Replace with:	<Research value="${0}" \/>
 -->
 <ResearchData>
 
+	<!-- Save compatability with old game versions - I think the game manages granting this itself when needed. -->
+	<!--
+	<Research value="/Game/FactoryGame/Schematics/Schematic_SaveCompatibility.Schematic_SaveCompatibility_C" />
+	-->
 	<Research value="/Game/FactoryGame/Schematics/Schematic_StartingRecipes.Schematic_StartingRecipes_C" />
 
 	<!-- Update 3 Alternate Schematics -->
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_AdheredIronPlate.Schematic_Alternate_AdheredIronPlate_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_BoltedFrame.Schematic_Alternate_BoltedFrame_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_CoatedCable.Schematic_Alternate_CoatedCable_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_CoatedIronCanister.Schematic_Alternate_CoatedIronCanister_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_CoatedIronPlate.Schematic_Alternate_CoatedIronPlate_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_CokeSteelIngot.Schematic_Alternate_CokeSteelIngot_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_CopperAlloyIngot.Schematic_Alternate_CopperAlloyIngot_C" />
@@ -39,6 +44,7 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_RecycledRubber.Schematic_Alternate_RecycledRubber_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_RubberConcrete.Schematic_Alternate_RubberConcrete_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_SteamedCopperSheet.Schematic_Alternate_SteamedCopperSheet_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_SteelCanister.Schematic_Alternate_SteelCanister_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_SteelCoatedPlate.Schematic_Alternate_SteelCoatedPlate_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_SteelRod.Schematic_Alternate_SteelRod_C" />
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_TurboHeavyFuel.Schematic_Alternate_TurboHeavyFuel_C" />
@@ -120,6 +126,7 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-2.Schematic_6-2_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-3.Schematic_6-3_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-4.Schematic_6-4_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-5.Schematic_6-5_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-1.Schematic_7-1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-2.Schematic_7-2_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-3.Schematic_7-3_C" />
@@ -213,8 +220,6 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CyberWagon.ResourceSink_CyberWagon_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CyberWagon_Unlock.ResourceSink_CyberWagon_Unlock_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DiagonalRamps.ResourceSink_DiagonalRamps_C" />
-	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedCornerRamps.ResourceSink_InvertedCornerRamps_C" />
-	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedRampPack.ResourceSink_InvertedRampPack_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DoorWalls_Metal.ResourceSink_DoorWalls_Metal_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_DoorWalls_Normal.ResourceSink_DoorWalls_Normal_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FactoryCart.ResourceSink_FactoryCart_C" />
@@ -222,6 +227,10 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FoudationPillar.ResourceSink_FoudationPillar_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FoundationExpansionPack.ResourceSink_FoundationExpansionPack_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FrameworkFoundations.ResourceSink_FrameworkFoundations_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_HyperTubeWallAttachements.ResourceSink_HyperTubeWallAttachements_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedCornerRamps.ResourceSink_InvertedCornerRamps_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedRampPack.ResourceSink_InvertedRampPack_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_Ladders.ResourceSink_Ladders_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_PipelineWallAttachments.ResourceSink_PipelineWallAttachments_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_Stairs.ResourceSink_Stairs_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_StatueBronzePioneer.ResourceSink_StatueBronzePioneer_C" />
@@ -236,7 +245,6 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK2.ResourceSink_WallPowerPolesMK2_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK3.ResourceSink_WallPowerPolesMK3_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WindowedWalls.ResourceSink_WindowedWalls_C" />
-	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_HyperTubeWallAttachements.ResourceSink_HyperTubeWallAttachements_C" />
 
 	<!-- New AWESOME Shop one time part purchases. These don't actually do anything when granted. No parts appear in the 'Purchases' section of the store or anything like that. -->
 	<!--
@@ -291,7 +299,7 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/Parts/Tier7/ResourceSink_SuperComputer.ResourceSink_SuperComputer_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/Parts/Tier7/ResourceSink_TurboMotor.ResourceSink_TurboMotor_C" />
 	-->
-	
+
 	<!-- Guessing these are categories/dividers in the AWESOME shop. They don't crash the game when granted, so leaving them in. -->
 	<Research value="/Game/FactoryGame/Schematics/ResourceSinkShopCategories/SC_RSS_Attachments.SC_RSS_Attachments_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSinkShopCategories/SC_RSS_Biomass.SC_RSS_Biomass_C" />
@@ -323,5 +331,6 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial3.Schematic_Tutorial3_C" />
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial4.Schematic_Tutorial4_C" />
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial5.Schematic_Tutorial5_C" />
+
 
 </ResearchData>

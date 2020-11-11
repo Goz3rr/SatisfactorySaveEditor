@@ -174,8 +174,8 @@ Replace with:	<Resource value="${0}" \/>
 	<Resource value="/Game/FactoryGame/Resource/Parts/Motor/Desc_Motor.Desc_Motor_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/MotorLightweight/Desc_MotorLightweight.Desc_MotorLightweight_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/NobeliskExplosive/Desc_NobeliskExplosive.Desc_NobeliskExplosive_C" />
-	<Resource value="/Game/FactoryGame/Resource/Parts/NuclearFuelRod/Desc_NuclearFuelRod.Desc_NuclearFuelRod_C" radioactive="true" />
-	<Resource value="/Game/FactoryGame/Resource/Parts/NuclearWaste/Desc_NuclearWaste.Desc_NuclearWaste_C" radioactive="true" />
+	<Resource value="/Game/FactoryGame/Resource/Parts/NuclearFuelRod/Desc_NuclearFuelRod.Desc_NuclearFuelRod_C" radioactive="true"/>
+	<Resource value="/Game/FactoryGame/Resource/Parts/NuclearWaste/Desc_NuclearWaste.Desc_NuclearWaste_C" radioactive="true"/>
 	<Resource value="/Game/FactoryGame/Resource/Parts/PetroleumCoke/Desc_PetroleumCoke.Desc_PetroleumCoke_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/Plastic/Desc_Plastic.Desc_Plastic_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/PolymerResin/Desc_PolymerResin.Desc_PolymerResin_C" />
