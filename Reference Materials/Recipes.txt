@@ -259,6 +259,7 @@
 /Game/FactoryGame/Recipes/Constructor/Recipe_Wire.Recipe_Wire_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_Beacon.Recipe_Beacon_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_BladeRunners.Recipe_BladeRunners_C
+/Game/FactoryGame/Recipes/Equipment/Recipe_CandyCaneBasher.Recipe_CandyCaneBasher_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_Cartridge.Recipe_Cartridge_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_Chainsaw.Recipe_Chainsaw_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_ColorCartridge.Recipe_ColorCartridge_C
@@ -282,6 +283,9 @@
 /Game/FactoryGame/Recipes/Equipment/Recipe_SpikedRebar.Recipe_SpikedRebar_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_XenoBasher.Recipe_XenoBasher_C
 /Game/FactoryGame/Recipes/Equipment/Recipe_XenoZapper.Recipe_XenoZapper_C
+/Game/FactoryGame/Recipes/Holiday/Recipe_Snowball.Recipe_Snowball_C
+/Game/FactoryGame/Recipes/Holiday/Recipe_SnowballWeapon.Recipe_SnowballWeapon_C
+/Game/FactoryGame/Recipes/Holiday/Recipe_TreeGiftProducer.Recipe_TreeGiftProducer_C
 /Game/FactoryGame/Recipes/Manufacturer/Recipe_Battery.Recipe_Battery_C
 /Game/FactoryGame/Recipes/Manufacturer/Recipe_Computer.Recipe_Computer_C
 /Game/FactoryGame/Recipes/Manufacturer/Recipe_ComputerSuper.Recipe_ComputerSuper_C

@@ -115,6 +115,7 @@
 /Game/FactoryGame/Schematics/Research/BPD_ResearchTree_PowerSlugs.BPD_ResearchTree_PowerSlugs_C
 /Game/FactoryGame/Schematics/Research/BPD_ResearchTree_Quartz.BPD_ResearchTree_Quartz_C
 /Game/FactoryGame/Schematics/Research/BPD_ResearchTree_Sulfur.BPD_ResearchTree_Sulfur_C
+/Game/FactoryGame/Schematics/Research/BPD_ResearchTree_XMas.BPD_ResearchTree_XMas_C
 /Game/FactoryGame/Schematics/Research/AlienOrganisms_RS/Research_ACarapace_0.Research_ACarapace_0_C
 /Game/FactoryGame/Schematics/Research/AlienOrganisms_RS/Research_ACarapace_1.Research_ACarapace_1_C
 /Game/FactoryGame/Schematics/Research/AlienOrganisms_RS/Research_ACarapace_2.Research_ACarapace_2_C
@@ -183,6 +184,19 @@
 /Game/FactoryGame/Schematics/Research/Sulfur_RS/Research_Sulfur_4_2_1.Research_Sulfur_4_2_1_C
 /Game/FactoryGame/Schematics/Research/Sulfur_RS/Research_Sulfur_5.Research_Sulfur_5_C
 /Game/FactoryGame/Schematics/Research/Sulfur_RS/Research_Sulfur_6.Research_Sulfur_6_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_1-1.Research_XMas_1-1_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_1-2.Research_XMas_1-2_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_1.Research_XMas_1_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_2-1.Research_XMas_2-1_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_2-2.Research_XMas_2-2_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_2.Research_XMas_2_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_3-1.Research_XMas_3-1_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_3-2.Research_XMas_3-2_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_3.Research_XMas_3_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_4-1.Research_XMas_4-1_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_4-2.Research_XMas_4-2_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_4.Research_XMas_4_C
+/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_5.Research_XMas_5_C
 /Game/FactoryGame/Schematics/ResourceSink/ResourceSink_ConveryWalls_Metal.ResourceSink_ConveryWalls_Metal_C
 /Game/FactoryGame/Schematics/ResourceSink/ResourceSink_ConveryWalls_Normal.ResourceSink_ConveryWalls_Normal_C
 /Game/FactoryGame/Schematics/ResourceSink/ResourceSink_ConveyorWallMount.ResourceSink_ConveyorWallMount_C

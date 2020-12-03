@@ -61,6 +61,7 @@
 /Game/FactoryGame/Resource/Equipment/GolfCart/Desc_GolfCart.Desc_GolfCart_C
 /Game/FactoryGame/Resource/Equipment/HazardSuit/BP_EquipmentDescriptorHazardSuit.BP_EquipmentDescriptorHazardSuit_C
 /Game/FactoryGame/Resource/Equipment/HazmatSuit/BP_EquipmentDescriptorHazmatSuit.BP_EquipmentDescriptorHazmatSuit_C
+/Game/FactoryGame/Resource/Equipment/Holiday/BP_EquipmentDescriptorSnowballMittens.BP_EquipmentDescriptorSnowballMittens_C
 /Game/FactoryGame/Resource/Equipment/JetPack/BP_EquipmentDescriptorJetPack.BP_EquipmentDescriptorJetPack_C
 /Game/FactoryGame/Resource/Equipment/JetPack/BP_EquipmentDescriptorJetPackMk2.BP_EquipmentDescriptorJetPackMk2_C
 /Game/FactoryGame/Resource/Equipment/JumpingStilts/BP_EquipmentDescriptorJumpingStilts.BP_EquipmentDescriptorJumpingStilts_C
@@ -76,6 +77,7 @@
 /Game/FactoryGame/Resource/Equipment/Rifle/BP_EquipmentDescriptorRifle.BP_EquipmentDescriptorRifle_C
 /Game/FactoryGame/Resource/Equipment/Rifle/BP_EquipmentDescriptorRifleMk2.BP_EquipmentDescriptorRifleMk2_C
 /Game/FactoryGame/Resource/Equipment/ShockShank/BP_EquipmentDescriptorShockShank.BP_EquipmentDescriptorShockShank_C
+/Game/FactoryGame/Resource/Equipment/StunSpear/BP_EquipmentDescriptorCandyCane.BP_EquipmentDescriptorCandyCane_C
 /Game/FactoryGame/Resource/Equipment/StunSpear/BP_EquipmentDescriptorStunSpear.BP_EquipmentDescriptorStunSpear_C
 /Game/FactoryGame/Resource/Equipment/ToolBelt/Desc_ToolBelt.Desc_ToolBelt_C
 /Game/FactoryGame/Resource/FilteringRules/Desc_AnyUndefined.Desc_AnyUndefined_C
@@ -88,6 +90,7 @@
 /Game/FactoryGame/Resource/ItemCategories/Cat_Communications.Cat_Communications_C
 /Game/FactoryGame/Resource/ItemCategories/Cat_Electronics.Cat_Electronics_C
 /Game/FactoryGame/Resource/ItemCategories/Cat_Equipment.Cat_Equipment_C
+/Game/FactoryGame/Resource/ItemCategories/Cat_FICSMAS.Cat_FICSMAS_C
 /Game/FactoryGame/Resource/ItemCategories/Cat_Fuel.Cat_Fuel_C
 /Game/FactoryGame/Resource/ItemCategories/Cat_Hands.Cat_Hands_C
 /Game/FactoryGame/Resource/ItemCategories/Cat_IndustrialParts.Cat_IndustrialParts_C
@@ -174,6 +177,7 @@
 /Game/FactoryGame/Resource/Parts/SAMFluctuator/Desc_SAMFluctuator.Desc_SAMFluctuator_C
 /Game/FactoryGame/Resource/Parts/SAMIngot/Desc_SAMIngot.Desc_SAMIngot_C
 /Game/FactoryGame/Resource/Parts/Silica/Desc_Silica.Desc_Silica_C
+/Game/FactoryGame/Resource/Parts/SnowballProjectile/Desc_SnowballProjectile.Desc_SnowballProjectile_C
 /Game/FactoryGame/Resource/Parts/SpaceElevatorBlocker/Desc_SpaceElevatorBlocker.Desc_SpaceElevatorBlocker_C
 /Game/FactoryGame/Resource/Parts/SpaceElevatorParts/Desc_SpaceElevatorPart_1.Desc_SpaceElevatorPart_1_C
 /Game/FactoryGame/Resource/Parts/SpaceElevatorParts/Desc_SpaceElevatorPart_2.Desc_SpaceElevatorPart_2_C

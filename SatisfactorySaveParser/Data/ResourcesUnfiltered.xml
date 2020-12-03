@@ -6,7 +6,7 @@ Many of the 'resources' found by the script are not actually items, and will van
 Note that this list can (and will) contain duplicates due to how the script works. EverythingBoxCheat will handle duplicates on its own.
 
 The following regex replace can be used to expedite this process
-Find:			    \/Game.*_C
+Find:			\/Game.*_C
 Replace with:	<Resource value="${0}" \/>
 
 -->
@@ -75,6 +75,7 @@ Replace with:	<Resource value="${0}" \/>
 	<Resource value="/Game/FactoryGame/Resource/Equipment/GolfCart/Desc_GolfCart.Desc_GolfCart_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/HazardSuit/BP_EquipmentDescriptorHazardSuit.BP_EquipmentDescriptorHazardSuit_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/HazmatSuit/BP_EquipmentDescriptorHazmatSuit.BP_EquipmentDescriptorHazmatSuit_C" />
+	<Resource value="/Game/FactoryGame/Resource/Equipment/Holiday/BP_EquipmentDescriptorSnowballMittens.BP_EquipmentDescriptorSnowballMittens_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/JetPack/BP_EquipmentDescriptorJetPack.BP_EquipmentDescriptorJetPack_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/JetPack/BP_EquipmentDescriptorJetPackMk2.BP_EquipmentDescriptorJetPackMk2_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/JumpingStilts/BP_EquipmentDescriptorJumpingStilts.BP_EquipmentDescriptorJumpingStilts_C" />
@@ -90,6 +91,7 @@ Replace with:	<Resource value="${0}" \/>
 	<Resource value="/Game/FactoryGame/Resource/Equipment/Rifle/BP_EquipmentDescriptorRifle.BP_EquipmentDescriptorRifle_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/Rifle/BP_EquipmentDescriptorRifleMk2.BP_EquipmentDescriptorRifleMk2_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/ShockShank/BP_EquipmentDescriptorShockShank.BP_EquipmentDescriptorShockShank_C" />
+	<Resource value="/Game/FactoryGame/Resource/Equipment/StunSpear/BP_EquipmentDescriptorCandyCane.BP_EquipmentDescriptorCandyCane_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/StunSpear/BP_EquipmentDescriptorStunSpear.BP_EquipmentDescriptorStunSpear_C" />
 	<Resource value="/Game/FactoryGame/Resource/Equipment/ToolBelt/Desc_ToolBelt.Desc_ToolBelt_C" />
 	<Resource value="/Game/FactoryGame/Resource/FilteringRules/Desc_AnyUndefined.Desc_AnyUndefined_C" />
@@ -102,6 +104,7 @@ Replace with:	<Resource value="${0}" \/>
 	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_Communications.Cat_Communications_C" />
 	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_Electronics.Cat_Electronics_C" />
 	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_Equipment.Cat_Equipment_C" />
+	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_FICSMAS.Cat_FICSMAS_C" />
 	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_Fuel.Cat_Fuel_C" />
 	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_Hands.Cat_Hands_C" />
 	<Resource value="/Game/FactoryGame/Resource/ItemCategories/Cat_IndustrialParts.Cat_IndustrialParts_C" />
@@ -188,6 +191,7 @@ Replace with:	<Resource value="${0}" \/>
 	<Resource value="/Game/FactoryGame/Resource/Parts/SAMFluctuator/Desc_SAMFluctuator.Desc_SAMFluctuator_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/SAMIngot/Desc_SAMIngot.Desc_SAMIngot_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/Silica/Desc_Silica.Desc_Silica_C" />
+	<Resource value="/Game/FactoryGame/Resource/Parts/SnowballProjectile/Desc_SnowballProjectile.Desc_SnowballProjectile_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/SpaceElevatorBlocker/Desc_SpaceElevatorBlocker.Desc_SpaceElevatorBlocker_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/SpaceElevatorParts/Desc_SpaceElevatorPart_1.Desc_SpaceElevatorPart_1_C" />
 	<Resource value="/Game/FactoryGame/Resource/Parts/SpaceElevatorParts/Desc_SpaceElevatorPart_2.Desc_SpaceElevatorPart_2_C" />
