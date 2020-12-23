@@ -11,10 +11,18 @@ namespace SatisfactorySaveParser
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        ///     Used to handle edge cases where objects have 0 bytes of data, and we don't want to generate a "None" string either
+        /// </summary>
+        public bool ShouldBeNulled { get; private set; } = false;
+
         public byte[] TrailingData { get; set; }
 
         public void Serialize(BinaryWriter writer)
         {
+            if (ShouldBeNulled && Count == 0 && TrailingData.Length == 0)
+                return;
+
             foreach (var field in this)
             {
                 field.Serialize(writer);
@@ -31,6 +39,13 @@ namespace SatisfactorySaveParser
         {
             var start = reader.BaseStream.Position;
             var result = new SerializedFields();
+
+            if (length == 0)
+            {
+                log.Warn($"Tried to parse 0 byte object data @ {start}");
+                result.ShouldBeNulled = true;
+                return result;
+            }
 
             SerializedProperty prop;
             while ((prop = SerializedProperty.Parse(reader)) != null)
