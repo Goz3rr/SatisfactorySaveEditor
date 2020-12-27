@@ -211,7 +211,7 @@ namespace SatisfactorySaveParser
                                 writer.Write(new ChunkInfo()
                                 {
                                     CompressedSize = ChunkInfo.Magic,
-                                    UncompressedSize = remaining
+                                    UncompressedSize = ChunkInfo.ChunkSize
                                 });
 
                                 writer.Write(new ChunkInfo()
