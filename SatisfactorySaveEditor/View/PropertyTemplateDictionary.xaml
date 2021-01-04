@@ -260,9 +260,12 @@
         </Grid>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:Rotator}">
-        <control:Vector3Control Vector="{Binding .}"/>
+        <control:Vector3Control Vector="{Binding Data}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type structs:Vector}">
-        <control:Vector3Control Vector="{Binding .}"/>
+        <control:Vector3Control Vector="{Binding Data}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Vector2D}">
+        <control:Vector2Control Vector="{Binding Data}"/>
     </DataTemplate>
 </ResourceDictionary>

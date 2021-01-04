@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="SatisfactorySaveEditor.View.Control.Vector2Control"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <StackPanel Orientation="Horizontal">
+            <Label Content="X:" Target="{Binding ElementName=XBox}"/>
+            <TextBox Width="80" VerticalContentAlignment="Center" x:Name="XBox" Text="{Binding Vector.X, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+            <Label Content="Y:" Target="{Binding ElementName=YBox}"/>
+        <TextBox Width="80" VerticalContentAlignment="Center" x:Name="YBox" Text="{Binding Vector.Y, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+    </StackPanel>
+</UserControl>

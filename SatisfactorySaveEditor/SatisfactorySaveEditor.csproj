@@ -174,6 +174,9 @@
     <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
     <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\Control\Vector2Control.xaml.cs">
+      <DependentUpon>Vector2Control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FillWindow.xaml.cs">
       <DependentUpon>FillWindow.xaml</DependentUpon>
     </Compile>
@@ -205,6 +208,10 @@
     <Page Include="View\AddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Control\Vector2Control.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\FillWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
