@@ -66,6 +66,7 @@ namespace SatisfactorySaveParser
                         {
                             var header = reader.ReadChunkInfo();
                             Trace.Assert(header.CompressedSize == ChunkInfo.Magic);
+                            Trace.Assert(header.UncompressedSize == ChunkInfo.ChunkSize);
 
                             var summary = reader.ReadChunkInfo();
 
