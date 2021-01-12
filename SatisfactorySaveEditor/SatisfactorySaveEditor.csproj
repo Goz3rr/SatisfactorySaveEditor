@@ -1,409 +1,50 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1FE92AD6-7BAD-4239-8A85-2064F7B53999}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>SatisfactorySaveEditor</RootNamespace>
     <AssemblyName>SatisfactorySaveEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+  
   <PropertyGroup>
     <ApplicationIcon>satisfactorysaveeditorlogo_powershard.ico</ApplicationIcon>
   </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="AsyncAwaitBestPractices, Version=1.0.0.0, Culture=neutral, PublicKeyToken=532360cfd341384d, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncAwaitBestPractices.4.2.0\lib\netstandard1.0\AsyncAwaitBestPractices.dll</HintPath>
-    </Reference>
-    <Reference Include="AsyncAwaitBestPractices.MVVM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fd3d463fd20deb6c, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncAwaitBestPractices.MVVM.4.2.0\lib\netstandard1.0\AsyncAwaitBestPractices.MVVM.dll</HintPath>
-    </Reference>
-    <Reference Include="CommonServiceLocator, Version=2.0.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.5\lib\net47\CommonServiceLocator.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
-    </Reference>
-    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
-      <HintPath>..\packages\gong-wpf-dragdrop.2.2.0\lib\net47\GongSolutions.WPF.DragDrop.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Cheats\ArmSlotsCheat.cs" />
-    <Compile Include="Cheats\CouponChangerCheat.cs" />
-    <Compile Include="Cheats\CrateSummonCheat.cs" />
-    <Compile Include="Cheats\DeduplicateSchematicsCheat.cs" />
-    <Compile Include="Cheats\EverythingBoxCheat.cs" />
-    <Compile Include="Cheats\UndoDeleteEnemiesCheat.cs" />
-    <Compile Include="Cheats\ICheat.cs" />
-    <Compile Include="Cheats\DeleteEnemiesCheat.cs" />
-    <Compile Include="Cheats\KillPlayersCheat.cs" />
-    <Compile Include="Cheats\InventorySlotsCheat.cs" />
-    <Compile Include="Cheats\MassDismantleCheat.cs" />
-    <Compile Include="Cheats\MassDismantleWindow.xaml.cs">
-      <DependentUpon>MassDismantleWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Cheats\NoPowerCheat.cs" />
-    <Compile Include="Cheats\NoCostCheat.cs" />
-    <Compile Include="Cheats\RemoveSlugsCheat.cs" />
-    <Compile Include="Cheats\ResearchUnlockCheat.cs" />
-    <Compile Include="Cheats\RestoreSlugsCheat.cs" />
-    <Compile Include="Cheats\RevealMapCheat.cs" />
-    <Compile Include="Cheats\SpawnDoggoCheat.cs" />
-    <Compile Include="Cheats\UnlockMapCheat.cs" />
-    <Compile Include="Converter\InverseBooleanConverter.cs" />
-    <Compile Include="Converter\IStructToTypeStringConverter.cs" />
-    <Compile Include="Converter\ColorToBrushConverter.cs" />
-    <Compile Include="Converter\LinearColorToBrushConverter.cs" />
-    <Compile Include="Converter\MenuTextConverter.cs" />
-    <Compile Include="Converter\SaveNodeInventoryToStringConverter.cs" />
-    <Compile Include="Converter\SaveNodeItemToStringConverter.cs" />
-    <Compile Include="Converter\SerializablePropertyToTypeStringConverter.cs" />
-    <Compile Include="Converter\TypeTooltipConverter.cs" />
-    <Compile Include="Model\ResourceType.cs" />
-    <Compile Include="Model\SaveComponentModel.cs" />
-    <Compile Include="Model\SaveEntityModel.cs" />
-    <Compile Include="Model\SaveObjectModel.cs" />
-    <Compile Include="Model\SaveRootModel.cs" />
-    <Compile Include="Model\TypeTooltip.cs" />
-    <Compile Include="Util\EditorTreeNode.cs" />
-    <Compile Include="Util\BindingProxy.cs" />
-    <Compile Include="Util\FloatRangeRule.cs" />
-    <Compile Include="Util\EnumerableExtension.cs" />
-    <Compile Include="Util\PositiveIntegerRule.cs" />
-    <Compile Include="Util\PropertyViewModelMapper.cs" />
-    <Compile Include="Util\UpdateChecker.cs" />
-    <Compile Include="ViewModel\AddViewModel.cs" />
-    <Compile Include="ViewModel\FillViewModel.cs" />
-    <Compile Include="ViewModel\Property\Int8PropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\InterfacePropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\Int64PropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\SetPropertyViewModel.cs" />
-    <Compile Include="ViewModel\StringPromptViewModel.cs" />
-    <Compile Include="ViewModel\CheatInventoryViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\PreferencesWindowViewModel.cs" />
-    <Compile Include="ViewModel\Property\ArrayPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\BoolPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\BytePropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\EnumPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\FloatPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\IntPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\MapPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\NamePropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\ObjectPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\SerializedPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\StrPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
-    <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
-    <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\Control\Vector2Control.xaml.cs">
-      <DependentUpon>Vector2Control.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\FillWindow.xaml.cs">
-      <DependentUpon>FillWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\StringPromptWindow.xaml.cs">
-      <DependentUpon>StringPromptWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\CheatInventoryWindow.xaml.cs">
-      <DependentUpon>CheatInventoryWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Control\LinearColorPicker.xaml.cs">
-      <DependentUpon>LinearColorPicker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Control\ColorPicker.xaml.cs">
-      <DependentUpon>ColorPicker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Control\PropertiesControl.xaml.cs">
-      <DependentUpon>PropertiesControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PreferencesWindow.xaml.cs">
-      <DependentUpon>PreferencesWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\UpdateWindow.xaml.cs">
-      <DependentUpon>UpdateWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Cheats\MassDismantleWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\AddWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Control\Vector2Control.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\FillWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\StringPromptWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Control\LinearColorPicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Control\ColorPicker.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Control\Vector4Control.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Control\Vector3Control.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\AddWindow.xaml.cs">
-      <DependentUpon>AddWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Control\Vector4Control.xaml.cs">
-      <DependentUpon>Vector4Control.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Control\Vector3Control.xaml.cs">
-      <DependentUpon>Vector3Control.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\Control\PropertiesControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PreferencesWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PropertyTemplateDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\CheatInventoryWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\UpdateWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Data\Types.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <Resource Include="Icon\A.I._Limiter.png" />
-    <Resource Include="Icon\Alclad_Aluminum_Sheet.png" />
-    <Resource Include="Icon\Battery.png" />
-    <Resource Include="Icon\Bauxite_Ore.png" />
-    <Resource Include="Icon\Beacon.png" />
-    <Resource Include="Icon\Beryl_Nut.png" />
-    <Resource Include="Icon\Biofuel.png" />
-    <Resource Include="Icon\Biomass.png" />
-    <Resource Include="Icon\Black_Powder.png" />
-    <Resource Include="Icon\Blade_Runners.png" />
-    <Resource Include="Icon\Cable.png" />
-    <Resource Include="Icon\Cartridge.png" />
-    <Resource Include="Icon\Caterium_Ingot.png" />
-    <Resource Include="Icon\Caterium_Ore.png" />
-    <Resource Include="Icon\Circuit_Board.png" />
-    <Resource Include="Icon\Coal.png" />
-    <Resource Include="Icon\Color_Cartridge.png" />
-    <Resource Include="Icon\Color_Gun.png" />
-    <Resource Include="Icon\Compacted_Coal.png" />
-    <Resource Include="Icon\Computer.png" />
-    <Resource Include="Icon\Concrete.png" />
-    <Resource Include="Icon\Copper_Ingot.png" />
-    <Resource Include="Icon\Copper_Ore.png" />
-    <Resource Include="Icon\Crude_Oil.png" />
-    <Resource Include="Icon\Crystal_Oscillator.png" />
-    <Resource Include="Icon\Electromagnetic_Control_Rod.png" />
-    <Resource Include="Icon\Encased_Industrial_Beam.png" />
-    <Resource Include="Icon\Fabric.png" />
-    <Resource Include="Icon\Filter.png" />
-    <Resource Include="Icon\Flower_Petals.png" />
-    <Resource Include="Icon\Fuel.png" />
-    <Resource Include="Icon\Gas_Mask.png" />
-    <Resource Include="Icon\Heat_Sink.png" />
-    <Resource Include="Icon\Heavy_Modular_Frame.png" />
-    <Resource Include="Icon\High-Speed_Connector.png" />
-    <Resource Include="Icon\Iron_Ingot.png" />
-    <Resource Include="Icon\Iron_Ore.png" />
-    <Resource Include="Icon\Iron_Plate.png" />
-    <Resource Include="Icon\Iron_Rod.png" />
-    <Resource Include="Icon\Jetpack.png" />
-    <Resource Include="Icon\Leaves.png" />
-    <Resource Include="Icon\Limestone.png" />
-    <Resource Include="Icon\Medicinal_Inhaler.png" />
-    <Resource Include="Icon\Modular_Frame.png" />
-    <Resource Include="Icon\Motor.png" />
-    <Resource Include="Icon\Mycelia.png" />
-    <Resource Include="Icon\Nobelisk.png" />
-    <Resource Include="Icon\Nobelisk_Detonator.png" />
-    <Resource Include="Icon\Nuclear_Waste.png" />
-    <Resource Include="Icon\Object_Scanner.png" />
-    <Resource Include="Icon\Parachute.png" />
-    <Resource Include="Icon\Plastic.png" />
-    <Resource Include="Icon\Portable_Miner.png" />
-    <Resource Include="Icon\Quantum_Computer.png" />
-    <Resource Include="Icon\Quartz_Crystal.png" />
-    <Resource Include="Icon\Quickwire.png" />
-    <Resource Include="Icon\Radio_Control_Unit.png" />
-    <Resource Include="Icon\Raw_Quartz.png" />
-    <Resource Include="Icon\Rebar_Gun.png" />
-    <Resource Include="Icon\Reinforced_Iron_Plate.png" />
-    <Resource Include="Icon\Rifle.png" />
-    <Resource Include="Icon\Rotor.png" />
-    <Resource Include="Icon\Rubber.png" />
-    <Resource Include="Icon\S.A.M._Ore.png" />
-    <Resource Include="Icon\Screw.png" />
-    <Resource Include="Icon\Silica.png" />
-    <Resource Include="Icon\Spiked_Rebar.png" />
-    <Resource Include="Icon\Stator.png" />
-    <Resource Include="Icon\Steel_Beam.png" />
-    <Resource Include="Icon\Steel_Ingot.png" />
-    <Resource Include="Icon\Steel_Pipe.png" />
-    <Resource Include="Icon\Sulfur.png" />
-    <Resource Include="Icon\Supercomputer.png" />
-    <Resource Include="Icon\Superposition_Oscillator.png" />
-    <Resource Include="Icon\Turbo_Fuel.png" />
-    <Resource Include="Icon\Turbo_Motor.png" />
-    <Resource Include="Icon\Uranium.png" />
-    <Resource Include="Icon\Wire.png" />
-    <Resource Include="Icon\Wood.png" />
-    <Resource Include="Icon\Xeno-Basher.png" />
-    <Resource Include="Icon\Xeno-Zapper.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="satisfactorysaveeditorlogo_powershard.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SatisfactorySaveParser\SatisfactorySaveParser.csproj">
-      <Project>{f76082b9-33c6-4e13-baaa-071ac7e53d7b}</Project>
-      <Name>SatisfactorySaveParser</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\SatisfactorySaveParser\SatisfactorySaveParser.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon\search.png" />
@@ -411,12 +52,42 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
-  del "$(TargetDir)GalaSoft*.xml","$(TargetDir)GongSolutions*.xml", "$(TargetDir)Newtonsoft*.xml", "$(TargetDir)NLog*.xml", "$(TargetDir)DotNetZip*.xml", "$(TargetDir)AsyncAwaitBestPractices*.xml", "$(TargetDir)System.*.xml"
-  del "$(TargetDir)*.pdb"
-)</PostBuildEvent>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AsyncAwaitBestPractices">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="AsyncAwaitBestPractices.MVVM">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="CommonServiceLocator">
+      <Version>2.0.5</Version>
+    </PackageReference>
+    <PackageReference Include="gong-wpf-dragdrop">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="MvvmLight">
+      <Version>5.4.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="MvvmLightLibs">
+      <Version>5.4.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.7.6</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Config">
+      <Version>4.7.6</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.7.6</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;  del &quot;$(TargetDir)*.pdb&quot;&#xD;&#xA;)" />
+  </Target>
 </Project>
