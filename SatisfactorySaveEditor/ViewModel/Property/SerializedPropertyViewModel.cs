@@ -1,11 +1,13 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+﻿
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+
 using SatisfactorySaveParser.PropertyTypes;
 using System.Windows;
 
 namespace SatisfactorySaveEditor.ViewModel.Property
 {
-    public abstract class SerializedPropertyViewModel : ViewModelBase
+    public abstract class SerializedPropertyViewModel : ObservableObject
     {
         public readonly SerializedProperty Model;
 

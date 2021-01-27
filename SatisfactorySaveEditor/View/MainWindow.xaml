@@ -2,9 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:command="http://www.galasoft.ch/mvvmlight"
         xmlns:model="clr-namespace:SatisfactorySaveEditor.Model"
         xmlns:converter="clr-namespace:SatisfactorySaveEditor.Converter"
         xmlns:util="clr-namespace:SatisfactorySaveEditor.Util"
@@ -18,10 +17,10 @@
         WindowStartupLocation="Manual"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}, Mode=OneTime}"
         Closed="MainWindow_OnClosed"
-        Title="{Binding FileName, StringFormat='Satisfactory Save Editor{0}'}">
+        Title="{Binding FileName, StringFormat='Satisfactory Save Editor{0}'}" d:DesignWidth="1280" d:DesignHeight="720">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
-            <command:EventToCommand Command="{Binding ExitCommand}" PassEventArgsToCommand="True" />
+            <i:InvokeCommandAction Command="{Binding ExitCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
@@ -134,7 +133,7 @@
                         </TextBlock.Style>
                     </TextBlock>
 
-                    <Image Source="../../Icon/search.png" RenderOptions.BitmapScalingMode="Fant" HorizontalAlignment="Right" Width="13" Height="13" Margin="0,0,6,0">
+                    <Image Source="/Icon/search.png" RenderOptions.BitmapScalingMode="Fant" HorizontalAlignment="Right" Width="13" Height="13" Margin="0,0,6,0">
                         <Image.Style>
                             <Style TargetType="{x:Type Image}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -195,7 +194,7 @@
                     </TreeView.ItemContainerStyle>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectedItemChanged">
-                            <command:EventToCommand Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
+                            <i:InvokeCommandAction Command="{Binding Source={StaticResource Proxy}, Path=Data.TreeSelectCommand}" CommandParameter="{Binding ElementName=SaveNodeTreeView, Path=SelectedItem}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <TreeView.Resources>

@@ -20,25 +20,25 @@ namespace SatisfactorySaveEditor.Model
         public string MapName
         {
             get => mapName;
-            set { Set(() => MapName, ref mapName, value); }
+            set { SetProperty(ref mapName, value); }
         }
 
         public string MapOptions
         {
             get => mapOptions;
-            set { Set(() => MapOptions, ref mapOptions, value); }
+            set { SetProperty(ref mapOptions, value); }
         }
 
         public string SessionName
         {
             get => sessionName;
-            set { Set(() => SessionName, ref sessionName, value); }
+            set { SetProperty(ref sessionName, value); }
         }
 
         public int PlayDuration
         {
             get => playDuration;
-            set { Set(() => PlayDuration, ref playDuration, value); }
+            set { SetProperty(ref playDuration, value); }
         }
 
         public bool HasSessionVisibility => HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility;
@@ -46,13 +46,13 @@ namespace SatisfactorySaveEditor.Model
         public ESessionVisibility SessionVisibility
         {
             get => sessionVisibility;
-            set { Set(() => SessionVisibility, ref sessionVisibility, value); }
+            set { SetProperty(ref sessionVisibility, value); }
         }
 
         public long SaveDateTime
         {
             get => saveDateTime;
-            set { Set(() => SaveDateTime, ref saveDateTime, value); }
+            set { SetProperty(ref saveDateTime, value); }
         }
 
         public SaveRootModel(FSaveHeader header) : base(header.SessionName)

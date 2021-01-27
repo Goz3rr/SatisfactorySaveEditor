@@ -1,10 +1,10 @@
 ﻿using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class PreferencesWindowViewModel : ViewModelBase
+    public class PreferencesWindowViewModel : ObservableObject
     {
         private bool canApply;
         private bool autoUpdate;
@@ -17,8 +17,8 @@ namespace SatisfactorySaveEditor.ViewModel
             get => autoUpdate;
             set
             {
-                Set(() => AutoUpdate, ref autoUpdate, value);
-                Set(() => CanApply, ref canApply, true);
+                SetProperty(ref autoUpdate, value);
+                CanApply = true;
             }
         }
 
@@ -27,8 +27,8 @@ namespace SatisfactorySaveEditor.ViewModel
             get => autoBackup;
             set
             {
-                Set(() => AutoBackup, ref autoBackup, value);
-                Set(() => CanApply, ref canApply, true);
+                SetProperty(ref autoBackup, value);
+                CanApply = true;
             }
         }
 
@@ -43,7 +43,11 @@ namespace SatisfactorySaveEditor.ViewModel
             }
         }*/
 
-        public bool CanApply => canApply;
+        public bool CanApply
+        {
+            get => canApply;
+            private set => SetProperty(ref canApply, value);
+        }
 
         public RelayCommand<Window> AcceptCommand { get; }
         public RelayCommand ApplyCommand { get; }
@@ -71,7 +75,7 @@ namespace SatisfactorySaveEditor.ViewModel
             Properties.Settings.Default.AutoBackup = autoBackup;
 
             Properties.Settings.Default.Save();
-            Set(() => CanApply, ref canApply, false);
+            CanApply = false;
         }
 
         private void Cancel(Window window)
