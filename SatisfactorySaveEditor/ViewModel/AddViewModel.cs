@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class AddViewModel : ViewModelBase
+    public class AddViewModel : ObservableObject
     {
         public enum AddTypeEnum
         {
@@ -47,18 +47,19 @@ namespace SatisfactorySaveEditor.ViewModel
             get => name;
             set
             {
-                Set(() => Name, ref name, value);
-                RaisePropertyChanged(() => CanConfirm);
+                SetProperty(ref name, value);
+                CanConfirm = CanConfirm;
             }
         }
+
         public AddTypeEnum Type
         {
             get => type;
             set
             {
-                Set(() => Type, ref type, value);
-                RaisePropertyChanged(() => IsArray);
-                RaisePropertyChanged(() => CanConfirm);
+                SetProperty(ref type, value);
+                IsArray = IsArray;
+                CanConfirm = CanConfirm;
             }
         }
         public AddTypeEnum ArrayType
@@ -66,13 +67,19 @@ namespace SatisfactorySaveEditor.ViewModel
             get => arrayType;
             set
             {
-                Set(() => ArrayType, ref arrayType, value);
-                RaisePropertyChanged(() => CanConfirm);
+                SetProperty(ref arrayType, value);
+                CanConfirm = CanConfirm;
             }
         }
 
-        public Visibility IsArray => type == AddTypeEnum.Array ? Visibility.Visible : Visibility.Collapsed;
+        private Visibility? isArray = null;
+        public Visibility IsArray
+        {
+            get => type == AddTypeEnum.Array ? Visibility.Visible : Visibility.Collapsed;
+            private set => SetProperty(ref isArray, value);
+        }
 
+        private bool? canConfirm = null;
         public bool CanConfirm
         {
             get
@@ -81,6 +88,7 @@ namespace SatisfactorySaveEditor.ViewModel
                 
                 return arrayType != AddTypeEnum.Array && !string.IsNullOrWhiteSpace(Name);
             }
+            private set => SetProperty(ref canConfirm, value);
         }
 
         public static SerializedProperty CreateProperty(AddTypeEnum type, string name)

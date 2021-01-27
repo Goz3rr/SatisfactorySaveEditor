@@ -1,6 +1,5 @@
 ﻿using SatisfactorySaveParser;
 using SatisfactorySaveParser.Structures;
-using System.Numerics;
 
 namespace SatisfactorySaveEditor.Model
 {
@@ -17,42 +16,42 @@ namespace SatisfactorySaveEditor.Model
         public bool NeedTransform
         { 
             get => needTransform;
-            set { Set(() => NeedTransform, ref needTransform, value); }
+            set { SetProperty(ref needTransform, value); }
         }
 
         public bool WasPlacedInLevel
         {
             get => wasPlacedInLevel;
-            set { Set(() => WasPlacedInLevel, ref wasPlacedInLevel, value); }
+            set { SetProperty(ref wasPlacedInLevel, value); }
         }
 
         public Vector4 Rotation
         {
             get => rotation;
-            set { Set(() => Rotation, ref rotation, value); }
+            set { SetProperty(ref rotation, value); }
         }
         public Vector3 Position
         {
             get => position;
-            set { Set(() => Position, ref position, value); }
+            set { SetProperty(ref position, value); }
         }
 
         public Vector3 Scale
         {
             get => scale;
-            set { Set(() => Scale, ref scale, value); }
+            set { SetProperty(ref scale, value); }
         }
 
         public string ParentObjectRoot
         {
             get => parentObjectRoot;
-            set { Set(() => ParentObjectRoot, ref parentObjectRoot, value); }
+            set { SetProperty(ref parentObjectRoot, value); }
         }
 
         public string ParentObjectName
         {
             get => parentObjectName;
-            set { Set(() => ParentObjectName, ref parentObjectName, value); }
+            set { SetProperty(ref parentObjectName, value); }
         }
 
         public SaveEntityModel(SaveEntity ent) : base(ent)

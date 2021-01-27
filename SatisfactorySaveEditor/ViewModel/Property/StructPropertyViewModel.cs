@@ -15,7 +15,7 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         public object StructData
         {
             get => structData;
-            set { Set(() => StructData, ref structData, value); }
+            set { SetProperty(ref structData, value); }
         }
 
         public override string ShortName => $"Struct ({Type})";

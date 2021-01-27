@@ -1,11 +1,11 @@
 using System;
-using GalaSoft.MvvmLight;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.Input;
 using SatisfactorySaveEditor.Util;
 using System.Windows;
 using Microsoft.Win32;
@@ -25,7 +25,7 @@ using System.ComponentModel;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class MainViewModel : ViewModelBase, IDropTarget
+    public class MainViewModel : ObservableObject, IDropTarget
     {
         private SatisfactorySave saveGame;
         private SaveObjectModel rootItem;
@@ -44,20 +44,20 @@ namespace SatisfactorySaveEditor.ViewModel
             }
             set
             {
-                Set(() => IsBusy, ref isBusyInternal, value);
+                SetProperty(ref isBusyInternal, value);
             }
         }
 
         public ObservableCollection<SaveObjectModel> RootItem
         {
             get => rootItems;
-            private set { Set(() => RootItem, ref rootItems, value); }
+            private set { SetProperty(ref rootItems, value); }
         }
 
         public SaveObjectModel SelectedItem
         {
             get => selectedItem;
-            set { Set(() => SelectedItem, ref selectedItem, value); }
+            set { SetProperty(ref selectedItem, value); }
         }
 
         public string FileName
@@ -74,7 +74,7 @@ namespace SatisfactorySaveEditor.ViewModel
             get => searchText;
             set
             {
-                Set(() => SearchText, ref searchText, value);
+                SetProperty(ref searchText, value);
 
                 tokenSource.Cancel();
                 tokenSource = new CancellationTokenSource();
@@ -231,7 +231,7 @@ namespace SatisfactorySaveEditor.ViewModel
         private void Delete(SaveObjectModel model)
         {
             rootItem.Remove(model);
-            RaisePropertyChanged(() => RootItem);
+            OnPropertyChanged(nameof(RootItem));
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace SatisfactorySaveEditor.ViewModel
                     await Task.Run(() => saveGame.Save(dialog.FileName));
                     this.IsBusy = false;
                     HasUnsavedChanges = false;
-                    RaisePropertyChanged(() => FileName);
+                    OnPropertyChanged(nameof(FileName));
                     AddRecentFileEntry(dialog.FileName);
                 }
             }
@@ -606,8 +606,8 @@ namespace SatisfactorySaveEditor.ViewModel
                 item.IsExpanded = true;
             }
 
-            RaisePropertyChanged(() => RootItem);
-            RaisePropertyChanged(() => FileName);
+            OnPropertyChanged(nameof(RootItem));
+            OnPropertyChanged(nameof(FileName));
 
             AddRecentFileEntry(path);
         }

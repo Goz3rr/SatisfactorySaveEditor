@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using SatisfactorySaveEditor.Util;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
@@ -14,7 +14,7 @@ using SatisfactorySaveParser;
 
 namespace SatisfactorySaveEditor.Model
 {
-    public class SaveObjectModel : ViewModelBase
+    public class SaveObjectModel : ObservableObject
     {
         private string title;
         private string rootObject;
@@ -66,31 +66,31 @@ namespace SatisfactorySaveEditor.Model
         public string Title
         {
             get => title;
-            set { Set(() => Title, ref title, value); }
+            set { SetProperty(ref title, value); }
         }
 
         public string RootObject
         {
             get => rootObject;
-            set { Set(() => RootObject, ref rootObject, value); }
+            set { SetProperty(ref rootObject, value); }
         }
 
         public string Type
         {
             get => type;
-            set { Set(() => Type, ref type, value); }
+            set { SetProperty(ref type, value); }
         }
 
         public bool IsSelected
         {
             get => isSelected;
-            set { Set(() => IsSelected, ref isSelected, value); }
+            set { SetProperty(ref isSelected, value); }
         }
 
         public bool IsExpanded
         {
             get => isExpanded;
-            set { Set(() => IsExpanded, ref isExpanded, value); }
+            set { SetProperty(ref isExpanded, value); }
         }
 
         public SaveObject Model { get; }

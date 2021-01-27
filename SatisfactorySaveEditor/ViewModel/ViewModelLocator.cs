@@ -1,6 +1,6 @@
 using System;
-using CommonServiceLocator;
-using GalaSoft.MvvmLight.Ioc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -8,25 +8,27 @@ namespace SatisfactorySaveEditor.ViewModel
     {
         public ViewModelLocator()
         {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+            var serviceCollection = new ServiceCollection();
 
-            SimpleIoc.Default.Register<MainViewModel>();
+            serviceCollection.AddSingleton<MainViewModel>();
 
-            SimpleIoc.Default.Register<AddViewModel>();
-            SimpleIoc.Default.Register<CheatInventoryViewModel>();
-            SimpleIoc.Default.Register<StringPromptViewModel>();
-            SimpleIoc.Default.Register<PreferencesWindowViewModel>();
-            SimpleIoc.Default.Register<FillViewModel>();
+            serviceCollection.AddTransient<AddViewModel>();
+            serviceCollection.AddTransient<CheatInventoryViewModel>();
+            serviceCollection.AddTransient<StringPromptViewModel>();
+            serviceCollection.AddTransient<PreferencesWindowViewModel>();
+            serviceCollection.AddTransient<FillViewModel>();
+
+            Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
         }
 
-        public MainViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public MainViewModel MainViewModel => Ioc.Default.GetRequiredService<MainViewModel>();
 
-        // The new GUID makes sure we get a fresh instance every time, these windows don't have any persistent data
-        public AddViewModel AddViewModel => ServiceLocator.Current.GetInstance<AddViewModel>(Guid.NewGuid().ToString());
-        public CheatInventoryViewModel CheatInventoryViewModel => ServiceLocator.Current.GetInstance<CheatInventoryViewModel>(Guid.NewGuid().ToString());
-        public StringPromptViewModel StringPromptViewModel => ServiceLocator.Current.GetInstance<StringPromptViewModel>(Guid.NewGuid().ToString());
-        public PreferencesWindowViewModel PreferencesWindowViewModel => ServiceLocator.Current.GetInstance<PreferencesWindowViewModel>(Guid.NewGuid().ToString());
-        public FillViewModel FillViewModel => ServiceLocator.Current.GetInstance<FillViewModel>(Guid.NewGuid().ToString());
+        // These return a fresh instance every time since they were configured with AddTransient, these windows don't have any persistent data
+        public AddViewModel AddViewModel => Ioc.Default.GetRequiredService<AddViewModel>();
+        public CheatInventoryViewModel CheatInventoryViewModel => Ioc.Default.GetRequiredService<CheatInventoryViewModel>();
+        public StringPromptViewModel StringPromptViewModel => Ioc.Default.GetRequiredService<StringPromptViewModel>();
+        public PreferencesWindowViewModel PreferencesWindowViewModel => Ioc.Default.GetRequiredService<PreferencesWindowViewModel>();
+        public FillViewModel FillViewModel => Ioc.Default.GetRequiredService<FillViewModel>();
 
         public static void Cleanup()
         {

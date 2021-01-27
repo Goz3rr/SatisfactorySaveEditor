@@ -11,7 +11,7 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         public long Value
         {
             get => value;
-            set { Set(() => Value, ref this.value, value); }
+            set { SetProperty(ref this.value, value); }
         }
 
         public override string ShortName => "Int64";

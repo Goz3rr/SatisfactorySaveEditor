@@ -1,118 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F76082B9-33C6-4E13-BAAA-071AC7E53D7B}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>SatisfactorySaveParser</RootNamespace>
     <AssemblyName>SatisfactorySaveParser</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="DotNetZip, Version=1.13.4.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetZip.1.13.4\lib\net40\DotNetZip.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.2\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BinaryIOExtensions.cs" />
-    <Compile Include="Data\Research.cs">
-      <DependentUpon>Research.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Resource.cs">
-      <DependentUpon>ResourcesUnfiltered.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="Exceptions\FatalSaveException.cs" />
-    <Compile Include="Exceptions\UnknownBuildVersionException.cs" />
-    <Compile Include="Exceptions\UnknownSaveVersionException.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyTypes\ArrayProperty.cs" />
-    <Compile Include="PropertyTypes\BoolProperty.cs" />
-    <Compile Include="PropertyTypes\ByteProperty.cs" />
-    <Compile Include="PropertyTypes\EnumProperty.cs" />
-    <Compile Include="PropertyTypes\FloatProperty.cs" />
-    <Compile Include="PropertyTypes\Int8Property.cs" />
-    <Compile Include="PropertyTypes\InterfaceProperty.cs" />
-    <Compile Include="PropertyTypes\Int64Property.cs" />
-    <Compile Include="PropertyTypes\IntProperty.cs" />
-    <Compile Include="PropertyTypes\MapProperty.cs" />
-    <Compile Include="PropertyTypes\NameProperty.cs" />
-    <Compile Include="PropertyTypes\ObjectProperty.cs" />
-    <Compile Include="PropertyTypes\SerializedProperty.cs" />
-    <Compile Include="PropertyTypes\SetProperty.cs" />
-    <Compile Include="PropertyTypes\StrProperty.cs" />
-    <Compile Include="PropertyTypes\StructProperty.cs" />
-    <Compile Include="PropertyTypes\Structs\Box.cs" />
-    <Compile Include="PropertyTypes\Structs\DynamicStructData.cs" />
-    <Compile Include="PropertyTypes\Structs\FINNetworkTrace.cs" />
-    <Compile Include="PropertyTypes\Structs\FluidBox.cs" />
-    <Compile Include="PropertyTypes\Structs\Guid.cs" />
-    <Compile Include="PropertyTypes\Structs\InventoryItem.cs" />
-    <Compile Include="PropertyTypes\Structs\IStructData.cs" />
-    <Compile Include="PropertyTypes\Structs\Color.cs" />
-    <Compile Include="PropertyTypes\Structs\LinearColor.cs" />
-    <Compile Include="PropertyTypes\Structs\Quat.cs" />
-    <Compile Include="PropertyTypes\Structs\RailroadTrackPosition.cs" />
-    <Compile Include="PropertyTypes\Structs\Rotator.cs" />
-    <Compile Include="PropertyTypes\Structs\Vector2D.cs" />
-    <Compile Include="PropertyTypes\Structs\Vector.cs" />
-    <Compile Include="PropertyTypes\TextProperty.cs" />
-    <Compile Include="SatisfactoryConstants.cs" />
-    <Compile Include="SatisfactorySave.cs" />
-    <Compile Include="SaveComponent.cs" />
-    <Compile Include="SaveEntity.cs" />
-    <Compile Include="SaveObject.cs" />
-    <Compile Include="Save\ChunkInfo.cs" />
-    <Compile Include="Save\EIntroTutorialSteps.cs" />
-    <Compile Include="Save\ESessionVisibility.cs" />
-    <Compile Include="Save\FSaveCustomVersion.cs" />
-    <Compile Include="Save\FSaveHeader.cs" />
-    <Compile Include="Save\SaveHeaderVersion.cs" />
-    <Compile Include="SerializedFields.cs" />
-    <Compile Include="Structures\IObjectReference.cs" />
-    <Compile Include="Structures\ObjectReference.cs" />
-    <Compile Include="Structures\Vector2.cs" />
-    <Compile Include="Structures\Vector3.cs" />
-    <Compile Include="Structures\Vector4.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <Content Include="Data\Research.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -121,17 +21,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="Data\Research.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Data\ResourcesUnfiltered.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
+    <PackageReference Include="DotNetZip" Version="1.15.0" />
+    <PackageReference Include="NLog" Version="4.7.6" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

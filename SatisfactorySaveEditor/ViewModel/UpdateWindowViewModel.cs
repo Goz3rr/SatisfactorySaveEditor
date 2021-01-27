@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using SatisfactorySaveEditor.Util;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class UpdateWindowViewModel : ViewModelBase
+    public class UpdateWindowViewModel : ObservableObject
     {
         private readonly UpdateChecker.VersionInfo info;
 

@@ -1,10 +1,10 @@
 ﻿using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
-    public class CheatInventoryViewModel : ViewModelBase
+    public class CheatInventoryViewModel : ObservableObject
     {
         public RelayCommand<Window> OkCommand { get; }
         public RelayCommand<Window> CancelCommand { get; }
@@ -13,14 +13,14 @@ namespace SatisfactorySaveEditor.ViewModel
         public int NumberChosen
         {
             get => numberChosen;
-            set { Set(() => NumberChosen, ref numberChosen, value); }
+            set { SetProperty(ref numberChosen, value); }
         }
 
         private int oldSlotsDisplay;
         public int OldSlotsDisplay
         {
             get => oldSlotsDisplay;
-            set { Set(() => OldSlotsDisplay, ref oldSlotsDisplay, value); }
+            set { SetProperty(ref oldSlotsDisplay, value); }
         }
 
         public CheatInventoryViewModel()

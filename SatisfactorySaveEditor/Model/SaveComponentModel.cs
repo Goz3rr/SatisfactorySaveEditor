@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using GalaSoft.MvvmLight.Command;
+using Microsoft.Toolkit.Mvvm.Input;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
@@ -20,7 +20,7 @@ namespace SatisfactorySaveEditor.Model
         public string ParentEntityName
         {
             get => parentEntityName;
-            set { Set(() => ParentEntityName, ref parentEntityName, value); }
+            set { SetProperty(ref parentEntityName, value); }
         }
 
         public RelayCommand FillInventoryCommand => new RelayCommand(FillInventory);

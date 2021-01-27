@@ -12,13 +12,13 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         public string Value
         {
             get => value;
-            set { Set(() => Value, ref this.value, value); }
+            set { SetProperty(ref this.value, value); }
         }
 
         public int Unknown4
         {
             get => unknown4;
-            set { Set(() => Unknown4, ref this.unknown4, value); }
+            set { SetProperty(ref this.unknown4, value); }
         }
 
         public override string ShortName => "Text";
