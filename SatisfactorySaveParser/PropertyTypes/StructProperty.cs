@@ -109,7 +109,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
-        private static IStructData ParseStructData(BinaryReader reader, string type)
+        private static IStructData ParseStructData(BinaryReader reader, string type, int buildVersion)
         {
             switch (type)
             {
@@ -152,12 +152,12 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new DynamicStructData(reader);
                 */
                 default:
-                    return new DynamicStructData(reader, type);
+                    return new DynamicStructData(reader, type, buildVersion);
                     //throw new NotImplementedException($"Can't deserialize struct {type}");
             }
         }
 
-        public static StructProperty[] ParseArray(BinaryReader reader)
+        public static StructProperty[] ParseArray(BinaryReader reader, int buildVersion)
         {
             var count = reader.ReadInt32();
             StructProperty[] result = new StructProperty[count];
@@ -197,7 +197,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                     Unk3 = unk3,
                     Unk4 = unk4,
                     Unk5 = unk5,
-                    Data = ParseStructData(reader, structType)
+                    Data = ParseStructData(reader, structType, buildVersion)
                 };
             }
 
@@ -205,7 +205,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             return result;
         }
 
-        public static StructProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
+        public static StructProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead, int buildVersion)
         {
             var result = new StructProperty(propertyName, index);
             var type = reader.ReadLengthPrefixedString();
@@ -228,7 +228,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             Trace.Assert(result.Unk5 == 0);
 
             var before = reader.BaseStream.Position;
-            result.Data = ParseStructData(reader, type);
+            result.Data = ParseStructData(reader, type, buildVersion);
             var after = reader.BaseStream.Position;
 
             if (before + size != after)

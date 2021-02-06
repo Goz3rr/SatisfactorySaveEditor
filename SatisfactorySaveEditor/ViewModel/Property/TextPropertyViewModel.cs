@@ -1,4 +1,5 @@
 ﻿using SatisfactorySaveParser.PropertyTypes;
+using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveEditor.ViewModel.Property
 {
@@ -7,18 +8,11 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         private readonly TextProperty model;
 
         private string value;
-        private int unknown4;
 
         public string Value
         {
             get => value;
             set { Set(() => Value, ref this.value, value); }
-        }
-
-        public int Unknown4
-        {
-            get => unknown4;
-            set { Set(() => Unknown4, ref this.unknown4, value); }
         }
 
         public override string ShortName => "Text";
@@ -27,14 +21,22 @@ namespace SatisfactorySaveEditor.ViewModel.Property
         {
             model = textProperty;
 
-            value = model.Value;
-            unknown4 = model.Unknown4;
+            switch(textProperty.Text)
+            {
+                case BaseTextEntry baseText:
+                    value = baseText.Value;
+                    break;
+            }
         }
 
         public override void ApplyChanges()
         {
-            model.Value = value;
-            model.Unknown4 = unknown4;
+            switch (model.Text)
+            {
+                case BaseTextEntry baseText:
+                    baseText.Value = value;
+                    break;
+            }
         }
     }
 }

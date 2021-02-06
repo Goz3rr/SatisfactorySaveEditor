@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
     [TestClass]
     public class BytePropertyTests
     {
+        private const int BuildVersion = 139586;
+
         private static readonly string ByteEnumName = "mGamePhase";
         private static readonly string ByteEnumType = "EGamePhase";
         private static readonly string ByteEnumValue = "EGP_EndGame";
@@ -22,7 +24,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             using (var stream = new MemoryStream(ByteEnumBytes))
             using (var reader = new BinaryReader(stream))
             {
-                var prop = SerializedProperty.Parse(reader) as ByteProperty;
+                var prop = SerializedProperty.Parse(reader, BuildVersion) as ByteProperty;
 
                 Assert.AreNotEqual(null, prop);
 
@@ -63,7 +65,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             using (var stream = new MemoryStream(ByteNumberBytes))
             using (var reader = new BinaryReader(stream))
             {
-                var prop = SerializedProperty.Parse(reader) as ByteProperty;
+                var prop = SerializedProperty.Parse(reader, BuildVersion) as ByteProperty;
 
                 Assert.AreNotEqual(null, prop);
 

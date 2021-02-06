@@ -106,6 +106,7 @@
     <Compile Include="Save\FSaveCustomVersion.cs" />
     <Compile Include="Save\FSaveHeader.cs" />
     <Compile Include="Save\SaveHeaderVersion.cs" />
+    <Compile Include="Save\TextEntry.cs" />
     <Compile Include="SerializedFields.cs" />
     <Compile Include="Structures\IObjectReference.cs" />
     <Compile Include="Structures\ObjectReference.cs" />

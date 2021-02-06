@@ -50,6 +50,11 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
+                if(stream.Length == 0)
+                {
+                    throw new Exception("Save file is completely empty");
+                }
+
                 Header = FSaveHeader.Parse(reader);
 
                 if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
@@ -142,7 +147,7 @@ namespace SatisfactorySaveParser
                 //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
 #endif
 
-                Entries[i].ParseData(len, reader);
+                Entries[i].ParseData(len, reader, Header.BuildVersion);
                 var after = reader.BaseStream.Position;
 
                 if (before + len != after)

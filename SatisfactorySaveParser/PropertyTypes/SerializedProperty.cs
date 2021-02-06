@@ -24,7 +24,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             writer.WriteLengthPrefixedString(PropertyType);
         }
 
-        public static SerializedProperty Parse(BinaryReader reader)
+        public static SerializedProperty Parse(BinaryReader reader, int buildVersion)
         {
             SerializedProperty result;
 
@@ -45,7 +45,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             switch (fieldType)
             {
                 case ArrayProperty.TypeName:
-                    result = ArrayProperty.Parse(propertyName, index, reader, size, out overhead);
+                    result = ArrayProperty.Parse(propertyName, index, reader, size, out overhead, buildVersion);
                     break;
                 case FloatProperty.TypeName:
                     overhead = 1;
@@ -78,14 +78,14 @@ namespace SatisfactorySaveParser.PropertyTypes
                     result = ObjectProperty.Parse(propertyName, index, reader);
                     break;
                 case StructProperty.TypeName:
-                    result = StructProperty.Parse(propertyName, index, reader, size, out overhead);
+                    result = StructProperty.Parse(propertyName, index, reader, size, out overhead, buildVersion);
                     break;
                 case MapProperty.TypeName:
                     result = MapProperty.Parse(propertyName, index, reader, size, out overhead);
                     break;
                 case TextProperty.TypeName:
                     overhead = 1;
-                    result = TextProperty.Parse(propertyName, index, reader);
+                    result = TextProperty.Parse(propertyName, index, reader, buildVersion);
                     break;
                 case SetProperty.TypeName:
                     result = SetProperty.Parse(propertyName, index, reader, size, out overhead);

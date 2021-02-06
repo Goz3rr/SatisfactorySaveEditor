@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
+using SatisfactorySaveParser.Save;
 
 namespace SatisfactorySaveParser.PropertyTypes
 {
@@ -9,28 +12,9 @@ namespace SatisfactorySaveParser.PropertyTypes
     {
         public const string TypeName = nameof(TextProperty);
         public override string PropertyType => TypeName;
-        public override int SerializedLength
-        {
-            get
-            {
-                if (Unknown5 == 255) return 5;
+        public override int SerializedLength => Text.SerializedLength;
 
-                var size = 9 + Unknown8.GetSerializedLength() + Value.GetSerializedLength() + FormatData.Sum(d => d.SerializedLength);
-                if (Unknown5 == 3)
-                    size += 9;
-
-                return size;
-            }
-        }
-
-        public int Unknown4 { get; set; }
-        public byte Unknown5 { get; set; }
-        public int Unknown6 { get; set; }
-        public byte Unknown7 { get; set; }
-        public string Unknown8 { get; set; }
-        public string Value { get; set; }
-
-        public List<TextFormatData> FormatData { get; } = new List<TextFormatData>();
+        public TextEntry Text { get; set; }
 
         public TextProperty(string propertyName, int index = 0) : base(propertyName, index)
         {
@@ -38,7 +22,50 @@ namespace SatisfactorySaveParser.PropertyTypes
 
         public override string ToString()
         {
-            return $"text";
+            return $"Text {PropertyName}: {Text}";
+        }
+
+        public static void WriteTextEntry(BinaryWriter writer, TextEntry entry)
+        {
+            writer.Write(entry.Flags);
+            writer.Write((byte)entry.HistoryType);
+
+            switch (entry)
+            {
+                case BaseTextEntry baseText:
+                    {
+                        writer.WriteLengthPrefixedString(baseText.Namespace);
+                        writer.WriteLengthPrefixedString(baseText.Key);
+                        writer.WriteLengthPrefixedString(baseText.Value);
+                    }
+                    break;
+                case ArgumentFormatTextEntry argumentFormatText:
+                    {
+                        WriteTextEntry(writer, argumentFormatText.SourceFormat);
+
+                        writer.Write(argumentFormatText.Arguments.Count);
+                        foreach (var arg in argumentFormatText.Arguments)
+                        {
+                            writer.WriteLengthPrefixedString(arg.Name);
+                            writer.Write((byte)arg.ValueType);
+                            WriteTextEntry(writer, arg.Value);
+                        }
+                    }
+                    break;
+                case NoneTextEntry noneText:
+                    {
+                        if (noneText.HasCultureInvariantString.HasValue)
+                        {
+                            writer.Write(noneText.HasCultureInvariantString.Value ? 1 : 0);
+
+                            if (noneText.HasCultureInvariantString.Value)
+                                writer.WriteLengthPrefixedString(noneText.CultureInvariantString);
+                        }
+                    }
+                    break;
+                default:
+                    throw new NotImplementedException($"Unknown ETextHistoryType {entry.GetType()}");
+            }
         }
 
         public override void Serialize(BinaryWriter writer, bool writeHeader = true)
@@ -52,41 +79,65 @@ namespace SatisfactorySaveParser.PropertyTypes
                 writer.Write((byte)0);
             }
 
-            writer.Write(Unknown4);
+            WriteTextEntry(writer, Text);
+        }
 
-            writer.Write(Unknown5);
-            if (Unknown5 == 3)
+        public static TextEntry ParseTextEntry(BinaryReader reader, int buildVersion)
+        {
+            var flags = reader.ReadInt32();
+            var historyType = (ETextHistoryType)reader.ReadByte();
+
+            switch (historyType)
             {
-                writer.Write(Unknown6);
-                writer.Write(Unknown7);
-            }
-            else if (Unknown5 == 255)
-            {
-                return;
-            }
+                case ETextHistoryType.Base:
+                    {
+                        return new BaseTextEntry(flags)
+                        {
+                            Namespace = reader.ReadLengthPrefixedString(),
+                            Key = reader.ReadLengthPrefixedString(),
+                            Value = reader.ReadLengthPrefixedString()
+                        };
+                    }
+                case ETextHistoryType.ArgumentFormat:
+                    {
+                        var result = new ArgumentFormatTextEntry(flags)
+                        {
+                            SourceFormat = (BaseTextEntry)ParseTextEntry(reader, buildVersion)
+                        };
 
-            writer.Write(0);
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            result.Arguments.Add(new ArgumentFormat()
+                            {
+                                Name = reader.ReadLengthPrefixedString(),
+                                ValueType = (EFormatArgumentType)reader.ReadByte(),
+                                Value = ParseTextEntry(reader, buildVersion)
+                            });
 
-            writer.WriteLengthPrefixedString(Unknown8);
-            writer.WriteLengthPrefixedString(Value);
+                        }
+                        return result;
+                    }
+                case ETextHistoryType.None:
+                    {
+                        var entry = new NoneTextEntry(flags);
 
-            if (Unknown5 == 3)
-            {
-                writer.Write(FormatData.Count);
-                foreach (var formatData in FormatData)
-                {
-                    writer.WriteLengthPrefixedString(formatData.Name);
-                    writer.Write(formatData.Unknown1);
-                    writer.Write(formatData.Unknown2);
-                    writer.Write(formatData.Unknown3);
-                    writer.Write(formatData.Unknown4);
-                    writer.Write(formatData.Unknown5);
-                    writer.WriteLengthPrefixedString(formatData.Data);
-                }
+                        if (buildVersion >= 140822)
+                        {
+                            entry.HasCultureInvariantString = reader.ReadInt32() == 1;
+
+                            if (entry.HasCultureInvariantString.Value)
+                                entry.CultureInvariantString = reader.ReadLengthPrefixedString();
+                        }
+
+                        return entry;
+                    }
+                default:
+                    throw new NotImplementedException($"Unknown ETextHistoryType {historyType}");
             }
         }
 
-        public static TextProperty Parse(string propertyName, int index, BinaryReader reader, bool inArray = false)
+        public static TextProperty Parse(string propertyName, int index, BinaryReader reader, int buildVersion, bool inArray = false)
         {
             var result = new TextProperty(propertyName, index);
 
@@ -96,58 +147,9 @@ namespace SatisfactorySaveParser.PropertyTypes
                 Trace.Assert(unk3 == 0);
             }
 
-            result.Unknown4 = reader.ReadInt32();
-
-            result.Unknown5 = reader.ReadByte();
-            if (result.Unknown5 == 3)
-            {
-                result.Unknown6 = reader.ReadInt32();
-                result.Unknown7 = reader.ReadByte();
-            }
-            else if (result.Unknown5 == 255)
-            {
-                return result;
-            }
-
-            var unk5 = reader.ReadInt32();
-            Trace.Assert(unk5 == 0);
-
-            result.Unknown8 = reader.ReadLengthPrefixedString();
-
-            result.Value = reader.ReadLengthPrefixedString();
-
-            if (result.Unknown5 == 3)
-            {
-                var count = reader.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
-                    result.FormatData.Add(new TextFormatData()
-                    {
-                        Name = reader.ReadLengthPrefixedString(),
-                        Unknown1 = reader.ReadByte(),
-                        Unknown2 = reader.ReadInt32(),
-                        Unknown3 = reader.ReadInt32(),
-                        Unknown4 = reader.ReadInt32(),
-                        Unknown5 = reader.ReadByte(),
-                        Data = reader.ReadLengthPrefixedString()
-                    });
-                }
-            }
+            result.Text = ParseTextEntry(reader, buildVersion);
 
             return result;
         }
-    }
-
-    public class TextFormatData
-    {
-        public int SerializedLength => Name.GetSerializedLength() + 14 + Data.GetSerializedLength();
-
-        public string Name { get; set; }
-        public byte Unknown1 { get; set; }
-        public int Unknown2 { get; set; }
-        public int Unknown3 { get; set; }
-        public int Unknown4 { get; set; }
-        public byte Unknown5 { get; set; }
-        public string Data { get; set; }
     }
 }

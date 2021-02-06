@@ -130,7 +130,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
         }
 
-        private int MassDismantle(List<SaveObjectModel> objects, ArrayProperty inventory, SaveObjectModel rootItem)
+        private int MassDismantle(List<SaveObjectModel> objects, ArrayProperty inventory, SaveObjectModel rootItem, int buildVersion)
         {
             int count = 0;
             foreach (SaveObjectModel item in objects)
@@ -150,7 +150,7 @@ namespace SatisfactorySaveEditor.Cheats
                                 using (MemoryStream ms = new MemoryStream(bytes))
                                 using (BinaryReader reader = new BinaryReader(ms))
                                 {
-                                    SerializedProperty prop = SerializedProperty.Parse(reader);
+                                    SerializedProperty prop = SerializedProperty.Parse(reader, buildVersion);
                                     inventory.Elements.Add(prop);
                                 }
                             }
@@ -196,17 +196,17 @@ namespace SatisfactorySaveEditor.Cheats
             int countFactory = 0, countBuilding = 0, countCrate = 0;
             try
             {
-                countFactory = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Factory", true).DescendantSelfViewModel, inventory, rootItem);
+                countFactory = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Factory", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
             }
             catch (NullReferenceException) { }
             try
             {
-                countBuilding = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Building", true).DescendantSelfViewModel, inventory, rootItem);
+                countBuilding = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Building", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
             }
             catch (NullReferenceException) { }
             try
             {
-                countCrate = MassDismantle(rootItem.FindChild("-Shared", true).FindChild("BP_Crate.BP_Crate_C", true).DescendantSelfViewModel, inventory, rootItem);
+                countCrate = MassDismantle(rootItem.FindChild("-Shared", true).FindChild("BP_Crate.BP_Crate_C", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
             }
             catch (NullReferenceException) { }
             if(countFactory + countBuilding + countCrate == 0)
@@ -217,14 +217,14 @@ namespace SatisfactorySaveEditor.Cheats
             MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                CreateCrateEntityFromInventory(rootItem, inventory);
+                CreateCrateEntityFromInventory(rootItem, inventory, saveGame.Header.BuildVersion);
             }
             return true;
         }
 
-        public static SaveEntityModel CreateCrateEntityFromInventory(SaveObjectModel rootItem, ArrayProperty inventory)
+        public static SaveEntityModel CreateCrateEntityFromInventory(SaveObjectModel rootItem, ArrayProperty inventory, int buildVersion)
         {
-            inventory = ArrangeInventory(inventory);
+            inventory = ArrangeInventory(inventory, buildVersion);
             int currentStorageID = GetNextStorageID(0, rootItem);
             SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
             {
@@ -275,7 +275,7 @@ namespace SatisfactorySaveEditor.Cheats
 
 
 
-        public static ArrayProperty ArrangeInventory(ArrayProperty inventory)
+        public static ArrayProperty ArrangeInventory(ArrayProperty inventory, int buildVersion)
         {
             SortedDictionary<string, int> stacks = new SortedDictionary<string, int>();
             foreach (StructProperty inventoryStruct in inventory.Elements.Cast<StructProperty>())
@@ -301,7 +301,7 @@ namespace SatisfactorySaveEditor.Cheats
                 using (MemoryStream ms = new MemoryStream(bytes))
                 using (BinaryReader reader = new BinaryReader(ms))
                 {
-                    SerializedProperty prop = SerializedProperty.Parse(reader);
+                    SerializedProperty prop = SerializedProperty.Parse(reader, buildVersion);
                     newInventory.Elements.Add(prop);
                 }
             }

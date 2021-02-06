@@ -88,7 +88,7 @@ namespace SatisfactorySaveEditor.Cheats
                     using (MemoryStream ms = new MemoryStream(bytes))
                     using (BinaryReader reader = new BinaryReader(ms))
                     {
-                        SerializedProperty prop = SerializedProperty.Parse(reader);
+                        SerializedProperty prop = SerializedProperty.Parse(reader, saveGame.Header.BuildVersion);
                         inventory.Elements.Add(prop);
                     }
                 }
@@ -101,7 +101,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
 
             //Use Mass Dismantle Cheat's crate creation function to package the items into a crate entity
-            MassDismantleCheat.CreateCrateEntityFromInventory(rootItem, inventory);
+            MassDismantleCheat.CreateCrateEntityFromInventory(rootItem, inventory, saveGame.Header.BuildVersion);
 
             //MessageBox.Show("Player name " + playerEntityModel.Title);
             MessageBox.Show($"Crate created.\nNote that normally unstackable items will visually display as being stacked to 1. Use Ctrl+Click to transfer items out of the crate without deleting part of the stack.\n\nSkipped the following items marked as radioactive:\n\n{skipped}", $"Processed {resourceStrings.Count} resource paths");

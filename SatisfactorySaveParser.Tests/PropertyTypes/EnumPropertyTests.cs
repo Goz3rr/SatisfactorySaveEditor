@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
     [TestClass]
     public class EnumPropertyTests
     {
+        private const int BuildVersion = 139586;
+
         private static readonly string EnumName = "mPendingTutorial";
         private static readonly string EnumType = "EIntroTutorialSteps";
         private static readonly string EnumValue = "EIntroTutorialSteps::ITS_DONE";
@@ -18,7 +20,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             using (var stream = new MemoryStream(EnumBytes))
             using (var reader = new BinaryReader(stream))
             {
-                var prop = SerializedProperty.Parse(reader) as EnumProperty;
+                var prop = SerializedProperty.Parse(reader, BuildVersion) as EnumProperty;
 
                 Assert.AreNotEqual(null, prop);
 

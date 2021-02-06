@@ -90,7 +90,7 @@ namespace SatisfactorySaveParser
             base.SerializeData(writer);
         }
 
-        public override void ParseData(int length, BinaryReader reader)
+        public override void ParseData(int length, BinaryReader reader, int buildVersion)
         {
             var newLen = length - 12;
             ParentObjectRoot = reader.ReadLengthPrefixedString();
@@ -109,7 +109,7 @@ namespace SatisfactorySaveParser
                 newLen -= 10 + componentRef.LevelName.Length + componentRef.PathName.Length;
             }
 
-            base.ParseData(newLen, reader);
+            base.ParseData(newLen, reader, buildVersion);
         }
     }
 }

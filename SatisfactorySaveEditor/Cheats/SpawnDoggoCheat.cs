@@ -52,7 +52,7 @@ namespace SatisfactorySaveEditor.Cheats
                     bool pastSuccess = true; //don't keep running the loop if one run fails
                     for (counter = 0; counter < doggocount && pastSuccess; counter++)
                     {
-                        pastSuccess = deleteEnemiesCheat.AddDoggo(rootItem);
+                        pastSuccess = deleteEnemiesCheat.AddDoggo(rootItem, saveGame);
                     }
 
                     if (pastSuccess)

@@ -7,6 +7,8 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
     [TestClass]
     public class ObjectPropertyTests
     {
+        private const int BuildVersion = 139586;
+
         private static readonly string ObjectName = "mOwnedPawn";
         private static readonly string ObjectStr1 = "Persistent_Level";
         private static readonly string ObjectStr2 = "Persistent_Level:PersistentLevel.Char_Player_C_0";
@@ -18,7 +20,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             using (var stream = new MemoryStream(ObjectBytes))
             using (var reader = new BinaryReader(stream))
             {
-                var prop = SerializedProperty.Parse(reader) as ObjectProperty;
+                var prop = SerializedProperty.Parse(reader, BuildVersion) as ObjectProperty;
 
                 Assert.AreNotEqual(null, prop);
 

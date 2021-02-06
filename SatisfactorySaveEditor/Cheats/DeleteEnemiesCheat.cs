@@ -79,7 +79,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
         }
 
-        public bool AddDoggo(SaveObjectModel rootItem)
+        public bool AddDoggo(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
             currentDoggoID = GetNextDoggoID(currentDoggoID, rootItem);
 
@@ -109,7 +109,7 @@ namespace SatisfactorySaveEditor.Cheats
                             Type = StructProperty.TypeName,
                             Elements = new System.Collections.Generic.List<SerializedProperty>()
                             {
-                                SerializedProperty.Parse(reader)
+                                SerializedProperty.Parse(reader, saveGame.Header.BuildVersion)
                             }
                         },
                         new ArrayProperty("mArbitrarySlotSizes")
@@ -161,7 +161,7 @@ namespace SatisfactorySaveEditor.Cheats
                     new IntProperty("mLootTableIndex") { Value = 0 },
                     new StructProperty("mLootTimerHandle")
                     {
-                        Data = new DynamicStructData(binaryReader, "TimerHandle"),
+                        Data = new DynamicStructData(binaryReader, "TimerHandle", saveGame.Header.BuildVersion),
                         Unk1 = 0,
                         Unk2 = 0,
                         Unk3 = 0,
@@ -227,7 +227,7 @@ namespace SatisfactorySaveEditor.Cheats
             if (MessageBox.Show($"Deleted all spawned enemies, and all unspawned creatures (enemy & friendly). Would you like 3 tamed Lizzard Doggos as a compensation?", "Success", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 for (int i = 0; i < 3; i++)
-                    AddDoggo(rootItem);
+                    AddDoggo(rootItem, saveGame);
             }
             return true;
         }

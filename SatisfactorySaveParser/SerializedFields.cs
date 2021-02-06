@@ -35,7 +35,7 @@ namespace SatisfactorySaveParser
                 writer.Write(TrailingData);
         }
 
-        public static SerializedFields Parse(int length, BinaryReader reader)
+        public static SerializedFields Parse(int length, BinaryReader reader, int buildVersion)
         {
             var start = reader.BaseStream.Position;
             var result = new SerializedFields();
@@ -48,7 +48,7 @@ namespace SatisfactorySaveParser
             }
 
             SerializedProperty prop;
-            while ((prop = SerializedProperty.Parse(reader)) != null)
+            while ((prop = SerializedProperty.Parse(reader, buildVersion)) != null)
             {
                 result.Add(prop);
             }

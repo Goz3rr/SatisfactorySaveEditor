@@ -162,10 +162,6 @@
                 <Label DockPanel.Dock="Left" Target="{Binding ElementName=ValueBox}" Content="Value:"/>
                 <TextBox DockPanel.Dock="Left" x:Name="ValueBox" Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
-            <DockPanel>
-                <Label DockPanel.Dock="Left" Target="{Binding ElementName=Unknown4Box}" Content="Unknown4:"/>
-                <TextBox DockPanel.Dock="Left" x:Name="Unknown4Box" Margin="4" VerticalContentAlignment="Center" Text="{Binding Unknown4, UpdateSourceTrigger=PropertyChanged}"/>
-            </DockPanel>
         </StackPanel>
     </DataTemplate>
 

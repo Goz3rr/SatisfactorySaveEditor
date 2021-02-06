@@ -57,9 +57,9 @@ namespace SatisfactorySaveParser
             DataFields.Serialize(writer);
         }
 
-        public virtual void ParseData(int length, BinaryReader reader)
+        public virtual void ParseData(int length, BinaryReader reader, int buildVersion)
         {
-            DataFields = SerializedFields.Parse(length, reader);
+            DataFields = SerializedFields.Parse(length, reader, buildVersion);
         }
 
         public override string ToString()

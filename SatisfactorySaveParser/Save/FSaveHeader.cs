@@ -53,6 +53,11 @@ namespace SatisfactorySaveParser.Save
 
         public ESessionVisibility SessionVisibility { get; set; }
 
+        /// <summary>
+        ///     The FEditorObjectVersion that this save file was written with
+        /// </summary>
+        public int EditorObjectVersion { get; set; }
+
         public void Serialize(BinaryWriter writer)
         {
             writer.Write((int)HeaderVersion);
@@ -68,6 +73,9 @@ namespace SatisfactorySaveParser.Save
 
             if (HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility)
                 writer.Write((byte)SessionVisibility);
+
+            if (HeaderVersion >= SaveHeaderVersion.UE425EngineUpdate)
+                writer.Write(EditorObjectVersion);
         }
 
         public static FSaveHeader Parse(BinaryReader reader)
@@ -96,6 +104,9 @@ namespace SatisfactorySaveParser.Save
 
             if (header.HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility)
                 header.SessionVisibility = (ESessionVisibility)reader.ReadByte();
+
+            if (header.HeaderVersion >= SaveHeaderVersion.UE425EngineUpdate)
+                header.EditorObjectVersion = reader.ReadInt32();
 
             return header;
         }

@@ -23,6 +23,9 @@
         // @2019-06-19 This was put in the wrong save version thingy and is now on experimental so cant remnove it.
         LookAtTheComment,
 
+        // @2021-01-22 UE4.25 Engine Upgrade. FEditorObjectVersion Changes occurred (notably with FText serialization)
+        UE425EngineUpdate,
+
         // -----<new versions can be added above this line>-----
         VersionPlusOne,
         LatestVersion = VersionPlusOne - 1 // Last version to use

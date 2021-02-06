@@ -12,12 +12,12 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 
         public int SerializedLength => Fields.Sum(f => f.PropertyName.GetSerializedLength() + f.PropertyType.GetSerializedLength() + 8 + f.SerializedLength) + "None".GetSerializedLength();
 
-        public DynamicStructData(BinaryReader reader, string type)
+        public DynamicStructData(BinaryReader reader, string type, int buildVersion)
         {
             Type = type;
 
             SerializedProperty prop;
-            while ((prop = SerializedProperty.Parse(reader)) != null)
+            while ((prop = SerializedProperty.Parse(reader, buildVersion)) != null)
             {
                 Fields.Add(prop);
             }

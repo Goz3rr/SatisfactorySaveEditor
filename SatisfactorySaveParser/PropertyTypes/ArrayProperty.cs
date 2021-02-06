@@ -156,7 +156,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
-        public static ArrayProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead)
+        public static ArrayProperty Parse(string propertyName, int index, BinaryReader reader, int size, out int overhead, int buildVersion)
         {
             var result = new ArrayProperty(propertyName, index)
             {
@@ -172,7 +172,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 case StructProperty.TypeName:
                     {
-                        result.Elements.AddRange(StructProperty.ParseArray(reader));
+                        result.Elements.AddRange(StructProperty.ParseArray(reader, buildVersion));
                     }
                     break;
                 case ObjectProperty.TypeName:
@@ -241,7 +241,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                         var count = reader.ReadInt32();
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(TextProperty.Parse($"Element {i}", 0, reader, true));
+                            result.Elements.Add(TextProperty.Parse($"Element {i}", 0, reader, buildVersion, true));
                         }
                     }
                     break;
