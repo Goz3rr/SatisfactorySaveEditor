@@ -133,6 +133,12 @@ namespace SatisfactorySaveEditor.Model
                 return this;
             }
 
+            if(name.EndsWith("*") && title.StartsWith(name.Substring(0, name.Length - 1)))
+            {
+                if (expand) IsSelected = true;
+                return this;
+            }
+
             foreach (var item in Items)
             {
                 var foundChild = item.FindChild(name, expand);

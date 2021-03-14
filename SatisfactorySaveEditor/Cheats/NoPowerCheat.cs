@@ -13,7 +13,7 @@ namespace SatisfactorySaveEditor.Cheats
 
         public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
-            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_*", false);
             if (gameState == null)
             {
                 MessageBox.Show("This save does not contain a GameState.\nThis means that the loaded save is probably corrupt. Aborting.", "Cannot find GameState", MessageBoxButton.OK, MessageBoxImage.Error);

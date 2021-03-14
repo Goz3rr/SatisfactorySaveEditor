@@ -29,7 +29,7 @@ namespace SatisfactorySaveEditor.Cheats
                 return false;
             }
 
-            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_0", false);
+            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_*", false);
             if (gameState == null)
             {
                 MissingTagMsg("GameState");
