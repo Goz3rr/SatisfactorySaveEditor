@@ -33,11 +33,23 @@ namespace SatisfactorySaveParser.PropertyTypes
                 base.Serialize(writer, writeHeader);
             }
 
+            int sizeExtra = 0;
+
             using (var ms = new MemoryStream())
             using (var msWriter = new BinaryWriter(ms))
             {
                 switch (Type)
                 {
+                    case IntProperty.TypeName:
+                        {
+                            sizeExtra = 4;
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<IntProperty>())
+                            {
+                                msWriter.Write(prop.Value);
+                            }
+                        }
+                        break;
                     case NameProperty.TypeName:
                         {
                             msWriter.Write(Elements.Count);
@@ -63,7 +75,7 @@ namespace SatisfactorySaveParser.PropertyTypes
 
                 var bytes = ms.ToArray();
 
-                writer.Write(bytes.Length);
+                writer.Write(bytes.Length + sizeExtra);
                 writer.Write(Index);
 
                 writer.WriteLengthPrefixedString(Type);
@@ -92,6 +104,16 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             switch (result.Type)
             {
+                case IntProperty.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var value = reader.ReadInt32();
+                            result.Elements.Add(new IntProperty($"Element {i}") { Value = value });
+                        }
+                    }
+                    break;
                 case NameProperty.TypeName:
                     {
                         var count = reader.ReadInt32();
@@ -114,7 +136,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                     }
                     break;
                 default:
-                    throw new NotImplementedException($"Parsing an array of {result.Type} is not yet supported.");
+                    throw new NotImplementedException($"Parsing a set of {result.Type} is not yet supported.");
             }
 
 
