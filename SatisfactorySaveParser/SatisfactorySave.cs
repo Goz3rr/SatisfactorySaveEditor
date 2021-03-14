@@ -1,7 +1,8 @@
-﻿using Ionic.Zlib;
-using NLog;
+﻿using NLog;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
+using SatisfactorySaveParser.ZLib;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,7 +80,7 @@ namespace SatisfactorySaveParser
                             Trace.Assert(subChunk.UncompressedSize == summary.UncompressedSize);
 
                             var startPosition = stream.Position;
-                            using (var zStream = new ZlibStream(stream, CompressionMode.Decompress, true))
+                            using (var zStream = new ZLibStream(stream, CompressionMode.Decompress))
                             {
                                 zStream.CopyTo(buffer);
                             }
@@ -94,7 +95,7 @@ namespace SatisfactorySaveParser
                         buffer.Position = 0;
 
 #if DEBUG
-                        //File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
+                        File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
 #endif
 
 
@@ -207,7 +208,7 @@ namespace SatisfactorySaveParser
                             {
                                 var remaining = (int)Math.Min(ChunkInfo.ChunkSize, buffer.Length - (ChunkInfo.ChunkSize * i));
 
-                                using (var zStream = new ZlibStream(zBuffer, CompressionMode.Compress, CompressionLevel.Level6, true))
+                                using (var zStream = new ZLibStream(zBuffer, CompressionMode.Compress, CompressionLevel.Level6))
                                 {
                                     var tmpBuf = new byte[remaining];
                                     buffer.Read(tmpBuf, 0, remaining);

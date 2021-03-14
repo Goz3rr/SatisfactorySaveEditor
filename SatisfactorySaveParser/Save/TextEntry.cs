@@ -132,7 +132,16 @@ namespace SatisfactorySaveParser.Save
     {
         public override ETextHistoryType HistoryType => ETextHistoryType.None;
 
-        public override int SerializedLength => 5;
+        public override int SerializedLength
+        {
+            get
+            {
+                if (!HasCultureInvariantString.HasValue)
+                    return 5;
+
+                return 9 + CultureInvariantString.GetSerializedLength();
+            }
+        }
 
         public bool? HasCultureInvariantString { get; set; } = null;
         public string CultureInvariantString { get; set; }
