@@ -10,11 +10,31 @@ Replace with:	<Research value="${0}" \/>
 -->
 <ResearchData>
 
-	<!-- Save compatability with old game versions - I think the game manages granting this itself when needed. -->
+	<!-- Save compatibility with old game versions - I think the game manages granting this itself when needed. -->
 	<!--
 	<Research value="/Game/FactoryGame/Schematics/Schematic_SaveCompatibility.Schematic_SaveCompatibility_C" />
 	-->
 	<Research value="/Game/FactoryGame/Schematics/Schematic_StartingRecipes.Schematic_StartingRecipes_C" />
+
+	<!-- Update 4 Alternate Schematics -->
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_AlcladCasing.Schematic_Alternate_AlcladCasing_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_AutomatedMiner.Schematic_Alternate_AutomatedMiner_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_ClassicBattery.Schematic_Alternate_ClassicBattery_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_CoolingDevice.Schematic_Alternate_CoolingDevice_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_DilutedFuel.Schematic_Alternate_DilutedFuel_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_ElectricMotor.Schematic_Alternate_ElectricMotor_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_FertileUranium.Schematic_Alternate_FertileUranium_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_HeatFusedFrame.Schematic_Alternate_HeatFusedFrame_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_InstantPlutoniumCell.Schematic_Alternate_InstantPlutoniumCell_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_InstantScrap.Schematic_Alternate_InstantScrap_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_OCSupercomputer.Schematic_Alternate_OCSupercomputer_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_PlutoniumFuelUnit.Schematic_Alternate_PlutoniumFuelUnit_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_RadioControlSystem.Schematic_Alternate_RadioControlSystem_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_SloppyAlumina.Schematic_Alternate_SloppyAlumina_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_SuperStateComputer.Schematic_Alternate_SuperStateComputer_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_TurboBlendFuel.Schematic_Alternate_TurboBlendFuel_C" />
+	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update4/Schematic_Alternate_TurboPressureMotor.Schematic_Alternate_TurboPressureMotor_C" />
+
 
 	<!-- Update 3 Alternate Schematics -->
 	<Research value="/Game/FactoryGame/Schematics/Alternate/New_Update3/Schematic_Alternate_AdheredIronPlate.Schematic_Alternate_AdheredIronPlate_C" />
@@ -127,10 +147,19 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-3.Schematic_6-3_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-4.Schematic_6-4_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_6-5.Schematic_6-5_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-1-1.Schematic_7-1-1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-1.Schematic_7-1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-2.Schematic_7-2_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-3.Schematic_7-3_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-4-1.Schematic_7-4-1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_7-4.Schematic_7-4_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-1.Schematic_8-1_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-2-1.Schematic_8-2-1_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-2.Schematic_8-2_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-3.Schematic_8-3_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-4.Schematic_8-4_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-5-1.Schematic_8-5-1_C" />
+	<Research value="/Game/FactoryGame/Schematics/Progression/Schematic_8-5.Schematic_8-5_C" />
 
 	<!-- Update 3 MAM Research Tree schematics replace old Schematic_Exploration schematics -->
 	<Research value="/Game/FactoryGame/Schematics/Research/BPD_ResearchTreeNode.BPD_ResearchTreeNode_C" />
@@ -158,10 +187,12 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_0.Research_Caterium_0_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_1.Research_Caterium_1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_2.Research_Caterium_2_C" />
+	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_2_1.Research_Caterium_2_1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_3.Research_Caterium_3_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_3_1.Research_Caterium_3_1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_4_1.Research_Caterium_4_1_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_4_1_1.Research_Caterium_4_1_1_C" />
+	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_4_1_2.Research_Caterium_4_1_2_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_4_2.Research_Caterium_4_2_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_4_3.Research_Caterium_4_3_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/Caterium_RS/Research_Caterium_5.Research_Caterium_5_C" />
@@ -226,7 +257,8 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_4.Research_XMas_4_C" />
 	<Research value="/Game/FactoryGame/Schematics/Research/XMas_RS/Research_XMas_5.Research_XMas_5_C" />
 
-	<!-- Update 3 AWESOME Shop schematics -->
+	<!-- AWESOME Shop schematics -->
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_CeilingLight.ResourceSink_CeilingLight_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_ConveryWalls_Metal.ResourceSink_ConveryWalls_Metal_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_ConveryWalls_Normal.ResourceSink_ConveryWalls_Normal_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_ConveyorWallMount.ResourceSink_ConveyorWallMount_C" />
@@ -241,10 +273,13 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FoudationPillar.ResourceSink_FoudationPillar_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FoundationExpansionPack.ResourceSink_FoundationExpansionPack_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_FrameworkFoundations.ResourceSink_FrameworkFoundations_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_GoldenCup.ResourceSink_GoldenCup_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_HyperTubeWallAttachements.ResourceSink_HyperTubeWallAttachements_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedCornerRamps.ResourceSink_InvertedCornerRamps_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_InvertedRampPack.ResourceSink_InvertedRampPack_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_Ladders.ResourceSink_Ladders_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_LightControlPanel.ResourceSink_LightControlPanel_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_LightTower.ResourceSink_LightTower_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_PipelineWallAttachments.ResourceSink_PipelineWallAttachments_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_Stairs.ResourceSink_Stairs_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_StatueBronzePioneer.ResourceSink_StatueBronzePioneer_C" />
@@ -254,6 +289,7 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_StatueSilverPioneer.ResourceSink_StatueSilverPioneer_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_StatueSpaceGiraffe.ResourceSink_StatueSpaceGiraffe_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_Statue_Hoggo.ResourceSink_Statue_Hoggo_C" />
+	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_StreetLight.ResourceSink_StreetLight_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_Walkways.ResourceSink_Walkways_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPoles.ResourceSink_WallPowerPoles_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSink/ResourceSink_WallPowerPolesMK2.ResourceSink_WallPowerPolesMK2_C" />
@@ -332,19 +368,20 @@ Replace with:	<Research value="${0}" \/>
 	<Research value="/Game/FactoryGame/Schematics/ResourceSinkShopCategories/SC_RSS_Statues.SC_RSS_Statues_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSinkShopCategories/SC_RSS_Vehicles.SC_RSS_Vehicles_C" />
 	<Research value="/Game/FactoryGame/Schematics/ResourceSinkShopCategories/SC_RSS_Walls.SC_RSS_Walls_C" />
+
 	<Research value="/Game/FactoryGame/Schematics/SchematicCategories/SC_Equipment.SC_Equipment_C" />
 	<Research value="/Game/FactoryGame/Schematics/SchematicCategories/SC_Logistics.SC_Logistics_C" />
 	<Research value="/Game/FactoryGame/Schematics/SchematicCategories/SC_Organisation.SC_Organisation_C" />
+	<Research value="/Game/FactoryGame/Schematics/SchematicCategories/SC_pOWER.SC_Power_C" />
 	<Research value="/Game/FactoryGame/Schematics/SchematicCategories/SC_Production.SC_Production_C" />
 	<Research value="/Game/FactoryGame/Schematics/SchematicCategories/SC_Walls.SC_Walls_C" />
 
 	<!-- Tutorial schematics -->
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial1.Schematic_Tutorial1_C" />
-	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial1_5.Schematic_Tutorial1_5_C" /> <!-- Similar in name duplicate? Maybe this one is granted if you skip the tutorial? There are 6 tutorial phases; perhaps this is the 6th?-->
+	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial1_5.Schematic_Tutorial1_5_C" />
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial2.Schematic_Tutorial2_C" />
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial3.Schematic_Tutorial3_C" />
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial4.Schematic_Tutorial4_C" />
 	<Research value="/Game/FactoryGame/Schematics/Tutorial/Schematic_Tutorial5.Schematic_Tutorial5_C" />
-
 
 </ResearchData>
