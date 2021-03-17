@@ -1,0 +1,41 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SatisfactorySaveEditor.Cheats"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="SatisfactorySaveEditor.Cheats.UnlockResearchWindow"
+        x:Name="UnlockResearchPickWindow"
+        DataContext="{Binding UnlockResearchWindowViewModel, Source={StaticResource Locator}, Mode=OneTime}"
+        Title="Unlock Research" WindowStartupLocation="CenterScreen"
+        Width="2000" Height="600">
+    <Grid x:Name="grid" Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="140" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column="0" Grid.Row="0" x:Name="availableLabel" Content="Available"/>
+        <Label Grid.Column="2" Grid.Row="0" x:Name="unlockedlabel" Content="Unlocked"/>
+
+        <ListBox Grid.Column="0" Grid.Row="1" Name="availableListbox" ItemsSource="{Binding Path=Available}" MinWidth="200" MinHeight="200" SelectionMode="Extended" />
+        <ListBox Grid.Column="2" Grid.Row="1" Name="unlockedListbox" ItemsSource="{Binding Path=Unlocked}" MinWidth="200" MinHeight="200" SelectionMode="Extended" />
+
+        <WrapPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" Margin="0,15,0,0">
+            <Button IsDefault="False" MinWidth="100" Margin="20,10,20,0" x:Name="addButton" Command="{Binding AddOneCommand}" CommandParameter="{Binding ElementName=availableListbox,Path=SelectedItems}" Content="_Unlock &gt;" />
+            <Button IsDefault="False" MinWidth="100" Margin="20,10,20,0" x:Name="removeButton" Command="{Binding RemoveOneCommand}" CommandParameter="{Binding ElementName=unlockedListbox,Path=SelectedItems}" Content="&lt; _Remove"/>
+
+            <Button IsDefault="False" MinWidth="100" Margin="20,50,20,0" x:Name="addAllButton" Command="{Binding AddAllCommand}" Content="Unlock all &gt;&gt;" />
+            <Button IsDefault="False" MinWidth="100" Margin="20,10,20,0" x:Name="removeAllButton" Command="{Binding RemoveAllCommand}" Content="&lt;&lt; Remove all"/>
+        </WrapPanel>
+
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button MinWidth="60" Margin="0,0,10,0" x:Name="cancelButton" Command="{Binding CancelCommand}" CommandParameter="{Binding ElementName=UnlockResearchPickWindow}" Content="_Cancel"/>
+            <Button MinWidth="60" x:Name="doneButton" Command="{Binding OkCommand}" CommandParameter="{Binding ElementName=UnlockResearchPickWindow}" Content="_Done"/> 
+        </WrapPanel>
+    </Grid>
+</Window>

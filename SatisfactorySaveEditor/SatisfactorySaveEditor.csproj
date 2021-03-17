@@ -126,6 +126,9 @@
     <Compile Include="Cheats\RevealMapCheat.cs" />
     <Compile Include="Cheats\SpawnDoggoCheat.cs" />
     <Compile Include="Cheats\UnlockMapCheat.cs" />
+    <Compile Include="Cheats\UnlockResearchWindow.xaml.cs">
+      <DependentUpon>UnlockResearchWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\InverseBooleanConverter.cs" />
     <Compile Include="Converter\IStructToTypeStringConverter.cs" />
     <Compile Include="Converter\ColorToBrushConverter.cs" />
@@ -172,6 +175,7 @@
     <Compile Include="ViewModel\Property\StructPropertyViewModel.cs" />
     <Compile Include="ViewModel\Property\TextPropertyViewModel.cs" />
     <Compile Include="ViewModel\Struct\DynamicStructDataViewModel.cs" />
+    <Compile Include="ViewModel\UnlockResearchWindowViewModel.cs" />
     <Compile Include="ViewModel\UpdateWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\Control\Vector2Control.xaml.cs">
@@ -204,6 +208,10 @@
     <Page Include="Cheats\MassDismantleWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Cheats\UnlockResearchWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AddWindow.xaml">
       <SubType>Designer</SubType>

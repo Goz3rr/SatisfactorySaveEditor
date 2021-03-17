@@ -1,9 +1,13 @@
 ﻿using SatisfactorySaveEditor.Model;
+using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveEditor.ViewModel.Property;
 
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.Data;
 using SatisfactorySaveParser.PropertyTypes;
+
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -11,7 +15,7 @@ namespace SatisfactorySaveEditor.Cheats
 {
     public class ResearchUnlockCheat : ICheat
     {
-        public string Name => "Unlock all research";
+        public string Name => "Unlock research";
 
         public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
@@ -43,6 +47,13 @@ namespace SatisfactorySaveEditor.Cheats
                 return false;
             }
 
+            var unlockSystem = rootItem.FindChild("Persistent_Level:PersistentLevel.UnlockSubsystem", false);
+            if (unlockSystem == null)
+            {
+                MissingTagMsg("UnlockSubsystem");
+                return false;
+            }
+
             var tradingPostBuilt = tutorialManager.FindField<BoolPropertyViewModel>("mTradingPostBuilt");
             if (tradingPostBuilt == null)
             {
@@ -50,45 +61,34 @@ namespace SatisfactorySaveEditor.Cheats
                 return false;
             }
 
-            tutorialManager.FindOrCreateField<EnumPropertyViewModel>("mPendingTutorial", f => f.Value = "EIntroTutorialSteps::ITS_DONE");
-            tutorialManager.FindOrCreateField<IntPropertyViewModel>("mTradingPostLevel", f => f.Value = 5);
-            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroTutorial", true);
-            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroSequence", true);
-            CreateOrSetBoolField(tutorialManager, "mDidStep1Upgrade", true);
-            CreateOrSetBoolField(tutorialManager, "mDidStep2Upgrade", true);
-            CreateOrSetBoolField(tutorialManager, "mDidStep3Upgrade", true);
-            CreateOrSetBoolField(tutorialManager, "mDidStep4Upgrade", true);
-            CreateOrSetBoolField(tutorialManager, "mDidStep5Upgrade", true);
+            var availableSchematics = schematicManager.FindField<ArrayPropertyViewModel>("mAvailableSchematics");
+            var purchasedSchematics = schematicManager.FindField<ArrayPropertyViewModel>("mPurchasedSchematics");
 
+            var researches = Research.GetResearches().Select(r => r.Path);
 
-            // TODO: Set GameState->mScannableResources
-            CreateOrSetBoolField(gameState, "mIsBuildingEfficiencyUnlocked", true);
-            CreateOrSetBoolField(gameState, "mIsBuildingOverclockUnlocked", true);
+            var purchasedList = purchasedSchematics.Elements.Cast<ObjectPropertyViewModel>().Select(o => o.Str2);
+            var availableList = researches.Union(availableSchematics.Elements.Cast<ObjectPropertyViewModel>().Select(o => o.Str2)).Except(purchasedList);
 
-            gamePhaseManager.FindOrCreateField<BytePropertyViewModel>("mGamePhase", f =>
+            var window = new UnlockResearchWindow()
             {
-                f.Value = "EGP_EndGame";
-                f.Type = "EGamePhase";
-            });
+                Owner = Application.Current.MainWindow
+            };
+            var vm = (UnlockResearchWindowViewModel)window.DataContext;
+            vm.Available = new ObservableCollection<string>(availableList);
+            vm.Unlocked = new ObservableCollection<string>(purchasedList);
 
-            foreach (var field in schematicManager.Fields)
+            if (!window.ShowDialog().Value)
+                return false;
+
+            purchasedSchematics.Elements.Clear();
+            foreach (var item in vm.Unlocked)
             {
-                if (field.PropertyName == "mAvailableSchematics" || field.PropertyName == "mPurchasedSchematics")
-                {
-                    if (!(field is ArrayPropertyViewModel arrayField))
-                    {
-                        MessageBox.Show("Expected schematic data is of wrong type.\nThis means that the loaded save is probably corrupt. Aborting.", "Wrong schematics type", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return false;
-                    }
+                purchasedSchematics.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", item)));
 
-                    foreach (var research in Research.GetResearches())
-                    {
-                        if (!arrayField.Elements.Cast<ObjectPropertyViewModel>().Any(e => e.Str2 == research.Path))
-                        {
-                            arrayField.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", research.Path)));
-                        }
-                    }
-                }
+                //if (!availableList.Any(x => x == item))
+                //{
+                //    availableSchematics.Elements.Add(new ObjectPropertyViewModel(new ObjectProperty(null, "", item)));
+                //}
             }
 
             //clear PaidOffSchematic and ActiveSchematic fields so the progress indicator in the top right doesn't linger after unlocking
@@ -97,7 +97,33 @@ namespace SatisfactorySaveEditor.Cheats
             schematicManager.RemovePropertyCommand.Execute(paidOffSchematicField);
             schematicManager.RemovePropertyCommand.Execute(activeSchematicField);
 
-            MessageBox.Show("All research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            tutorialManager.FindOrCreateField<EnumPropertyViewModel>("mPendingTutorial", f => f.Value = "EIntroTutorialSteps::ITS_DONE");
+            tutorialManager.FindOrCreateField<IntPropertyViewModel>("mTradingPostLevel", f => f.Value = 6);
+            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroTutorial", true);
+            CreateOrSetBoolField(tutorialManager, "mHasCompletedIntroSequence", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep1Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep1_5Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep2Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep3Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep4Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidStep5Upgrade", true);
+            CreateOrSetBoolField(tutorialManager, "mDidPickUpIronOre", true);
+            CreateOrSetBoolField(tutorialManager, "mDidDismantleDropPod", true);
+            CreateOrSetBoolField(tutorialManager, "mDidEquipStunSpear", true);
+            CreateOrSetBoolField(tutorialManager, "mDidOpenCodex", true);
+
+            // TODO: Set GameState->mScannableResources
+            CreateOrSetBoolField(unlockSystem, "mIsMapUnlocked", true);
+            CreateOrSetBoolField(unlockSystem, "mIsBuildingEfficiencyUnlocked", true);
+            CreateOrSetBoolField(unlockSystem, "mIsBuildingOverclockUnlocked", true);
+
+            gamePhaseManager.FindOrCreateField<BytePropertyViewModel>("mGamePhase", f =>
+            {
+                f.Value = "EGP_EndGame";
+                f.Type = "EGamePhase";
+            });
+
+            MessageBox.Show("Research successfully unlocked.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             return true;
         }
 
