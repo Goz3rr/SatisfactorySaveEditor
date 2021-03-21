@@ -6,6 +6,7 @@ namespace SatisfactorySaveEditor.Model
     {
         private readonly FSaveHeader model;
 
+        private int buildVersion;
         private string mapName;
         private string mapOptions;
         private string sessionName;
@@ -16,6 +17,12 @@ namespace SatisfactorySaveEditor.Model
         public SaveHeaderVersion HeaderVersion => model.HeaderVersion;
 
         public FSaveCustomVersion SaveVersion => model.SaveVersion;
+
+        public int BuildVersion
+        {
+            get => buildVersion;
+            set { Set(() => BuildVersion, ref buildVersion, value); }
+        }
 
         public string MapName
         {
@@ -60,6 +67,7 @@ namespace SatisfactorySaveEditor.Model
             model = header;
             Type = "Root";
 
+            buildVersion = model.BuildVersion;
             mapName = model.MapName;
             mapOptions = model.MapOptions;
             sessionName = model.SessionName;
@@ -72,6 +80,7 @@ namespace SatisfactorySaveEditor.Model
         {
             base.ApplyChanges();
 
+            model.BuildVersion = buildVersion;
             model.MapName = mapName;
             model.MapOptions = mapOptions;
             model.SessionName = sessionName;
