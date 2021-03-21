@@ -16,6 +16,7 @@ namespace SatisfactorySaveEditor.ViewModel
         public RelayCommand<IList> AddOneCommand { get; }
         public RelayCommand<IList> RemoveOneCommand { get; }
         public RelayCommand AddAllCommand { get; }
+        public RelayCommand AddAllAlternativesCommand { get; }
         public RelayCommand RemoveAllCommand { get; }
 
         private ObservableCollection<string> available;
@@ -40,6 +41,7 @@ namespace SatisfactorySaveEditor.ViewModel
             AddOneCommand = new RelayCommand<IList>(AddOne, list => list?.Count > 0);
             RemoveOneCommand = new RelayCommand<IList>(RemoveOne, list => list?.Count > 0);
             AddAllCommand = new RelayCommand(AddAll, () => Available?.Count() > 0);
+            AddAllAlternativesCommand = new RelayCommand(AddAllAlternatives, () => Available?.Any(x => x.Contains(@"/Alternate/")) ?? false);
             RemoveAllCommand = new RelayCommand(RemoveAll, () => Unlocked?.Count() > 0);
         }
 
@@ -82,6 +84,15 @@ namespace SatisfactorySaveEditor.ViewModel
         private void AddAll()
         {
             foreach (var item in Available.Reverse().ToList())
+            {
+                Unlocked.Insert(0, item);
+                Available.Remove(item);
+            }
+        }
+
+        private void AddAllAlternatives()
+        {
+            foreach (var item in Available.Where(x => x.Contains(@"/Alternate/")).Reverse().ToList())
             {
                 Unlocked.Insert(0, item);
                 Available.Remove(item);
