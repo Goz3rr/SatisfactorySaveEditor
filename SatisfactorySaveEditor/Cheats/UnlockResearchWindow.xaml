@@ -31,6 +31,9 @@
 
             <Button IsDefault="False" MinWidth="100" Margin="20,50,20,0" x:Name="addAllButton" Command="{Binding AddAllCommand}" Content="Unlock all &gt;&gt;" />
             <Button IsDefault="False" MinWidth="100" Margin="20,10,20,0" x:Name="removeAllButton" Command="{Binding RemoveAllCommand}" Content="&lt;&lt; Remove all"/>
+            <Button IsDefault="False" MinWidth="100" Margin="20,50,20,0" x:Name="addAllAlternativesButton" Command="{Binding AddAllAlternativesCommand}">
+                <TextBlock Text="Unlock all alternatives &gt;&gt;" TextWrapping="Wrap" TextAlignment="Center"/>
+            </Button>
         </WrapPanel>
 
         <WrapPanel Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Right" Margin="0,15,0,0">
