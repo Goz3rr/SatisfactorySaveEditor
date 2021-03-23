@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
@@ -15,14 +15,7 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '2.2.104'
-
-- task: NuGetToolInstaller@0
-  inputs:
-    versionSpec: '4.4.1'
+- task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
   inputs:
