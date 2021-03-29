@@ -58,6 +58,16 @@ namespace SatisfactorySaveParser.Save
         /// </summary>
         public int EditorObjectVersion { get; set; }
 
+        /// <summary>
+        ///     Generic MetaData - Requested by Mods
+        /// </summary>
+        public string ModMetadata { get; set; }
+
+        /// <summary>
+        ///     Was this save ever saved with mods enabled?
+        /// </summary>
+        public bool IsModdedSave { get; set; }
+
         public void Serialize(BinaryWriter writer)
         {
             writer.Write((int)HeaderVersion);
@@ -76,6 +86,12 @@ namespace SatisfactorySaveParser.Save
 
             if (HeaderVersion >= SaveHeaderVersion.UE425EngineUpdate)
                 writer.Write(EditorObjectVersion);
+
+            if (HeaderVersion >= SaveHeaderVersion.AddedModdingParams)
+            {
+                writer.WriteLengthPrefixedString(ModMetadata);
+                writer.Write(IsModdedSave ? 1 : 0);
+            }
         }
 
         public static FSaveHeader Parse(BinaryReader reader)
@@ -103,10 +119,23 @@ namespace SatisfactorySaveParser.Save
                 throw new UnknownBuildVersionException(header.SaveVersion);
 
             if (header.HeaderVersion >= SaveHeaderVersion.AddedSessionVisibility)
+            {
                 header.SessionVisibility = (ESessionVisibility)reader.ReadByte();
+                log.Debug($"SessionVisibility={header.SessionVisibility}");
+            }
 
             if (header.HeaderVersion >= SaveHeaderVersion.UE425EngineUpdate)
+            {
                 header.EditorObjectVersion = reader.ReadInt32();
+                log.Debug($"EditorObjectVersion={header.EditorObjectVersion}");
+            }
+
+            if (header.HeaderVersion >= SaveHeaderVersion.AddedModdingParams)
+            {
+                header.ModMetadata = reader.ReadLengthPrefixedString();
+                header.IsModdedSave = reader.ReadInt32() > 0;
+                log.Debug($"ModMetadata={header.ModMetadata}, IsModdedSave={header.IsModdedSave}");
+            }
 
             return header;
         }
