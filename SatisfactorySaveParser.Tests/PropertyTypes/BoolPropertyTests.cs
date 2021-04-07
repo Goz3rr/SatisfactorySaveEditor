@@ -45,7 +45,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Value = BoolTrueValue
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(0, prop.SerializedLength);
                 CollectionAssert.AreEqual(BoolTrueBytes, stream.ToArray());

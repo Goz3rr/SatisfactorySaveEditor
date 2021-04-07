@@ -33,7 +33,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             Unknown3 = reader.ReadLengthPrefixedString();
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(Unknown1);
             writer.WriteLengthPrefixedString(ItemType);

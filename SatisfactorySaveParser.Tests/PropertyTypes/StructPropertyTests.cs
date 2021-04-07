@@ -64,7 +64,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Data = new LinearColor(StructTypedDataR, StructTypedDataG, StructTypedDataB, StructTypedDataA)
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(16, prop.SerializedLength);
                 CollectionAssert.AreEqual(StructTypedBytes, stream.ToArray());

@@ -30,14 +30,14 @@ namespace SatisfactorySaveParser.PropertyTypes
             return $"struct {Type}";
         }
 
-        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        public override void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
         {
-            base.Serialize(writer, writeHeader);
+            base.Serialize(writer, buildVersion, writeHeader);
 
             using (var ms = new MemoryStream())
             using (var msWriter = new BinaryWriter(ms))
             {
-                Data.Serialize(msWriter);
+                Data.Serialize(msWriter, buildVersion);
 
                 var bytes = ms.ToArray();
 
@@ -74,7 +74,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             return size;
         }
 
-        public static void SerializeArray(BinaryWriter writer, StructProperty[] properties)
+        public static void SerializeArray(BinaryWriter writer, StructProperty[] properties, int buildVersion)
         {
             writer.Write(properties.Length);
 
@@ -88,7 +88,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             {
                 for (var i = 0; i < properties.Length; i++)
                 {
-                    properties[i].Data.Serialize(msWriter);
+                    properties[i].Data.Serialize(msWriter, buildVersion);
                 }
 
                 var bytes = ms.ToArray();

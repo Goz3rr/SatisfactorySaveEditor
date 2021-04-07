@@ -7,6 +7,6 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
         int SerializedLength { get; }
         string Type { get; }
 
-        void Serialize(BinaryWriter writer);
+        void Serialize(BinaryWriter writer, int buildVersion);
     }
 }

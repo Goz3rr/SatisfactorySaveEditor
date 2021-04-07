@@ -21,7 +21,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             Forward = reader.ReadSingle();
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.WriteLengthPrefixedString(Root);
             writer.WriteLengthPrefixedString(InstanceName);

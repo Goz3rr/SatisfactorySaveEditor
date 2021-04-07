@@ -18,14 +18,14 @@ namespace SatisfactorySaveParser
 
         public byte[] TrailingData { get; set; }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             if (ShouldBeNulled && Count == 0 && TrailingData.Length == 0)
                 return;
 
             foreach (var field in this)
             {
-                field.Serialize(writer);
+                field.Serialize(writer, buildVersion);
             }
 
             writer.WriteLengthPrefixedString("None");

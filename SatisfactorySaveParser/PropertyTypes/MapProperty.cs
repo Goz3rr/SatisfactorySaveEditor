@@ -20,9 +20,9 @@ namespace SatisfactorySaveParser.PropertyTypes
         {
         }
 
-        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        public override void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
         {
-            base.Serialize(writer);
+            base.Serialize(writer, buildVersion);
 
             writer.Write(SerializedLength);
             writer.Write(Index);

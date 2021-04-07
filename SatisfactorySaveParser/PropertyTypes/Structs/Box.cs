@@ -22,7 +22,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             UnknownByte = reader.ReadByte();
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(Min);
             writer.Write(Max);

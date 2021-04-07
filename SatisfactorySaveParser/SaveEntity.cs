@@ -75,7 +75,7 @@ namespace SatisfactorySaveParser
             writer.Write(WasPlacedInLevel ? 1 : 0);
         }
 
-        public override void SerializeData(BinaryWriter writer)
+        public override void SerializeData(BinaryWriter writer, int buildVersion)
         {
             writer.WriteLengthPrefixedString(ParentObjectRoot);
             writer.WriteLengthPrefixedString(ParentObjectName);
@@ -87,7 +87,7 @@ namespace SatisfactorySaveParser
                 writer.WriteLengthPrefixedString(obj.PathName);
             }
 
-            base.SerializeData(writer);
+            base.SerializeData(writer, buildVersion);
         }
 
         public override void ParseData(int length, BinaryReader reader, int buildVersion)

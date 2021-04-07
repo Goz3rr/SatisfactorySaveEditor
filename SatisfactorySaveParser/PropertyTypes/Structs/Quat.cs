@@ -20,7 +20,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             W = reader.ReadSingle();
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(X);
             writer.Write(Y);

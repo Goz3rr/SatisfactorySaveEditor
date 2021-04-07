@@ -49,11 +49,11 @@ namespace SatisfactorySaveParser.PropertyTypes
             return $"array of {Type}";
         }
 
-        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        public override void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
         {
             if (writeHeader)
             {
-                base.Serialize(writer, writeHeader);
+                base.Serialize(writer, buildVersion, writeHeader);
             }
 
             using (var ms = new MemoryStream())
@@ -63,7 +63,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 {
                     case StructProperty.TypeName:
                         {
-                            StructProperty.SerializeArray(msWriter, Elements.Cast<StructProperty>().ToArray());
+                            StructProperty.SerializeArray(msWriter, Elements.Cast<StructProperty>().ToArray(), buildVersion);
                         }
                         break;
                     case ObjectProperty.TypeName:
@@ -126,7 +126,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                             msWriter.Write(Elements.Count);
                             foreach (var prop in Elements.Cast<TextProperty>())
                             {
-                                prop.Serialize(msWriter, false);
+                                prop.Serialize(msWriter, buildVersion, false);
                             }
                         }
                         break;

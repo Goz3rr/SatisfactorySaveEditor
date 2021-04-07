@@ -52,7 +52,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Value = ByteEnumValue
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(16, prop.SerializedLength);
                 CollectionAssert.AreEqual(ByteEnumBytes, stream.ToArray());
@@ -92,7 +92,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Value = "0"
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(1, prop.SerializedLength);
                 CollectionAssert.AreEqual(ByteNumberBytes, stream.ToArray());

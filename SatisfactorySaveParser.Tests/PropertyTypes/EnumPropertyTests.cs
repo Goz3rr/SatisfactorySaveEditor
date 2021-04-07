@@ -48,7 +48,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Name = EnumValue
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(34, prop.SerializedLength);
                 CollectionAssert.AreEqual(EnumBytes, stream.ToArray());

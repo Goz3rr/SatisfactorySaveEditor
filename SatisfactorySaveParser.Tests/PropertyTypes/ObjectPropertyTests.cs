@@ -48,7 +48,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     PathName = ObjectStr2
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(74, prop.SerializedLength);
                 CollectionAssert.AreEqual(ObjectBytes, stream.ToArray());

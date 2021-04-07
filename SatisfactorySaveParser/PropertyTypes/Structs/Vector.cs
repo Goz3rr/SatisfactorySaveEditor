@@ -15,7 +15,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             Data = reader.ReadVector3();
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(Data);
         }

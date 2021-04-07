@@ -45,7 +45,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Value = IntValue
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(4, prop.SerializedLength);
                 CollectionAssert.AreEqual(IntBytes, stream.ToArray());

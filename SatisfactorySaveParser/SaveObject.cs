@@ -52,9 +52,9 @@ namespace SatisfactorySaveParser
             writer.WriteLengthPrefixedString(InstanceName);
         }
 
-        public virtual void SerializeData(BinaryWriter writer)
+        public virtual void SerializeData(BinaryWriter writer, int buildVersion)
         {
-            DataFields.Serialize(writer);
+            DataFields.Serialize(writer, buildVersion);
         }
 
         public virtual void ParseData(int length, BinaryReader reader, int buildVersion)

@@ -187,7 +187,7 @@ namespace SatisfactorySaveParser
 
                 if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
                 {
-                    SaveData(writer);
+                    SaveData(writer, Header.BuildVersion);
                 }
                 else
                 {
@@ -196,7 +196,7 @@ namespace SatisfactorySaveParser
                     {
                         bufferWriter.Write(0); // Placeholder size
 
-                        SaveData(bufferWriter);
+                        SaveData(bufferWriter, Header.BuildVersion);
 
                         buffer.Position = 0;
                         bufferWriter.Write((int)buffer.Length - 4);
@@ -243,7 +243,7 @@ namespace SatisfactorySaveParser
             }
         }
 
-        private void SaveData(BinaryWriter writer)
+        private void SaveData(BinaryWriter writer, int buildVersion)
         {
             writer.Write(Entries.Count);
 
@@ -268,7 +268,7 @@ namespace SatisfactorySaveParser
             {
                 for (var i = 0; i < entities.Length; i++)
                 {
-                    entities[i].SerializeData(dataWriter);
+                    entities[i].SerializeData(dataWriter, buildVersion);
 
                     var bytes = ms.ToArray();
                     writer.Write(bytes.Length);
@@ -278,7 +278,7 @@ namespace SatisfactorySaveParser
                 }
                 for (var i = 0; i < components.Length; i++)
                 {
-                    components[i].SerializeData(dataWriter);
+                    components[i].SerializeData(dataWriter, buildVersion);
 
                     var bytes = ms.ToArray();
                     writer.Write(bytes.Length);

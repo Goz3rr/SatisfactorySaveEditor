@@ -16,7 +16,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             Data = new Guid(reader.ReadBytes(16));
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(Data.ToByteArray());
         }

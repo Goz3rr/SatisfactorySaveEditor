@@ -86,7 +86,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     }
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(21, prop.SerializedLength);
                 CollectionAssert.AreEqual(TextBytes, stream.ToArray());
@@ -134,7 +134,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     }
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(57, prop.SerializedLength);
                 CollectionAssert.AreEqual(AltTextBytes, stream.ToArray());
@@ -194,7 +194,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Text = text
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(111, prop.SerializedLength);
                 CollectionAssert.AreEqual(Alt2TextBytes, stream.ToArray());
@@ -236,7 +236,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Text = new NoneTextEntry(NoneTextFlags)
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(5, prop.SerializedLength);
                 CollectionAssert.AreEqual(NoneTextBytes, stream.ToArray());

@@ -45,7 +45,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
                     Value = FloatValue
                 };
 
-                prop.Serialize(writer);
+                prop.Serialize(writer, BuildVersion);
 
                 Assert.AreEqual(4, prop.SerializedLength);
                 CollectionAssert.AreEqual(FloatBytes, stream.ToArray());

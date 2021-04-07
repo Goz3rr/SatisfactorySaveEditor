@@ -14,7 +14,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             Unknown = reader.ReadSingle();
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(Unknown);
         }

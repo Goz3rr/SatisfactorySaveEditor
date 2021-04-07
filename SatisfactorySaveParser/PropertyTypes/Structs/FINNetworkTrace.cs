@@ -35,7 +35,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             }
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             writer.Write(IsValid ? 1 : 0);
 
@@ -46,7 +46,7 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
 
                 writer.Write(HasPrev ? 1 : 0);
                 if (HasPrev)
-                    Prev.Serialize(writer);
+                    Prev.Serialize(writer, buildVersion);
 
                 writer.Write(HasStep ? 1 : 0);
                 if (HasStep)

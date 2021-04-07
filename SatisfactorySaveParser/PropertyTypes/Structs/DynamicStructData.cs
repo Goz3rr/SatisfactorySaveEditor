@@ -23,11 +23,11 @@ namespace SatisfactorySaveParser.PropertyTypes.Structs
             }
         }
 
-        public void Serialize(BinaryWriter writer)
+        public void Serialize(BinaryWriter writer, int buildVersion)
         {
             foreach(var field in Fields)
             {
-                field.Serialize(writer);
+                field.Serialize(writer, buildVersion);
             }
 
             writer.WriteLengthPrefixedString("None");

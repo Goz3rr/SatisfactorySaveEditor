@@ -10,6 +10,8 @@ namespace SatisfactorySaveParser.PropertyTypes
 {
     public class TextProperty : SerializedProperty
     {
+        public const int CultureInvariantChangeBuild = 140822;
+
         public const string TypeName = nameof(TextProperty);
         public override string PropertyType => TypeName;
         public override int SerializedLength => Text.SerializedLength;
@@ -25,7 +27,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             return $"Text {PropertyName}: {Text}";
         }
 
-        public static void WriteTextEntry(BinaryWriter writer, TextEntry entry)
+        public static void WriteTextEntry(BinaryWriter writer, TextEntry entry, int buildVersion)
         {
             writer.Write(entry.Flags);
             writer.Write((byte)entry.HistoryType);
@@ -41,20 +43,20 @@ namespace SatisfactorySaveParser.PropertyTypes
                     break;
                 case ArgumentFormatTextEntry argumentFormatText:
                     {
-                        WriteTextEntry(writer, argumentFormatText.SourceFormat);
+                        WriteTextEntry(writer, argumentFormatText.SourceFormat, buildVersion);
 
                         writer.Write(argumentFormatText.Arguments.Count);
                         foreach (var arg in argumentFormatText.Arguments)
                         {
                             writer.WriteLengthPrefixedString(arg.Name);
                             writer.Write((byte)arg.ValueType);
-                            WriteTextEntry(writer, arg.Value);
+                            WriteTextEntry(writer, arg.Value, buildVersion);
                         }
                     }
                     break;
                 case NoneTextEntry noneText:
                     {
-                        if (noneText.HasCultureInvariantString.HasValue)
+                        if (buildVersion >= CultureInvariantChangeBuild && noneText.HasCultureInvariantString.HasValue)
                         {
                             writer.Write(noneText.HasCultureInvariantString.Value ? 1 : 0);
 
@@ -68,18 +70,43 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
-        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        private void UpdateTextEntry(TextEntry entry, int buildVersion)
         {
+            if (buildVersion >= CultureInvariantChangeBuild)
+                return;
+
+            switch (entry)
+            {
+                case ArgumentFormatTextEntry argFormat:
+                    {
+                        foreach (var item in argFormat.Arguments)
+                            UpdateTextEntry(item.Value, buildVersion);
+                    }
+                    break;
+
+                case NoneTextEntry none:
+                    {
+                        none.HasCultureInvariantString = null;
+                    }
+                    break;
+            }
+        }
+
+        public override void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
+        {
+            // Fix up serializedlength when downgrading
+            UpdateTextEntry(Text, buildVersion);
+
             if (writeHeader)
             {
-                base.Serialize(writer, writeHeader);
+                base.Serialize(writer, buildVersion, writeHeader);
 
                 writer.Write(SerializedLength);
                 writer.Write(Index);
                 writer.Write((byte)0);
             }
 
-            WriteTextEntry(writer, Text);
+            WriteTextEntry(writer, Text, buildVersion);
         }
 
         public static TextEntry ParseTextEntry(BinaryReader reader, int buildVersion)
@@ -122,7 +149,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                     {
                         var entry = new NoneTextEntry(flags);
 
-                        if (buildVersion >= 140822)
+                        if (buildVersion >= CultureInvariantChangeBuild)
                         {
                             entry.HasCultureInvariantString = reader.ReadInt32() == 1;
 

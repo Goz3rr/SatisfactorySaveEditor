@@ -156,6 +156,7 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new RemoveSlugsCheat());
             CheatMenuItems.Add(new RestoreSlugsCheat());
             CheatMenuItems.Add(new DeduplicateSchematicsCheat());
+            CheatMenuItems.Add(new U3DowngradeCheat());
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);
@@ -250,6 +251,7 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <param name="cheat">The cheat to run</param>
         private void Cheat(ICheat cheat)
         {
+            
             log.Info($"Applying cheat {cheat.Name}");
             if (cheat.Apply(rootItem, saveGame))
                 HasUnsavedChanges = true;

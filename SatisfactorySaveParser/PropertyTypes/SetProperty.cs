@@ -26,11 +26,11 @@ namespace SatisfactorySaveParser.PropertyTypes
             return $"set: ";
         }
 
-        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        public override void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
         {
             if (writeHeader)
             {
-                base.Serialize(writer, writeHeader);
+                base.Serialize(writer, buildVersion, writeHeader);
             }
 
             int sizeExtra = 0;

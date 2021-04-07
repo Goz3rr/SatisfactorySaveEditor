@@ -30,9 +30,9 @@ namespace SatisfactorySaveParser.PropertyTypes
             return $"obj: {PathName}";
         }
 
-        public override void Serialize(BinaryWriter writer, bool writeHeader = true)
+        public override void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
         {
-            base.Serialize(writer, writeHeader);
+            base.Serialize(writer, buildVersion, writeHeader);
 
             writer.Write(SerializedLength);
             writer.Write(Index);

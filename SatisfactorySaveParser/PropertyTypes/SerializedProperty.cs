@@ -18,7 +18,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             Index = index;
         }
 
-        public virtual void Serialize(BinaryWriter writer, bool writeHeader = true)
+        public virtual void Serialize(BinaryWriter writer, int buildVersion, bool writeHeader = true)
         {
             writer.WriteLengthPrefixedString(PropertyName);
             writer.WriteLengthPrefixedString(PropertyType);
