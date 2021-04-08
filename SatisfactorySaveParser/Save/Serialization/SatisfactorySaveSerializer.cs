@@ -639,6 +639,24 @@ namespace SatisfactorySaveParser.Save.Serialization
             return result;
         }
 
+        public static IArrayElement DeserializeArrayElement(string type, BinaryReader reader)
+        {
+            return type switch
+            {
+                ByteProperty.TypeName => ByteArrayValue.DeserializeArrayValue(reader),
+                EnumProperty.TypeName => EnumArrayValue.DeserializeArrayValue(reader),
+                FloatProperty.TypeName => FloatArrayValue.DeserializeArrayValue(reader),
+                IntProperty.TypeName => IntArrayValue.DeserializeArrayValue(reader),
+                InterfaceProperty.TypeName => InterfaceArrayValue.DeserializeArrayValue(reader),
+                NameProperty.TypeName => NameArrayValue.DeserializeArrayValue(reader),
+                ObjectProperty.TypeName => ObjectArrayValue.DeserializeArrayValue(reader),
+                StrProperty.TypeName => StrArrayValue.DeserializeArrayValue(reader),
+                StructProperty.TypeName => StructArrayValue.DeserializeArrayValue(reader),
+                TextProperty.TypeName => TextArrayValue.DeserializeArrayValue(reader),
+                _ => throw new NotImplementedException($"Unknown array element type {type}"),
+            };
+        }
+
         public static void SerializeProperty(SerializedProperty prop, BinaryWriter writer)
         {
             writer.WriteLengthPrefixedString(prop.PropertyName);

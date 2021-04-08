@@ -53,48 +53,11 @@ namespace SatisfactorySaveParser.Save.Properties
             var count = reader.ReadInt32();
             for (var i = 0; i < count; i++)
             {
-                object key, value;
+                var key = SatisfactorySaveSerializer.DeserializeArrayElement(result.KeyType, reader);
 
-                switch (result.KeyType)
-                {
-                    case IntProperty.TypeName:
-                        {
-                            key = new IntArrayValue()
-                            {
-                                Value = reader.ReadInt32()
-                            };
-                        }
-                        break;
-                    case ObjectProperty.TypeName:
-                        {
-                            key = new ObjectArrayValue()
-                            {
-                                Reference = reader.ReadObjectReference()
-                            };
-                        }
-                        break;
-                    case StrProperty.TypeName:
-                        {
-                            key = new StrArrayValue()
-                            {
-                                Value = reader.ReadLengthPrefixedString()
-                            };
-                        }
-                        break;
-                    default:
-                        throw new NotImplementedException($"Unimplemented Map KeyType: {result.KeyType}");
-                }
-
+                IArrayElement value;
                 switch (result.ValueType)
                 {
-                    case ByteProperty.TypeName:
-                        {
-                            value = new ByteArrayValue()
-                            {
-                                ByteValue = reader.ReadByte()
-                            };
-                        }
-                        break;
                     case StructProperty.TypeName:
                         {
                             var gameStruct = new DynamicGameStruct(null);
@@ -106,7 +69,8 @@ namespace SatisfactorySaveParser.Save.Properties
                         }
                         break;
                     default:
-                        throw new NotImplementedException($"Unimplemented Map ValueType: {result.ValueType}");
+                        value = SatisfactorySaveSerializer.DeserializeArrayElement(result.ValueType, reader);
+                        break;
                 }
 
                 result.Elements[key] = value;

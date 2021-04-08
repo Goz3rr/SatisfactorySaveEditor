@@ -12,6 +12,11 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 
         public GameStruct Data { get; set; }
 
+        public static StructArrayValue DeserializeArrayValue(BinaryReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ArraySerialize(BinaryWriter writer)
         {
             throw new NotImplementedException();

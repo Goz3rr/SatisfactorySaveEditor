@@ -11,6 +11,14 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 
         public ObjectReference Reference { get; set; }
 
+        public static InterfaceArrayValue DeserializeArrayValue(BinaryReader reader)
+        {
+            return new InterfaceArrayValue()
+            {
+                Reference = reader.ReadObjectReference()
+            };
+        }
+
         public void ArraySerialize(BinaryWriter writer)
         {
             throw new NotImplementedException();

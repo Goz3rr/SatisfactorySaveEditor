@@ -55,93 +55,6 @@ namespace SatisfactorySaveParser.Save.Properties
 
             switch (result.Type)
             {
-                case ByteProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            result.Elements.Add(new ByteArrayValue()
-                            {
-                                ByteValue = reader.ReadByte()
-                            });
-                        }
-                    }
-                    break;
-
-                case EnumProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            var str = reader.ReadLengthPrefixedString();
-                            result.Elements.Add(new EnumArrayValue()
-                            {
-                                Type = str.Split(':')[0],
-                                Value = str
-                            });
-                        }
-                    }
-                    break;
-
-                case FloatProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            var value = reader.ReadSingle();
-                            result.Elements.Add(new FloatArrayValue()
-                            {
-                                Value = value
-                            });
-                        }
-                    }
-                    break;
-
-                case IntProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            result.Elements.Add(new IntArrayValue()
-                            {
-                                Value = reader.ReadInt32()
-                            });
-                        }
-                    }
-                    break;
-
-                case InterfaceProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            result.Elements.Add(new InterfaceArrayValue()
-                            {
-                                Reference = reader.ReadObjectReference()
-                            });
-                        }
-                    }
-                    break;
-
-                case ObjectProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            result.Elements.Add(new ObjectArrayValue()
-                            {
-                                Reference = reader.ReadObjectReference()
-                            });
-                        }
-                    }
-                    break;
-
-                case StrProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            result.Elements.Add(new StrArrayValue()
-                            {
-                                Value = reader.ReadLengthPrefixedString()
-                            });
-                        }
-                    }
-                    break;
-
                 case StructProperty.TypeName:
                     {
                         var name = reader.ReadLengthPrefixedString();
@@ -173,20 +86,14 @@ namespace SatisfactorySaveParser.Save.Properties
                     }
                     break;
 
-                case TextProperty.TypeName:
+                default:
                     {
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(new TextArrayValue()
-                            {
-                                Text = TextProperty.ParseTextEntry(reader)
-                            });
+                            result.Elements.Add(SatisfactorySaveSerializer.DeserializeArrayElement(result.Type, reader));
                         }
                     }
                     break;
-
-                default:
-                    throw new NotImplementedException($"Unimplemented Array type: {result.Type}");
             }
 
             return result;

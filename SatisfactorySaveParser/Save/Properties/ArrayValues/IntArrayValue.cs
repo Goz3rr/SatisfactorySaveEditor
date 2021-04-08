@@ -11,6 +11,14 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 
         public int Value { get; set; }
 
+        public static IntArrayValue DeserializeArrayValue(BinaryReader reader)
+        {
+            return new IntArrayValue()
+            {
+                Value = reader.ReadInt32()
+            };
+        }
+
         public void ArraySerialize(BinaryWriter writer)
         {
             throw new NotImplementedException();

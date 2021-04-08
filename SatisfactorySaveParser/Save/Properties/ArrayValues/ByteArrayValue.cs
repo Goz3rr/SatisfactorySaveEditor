@@ -16,6 +16,14 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 
         public bool IsEnum => false;
 
+        public static ByteArrayValue DeserializeArrayValue(BinaryReader reader)
+        {
+            return new ByteArrayValue()
+            {
+                ByteValue = reader.ReadByte()
+            };
+        }
+
         public void ArraySerialize(BinaryWriter writer)
         {
             throw new NotImplementedException();

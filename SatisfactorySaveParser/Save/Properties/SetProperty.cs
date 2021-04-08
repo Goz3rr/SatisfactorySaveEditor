@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
+using SatisfactorySaveParser.Game.Structs;
 using SatisfactorySaveParser.Save.Properties.ArrayValues;
+using SatisfactorySaveParser.Save.Serialization;
 
 namespace SatisfactorySaveParser.Save.Properties
 {
@@ -37,6 +39,8 @@ namespace SatisfactorySaveParser.Save.Properties
                 Type = reader.ReadLengthPrefixedString()
             };
 
+            overhead = result.Type.Length + 6;
+
             result.ReadPropertyGuid(reader);
             reader.AssertNullInt32();
 
@@ -44,36 +48,29 @@ namespace SatisfactorySaveParser.Save.Properties
 
             switch (result.Type)
             {
-                case NameProperty.TypeName:
+                case StructProperty.TypeName:
                     {
-                        for (var i = 0; i < count; i++)
+                        var pos = reader.BaseStream.Position;
+                        var unk = reader.ReadInt32();
+                        var gameStruct = new DynamicGameStruct(null);
+                        gameStruct.Deserialize(reader);
+                        result.Elements.Add(new StructArrayValue()
                         {
-                            result.Elements.Add(new NameArrayValue()
-                            {
-                                Value = reader.ReadLengthPrefixedString()
-                            });
-                        }
+                            Data = gameStruct
+                        });
+                        overhead += (int)(reader.BaseStream.Position - pos);
                     }
                     break;
-
-                case ObjectProperty.TypeName:
-                    {
-                        for (var i = 0; i < count; i++)
-                        {
-                            result.Elements.Add(new ObjectArrayValue()
-                            {
-                                Reference = reader.ReadObjectReference()
-                            });
-                        }
-                    }
-                    break;
-
                 default:
-                    throw new NotImplementedException($"Unimplemented Set type: {result.Type}");
+                    {
+                        for (var i = 0; i < count; i++)
+                        {
+                            result.Elements.Add(SatisfactorySaveSerializer.DeserializeArrayElement(result.Type, reader));
+                        }
+                    }
+                    break;
             }
 
-
-            overhead = result.Type.Length + 6;
             return result;
         }
 
