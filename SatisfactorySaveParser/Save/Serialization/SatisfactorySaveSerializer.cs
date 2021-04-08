@@ -224,7 +224,7 @@ namespace SatisfactorySaveParser.Save.Serialization
 
             for (int i = 0; i < save.Objects.Count; i++)
             {
-                DeserializeObjectData(save.Objects[i], reader);
+                DeserializeObjectData(save.Objects[i], reader, save.Header.BuildVersion);
 
                 if (i - lastProgressUpdate > minimumProgressUpdate)
                 {
@@ -523,7 +523,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
         }
 
-        public static void DeserializeObjectData(SaveObject saveObject, BinaryReader reader)
+        public static void DeserializeObjectData(SaveObject saveObject, BinaryReader reader, int buildVersion)
         {
             var dataLength = reader.ReadInt32();
             var before = reader.BaseStream.Position;
@@ -554,7 +554,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
 
             SerializedProperty prop;
-            while ((prop = DeserializeProperty(reader)) != null)
+            while ((prop = DeserializeProperty(reader, buildVersion)) != null)
             {
                 var (objProperty, _) = prop.GetMatchingSaveProperty(saveObject.GetType());
 
@@ -632,7 +632,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             writer.Write(bytes);
         }
 
-        public static SerializedProperty DeserializeProperty(BinaryReader reader)
+        public static SerializedProperty DeserializeProperty(BinaryReader reader, int buildVersion)
         {
             var propertyName = reader.ReadLengthPrefixedString();
             if (propertyName == "None")
@@ -649,7 +649,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             // TODO: make this not nasty
             SerializedProperty result = propertyType switch
             {
-                ArrayProperty.TypeName => ArrayProperty.Parse(reader, propertyName, index, out overhead),
+                ArrayProperty.TypeName => ArrayProperty.Parse(reader, propertyName, index, buildVersion, out overhead),
                 BoolProperty.TypeName => BoolProperty.Deserialize(reader, propertyName, index, out overhead),
                 ByteProperty.TypeName => ByteProperty.Deserialize(reader, propertyName, index, out overhead),
                 EnumProperty.TypeName => EnumProperty.Deserialize(reader, propertyName, index, out overhead),
@@ -658,13 +658,13 @@ namespace SatisfactorySaveParser.Save.Serialization
                 Int64Property.TypeName => Int64Property.Deserialize(reader, propertyName, index),
                 Int8Property.TypeName => Int8Property.Deserialize(reader, propertyName, index),
                 InterfaceProperty.TypeName => InterfaceProperty.Deserialize(reader, propertyName, index),
-                MapProperty.TypeName => MapProperty.Deserialize(reader, propertyName, index, out overhead),
+                MapProperty.TypeName => MapProperty.Deserialize(reader, propertyName, index, buildVersion, out overhead),
                 NameProperty.TypeName => NameProperty.Deserialize(reader, propertyName, index),
                 ObjectProperty.TypeName => ObjectProperty.Deserialize(reader, propertyName, index),
-                SetProperty.TypeName => SetProperty.Parse(reader, propertyName, index, out overhead),
+                SetProperty.TypeName => SetProperty.Parse(reader, propertyName, index, buildVersion, out overhead),
                 StrProperty.TypeName => StrProperty.Deserialize(reader, propertyName, index),
-                StructProperty.TypeName => StructProperty.Deserialize(reader, propertyName, size, index, out overhead),
-                TextProperty.TypeName => TextProperty.Deserialize(reader, propertyName, index),
+                StructProperty.TypeName => StructProperty.Deserialize(reader, propertyName, size, index, buildVersion, out overhead),
+                TextProperty.TypeName => TextProperty.Deserialize(reader, propertyName, index, buildVersion),
                 _ => throw new NotImplementedException($"Unknown property type {propertyType} for property {propertyName}"),
             };
             var after = reader.BaseStream.Position;
@@ -676,7 +676,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             return result;
         }
 
-        public static IArrayElement DeserializeArrayElement(string type, BinaryReader reader)
+        public static IArrayElement DeserializeArrayElement(string type, BinaryReader reader, int buildVersion)
         {
             return type switch
             {
@@ -689,7 +689,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 ObjectProperty.TypeName => ObjectArrayValue.DeserializeArrayValue(reader),
                 StrProperty.TypeName => StrArrayValue.DeserializeArrayValue(reader),
                 StructProperty.TypeName => StructArrayValue.DeserializeArrayValue(reader),
-                TextProperty.TypeName => TextArrayValue.DeserializeArrayValue(reader),
+                TextProperty.TypeName => TextArrayValue.DeserializeArrayValue(reader, buildVersion),
                 _ => throw new NotImplementedException($"Unknown array element type {type}"),
             };
         }

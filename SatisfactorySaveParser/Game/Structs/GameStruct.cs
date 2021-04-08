@@ -33,10 +33,10 @@ namespace SatisfactorySaveParser.Game.Structs
             dynamicProperties.Add(prop);
         }
 
-        public virtual void Deserialize(BinaryReader reader)
+        public virtual void Deserialize(BinaryReader reader, int buildVersion)
         {
             SerializedProperty prop;
-            while ((prop = SatisfactorySaveSerializer.DeserializeProperty(reader)) != null)
+            while ((prop = SatisfactorySaveSerializer.DeserializeProperty(reader, buildVersion)) != null)
             {
                 var (objProperty, objPropertyAttr) = prop.GetMatchingStructProperty(GetType());
 

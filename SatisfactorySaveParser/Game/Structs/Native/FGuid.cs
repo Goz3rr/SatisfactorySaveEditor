@@ -11,7 +11,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
 
         public Guid Data { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             Data = new Guid(reader.ReadBytes(16));
         }

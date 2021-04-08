@@ -18,7 +18,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
         public bool HasStep { get; set; }
         public string Step { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             IsValid = reader.ReadBooleanFromInt32();
 
@@ -30,7 +30,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
                 if (HasPrev)
                 {
                     Prev = (FINNetworkTrace)GameStructFactory.CreateFromType(StructName);
-                    Prev.Deserialize(reader);
+                    Prev.Deserialize(reader, buildVersion);
                 }
 
                 HasStep = reader.ReadBooleanFromInt32();

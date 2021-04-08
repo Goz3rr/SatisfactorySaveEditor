@@ -36,7 +36,7 @@ namespace SatisfactorySaveParser.Save.Properties
             return $"Struct {PropertyName}";
         }
 
-        public static StructProperty Deserialize(BinaryReader reader, string propertyName, int size, int index, out int overhead)
+        public static StructProperty Deserialize(BinaryReader reader, string propertyName, int size, int index, int buildVersion, out int overhead)
         {
             var result = new StructProperty(propertyName, index);
             var structType = reader.ReadLengthPrefixedString();
@@ -50,7 +50,7 @@ namespace SatisfactorySaveParser.Save.Properties
             var before = reader.BaseStream.Position;
 
             var structObj = GameStructFactory.CreateFromType(structType);
-            structObj.Deserialize(reader);
+            structObj.Deserialize(reader, buildVersion);
             result.Data = structObj;
 
             var after = reader.BaseStream.Position;

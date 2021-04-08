@@ -31,9 +31,9 @@ namespace SatisfactorySaveParser.Save.Properties
             return $"Text {PropertyName}: {Text}";
         }
 
-        public static TextEntry ParseTextEntry(BinaryReader reader)
+        public static TextEntry ParseTextEntry(BinaryReader reader, int buildVersion)
         {
-            var flags = reader.ReadInt32();
+            var flags = (ETextFlag)reader.ReadInt32();
             var historyType = (ETextHistoryType)reader.ReadByte();
 
             switch (historyType)
@@ -51,7 +51,7 @@ namespace SatisfactorySaveParser.Save.Properties
                     {
                         var result = new ArgumentFormatTextEntry(flags)
                         {
-                            SourceFormat = (BaseTextEntry)ParseTextEntry(reader)
+                            SourceFormat = (BaseTextEntry)ParseTextEntry(reader, buildVersion)
                         };
 
                         var count = reader.ReadInt32();
@@ -61,7 +61,7 @@ namespace SatisfactorySaveParser.Save.Properties
                             {
                                 Name = reader.ReadLengthPrefixedString(),
                                 ValueType = (EFormatArgumentType)reader.ReadByte(),
-                                Value = ParseTextEntry(reader)
+                                Value = ParseTextEntry(reader, buildVersion)
                             });
 
                         }
@@ -69,19 +69,30 @@ namespace SatisfactorySaveParser.Save.Properties
                     }
                 case ETextHistoryType.None:
                     {
-                        return new NoneTextEntry(flags);
+                        var result = new NoneTextEntry(flags);
+
+                        // TODO: Might want to check Editor Object Version instead (CultureInvariantTextSerializationKeyStability), but buildversion is easier
+                        if (buildVersion >= 140822)
+                        {
+                            result.HasCultureInvariantString = reader.ReadBooleanFromInt32();
+
+                            if (result.HasCultureInvariantString.Value)
+                                result.CultureInvariantString = reader.ReadLengthPrefixedString();
+                        }
+
+                        return result;
                     }
                 default:
                     throw new NotImplementedException($"Unknown ETextHistoryType {historyType}");
             }
         }
 
-        public static TextProperty Deserialize(BinaryReader reader, string propertyName, int index)
+        public static TextProperty Deserialize(BinaryReader reader, string propertyName, int index, int buildVersion)
         {
             var result = new TextProperty(propertyName, index);
 
             result.ReadPropertyGuid(reader);
-            result.Text = ParseTextEntry(reader);
+            result.Text = ParseTextEntry(reader, buildVersion);
 
             return result;
         }
@@ -89,7 +100,7 @@ namespace SatisfactorySaveParser.Save.Properties
         public override void Serialize(BinaryWriter writer)
         {
             WritePropertyGuid(writer);
-            writer.Write(Text.Flags);
+            writer.Write((int)Text.Flags);
             writer.Write((byte)Text.HistoryType);
 
         }

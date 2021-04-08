@@ -13,7 +13,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
         public Vector3 Max { get; set; }
         public byte UnknownByte { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             Min = reader.ReadVector3();
             Max = reader.ReadVector3();

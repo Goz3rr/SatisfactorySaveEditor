@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SatisfactorySaveParser.Save
 {
@@ -33,14 +34,23 @@ namespace SatisfactorySaveParser.Save
         TextGenerator,
     }
 
+    public enum ETextFlag
+    {
+        Transient = (1 << 0),
+        CultureInvariant = (1 << 1),
+        ConvertedProperty = (1 << 2),
+        Immutable = (1 << 3),
+        InitializedFromString = (1 << 4),  // this ftext was initialized using FromString
+    }
+
     public abstract class TextEntry
     {
         public abstract ETextHistoryType HistoryType { get; }
         public abstract int SerializedLength { get; }
 
-        public int Flags { get; set; }
+        public ETextFlag Flags { get; set; }
 
-        public TextEntry(int flags)
+        public TextEntry(ETextFlag flags)
         {
             Flags = flags;
         }
@@ -49,7 +59,7 @@ namespace SatisfactorySaveParser.Save
     public class BaseTextEntry : TextEntry, IEquatable<BaseTextEntry>
     {
         public override ETextHistoryType HistoryType => ETextHistoryType.Base;
-        public override int SerializedLength => Namespace.GetSerializedLength() + Key.GetSerializedLength() + Value.GetSerializedLength();
+        public override int SerializedLength => 5 + Namespace.GetSerializedLength() + Key.GetSerializedLength() + Value.GetSerializedLength();
 
         public string Namespace { get; set; }
 
@@ -63,7 +73,7 @@ namespace SatisfactorySaveParser.Save
         /// </summary>
         public string Value { get; set; }
 
-        public BaseTextEntry(int flags) : base(flags)
+        public BaseTextEntry(ETextFlag flags) : base(flags)
         {
         }
 
@@ -84,12 +94,14 @@ namespace SatisfactorySaveParser.Save
 
         public override int GetHashCode()
         {
-            return Flags + Namespace.GetHashCode(StringComparison.InvariantCulture) + 17 * Key.GetHashCode(StringComparison.InvariantCulture) + 23 * Value.GetHashCode(StringComparison.InvariantCulture);
+            return (int)Flags + Namespace.GetHashCode(StringComparison.InvariantCulture) + 17 * Key.GetHashCode(StringComparison.InvariantCulture) + 23 * Value.GetHashCode(StringComparison.InvariantCulture);
         }
     }
 
     public class ArgumentFormat : IEquatable<ArgumentFormat>
     {
+        public int SerializedLength => Name.GetSerializedLength() + 1 + Value.SerializedLength;
+
         public string Name { get; set; }
         public EFormatArgumentType ValueType { get; set; }
         public TextEntry Value { get; set; }
@@ -116,13 +128,13 @@ namespace SatisfactorySaveParser.Save
     public class ArgumentFormatTextEntry : TextEntry
     {
         public override ETextHistoryType HistoryType => ETextHistoryType.ArgumentFormat;
-        public override int SerializedLength => 0;
+        public override int SerializedLength => 5 + SourceFormat.SerializedLength + 4 + Arguments.Sum(x => x.SerializedLength);
 
         public BaseTextEntry SourceFormat { get; set; }
 
         public List<ArgumentFormat> Arguments { get; } = new List<ArgumentFormat>();
 
-        public ArgumentFormatTextEntry(int flags) : base(flags)
+        public ArgumentFormatTextEntry(ETextFlag flags) : base(flags)
         {
         }
     }
@@ -131,9 +143,28 @@ namespace SatisfactorySaveParser.Save
     {
         public override ETextHistoryType HistoryType => ETextHistoryType.None;
 
-        public override int SerializedLength => 0;
+        public override int SerializedLength
+        {
+            get
+            {
+                // TODO: this breaks if the value is set but we're saving to an older version
 
-        public NoneTextEntry(int flags) : base(flags)
+                // Old format
+                if (!HasCultureInvariantString.HasValue || CultureInvariantString == null)
+                    return 5;
+
+                return 9 + CultureInvariantString.GetSerializedLength();
+            }
+        }
+
+        /// <summary>
+        ///     Nullable in case we're using the old format, where this does not exist
+        ///     When null it should not be (de)serialized at all
+        /// </summary>
+        public bool? HasCultureInvariantString { get; set; }
+        public string CultureInvariantString { get; set; }
+
+        public NoneTextEntry(ETextFlag flags) : base(flags)
         {
         }
     }

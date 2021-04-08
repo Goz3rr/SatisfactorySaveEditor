@@ -13,7 +13,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
         public float Offset { get; set; }
         public float Forward { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             Root = reader.ReadLengthPrefixedString();
             InstanceName = reader.ReadLengthPrefixedString();

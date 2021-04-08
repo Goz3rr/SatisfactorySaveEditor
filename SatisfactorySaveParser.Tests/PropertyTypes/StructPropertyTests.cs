@@ -11,6 +11,8 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
     [TestClass]
     public class StructPropertyTests
     {
+        private const int BuildVersion = 139586;
+
         private const string StructTypedName = "mPrimaryColor";
         private const string StructTypedType = "LinearColor";
         private const float StructTypedDataR = 1f;
@@ -25,7 +27,7 @@ namespace SatisfactorySaveParser.Tests.PropertyTypes
             using var stream = new MemoryStream(StructTypedBytes);
             using var reader = new BinaryReader(stream);
 
-            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader) as StructProperty;
+            var prop = SatisfactorySaveSerializer.DeserializeProperty(reader, BuildVersion) as StructProperty;
 
             Assert.AreNotEqual(null, prop);
 

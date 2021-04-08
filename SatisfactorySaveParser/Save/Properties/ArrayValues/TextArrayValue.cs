@@ -11,11 +11,11 @@ namespace SatisfactorySaveParser.Save.Properties.ArrayValues
 
         public TextEntry Text { get; set; }
 
-        public static TextArrayValue DeserializeArrayValue(BinaryReader reader)
+        public static TextArrayValue DeserializeArrayValue(BinaryReader reader, int buildVersion)
         {
             return new TextArrayValue()
             {
-                Text = TextProperty.ParseTextEntry(reader)
+                Text = TextProperty.ParseTextEntry(reader, buildVersion)
             };
         }
 

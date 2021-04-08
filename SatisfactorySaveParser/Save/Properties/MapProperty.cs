@@ -33,7 +33,7 @@ namespace SatisfactorySaveParser.Save.Properties
             return $"Map<{KeyType},{ValueType}> {PropertyName}";
         }
 
-        public static MapProperty Deserialize(BinaryReader reader, string propertyName, int index, out int overhead)
+        public static MapProperty Deserialize(BinaryReader reader, string propertyName, int index, int buildVersion, out int overhead)
         {
             var result = new MapProperty(propertyName, index)
             {
@@ -53,7 +53,7 @@ namespace SatisfactorySaveParser.Save.Properties
             var count = reader.ReadInt32();
             for (var i = 0; i < count; i++)
             {
-                var key = SatisfactorySaveSerializer.DeserializeArrayElement(result.KeyType, reader);
+                var key = SatisfactorySaveSerializer.DeserializeArrayElement(result.KeyType, reader, buildVersion);
 
                 IArrayElement value;
                 switch (result.ValueType)
@@ -61,7 +61,7 @@ namespace SatisfactorySaveParser.Save.Properties
                     case StructProperty.TypeName:
                         {
                             var gameStruct = new DynamicGameStruct(null);
-                            gameStruct.Deserialize(reader);
+                            gameStruct.Deserialize(reader, buildVersion);
                             value = new StructArrayValue()
                             {
                                 Data = gameStruct
@@ -69,7 +69,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         }
                         break;
                     default:
-                        value = SatisfactorySaveSerializer.DeserializeArrayElement(result.ValueType, reader);
+                        value = SatisfactorySaveSerializer.DeserializeArrayElement(result.ValueType, reader, buildVersion);
                         break;
                 }
 

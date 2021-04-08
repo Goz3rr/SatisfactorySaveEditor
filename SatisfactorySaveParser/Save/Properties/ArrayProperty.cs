@@ -40,7 +40,7 @@ namespace SatisfactorySaveParser.Save.Properties
         {
         }
 
-        public static ArrayProperty Parse(BinaryReader reader, string propertyName, int index, out int overhead)
+        public static ArrayProperty Parse(BinaryReader reader, string propertyName, int index, int buildVersion, out int overhead)
         {
             var result = new ArrayProperty(propertyName, index)
             {
@@ -76,7 +76,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         for (var i = 0; i < count; i++)
                         {
                             var structObj = GameStructFactory.CreateFromType(structType);
-                            structObj.Deserialize(reader);
+                            structObj.Deserialize(reader, buildVersion);
 
                             result.Elements.Add(new StructArrayValue()
                             {
@@ -90,7 +90,7 @@ namespace SatisfactorySaveParser.Save.Properties
                     {
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(SatisfactorySaveSerializer.DeserializeArrayElement(result.Type, reader));
+                            result.Elements.Add(SatisfactorySaveSerializer.DeserializeArrayElement(result.Type, reader, buildVersion));
                         }
                     }
                     break;

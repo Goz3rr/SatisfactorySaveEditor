@@ -13,7 +13,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
         public string Unknown2 { get; set; }
         public string Unknown3 { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             Unknown1 = reader.ReadInt32();
             ItemType = reader.ReadLengthPrefixedString();

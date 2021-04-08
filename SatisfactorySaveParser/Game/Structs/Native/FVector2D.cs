@@ -11,7 +11,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
 
         public Vector2 Data { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             Data = reader.ReadVector2();
         }

@@ -13,7 +13,7 @@ namespace SatisfactorySaveParser.Game.Structs.Native
         public byte B { get; set; }
         public byte A { get; set; }
 
-        public override void Deserialize(BinaryReader reader)
+        public override void Deserialize(BinaryReader reader, int buildVersion)
         {
             B = reader.ReadByte();
             G = reader.ReadByte();

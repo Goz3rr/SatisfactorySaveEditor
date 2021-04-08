@@ -32,7 +32,7 @@ namespace SatisfactorySaveParser.Save.Properties
         {
         }
 
-        public static SetProperty Parse(BinaryReader reader, string propertyName, int index, out int overhead)
+        public static SetProperty Parse(BinaryReader reader, string propertyName, int index, int buildVersion, out int overhead)
         {
             var result = new SetProperty(propertyName, index)
             {
@@ -53,7 +53,7 @@ namespace SatisfactorySaveParser.Save.Properties
                         var pos = reader.BaseStream.Position;
                         var unk = reader.ReadInt32();
                         var gameStruct = new DynamicGameStruct(null);
-                        gameStruct.Deserialize(reader);
+                        gameStruct.Deserialize(reader, buildVersion);
                         result.Elements.Add(new StructArrayValue()
                         {
                             Data = gameStruct
@@ -65,7 +65,7 @@ namespace SatisfactorySaveParser.Save.Properties
                     {
                         for (var i = 0; i < count; i++)
                         {
-                            result.Elements.Add(SatisfactorySaveSerializer.DeserializeArrayElement(result.Type, reader));
+                            result.Elements.Add(SatisfactorySaveSerializer.DeserializeArrayElement(result.Type, reader, buildVersion));
                         }
                     }
                     break;
