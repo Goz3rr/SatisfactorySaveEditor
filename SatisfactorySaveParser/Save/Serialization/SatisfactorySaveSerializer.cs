@@ -8,6 +8,7 @@ using NLog;
 
 using SatisfactorySaveParser.Game.Enums;
 using SatisfactorySaveParser.Save.Properties;
+using SatisfactorySaveParser.Save.Properties.ArrayValues;
 using SatisfactorySaveParser.ZLib;
 
 namespace SatisfactorySaveParser.Save.Serialization
@@ -17,6 +18,7 @@ namespace SatisfactorySaveParser.Save.Serialization
     /// </summary>
     public class SatisfactorySaveSerializer : ISaveSerializer
     {
+        // Total / 20 = update progress every 5%
         private const int ProgressionReportModifier = 20;
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -146,6 +148,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                 {
                     var chunkHeader = reader.ReadCompressedChunkHeader();
                     Trace.Assert(chunkHeader.PackageTag == FCompressedChunkHeader.Magic);
+                    Trace.Assert(chunkHeader.BlockSize == FCompressedChunkHeader.ChunkSize);
 
                     var chunkInfo = reader.ReadCompressedChunkInfo();
                     Trace.Assert(chunkHeader.UncompressedSize == chunkInfo.UncompressedSize);
@@ -169,13 +172,12 @@ namespace SatisfactorySaveParser.Save.Serialization
                 }
 
                 uncompressedBuffer.Position = 0;
-                using (var uncompressedReader = new BinaryReader(uncompressedBuffer))
-                {
-                    var dataLength = uncompressedReader.ReadInt32();
-                    Trace.Assert(uncompressedSize == dataLength + 4);
+                using var uncompressedReader = new BinaryReader(uncompressedBuffer);
 
-                    DeserializeSaveData(save, uncompressedReader);
-                }
+                var dataLength = uncompressedReader.ReadInt32();
+                Trace.Assert(uncompressedSize == dataLength + 4);
+
+                DeserializeSaveData(save, uncompressedReader);
             }
 
             sw.Stop();
@@ -293,7 +295,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                     writer.Write(new FCompressedChunkHeader()
                     {
                         PackageTag = FCompressedChunkHeader.Magic,
-                        BlockSize = remaining,
+                        BlockSize = FCompressedChunkHeader.ChunkSize,
                         CompressedSize = zBuffer.Length,
                         UncompressedSize = remaining
                     });
@@ -419,6 +421,19 @@ namespace SatisfactorySaveParser.Save.Serialization
                 logStr += $", Visibility={header.SessionVisibility}";
             }
 
+            if (header.SupportsEditorObjectVersion)
+            {
+                header.EditorObjectVersion = reader.ReadInt32();
+                logStr += $", EditorObjectVersion={header.EditorObjectVersion}";
+            }
+
+            if (header.SupportsModMetadata)
+            {
+                header.ModMetadata = reader.ReadLengthPrefixedString();
+                header.IsModdedSave = reader.ReadBooleanFromInt32();
+                logStr += $", ModMetadata={header.ModMetadata}, IsModdedSave={header.IsModdedSave}";
+            }
+
             log.Debug(logStr);
 
             return header;
@@ -439,6 +454,15 @@ namespace SatisfactorySaveParser.Save.Serialization
 
             if (header.SupportsSessionVisibility)
                 writer.Write((byte)header.SessionVisibility);
+
+            if (header.SupportsEditorObjectVersion)
+                writer.Write(header.EditorObjectVersion);
+
+            if (header.SupportsModMetadata)
+            {
+                writer.WriteLengthPrefixedString(header.ModMetadata);
+                writer.WriteBoolAsInt32(header.IsModdedSave);
+            }
         }
 
         public static SaveObject DeserializeObjectHeader(BinaryReader reader)
@@ -521,6 +545,14 @@ namespace SatisfactorySaveParser.Save.Serialization
                     throw new NotImplementedException($"Unknown SaveObject kind {saveObject.ObjectKind}");
             }
 
+            var hasData = (dataLength - (int)(reader.BaseStream.Position - before)) > 0;
+            if (!hasData)
+            {
+                log.Warn($"Object {saveObject} does not have any data!");
+                saveObject.HasData = false;
+                return;
+            }
+
             SerializedProperty prop;
             while ((prop = DeserializeProperty(reader)) != null)
             {
@@ -589,6 +621,11 @@ namespace SatisfactorySaveParser.Save.Serialization
             }
 
             // TODO: serialize properties
+
+            if(!saveObject.HasData)
+            {
+                // don't
+            }
 
             var bytes = ms.ToArray();
             writer.Write(bytes.Length);

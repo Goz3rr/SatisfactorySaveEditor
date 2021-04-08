@@ -18,7 +18,7 @@ namespace SatisfactorySaveParser.Save
         private static readonly List<string> missingDeserializers = new List<string>();
         private static readonly List<string> missingSerializers = new List<string>();
 
-        private List<SerializedProperty> dynamicProperties = null;
+        private List<SerializedProperty> dynamicProperties;
 
         /// <summary>
         ///     Type of save object
@@ -44,7 +44,12 @@ namespace SatisfactorySaveParser.Save
         /// <summary>
         ///     Fallback array of native bytes that are only used for certain objects when serialization logic is missing, ideally always empty
         /// </summary>
-        public byte[] NativeData { get; set; } = null;
+        public byte[] NativeData { get; set; }
+
+        /// <summary>
+        ///     Workaround for some objects that have 0 bytes of data, to enable an edge case while serializing
+        /// </summary>
+        public bool HasData { get; set; } = true;
 
         public override string ToString()
         {

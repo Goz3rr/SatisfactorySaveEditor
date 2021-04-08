@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 using NLog;
 
@@ -14,9 +15,9 @@ namespace SatisfactorySaveParser.Game.Structs
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
         private static readonly HashSet<string> missingProperties = new HashSet<string>();
 
-        private List<SerializedProperty> dynamicProperties = null;
+        private List<SerializedProperty> dynamicProperties;
 
-        public virtual int SerializedLength => 0;
+        public virtual int SerializedLength => dynamicProperties?.Sum(p => p.SerializedLength) ?? 0;
         public abstract string StructName { get; }
 
         /// <summary>

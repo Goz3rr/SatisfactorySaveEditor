@@ -10,6 +10,14 @@ namespace SatisfactorySaveParser.Save
     public class FSaveHeader
     {
         private ESessionVisibility sessionVisibility;
+        private int editorObjectVersion;
+        private string modMetadata;
+        private bool isModdedSave;
+
+        /// <summary>
+        ///     Helper property that indicates if this save is compressed
+        /// </summary>
+        public bool IsCompressed => SaveVersion >= FSaveCustomVersion.SaveFileIsCompressed;
 
         /// <summary>
         ///     Header version number
@@ -22,8 +30,8 @@ namespace SatisfactorySaveParser.Save
         public FSaveCustomVersion SaveVersion { get; set; }
 
         /// <summary>
-        ///     Save build number 
-        ///     Should indicate the build of the game that generated this save, but is currently always 66297
+        ///     CL the game was on when this was stored
+        ///     Hardcoded to 66297 for very old game versions
         /// </summary>
         public int BuildVersion { get; set; }
 
@@ -53,6 +61,11 @@ namespace SatisfactorySaveParser.Save
         public long SaveDateTime { get; set; }
 
         /// <summary>
+        ///     Helper property that indicates if this save header supports SessionVisibility
+        /// </summary>
+        public bool SupportsSessionVisibility => HeaderVersion >= FSaveHeaderVersion.AddedSessionVisibility;
+
+        /// <summary>
         ///     The session visibility of the game.
         ///     Only valid for saves with HeaderVersion >= AddedSessionVisibility
         /// </summary>
@@ -75,13 +88,79 @@ namespace SatisfactorySaveParser.Save
         }
 
         /// <summary>
-        ///     Helper property that indicates if this save header supports SessionVisibility
+        ///     Helper property that indicates if this save header supports EditorObjectVersion
         /// </summary>
-        public bool SupportsSessionVisibility => HeaderVersion >= FSaveHeaderVersion.AddedSessionVisibility;
+        public bool SupportsEditorObjectVersion => HeaderVersion >= FSaveHeaderVersion.UE425EngineUpdate;
 
         /// <summary>
-        ///     Helper property that indicates if this save is compressed
+        ///     Save the FEditorObjectVersion that this save file was written with
+        ///     Only valid for saves with HeaderVersion >= UE425EngineUpdate
         /// </summary>
-        public bool IsCompressed => SaveVersion >= FSaveCustomVersion.SaveFileIsCompressed;
+        public int EditorObjectVersion
+        {
+            get
+            {
+                if (!SupportsEditorObjectVersion)
+                    throw new InvalidOperationException($"{nameof(EditorObjectVersion)} is not supported for this save version");
+
+                return editorObjectVersion;
+            }
+            set
+            {
+                if (!SupportsEditorObjectVersion)
+                    throw new InvalidOperationException($"{nameof(EditorObjectVersion)} is not supported for this save version");
+
+                editorObjectVersion = value;
+            }
+        }
+
+        /// <summary>
+        ///     Helper property that indicates if this save header supports ModMetadata and IsModdedSave
+        /// </summary>
+        public bool SupportsModMetadata => HeaderVersion >= FSaveHeaderVersion.AddedModdingParams;
+
+        /// <summary>
+        ///     Generic MetaData - Requested by Mods
+        ///     Only valid for saves with HeaderVersion >= AddedModdingParams
+        /// </summary>
+        public string ModMetadata
+        {
+            get
+            {
+                if (!SupportsModMetadata)
+                    throw new InvalidOperationException($"{nameof(ModMetadata)} is not supported for this save version");
+
+                return modMetadata;
+            }
+            set
+            {
+                if (!SupportsModMetadata)
+                    throw new InvalidOperationException($"{nameof(ModMetadata)} is not supported for this save version");
+
+                modMetadata = value;
+            }
+        }
+
+        /// <summary>
+        ///     Was this save ever saved with mods enabled?
+        ///     Only valid for saves with HeaderVersion >= AddedModdingParams
+        /// </summary>
+        public bool IsModdedSave
+        {
+            get
+            {
+                if (!SupportsModMetadata)
+                    throw new InvalidOperationException($"{nameof(IsModdedSave)} is not supported for this save version");
+
+                return isModdedSave;
+            }
+            set
+            {
+                if (!SupportsModMetadata)
+                    throw new InvalidOperationException($"{nameof(IsModdedSave)} is not supported for this save version");
+
+                isModdedSave = value;
+            }
+        }
     }
 }
