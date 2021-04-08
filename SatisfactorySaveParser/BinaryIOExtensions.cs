@@ -41,18 +41,18 @@ namespace SatisfactorySaveParser
         ///     Write a length prefixed ASCII or UTF16 string
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="str"></param>
-        public static void WriteLengthPrefixedString(this BinaryWriter writer, string str)
+        /// <param name="value"></param>
+        public static void WriteLengthPrefixedString(this BinaryWriter writer, string value)
         {
-            if (str == null || str.Length == 0)
+            if (value == null || value.Length == 0)
             {
                 writer.Write(0);
                 return;
             }
 
-            if (str.Any(c => c > 127))
+            if (value.Any(c => c > 127))
             {
-                var bytes = Encoding.Unicode.GetBytes(str);
+                var bytes = Encoding.Unicode.GetBytes(value);
 
                 writer.Write(-(bytes.Length / 2 + 1));
                 writer.Write(bytes);
@@ -60,7 +60,7 @@ namespace SatisfactorySaveParser
             }
             else
             {
-                var bytes = Encoding.ASCII.GetBytes(str);
+                var bytes = Encoding.ASCII.GetBytes(value);
 
                 writer.Write(bytes.Length + 1);
                 writer.Write(bytes);
@@ -103,11 +103,11 @@ namespace SatisfactorySaveParser
         ///     Write a single Vector2
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="vec"></param>
-        public static void Write(this BinaryWriter writer, Vector2 vec)
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, Vector2 value)
         {
-            writer.Write(vec.X);
-            writer.Write(vec.Y);
+            writer.Write(value.X);
+            writer.Write(value.Y);
         }
 
         /// <summary>
@@ -129,12 +129,12 @@ namespace SatisfactorySaveParser
         ///     Write a single Vector3
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="vec"></param>
-        public static void Write(this BinaryWriter writer, Vector3 vec)
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, Vector3 value)
         {
-            writer.Write(vec.X);
-            writer.Write(vec.Y);
-            writer.Write(vec.Z);
+            writer.Write(value.X);
+            writer.Write(value.Y);
+            writer.Write(value.Z);
         }
 
 
@@ -158,13 +158,13 @@ namespace SatisfactorySaveParser
         ///     Write a single Vector4
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="vec"></param>
-        public static void Write(this BinaryWriter writer, Vector4 vec)
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, Vector4 value)
         {
-            writer.Write(vec.X);
-            writer.Write(vec.Y);
-            writer.Write(vec.Z);
-            writer.Write(vec.W);
+            writer.Write(value.X);
+            writer.Write(value.Y);
+            writer.Write(value.Z);
+            writer.Write(value.W);
         }
 
         /// <summary>
@@ -182,11 +182,11 @@ namespace SatisfactorySaveParser
         ///     Write a UE4 Object Reference (Level, Path)
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="objectReference"></param>
-        public static void Write(this BinaryWriter writer, ObjectReference objectReference)
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, ObjectReference value)
         {
-            writer.WriteLengthPrefixedString(objectReference.LevelName);
-            writer.WriteLengthPrefixedString(objectReference.PathName);
+            writer.WriteLengthPrefixedString(value.LevelName);
+            writer.WriteLengthPrefixedString(value.PathName);
         }
 
         /// <summary>
@@ -207,11 +207,11 @@ namespace SatisfactorySaveParser
         ///     Write an UE4 FCompressedChunkInfo
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="chunkInfo"></param>
-        public static void Write(this BinaryWriter writer, FCompressedChunkInfo chunkInfo)
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, FCompressedChunkInfo value)
         {
-            writer.Write(chunkInfo.CompressedSize);
-            writer.Write(chunkInfo.UncompressedSize);
+            writer.Write(value.CompressedSize);
+            writer.Write(value.UncompressedSize);
         }
 
         /// <summary>
@@ -235,12 +235,12 @@ namespace SatisfactorySaveParser
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="chunkInfo"></param>
-        public static void Write(this BinaryWriter writer, FCompressedChunkHeader chunkHeader)
+        public static void Write(this BinaryWriter writer, FCompressedChunkHeader value)
         {
-            writer.Write(chunkHeader.PackageTag);
-            writer.Write(chunkHeader.BlockSize);
-            writer.Write(chunkHeader.CompressedSize);
-            writer.Write(chunkHeader.UncompressedSize);
+            writer.Write(value.PackageTag);
+            writer.Write(value.BlockSize);
+            writer.Write(value.CompressedSize);
+            writer.Write(value.UncompressedSize);
         }
 
         /// <summary>
@@ -257,10 +257,30 @@ namespace SatisfactorySaveParser
         ///     Write a GUID
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="guid"></param>
-        public static void Write(this BinaryWriter writer, Guid guid)
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, Guid value)
         {
-            writer.Write(guid.ToByteArray());
+            writer.Write(value.ToByteArray());
+        }
+
+        /// <summary>
+        ///     Reads a bool from 4 bytes
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns>True for all nonzero values</returns>
+        public static bool ReadBooleanFromInt32(this BinaryReader reader)
+        {
+            return reader.ReadInt32() != 0;
+        }
+
+        /// <summary>
+        ///     Write bool as 4 byte int (0 or 1)
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        public static void WriteBoolAsInt32(this BinaryWriter writer, bool value)
+        {
+            writer.Write(value ? 1 : 0);
         }
 
         public static bool IsSuspicious(this Vector3 vector)

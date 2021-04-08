@@ -452,7 +452,7 @@ namespace SatisfactorySaveParser.Save.Serialization
             switch (saveObject)
             {
                 case SaveActor actor:
-                    actor.NeedTransform = reader.ReadInt32() == 1;
+                    actor.NeedTransform = reader.ReadBooleanFromInt32();
                     actor.Rotation = reader.ReadVector4();
                     actor.Position = reader.ReadVector3();
                     actor.Scale = reader.ReadVector3();
@@ -460,7 +460,7 @@ namespace SatisfactorySaveParser.Save.Serialization
                     if (actor.Scale.IsSuspicious())
                         log.Warn($"Actor {actor} has suspicious scale {actor.Scale}");
 
-                    actor.WasPlacedInLevel = reader.ReadInt32() == 1;
+                    actor.WasPlacedInLevel = reader.ReadBooleanFromInt32();
                     break;
 
                 case SaveComponent component:
@@ -483,11 +483,11 @@ namespace SatisfactorySaveParser.Save.Serialization
             switch (saveObject)
             {
                 case SaveActor actor:
-                    writer.Write(actor.NeedTransform ? 1 : 0);
+                    writer.WriteBoolAsInt32(actor.NeedTransform);
                     writer.Write(actor.Rotation);
                     writer.Write(actor.Position);
                     writer.Write(actor.Scale);
-                    writer.Write(actor.WasPlacedInLevel ? 1 : 0);
+                    writer.WriteBoolAsInt32(actor.WasPlacedInLevel);
                     break;
 
                 case SaveComponent component:

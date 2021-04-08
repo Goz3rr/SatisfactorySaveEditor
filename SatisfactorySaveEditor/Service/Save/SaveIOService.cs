@@ -98,8 +98,12 @@ namespace SatisfactorySaveEditor.Service.Save
                 var foundParentActor = actors.TryGetValue(component.ParentEntityName, out SaveObjectTreeModel actor);
                 Trace.Assert(foundParentActor, "Found a component without a matching actor");
 
-                var componentViewModel = new SaveObjectTreeModel(component, actor);
-                actor.Children.Add(componentViewModel);
+                // TODO: Orphaned actors have no parent but should still show up somewhere
+                if (actor != null)
+                {
+                    var componentViewModel = new SaveObjectTreeModel(component, actor);
+                    actor.Children.Add(componentViewModel);
+                }
             }
 
             root.IsExpanded = true;

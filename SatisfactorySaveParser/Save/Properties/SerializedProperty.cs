@@ -57,7 +57,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// <param name="reader"></param>
         protected void ReadPropertyGuid(BinaryReader reader)
         {
-            HasPropertyGuid = reader.ReadByte() != 0;
+            HasPropertyGuid = reader.ReadBoolean();
 
             Trace.Assert(!HasPropertyGuid, "HasPropertyGuid != false");
 
@@ -71,7 +71,7 @@ namespace SatisfactorySaveParser.Save.Properties
         /// <param name="writer"></param>
         protected void WritePropertyGuid(BinaryWriter writer)
         {
-            writer.Write((byte)(HasPropertyGuid ? 1 : 0));
+            writer.Write(HasPropertyGuid);
 
             if (HasPropertyGuid)
                 writer.Write(PropertyGuid);

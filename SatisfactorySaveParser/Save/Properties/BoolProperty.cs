@@ -30,7 +30,7 @@ namespace SatisfactorySaveParser.Save.Properties
         {
             var result = new BoolProperty(propertyName, index)
             {
-                Value = reader.ReadByte() != 0
+                Value = reader.ReadBoolean()
             };
 
             result.ReadPropertyGuid(reader);
@@ -41,7 +41,7 @@ namespace SatisfactorySaveParser.Save.Properties
 
         public override void Serialize(BinaryWriter writer)
         {
-            writer.Write((byte)(Value ? 1 : 0));
+            writer.Write(Value);
             WritePropertyGuid(writer);
         }
     }
