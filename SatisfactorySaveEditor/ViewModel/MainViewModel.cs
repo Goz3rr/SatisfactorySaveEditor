@@ -156,7 +156,6 @@ namespace SatisfactorySaveEditor.ViewModel
             CheatMenuItems.Add(new RemoveSlugsCheat());
             CheatMenuItems.Add(new RestoreSlugsCheat());
             CheatMenuItems.Add(new DeduplicateSchematicsCheat());
-            CheatMenuItems.Add(new U3DowngradeCheat());
 
             TreeSelectCommand = new RelayCommand<SaveObjectModel>(SelectNode);
             JumpCommand = new RelayCommand<string>(Jump, CanJump);

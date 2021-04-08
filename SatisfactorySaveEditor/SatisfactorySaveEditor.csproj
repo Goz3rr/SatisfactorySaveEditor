@@ -109,7 +109,6 @@
     <Compile Include="Cheats\CrateSummonCheat.cs" />
     <Compile Include="Cheats\DeduplicateSchematicsCheat.cs" />
     <Compile Include="Cheats\EverythingBoxCheat.cs" />
-    <Compile Include="Cheats\U3DowngradeCheat.cs" />
     <Compile Include="Cheats\UndoDeleteEnemiesCheat.cs" />
     <Compile Include="Cheats\ICheat.cs" />
     <Compile Include="Cheats\DeleteEnemiesCheat.cs" />
