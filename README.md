@@ -37,7 +37,7 @@ Screenshot of the interface:
 
 Check out the [guide](https://ficsit.app/guide/Z8h6z2CczH43c) on ficsit.app for some installation instructions and basic usage information.
 
-Mousing over items in the left pane tree view will provide a short description of their purpose in the save. Please help us keep this list up to date by updating [`Types.xml`](https://github.com/Goz3rr/SatisfactorySaveEditor/blob/master/SatisfactorySaveEditor/Types.xml) with the tags you discover in your save editing adventures.
+Mousing over items in the left pane tree view will provide a short description of their purpose in the save. Please help us keep this list up to date by updating [`Types.xml`](https://github.com/Goz3rr/SatisfactorySaveEditor/blob/master/SatisfactorySaveEditor/Data/Types.xml) with the tags you discover in your save editing adventures.
 
 If you have any questions, please feel free to contact us here on Github or on Discord. 
 
