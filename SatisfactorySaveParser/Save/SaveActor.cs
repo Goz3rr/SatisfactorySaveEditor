@@ -15,7 +15,7 @@ namespace SatisfactorySaveParser.Save
         /// <summary>
         ///     Rotation in the world
         /// </summary>
-        public Vector4 Rotation { get; set; }
+        public Quaternion Rotation { get; set; }
 
         /// <summary>
         ///     Position in the world

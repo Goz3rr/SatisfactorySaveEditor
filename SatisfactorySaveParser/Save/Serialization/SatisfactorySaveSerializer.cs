@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 
 using NLog;
 
@@ -477,9 +478,12 @@ namespace SatisfactorySaveParser.Save.Serialization
             {
                 case SaveActor actor:
                     actor.NeedTransform = reader.ReadBooleanFromInt32();
-                    actor.Rotation = reader.ReadVector4();
+                    actor.Rotation = reader.ReadQuat();
                     actor.Position = reader.ReadVector3();
                     actor.Scale = reader.ReadVector3();
+
+                    if (actor.Rotation.IsSuspicious())
+                        log.Warn($"Actor {actor} has invalid rotation {actor.Rotation} ({actor.Rotation.Length()})");
 
                     if (actor.Scale.IsSuspicious())
                         log.Warn($"Actor {actor} has suspicious scale {actor.Scale}");

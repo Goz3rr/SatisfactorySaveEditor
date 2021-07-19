@@ -9,11 +9,11 @@ namespace SatisfactorySaveParser.Game.Structs.Native
         public override string StructName => "Quat";
         public override int SerializedLength => 16;
 
-        public Vector4 Data { get; set; }
+        public Quaternion Data { get; set; }
 
         public override void Deserialize(BinaryReader reader, int buildVersion)
         {
-            Data = reader.ReadVector4();
+            Data = reader.ReadQuat();
         }
 
         public override void Serialize(BinaryWriter writer)

@@ -17,7 +17,7 @@ namespace SatisfactorySaveParser.Tests.Save
         private const string ActorHeaderLevelName = "Persistent_Level";
         private const string ActorHeaderPathName = "Persistent_Level:PersistentLevel.BP_DestructibleLargeRock58_2";
         private const bool ActorNeedTransform = true;
-        private static readonly Vector4 ActorRotation = new Vector4(0.468408554792404f, 0.760549366474152f, 0.235782787203789f, -0.382837235927582f);
+        private static readonly Quaternion ActorRotation = new Quaternion(0.468408554792404f, 0.760549366474152f, 0.235782787203789f, -0.382837235927582f);
         private static readonly Vector3 ActorPosition = new Vector3(-91905f, 281244f, -4415.611328125f);
         private static readonly Vector3 ActorScale = new Vector3(1f, 1f, 1f);
         private const bool ActorWasPlacedInLevel = true;

@@ -168,6 +168,35 @@ namespace SatisfactorySaveParser
         }
 
         /// <summary>
+        ///     Read a single Quaternion (X, Y, Z, W)
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public static Quaternion ReadQuat(this BinaryReader reader)
+        {
+            return new Quaternion()
+            {
+                X = reader.ReadSingle(),
+                Y = reader.ReadSingle(),
+                Z = reader.ReadSingle(),
+                W = reader.ReadSingle()
+            };
+        }
+
+        /// <summary>
+        ///     Write a single Quaternion
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        public static void Write(this BinaryWriter writer, Quaternion value)
+        {
+            writer.Write(value.X);
+            writer.Write(value.Y);
+            writer.Write(value.Z);
+            writer.Write(value.W);
+        }
+
+        /// <summary>
         ///     Read a UE4 Object Reference (Level, Path)
         /// </summary>
         /// <param name="reader"></param>
@@ -283,9 +312,26 @@ namespace SatisfactorySaveParser
             writer.Write(value ? 1 : 0);
         }
 
+        /// <summary>
+        ///     Checks if the Vector is outside normal range, which might result in weird game behaviour
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
         public static bool IsSuspicious(this Vector3 vector)
         {
-            return Math.Abs(vector.X) < 1E-8 || Math.Abs(vector.Y) < 1E-8 || Math.Abs(vector.Z) < 1E-8;
+            return (Math.Abs(vector.X) > 0 && Math.Abs(vector.X) < 1E-8) ||
+                   (Math.Abs(vector.Y) > 0 && Math.Abs(vector.Y) < 1E-8) ||
+                   (Math.Abs(vector.Z) > 0 && Math.Abs(vector.Z) < 1E-8);
+        }
+
+        /// <summary>
+        ///     Checks if a Quaternion is valid
+        /// </summary>
+        /// <param name="quat"></param>
+        /// <returns></returns>
+        public static bool IsSuspicious(this Quaternion quat)
+        {
+            return Math.Abs(1 - quat.Length()) > 1e-6f;
         }
 
         public static void AssertNullByte(this BinaryReader reader)

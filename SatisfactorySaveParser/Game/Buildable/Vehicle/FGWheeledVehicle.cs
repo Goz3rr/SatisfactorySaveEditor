@@ -56,7 +56,7 @@ namespace SatisfactorySaveParser.Game.Buildable.Vehicle
                 {
                     Name = reader.ReadLengthPrefixedString(),
                     Position = reader.ReadVector3(),
-                    Rotation = reader.ReadVector4(),
+                    Rotation = reader.ReadQuat(),
                     Unknown = reader.ReadBytes(25)
                 });
             }
@@ -67,7 +67,7 @@ namespace SatisfactorySaveParser.Game.Buildable.Vehicle
     {
         public string Name { get; set; }
         public Vector3 Position { get; set; }
-        public Vector4 Rotation { get; set; }
+        public Quaternion Rotation { get; set; }
         public byte[] Unknown { get; set; }
     }
 }
