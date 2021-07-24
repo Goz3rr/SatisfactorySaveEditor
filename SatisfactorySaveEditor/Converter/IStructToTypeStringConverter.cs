@@ -39,6 +39,8 @@ namespace SatisfactorySaveEditor.Converter
                     return "FluidBox";
                 case FINNetworkTrace nt:
                     return "FINNetworkTrace";
+                case SatisfactorySaveParser.PropertyTypes.Structs.DateTime dt:
+                    return "DateTime";
                 case SerializedPropertyViewModel spvm: // TODO: This seems like a bad idea, but it works for now
                     return new SerializablePropertyToTypeStringConverter().Convert(spvm, targetType, parameter, culture);
                 default:

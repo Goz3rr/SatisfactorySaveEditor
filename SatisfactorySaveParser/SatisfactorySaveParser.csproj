@@ -93,6 +93,7 @@
     <Compile Include="PropertyTypes\StrProperty.cs" />
     <Compile Include="PropertyTypes\StructProperty.cs" />
     <Compile Include="PropertyTypes\Structs\Box.cs" />
+    <Compile Include="PropertyTypes\Structs\DateTime.cs" />
     <Compile Include="PropertyTypes\Structs\DynamicStructData.cs" />
     <Compile Include="PropertyTypes\Structs\FINNetworkTrace.cs" />
     <Compile Include="PropertyTypes\Structs\FluidBox.cs" />

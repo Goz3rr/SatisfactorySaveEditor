@@ -137,6 +137,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new FluidBox(reader);
                 case "FINNetworkTrace":
                     return new FINNetworkTrace(reader);
+                case "DateTime":
+                    return new Structs.DateTime(reader);
                 /*
                 case "InventoryStack":
                 case "InventoryItem":
