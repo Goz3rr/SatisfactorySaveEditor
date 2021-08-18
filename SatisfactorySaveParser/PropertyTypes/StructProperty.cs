@@ -214,17 +214,18 @@ namespace SatisfactorySaveParser.PropertyTypes
 
             overhead = type.Length + 22;
 
+            // StructGuid
             result.Unk1 = reader.ReadInt32();
-            Trace.Assert(result.Unk1 == 0);
+            //Trace.Assert(result.Unk1 == 0);
 
             result.Unk2 = reader.ReadInt32();
-            Trace.Assert(result.Unk2 == 0);
+            //Trace.Assert(result.Unk2 == 0);
 
             result.Unk3 = reader.ReadInt32();
-            Trace.Assert(result.Unk3 == 0);
+            //Trace.Assert(result.Unk3 == 0);
 
             result.Unk4 = reader.ReadInt32();
-            Trace.Assert(result.Unk4 == 0);
+            //Trace.Assert(result.Unk4 == 0);
 
             result.Unk5 = reader.ReadByte();
             Trace.Assert(result.Unk5 == 0);
