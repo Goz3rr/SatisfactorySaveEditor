@@ -331,6 +331,7 @@
     <Resource Include="Icon\Concrete.png" />
     <Resource Include="Icon\Copper_Ingot.png" />
     <Resource Include="Icon\Copper_Ore.png" />
+    <Resource Include="Icon\Copper_Sheet.png" />
     <Resource Include="Icon\Crude_Oil.png" />
     <Resource Include="Icon\Crystal_Oscillator.png" />
     <Resource Include="Icon\Electromagnetic_Control_Rod.png" />
