@@ -46,6 +46,7 @@ namespace SatisfactorySaveEditor.Model
             new ResourceType("/Game/FactoryGame/Resource/Parts/Cement/Desc_Cement.Desc_Cement_C", "Concrete", 100),
             new ResourceType("/Game/FactoryGame/Resource/Parts/CopperIngot/Desc_CopperIngot.Desc_CopperIngot_C", "Copper Ingot", 100),
             new ResourceType("/Game/FactoryGame/Resource/RawResources/OreCopper/Desc_OreCopper.Desc_OreCopper_C", "Copper Ore", 100),
+            new ResourceType("/Game/FactoryGame/Resource/Parts/CopperSheet/Desc_CopperSheet.Desc_CopperSheet_C", "Copper Sheet", 200),
             new ResourceType("/Game/FactoryGame/Resource/Parts/CrystalOscillator/Desc_CrystalOscillator.Desc_CrystalOscillator_C", "Crystal Oscillator", 100),
             new ResourceType("/Game/FactoryGame/Resource/Parts/ElectromagneticControlRod/Desc_ElectromagneticControlRod.Desc_ElectromagneticControlRod_C", "Electromagnetic Control Rod", 100),
             new ResourceType("/Game/FactoryGame/Resource/Parts/SteelPlateReinforced/Desc_SteelPlateReinforced.Desc_SteelPlateReinforced_C", "Encased Industrial Beam", 100),
