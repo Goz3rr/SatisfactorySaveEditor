@@ -95,10 +95,16 @@
     <DataTemplate DataType="{x:Type property:FloatPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type property:DoublePropertyViewModel}">
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+    </DataTemplate>
     <DataTemplate DataType="{x:Type property:IntPropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:Int64PropertyViewModel}">
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type property:UInt64PropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate DataType="{x:Type property:MapPropertyViewModel}">

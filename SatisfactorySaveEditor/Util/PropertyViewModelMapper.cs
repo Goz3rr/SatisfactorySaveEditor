@@ -20,6 +20,8 @@ namespace SatisfactorySaveEditor.Util
                     return new EnumPropertyViewModel(enp);
                 case FloatProperty flp:
                     return new FloatPropertyViewModel(flp);
+                case DoubleProperty dlp:
+                    return new DoublePropertyViewModel(dlp);
                 case IntProperty inp:
                     return new IntPropertyViewModel(inp);
                 case MapProperty map:
@@ -40,6 +42,8 @@ namespace SatisfactorySaveEditor.Util
                     return new InterfacePropertyViewModel(ifp);
                 case Int64Property i64p:
                     return new Int64PropertyViewModel(i64p);
+                case UInt64Property ui64p:
+                    return new UInt64PropertyViewModel(ui64p);
                 case Int8Property i8p:
                     return new Int8PropertyViewModel(i8p);
                 default:
@@ -63,6 +67,9 @@ namespace SatisfactorySaveEditor.Util
 
             if (typeof(T) == typeof(FloatPropertyViewModel))
                 return new FloatPropertyViewModel(new FloatProperty(propertyName));
+
+            if (typeof(T) == typeof(DoublePropertyViewModel))
+                return new DoublePropertyViewModel(new DoubleProperty(propertyName));
 
             if (typeof(T) == typeof(IntPropertyViewModel))
                 return new IntPropertyViewModel(new IntProperty(propertyName));
@@ -93,6 +100,9 @@ namespace SatisfactorySaveEditor.Util
 
             if (typeof(T) == typeof(Int64PropertyViewModel))
                 return new Int64PropertyViewModel(new Int64Property(propertyName));
+
+            if (typeof(T) == typeof(UInt64PropertyViewModel))
+                return new UInt64PropertyViewModel(new UInt64Property(propertyName));
 
             if (typeof(T) == typeof(Int8PropertyViewModel))
                 return new Int8PropertyViewModel(new Int8Property(propertyName));

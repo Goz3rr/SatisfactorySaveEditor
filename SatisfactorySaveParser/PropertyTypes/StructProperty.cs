@@ -109,7 +109,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             }
         }
 
-        private static IStructData ParseStructData(BinaryReader reader, string type, int buildVersion)
+        private static IStructData ParseStructData(BinaryReader reader, string type, int size, int buildVersion)
         {
             switch (type)
             {
@@ -137,6 +137,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new FluidBox(reader);
                 case "FINNetworkTrace":
                     return new FINNetworkTrace(reader);
+                case "FINLuaProcessorStateStorage":
+                    return new FINLuaProcessorStateStorage(reader, size);
                 case "DateTime":
                     return new Structs.DateTime(reader);
                 /*
@@ -199,7 +201,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                     Unk3 = unk3,
                     Unk4 = unk4,
                     Unk5 = unk5,
-                    Data = ParseStructData(reader, structType, buildVersion)
+                    Data = ParseStructData(reader, structType, size, buildVersion)
                 };
             }
 
@@ -231,7 +233,7 @@ namespace SatisfactorySaveParser.PropertyTypes
             Trace.Assert(result.Unk5 == 0);
 
             var before = reader.BaseStream.Position;
-            result.Data = ParseStructData(reader, type, buildVersion);
+            result.Data = ParseStructData(reader, type, size, buildVersion);
             var after = reader.BaseStream.Position;
 
             if (before + size != after)

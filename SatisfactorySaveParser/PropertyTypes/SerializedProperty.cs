@@ -51,6 +51,10 @@ namespace SatisfactorySaveParser.PropertyTypes
                     overhead = 1;
                     result = FloatProperty.Parse(propertyName, index, reader);
                     break;
+                case DoubleProperty.TypeName:
+                    overhead = 1;
+                    result = DoubleProperty.Parse(propertyName, index, reader);
+                    break;
                 case IntProperty.TypeName:
                     overhead = 1;
                     result = IntProperty.Parse(propertyName, index, reader);
@@ -93,6 +97,10 @@ namespace SatisfactorySaveParser.PropertyTypes
                 case Int64Property.TypeName:
                     overhead = 1;
                     result = Int64Property.Parse(propertyName, index, reader);
+                    break;
+                case UInt64Property.TypeName:
+                    overhead = 1;
+                    result = UInt64Property.Parse(propertyName, index, reader);
                     break;
                 case Int8Property.TypeName:
                     overhead = 1;
