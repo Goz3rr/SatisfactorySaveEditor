@@ -139,6 +139,9 @@ namespace SatisfactorySaveParser.Save
                 if (!HasCultureInvariantString.HasValue)
                     return 5;
 
+                if (!HasCultureInvariantString.Value)
+                    return 9;
+
                 return 9 + CultureInvariantString.GetSerializedLength();
             }
         }

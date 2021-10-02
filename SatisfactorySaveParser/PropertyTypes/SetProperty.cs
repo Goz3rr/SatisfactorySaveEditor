@@ -94,7 +94,7 @@ namespace SatisfactorySaveParser.PropertyTypes
                 Type = reader.ReadLengthPrefixedString()
             };
 
-            overhead = result.Type.Length + 6;
+            overhead = result.Type.Length + 10;
 
             var unk = reader.ReadByte();
             Trace.Assert(unk == 0);
