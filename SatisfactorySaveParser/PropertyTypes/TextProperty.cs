@@ -65,6 +65,12 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                     }
                     break;
+                case TransformTextEntry transformText:
+                    {
+                        WriteTextEntry(writer, transformText.SourceText, buildVersion);
+                        writer.Write(transformText.TransformType);
+                        break;
+                    }
                 default:
                     throw new NotImplementedException($"Unknown ETextHistoryType {entry.GetType()}");
             }
@@ -158,6 +164,14 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
 
                         return entry;
+                    }
+                case ETextHistoryType.Transform:
+                    {
+                        return new TransformTextEntry(flags)
+                        {
+                            SourceText = TextProperty.ParseTextEntry(reader, buildVersion),
+                            TransformType = reader.ReadByte()
+                        };
                     }
                 default:
                     throw new NotImplementedException($"Unknown ETextHistoryType {historyType}");

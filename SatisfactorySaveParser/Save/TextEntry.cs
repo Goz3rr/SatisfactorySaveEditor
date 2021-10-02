@@ -150,4 +150,18 @@ namespace SatisfactorySaveParser.Save
         {
         }
     }
+
+    public class TransformTextEntry : TextEntry
+    {
+        public override ETextHistoryType HistoryType => ETextHistoryType.Transform;
+
+        public override int SerializedLength => SourceText.SerializedLength + 1;
+
+        public TextEntry SourceText { get; set; }
+        public byte TransformType { get; set; }
+
+        public TransformTextEntry(int flags) : base(flags)
+        {
+        }
+    }
 }
