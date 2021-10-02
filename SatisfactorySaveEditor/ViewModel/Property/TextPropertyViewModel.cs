@@ -26,6 +26,9 @@ namespace SatisfactorySaveEditor.ViewModel.Property
                 case BaseTextEntry baseText:
                     value = baseText.Value;
                     break;
+                case NoneTextEntry baseText:
+                    value = baseText.CultureInvariantString;
+                    break;
             }
         }
 
@@ -35,6 +38,9 @@ namespace SatisfactorySaveEditor.ViewModel.Property
             {
                 case BaseTextEntry baseText:
                     baseText.Value = value;
+                    break;
+                case NoneTextEntry baseText:
+                    baseText.CultureInvariantString = value;
                     break;
             }
         }
