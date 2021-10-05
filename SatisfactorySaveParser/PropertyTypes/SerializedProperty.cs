@@ -102,6 +102,10 @@ namespace SatisfactorySaveParser.PropertyTypes
                     overhead = 1;
                     result = UInt64Property.Parse(propertyName, index, reader);
                     break;
+                case UInt32Property.TypeName:
+                    overhead = 1;
+                    result = UInt32Property.Parse(propertyName, index, reader);
+                    break;
                 case Int8Property.TypeName:
                     overhead = 1;
                     result = Int8Property.Parse(propertyName, index, reader);

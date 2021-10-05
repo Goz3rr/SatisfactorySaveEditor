@@ -107,6 +107,9 @@
     <DataTemplate DataType="{x:Type property:UInt64PropertyViewModel}">
         <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type property:UInt32PropertyViewModel}">
+        <TextBox Margin="4" VerticalContentAlignment="Center" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+    </DataTemplate>
     <DataTemplate DataType="{x:Type property:MapPropertyViewModel}">
         <Label Margin="4" VerticalContentAlignment="Center" Content="// TODO: MAP STUFF"/>
     </DataTemplate>

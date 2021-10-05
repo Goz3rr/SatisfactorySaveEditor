@@ -44,6 +44,8 @@ namespace SatisfactorySaveEditor.Util
                     return new Int64PropertyViewModel(i64p);
                 case UInt64Property ui64p:
                     return new UInt64PropertyViewModel(ui64p);
+                case UInt32Property ui32p:
+                    return new UInt32PropertyViewModel(ui32p);
                 case Int8Property i8p:
                     return new Int8PropertyViewModel(i8p);
                 default:
