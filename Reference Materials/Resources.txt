@@ -47,7 +47,6 @@
 /Game/FactoryGame/Resource/Equipment/Beacon/BP_EquipmentDescriptorBeacon.BP_EquipmentDescriptorBeacon_C
 /Game/FactoryGame/Resource/Equipment/Beacon/Desc_Parachute.Desc_Parachute_C
 /Game/FactoryGame/Resource/Equipment/BuildGun/BP_EquipmentDescriptorBuildGun.BP_EquipmentDescriptorBuildGun_C
-/Game/FactoryGame/Resource/Equipment/ColorGun/BP_EquipmentDescriptorColorGun.BP_EquipmentDescriptorColorGun_C
 /Game/FactoryGame/Resource/Equipment/Cup/BP_EquipmentDescriptorCup.BP_EquipmentDescriptorCup_C
 /Game/FactoryGame/Resource/Equipment/Decoration/Desc_CharacterClap_Statue.Desc_CharacterClap_Statue_C
 /Game/FactoryGame/Resource/Equipment/Decoration/Desc_CharacterRunStatue.Desc_CharacterRunStatue_C
@@ -61,6 +60,7 @@
 /Game/FactoryGame/Resource/Equipment/GemstoneScanner/BP_EquipmentDescriptorObjectScanner.BP_EquipmentDescriptorObjectScanner_C
 /Game/FactoryGame/Resource/Equipment/GoldenCup/BP_EquipmentDescriptorCupGold.BP_EquipmentDescriptorCupGold_C
 /Game/FactoryGame/Resource/Equipment/GolfCart/Desc_GolfCart.Desc_GolfCart_C
+/Game/FactoryGame/Resource/Equipment/GolfCart/Desc_GolfCartGold.Desc_GolfCartGold_C
 /Game/FactoryGame/Resource/Equipment/HazmatSuit/BP_EquipmentDescriptorHazmatSuit.BP_EquipmentDescriptorHazmatSuit_C
 /Game/FactoryGame/Resource/Equipment/Holiday/BP_EquipmentDescriptorSnowballMittens.BP_EquipmentDescriptorSnowballMittens_C
 /Game/FactoryGame/Resource/Equipment/HoverPack/BP_EquipmentDescriptorHoverPack.BP_EquipmentDescriptorHoverPack_C
@@ -124,7 +124,9 @@
 /Game/FactoryGame/Resource/Parts/BioFuel/Desc_LiquidBiofuel.Desc_LiquidBiofuel_C
 /Game/FactoryGame/Resource/Parts/BioFuel/Desc_PackagedBiofuel.Desc_PackagedBiofuel_C
 /Game/FactoryGame/Resource/Parts/Cable/Desc_Cable.Desc_Cable_C
+/Game/FactoryGame/Resource/Parts/CartridgeStandard/Desc_CartridgeHighCap.Desc_CartridgeHighCap_C
 /Game/FactoryGame/Resource/Parts/CartridgeStandard/Desc_CartridgeStandard.Desc_CartridgeStandard_C
+/Game/FactoryGame/Resource/Parts/CartridgeStandard/Desc_CartridgeStrong.Desc_CartridgeStrong_C
 /Game/FactoryGame/Resource/Parts/Cement/Desc_Cement.Desc_Cement_C
 /Game/FactoryGame/Resource/Parts/CircuitBoard/Desc_CircuitBoard.Desc_CircuitBoard_C
 /Game/FactoryGame/Resource/Parts/CircuitBoardHighSpeed/Desc_CircuitBoardHighSpeed.Desc_CircuitBoardHighSpeed_C
