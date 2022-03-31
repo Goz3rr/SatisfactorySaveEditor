@@ -83,6 +83,7 @@
     <Compile Include="PropertyTypes\EnumProperty.cs" />
     <Compile Include="PropertyTypes\FloatProperty.cs" />
     <Compile Include="PropertyTypes\Structs\FINLuaProcessorStateStorage.cs" />
+    <Compile Include="PropertyTypes\Structs\Vector4D.cs" />
     <Compile Include="PropertyTypes\UInt32Property.cs" />
     <Compile Include="PropertyTypes\UInt64Property.cs" />
     <Compile Include="PropertyTypes\Int8Property.cs" />

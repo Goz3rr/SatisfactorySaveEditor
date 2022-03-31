@@ -273,4 +273,7 @@
     <DataTemplate DataType="{x:Type structs:Vector2D}">
         <control:Vector2Control Vector="{Binding Data}"/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type structs:Vector4D}">
+        <control:Vector4Control Vector="{Binding Data}"/>
+    </DataTemplate>
 </ResourceDictionary>
