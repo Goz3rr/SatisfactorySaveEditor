@@ -380,6 +380,9 @@ namespace SatisfactorySaveEditor.ViewModel
         /// <returns>True if rootItem contains the EntitiyName, false otherwise.</returns>
         private bool CanJump(string target)
         {
+            if (target == null)
+                return false;
+
             return rootItem.FindChild(target, false) != null;
         }
 
@@ -706,6 +709,11 @@ namespace SatisfactorySaveEditor.ViewModel
             SearchText = null;
         }
 
+        public void DragEnter(IDropInfo dropInfo)
+        {
+            // Do nothing
+        }
+
         public void DragOver(IDropInfo dropInfo)
         {
             if (!(dropInfo.Data is DataObject data)) return;
@@ -715,6 +723,11 @@ namespace SatisfactorySaveEditor.ViewModel
 
             dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
             dropInfo.Effects = DragDropEffects.Copy;
+        }
+
+        public void DragLeave(IDropInfo dropInfo)
+        {
+            // Do nothing
         }
 
         /// <summary>
