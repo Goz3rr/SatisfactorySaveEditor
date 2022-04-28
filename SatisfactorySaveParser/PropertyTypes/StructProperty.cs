@@ -123,6 +123,8 @@ namespace SatisfactorySaveParser.PropertyTypes
                     return new Vector(reader);
                 case "Vector2D":
                     return new Vector2D(reader);
+                case "Vector4":
+                    return new Vector4D(reader);
                 case "Box":
                     return new Box(reader);
                 case "Quat":

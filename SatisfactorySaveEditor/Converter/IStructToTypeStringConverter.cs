@@ -33,6 +33,8 @@ namespace SatisfactorySaveEditor.Converter
                     return "Vector";
                 case Vector2D v2:
                     return "Vector2D";
+                case Vector4D v4:
+                    return "Vector4";
                 case GuidStruct g:
                     return "Guid";
                 case FluidBox fb:
