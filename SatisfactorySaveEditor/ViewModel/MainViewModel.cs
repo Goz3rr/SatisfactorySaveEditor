@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using AsyncAwaitBestPractices.MVVM;
 using NLog;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace SatisfactorySaveEditor.ViewModel
 {
@@ -373,6 +374,35 @@ namespace SatisfactorySaveEditor.ViewModel
                 MessageBox.Show("Backup created. Find it in your save file folder.");
         }
 
+        class CachedCanJumpItem
+        {
+            public bool Result;
+            public DateTime LastQueried;
+        }
+
+
+        class CachedCanJump
+        {
+            public bool SeekCanJump(SaveObjectModel rootItem, string Target)
+            {
+                if (CachedCanJumpRecord.ContainsKey(Target))
+                {
+                    var time_diff = DateTime.Now - CachedCanJumpRecord[Target].LastQueried;
+                    if (time_diff.TotalSeconds <= 600) // Only check every 10 minutes.
+                        return CachedCanJumpRecord[Target].Result;
+                }
+                else
+                {
+                    CachedCanJumpRecord.Add(Target, new CachedCanJumpItem());
+                }
+                CachedCanJumpRecord[Target].Result = rootItem.FindChild(Target, false) != null;
+                CachedCanJumpRecord[Target].LastQueried = DateTime.Now;
+                return CachedCanJumpRecord[Target].Result;
+            }
+            private Dictionary<string, CachedCanJumpItem> CachedCanJumpRecord = new Dictionary<string, CachedCanJumpItem>();
+        }
+
+        CachedCanJump CanJumpCache = new CachedCanJump();
         /// <summary>
         /// Checks if it's possible to jump to the passed EntityName string
         /// </summary>
@@ -382,8 +412,11 @@ namespace SatisfactorySaveEditor.ViewModel
         {
             if (target == null)
                 return false;
+            return CanJumpCache.SeekCanJump(rootItem, target); 
+            //if (target.Contains("/Recipes/"))
+            //    return false;
 
-            return rootItem.FindChild(target, false) != null;
+            //return rootItem.FindChild(target, false) != null;
         }
 
         /// <summary>
