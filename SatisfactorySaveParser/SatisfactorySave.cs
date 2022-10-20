@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SatisfactorySaveParser.Exceptions;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
 using SatisfactorySaveParser.ZLib;
@@ -176,6 +177,16 @@ namespace SatisfactorySaveParser
         public void Save(string file)
         {
             log.Info($"Writing save file: {file}");
+
+            // FIXME update 6 savefile can be loaded, but not saved yet
+            if (Header.SaveVersion > FSaveCustomVersion.TrainBlueprintClassAdded)
+            {
+                throw new UnknownBuildVersionException(Header.SaveVersion);
+            }
+            if (Header.HeaderVersion > SaveHeaderVersion.UE426EngineUpdate)
+            {
+                throw new UnknownSaveVersionException(Header.HeaderVersion);
+            }
 
             FileName = Environment.ExpandEnvironmentVariables(file);
             using (var stream = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.Write))
