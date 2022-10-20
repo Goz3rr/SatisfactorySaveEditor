@@ -32,6 +32,9 @@
         // @2021-04-15 UE4.26 Engine Upgrade. FEditorObjectVersion Changes occurred
         UE426EngineUpdate,
 
+        // @2022-03-22 Added GUID to identify saves, it is for analytics purposes.
+        AddedSaveIdentifier,
+
         // -----<new versions can be added above this line>-----
         VersionPlusOne,
         LatestVersion = VersionPlusOne - 1 // Last version to use
