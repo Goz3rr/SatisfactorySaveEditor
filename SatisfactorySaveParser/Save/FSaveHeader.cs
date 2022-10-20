@@ -68,6 +68,11 @@ namespace SatisfactorySaveParser.Save
         /// </summary>
         public bool IsModdedSave { get; set; }
 
+        /// <summary>
+        ///     a unique identifier for this save, for analytics purposes
+        /// </summary>
+        public string SaveIdentifier { get; set; }
+
         public void Serialize(BinaryWriter writer)
         {
             writer.Write((int)HeaderVersion);
@@ -135,6 +140,12 @@ namespace SatisfactorySaveParser.Save
                 header.ModMetadata = reader.ReadLengthPrefixedString();
                 header.IsModdedSave = reader.ReadInt32() > 0;
                 log.Debug($"ModMetadata={header.ModMetadata}, IsModdedSave={header.IsModdedSave}");
+            }
+
+            if (header.HeaderVersion >= SaveHeaderVersion.AddedSaveIdentifier)
+            {
+                header.SaveIdentifier = reader.ReadLengthPrefixedString();
+                log.Debug($"SaveIdentifier={header.SaveIdentifier}");
             }
 
             return header;
