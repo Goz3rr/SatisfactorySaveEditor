@@ -114,42 +114,85 @@ namespace SatisfactorySaveParser
 
         private void LoadData(BinaryReader reader)
         {
-            // Does not need to be a public property because it's equal to Entries.Count
-            var totalSaveObjects = reader.ReadUInt32();
-            log.Info($"Save contains {totalSaveObjects} object headers");
+            // FIXME currenty ONLY update 6 savefile can be loaded
+            if (Header.SaveVersion != FSaveCustomVersion.LatestVersion)
+            {
+                throw new UnknownBuildVersionException(Header.SaveVersion);
+            }
+            if (Header.HeaderVersion != SaveHeaderVersion.LatestVersion)
+            {
+                throw new UnknownSaveVersionException(Header.HeaderVersion);
+            }
 
-            // Saved entities loop
+            var sublevelCount = reader.ReadInt32();
+            for (int sublevelIndex = 0; sublevelIndex <= sublevelCount; sublevelIndex++) // sublevels and the "persistent level" at the end!
+            {
+                var levelName = (sublevelIndex == sublevelCount) ? Header.MapName : reader.ReadLengthPrefixedString(); // use MapName for the persistent level
+                var levelEntries = LoadLevelEntries(reader);
+                log.Info($"Level '{levelName}' contains {levelEntries.Count} entries");
+                Entries.AddRange(levelEntries);
+
+                var levelCollectedObjects = LoadLevelCollectedObjects(reader);
+                log.Info($"Level '{levelName}' contains {levelCollectedObjects.Count} collected objects");
+                CollectedObjects.AddRange(levelCollectedObjects);
+
+                ParseLevelEntries(levelEntries, reader);
+                LoadLevelCollectedObjects(reader); // skip second collectables
+            }
+        }
+
+        private List<SaveObject> LoadLevelEntries(BinaryReader reader)
+        {
+            reader.ReadInt32(); // skip "object header and collectables size"
+            var levelEntries = new List<SaveObject>();
+            var totalSaveObjects = reader.ReadInt32();
+
             for (int i = 0; i < totalSaveObjects; i++)
             {
                 var type = reader.ReadInt32();
                 switch (type)
                 {
                     case SaveEntity.TypeID:
-                        Entries.Add(new SaveEntity(reader));
+                        levelEntries.Add(new SaveEntity(reader));
                         break;
                     case SaveComponent.TypeID:
-                        Entries.Add(new SaveComponent(reader));
+                        levelEntries.Add(new SaveComponent(reader));
                         break;
                     default:
                         throw new InvalidOperationException($"Unexpected type {type}");
                 }
             }
+            return levelEntries;
+        }
 
-            var totalSaveObjectData = reader.ReadInt32();
-            log.Info($"Save contains {totalSaveObjectData} object data");
-            Trace.Assert(Entries.Count == totalSaveObjects);
-            Trace.Assert(Entries.Count == totalSaveObjectData);
+        private List<ObjectReference> LoadLevelCollectedObjects(BinaryReader reader)
+        {
+            var levelCollectedObjects = new List<ObjectReference>();
+            var collectedObjectsCount = reader.ReadInt32();
 
-            for (int i = 0; i < Entries.Count; i++)
+            for (int i = 0; i < collectedObjectsCount; i++)
+            {
+                levelCollectedObjects.Add(new ObjectReference(reader));
+            }
+            return levelCollectedObjects;
+        }
+
+        private void ParseLevelEntries(List<SaveObject> levelEntries, BinaryReader reader)
+        {
+            reader.ReadInt32(); // skip "objects size"
+            var objectCount = reader.ReadInt32();
+            Trace.Assert(levelEntries.Count == objectCount);
+
+            for (int i = 0; i < objectCount; i++)
             {
                 var len = reader.ReadInt32();
                 var before = reader.BaseStream.Position;
 
 #if DEBUG
-                //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
+                //log.Trace($"Reading {len} bytes @ {before} for {levelEntries[i].TypePath}");
 #endif
 
-                Entries[i].ParseData(len, reader, Header.BuildVersion);
+                levelEntries[i].ParseData(len, reader, Header.BuildVersion);
                 var after = reader.BaseStream.Position;
 
                 if (before + len != after)
@@ -157,16 +200,6 @@ namespace SatisfactorySaveParser
                     throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
                 }
             }
-
-            var collectedObjectsCount = reader.ReadInt32();
-            log.Info($"Save contains {collectedObjectsCount} collected objects");
-            for (int i = 0; i < collectedObjectsCount; i++)
-            {
-                CollectedObjects.Add(new ObjectReference(reader));
-            }
-
-            log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
-            Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
         }
 
         public void Save()
