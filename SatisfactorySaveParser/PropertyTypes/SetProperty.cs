@@ -135,6 +135,22 @@ namespace SatisfactorySaveParser.PropertyTypes
                         }
                     }
                     break;
+                case StructProperty.TypeName:
+                    {
+                        if (propertyName != "mRemovalLocations")
+                        {
+                            throw new NotImplementedException("Parsing a set of StructProperty other than mRemovalLocations is not yet supported");
+                        }
+                        var locationsCount = reader.ReadInt32();
+                        for (var i = 0; i < locationsCount; i++)
+                        {
+                            var location = new Structs.Vector(reader);
+                            var element = new StructProperty("location", i);
+                            element.Data = location;
+                            result.Elements.Add(element);
+                        }
+                    }
+                    break;
                 default:
                     throw new NotImplementedException($"Parsing a set of {result.Type} is not yet supported.");
             }
