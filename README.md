@@ -2,6 +2,8 @@
 
 # ![SSE Logo](https://i.imgur.com/YgnPVSo.png) Satisfactory Save Editor 
 
+## Update 6/7 is not yet supported! See [this issue](https://github.com/Goz3rr/SatisfactorySaveEditor/issues/267) for details. In the mean time, you can use [SCIM](https://satisfactory-calculator.com/en/interactive-map) or another editor of your choice.
+
 **View installation instructions in the [guide](https://ficsit.app/guide/Z8h6z2CczH43c)**!
 
 **See the [releases page](https://github.com/Goz3rr/SatisfactorySaveEditor/releases) to download a compiled release**, or build your own by cloning this repo.
