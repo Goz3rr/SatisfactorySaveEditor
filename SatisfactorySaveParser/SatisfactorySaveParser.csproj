@@ -75,6 +75,9 @@
     <Compile Include="Exceptions\FatalSaveException.cs" />
     <Compile Include="Exceptions\UnknownBuildVersionException.cs" />
     <Compile Include="Exceptions\UnknownSaveVersionException.cs" />
+    <Compile Include="Metadata\ConveyorBeltLiftMetaData.cs" />
+    <Compile Include="Metadata\ConveyorItemMetaData.cs" />
+    <Compile Include="Metadata\SaveObjectMetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyTypes\ArrayProperty.cs" />
     <Compile Include="PropertyTypes\BoolProperty.cs" />
