@@ -117,6 +117,7 @@
     <Compile Include="SatisfactorySave.cs" />
     <Compile Include="SaveComponent.cs" />
     <Compile Include="SaveEntity.cs" />
+    <Compile Include="SaveLevel.cs" />
     <Compile Include="SaveObject.cs" />
     <Compile Include="Save\ChunkInfo.cs" />
     <Compile Include="Save\EIntroTutorialSteps.cs" />
