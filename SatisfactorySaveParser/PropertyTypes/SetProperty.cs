@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SatisfactorySaveParser.Structures;
+using Vector = SatisfactorySaveParser.PropertyTypes.Structs.Vector;
 
 namespace SatisfactorySaveParser.PropertyTypes
 {
@@ -42,7 +44,6 @@ namespace SatisfactorySaveParser.PropertyTypes
                 {
                     case IntProperty.TypeName:
                         {
-                            sizeExtra = 4;
                             msWriter.Write(Elements.Count);
                             foreach (var prop in Elements.Cast<IntProperty>())
                             {
@@ -69,12 +70,31 @@ namespace SatisfactorySaveParser.PropertyTypes
                             }
                         }
                         break;
+                    case StructProperty.TypeName:
+                        {
+                            
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<StructProperty>())
+                            {
+                                if (prop.Data is Vector vec)
+                                {
+                                    msWriter.Write(vec.Data);
+                                }
+                                else
+                                {
+                                    throw new NotSupportedException(
+                                        $"Writing Structs of type {prop.Type} is not yet supported.");
+                                }
+                            }
+                        }
+                        break;
                     default:
                         throw new NotImplementedException($"Serializing an array of {Type} is not yet supported.");
                 }
 
                 var bytes = ms.ToArray();
 
+                sizeExtra += 4;
                 writer.Write(bytes.Length + sizeExtra);
                 writer.Write(Index);
 
@@ -132,6 +152,22 @@ namespace SatisfactorySaveParser.PropertyTypes
                             var obj1 = reader.ReadLengthPrefixedString();
                             var obj2 = reader.ReadLengthPrefixedString();
                             result.Elements.Add(new ObjectProperty($"Element {i}", obj1, obj2));
+                        }
+                    }
+                    break;
+                case StructProperty.TypeName:
+                    {
+                        if (propertyName != "mRemovalLocations")
+                        {
+                            throw new NotImplementedException("Parsing a set of StructProperty other than mRemovalLocations is not yet supported");
+                        }
+                        var locationsCount = reader.ReadInt32();
+                        for (var i = 0; i < locationsCount; i++)
+                        {
+                            var location = new Structs.Vector(reader);
+                            var element = new StructProperty("location", i);
+                            element.Data = location;
+                            result.Elements.Add(element);
                         }
                     }
                     break;
