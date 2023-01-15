@@ -67,6 +67,11 @@ namespace SatisfactorySaveParser.Save
         ///     Was this save ever saved with mods enabled?
         /// </summary>
         public bool IsModdedSave { get; set; }
+        
+        /// <summary>
+        ///     a unique identifier for this save, for analytics purposes
+        /// </summary>
+        public string SaveIdentifier { get; set; }
 
         public void Serialize(BinaryWriter writer)
         {
@@ -92,6 +97,9 @@ namespace SatisfactorySaveParser.Save
                 writer.WriteLengthPrefixedString(ModMetadata);
                 writer.Write(IsModdedSave ? 1 : 0);
             }
+            
+            if (HeaderVersion >= SaveHeaderVersion.AddedSaveIdentifier)
+                writer.WriteLengthPrefixedString(SaveIdentifier);
         }
 
         public static FSaveHeader Parse(BinaryReader reader)
@@ -135,6 +143,12 @@ namespace SatisfactorySaveParser.Save
                 header.ModMetadata = reader.ReadLengthPrefixedString();
                 header.IsModdedSave = reader.ReadInt32() > 0;
                 log.Debug($"ModMetadata={header.ModMetadata}, IsModdedSave={header.IsModdedSave}");
+            }
+            
+            if (header.HeaderVersion >= SaveHeaderVersion.AddedSaveIdentifier)
+            {
+                header.SaveIdentifier = reader.ReadLengthPrefixedString();
+                log.Debug($"SaveIdentifier={header.SaveIdentifier}");
             }
 
             return header;
