@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GalaSoft.MvvmLight;
 using SatisfactorySaveEditor.Model;
 using SatisfactorySaveParser;
@@ -293,8 +294,18 @@ namespace SatisfactorySaveEditor.ViewModel
                     await AutoBackupIfEnabled();
 
                     var newObjects = rootItem.DescendantSelf;
-                    saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
-                    saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
+                    foreach (var objectsGroup in newObjects.GroupBy(entry => entry.LevelName).ToList())
+                    {
+                        var correspondingLevel = saveGame.Levels.FirstOrDefault(saveLevel => saveLevel.Name.Equals(objectsGroup.Key));
+                        if (correspondingLevel == null)
+                        {
+                            correspondingLevel = new SaveLevel(objectsGroup.Key);
+                            saveGame.Levels.Add(correspondingLevel);
+                        }
+
+                        correspondingLevel.Entries = correspondingLevel.Entries.Intersect(objectsGroup).ToList();
+                        correspondingLevel.Entries.AddRange(objectsGroup.Except(correspondingLevel.Entries));
+                    }
 
                     rootItem.ApplyChanges();
                     this.IsBusy = true;
@@ -310,8 +321,18 @@ namespace SatisfactorySaveEditor.ViewModel
                 await AutoBackupIfEnabled();
 
                 var newObjects = rootItem.DescendantSelf;
-                saveGame.Entries = saveGame.Entries.Intersect(newObjects).ToList();
-                saveGame.Entries.AddRange(newObjects.Except(saveGame.Entries));
+                foreach (var objectsGroup in newObjects.GroupBy(entry => entry.LevelName).ToList())
+                {
+                    var correspondingLevel = saveGame.Levels.FirstOrDefault(saveLevel => saveLevel.Name.Equals(objectsGroup.Key));
+                    if (correspondingLevel == null)
+                    {
+                        correspondingLevel = new SaveLevel(objectsGroup.Key);
+                        saveGame.Levels.Add(correspondingLevel);
+                    }
+
+                    correspondingLevel.Entries = correspondingLevel.Entries.Intersect(objectsGroup).ToList();
+                    correspondingLevel.Entries.AddRange(objectsGroup.Except(correspondingLevel.Entries));
+                }
 
                 rootItem.ApplyChanges();
                 this.IsBusy = true;
@@ -593,7 +614,7 @@ namespace SatisfactorySaveEditor.ViewModel
             rootItem = new SaveRootModel(saveGame.Header);
             var saveTree = new EditorTreeNode("Root");
 
-            foreach (var entry in saveGame.Entries)
+            foreach (var entry in saveGame.Levels.SelectMany(level => level.Entries))
             {
                 var parts = entry.TypePath.TrimStart('/').Split('/');
                 saveTree.AddChild(parts, entry);

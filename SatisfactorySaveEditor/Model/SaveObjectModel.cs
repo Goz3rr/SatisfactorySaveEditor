@@ -16,6 +16,7 @@ namespace SatisfactorySaveEditor.Model
 {
     public class SaveObjectModel : ViewModelBase
     {
+        private string levelName;
         private string title;
         private string rootObject;
         private string type;
@@ -63,6 +64,12 @@ namespace SatisfactorySaveEditor.Model
             }
         }
 
+        public string LevelName
+        {
+            get => levelName;
+            set { Set(() => LevelName, ref levelName, value); }
+        }
+        
         public string Title
         {
             get => title;
@@ -98,6 +105,7 @@ namespace SatisfactorySaveEditor.Model
         public SaveObjectModel(SaveObject model)
         {
             Model = model;
+            LevelName = model.LevelName;
             Title = model.InstanceName;
             RootObject = model.RootObject;
             Type = model.TypePath.Split('/').Last();

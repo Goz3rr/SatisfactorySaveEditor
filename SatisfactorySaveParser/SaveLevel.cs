@@ -15,13 +15,13 @@ namespace SatisfactorySaveParser
         /// <summary>
         /// a list of object instance names that belong in this level.
         /// </summary>
-        public List<string> ContainedObjectInstances = new List<string>();
+        public List<SaveObject> Entries = new List<SaveObject>();
         
         
         /// <summary>
         /// a list of references to collected objects, that belong in this level
         /// </summary>
-        public List<ObjectReference> ContainedCollectablesInstances = new List<ObjectReference>();
+        public List<ObjectReference> CollectedObjects = new List<ObjectReference>();
         
         public SaveLevel(string name)
         {

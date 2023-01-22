@@ -11,7 +11,11 @@ namespace SatisfactorySaveEditor.Cheats
 
         public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
-            saveGame.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
+            foreach (var level in saveGame.Levels)
+            {
+                level.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
+            }
+            
             return true;
         }
     }

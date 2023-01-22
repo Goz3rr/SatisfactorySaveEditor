@@ -23,14 +23,18 @@ namespace SatisfactorySaveEditor.Cheats
                 "/Game/FactoryGame/Resource/Environment/Crystal/BP_Crystal_mk3.BP_Crystal_mk3_C"
             };
 
-            var slugs = saveGame.Entries.Where(x => slugTypes.Contains(x.TypePath));
-
-            saveGame.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
-            saveGame.CollectedObjects.AddRange(slugs.Select(s => new ObjectReference
+            foreach (var level in saveGame.Levels)
             {
-                LevelName = s.RootObject,
-                PathName = s.InstanceName
-            }));
+
+                var slugs = level.Entries.Where(x => slugTypes.Contains(x.TypePath));
+
+                level.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
+                level.CollectedObjects.AddRange(slugs.Select(s => new ObjectReference
+                {
+                    LevelName = s.RootObject,
+                    PathName = s.InstanceName
+                }));
+            }
 
             return true;
         }

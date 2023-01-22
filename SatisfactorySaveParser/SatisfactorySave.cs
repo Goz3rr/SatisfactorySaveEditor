@@ -31,22 +31,10 @@ namespace SatisfactorySaveParser
         public FSaveHeader Header { get; private set; }
 
         /// <summary>
-        ///     Main content of the save game
-        /// </summary>
-        public List<SaveObject> Entries { get; set; } = new List<SaveObject>();
-
-        /// <summary>
-        ///     List of object references of all collected objects in the world (Nut/berry bushes, slugs, etc)
-        /// </summary>
-        public List<ObjectReference> CollectedObjects { get; set; } = new List<ObjectReference>();
-        
-        /// <summary>
         ///     List of levels in the save
         /// </summary>
         public List<SaveLevel> Levels { get; set; } = new List<SaveLevel>();
-        
-        private byte[] TrailingBodyData { get; set; }
-        
+
         /// <summary>
         ///     List of object references that do not belong to any particular level
         /// </summary>
@@ -66,7 +54,7 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
-                if(stream.Length == 0)
+                if (stream.Length == 0)
                 {
                     throw new Exception("Save file is completely empty");
                 }
@@ -110,7 +98,9 @@ namespace SatisfactorySaveParser
                         buffer.Position = 0;
 
 #if DEBUG
-                        File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
+                        File.WriteAllBytes(
+                            Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"),
+                            buffer.ToArray());
 #endif
 
 
@@ -135,6 +125,10 @@ namespace SatisfactorySaveParser
 
         private void LoadDataU5AndBelow(BinaryReader reader)
         {
+            // create a single level to contain the entries. To stay compatible with U6 structure of levels.
+            var defaultLevel = new SaveLevel(Header.MapName);
+            Levels.Add(defaultLevel);
+            
             // Does not need to be a public property because it's equal to Entries.Count
             var totalSaveObjects = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjects} object headers");
@@ -146,10 +140,10 @@ namespace SatisfactorySaveParser
                 switch (type)
                 {
                     case SaveEntity.TypeID:
-                        Entries.Add(new SaveEntity(reader));
+                        defaultLevel.Entries.Add(new SaveEntity(reader));
                         break;
                     case SaveComponent.TypeID:
-                        Entries.Add(new SaveComponent(reader));
+                        defaultLevel.Entries.Add(new SaveComponent(reader));
                         break;
                     default:
                         throw new InvalidOperationException($"Unexpected type {type}");
@@ -158,10 +152,10 @@ namespace SatisfactorySaveParser
 
             var totalSaveObjectData = reader.ReadInt32();
             log.Info($"Save contains {totalSaveObjectData} object data");
-            Trace.Assert(Entries.Count == totalSaveObjects);
-            Trace.Assert(Entries.Count == totalSaveObjectData);
+            Trace.Assert(defaultLevel.Entries.Count == totalSaveObjects);
+            Trace.Assert(defaultLevel.Entries.Count == totalSaveObjectData);
 
-            for (int i = 0; i < Entries.Count; i++)
+            for (int i = 0; i < defaultLevel.Entries.Count; i++)
             {
                 var len = reader.ReadInt32();
                 var before = reader.BaseStream.Position;
@@ -170,7 +164,7 @@ namespace SatisfactorySaveParser
                 //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
 #endif
 
-                Entries[i].ParseData(len, reader, Header.BuildVersion);
+                defaultLevel.Entries[i].ParseData(len, reader, Header.BuildVersion);
                 var after = reader.BaseStream.Position;
 
                 if (before + len != after)
@@ -183,8 +177,9 @@ namespace SatisfactorySaveParser
             log.Info($"Save contains {collectedObjectsCount} collected objects");
             for (int i = 0; i < collectedObjectsCount; i++)
             {
-                CollectedObjects.Add(new ObjectReference(reader));
+                defaultLevel.CollectedObjects.Add(new ObjectReference(reader));
             }
+
 
             log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
             Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
@@ -204,24 +199,21 @@ namespace SatisfactorySaveParser
                 Levels.Add(level);
 
                 var levelEntries = LoadLevelEntries(reader, levelName);
-                Entries.AddRange(levelEntries);
-                level.ContainedObjectInstances.AddRange(levelEntries.Select(entry => entry.InstanceName));
+                level.Entries.AddRange(levelEntries);
                 
                 var levelCollectedObjects = LoadLevelCollectedObjects(reader);
-                CollectedObjects.AddRange(levelCollectedObjects);
-                level.ContainedCollectablesInstances.AddRange(levelCollectedObjects);
+                level.CollectedObjects.AddRange(levelCollectedObjects);
                 
-                log.Info($"Reading level [{sublevelIndex+1}/{sublevelCount+1}] with {Levels[sublevelIndex].ContainedObjectInstances.Count} objects and {Levels[sublevelIndex].ContainedCollectablesInstances.Count} collectables: {Levels[sublevelIndex].Name}.");
+                log.Info($"Reading level [{sublevelIndex+1}/{sublevelCount+1}] with {Levels[sublevelIndex].Entries.Count} objects and {Levels[sublevelIndex].CollectedObjects.Count} collectables: {Levels[sublevelIndex].Name}.");
                 
                 ParseLevelEntries(levelEntries, reader);
                 LoadLevelCollectedObjects(reader); // skip second collectables
             }
 
-            // somewhere in the U6/U7 updates can be additional collected objects for a level that is not listed
+            // somewhere in the U6/U7 updates can be additional collected objects
             var bytesLeft = reader.BaseStream.Length - reader.BaseStream.Position;
             if (bytesLeft > 0)
             {
-                log.Debug($"{bytesLeft} bytes are left at the end for some other collectables.");
                 TrailingCollectedObjects = LoadLevelCollectedObjects(reader);
             }
         }
@@ -252,6 +244,7 @@ namespace SatisfactorySaveParser
                         throw new InvalidOperationException($"Unexpected type {type}");
                 }
             }
+            
             return levelEntries;
         }
         
@@ -270,10 +263,12 @@ namespace SatisfactorySaveParser
 
         private void ParseLevelEntries(List<SaveObject> levelEntries, BinaryReader reader)
         {
+
             var binarySize = reader.ReadInt32(); // skip "objects binary size"
             long Before = reader.BaseStream.Position;
             var objectCount = reader.ReadInt32();
             Trace.Assert(levelEntries.Count == objectCount);
+
             
             for (int i = 0; i < objectCount; i++)
             {
@@ -394,21 +389,20 @@ namespace SatisfactorySaveParser
                     writer.WriteLengthPrefixedString(Levels[i].Name);
                 }
 
-                log.Info($"Writing level [{i+1}/{Levels.Count}] with {Levels[i].ContainedObjectInstances.Count} objects and {Levels[i].ContainedCollectablesInstances.Count} collectables: {Levels[i].Name}.");
+                log.Info($"Writing level [{i+1}/{Levels.Count}] with {Levels[i].Entries.Count} objects and {Levels[i].CollectedObjects.Count} collectables: {Levels[i].Name}.");
 
                 using (var buffer = new MemoryStream())
                 using (var subLevelWriter = new BinaryWriter(buffer))
                 {
                     
                     // write object headers (entities and components)
-                    var levelObjects = Levels[i].ContainedObjectInstances.Select(instanceName =>
-                        Entries.First(entry => entry.InstanceName.Equals(instanceName))).ToList();
+                    var levelObjects = Levels[i].Entries;
                     var entities = levelObjects.Where(e => e is SaveEntity).Cast<SaveEntity>().ToArray();
                     var components = levelObjects.Where(e => e is SaveComponent).Cast<SaveComponent>().ToArray();
                     SaveObjectsHeaderList(subLevelWriter, buildVersion, entities, components);
                     
                     // write collected objects list
-                    var levelCollectables = Levels[i].ContainedCollectablesInstances;
+                    var levelCollectables = Levels[i].CollectedObjects;
                     SaveCollectablesList(subLevelWriter, buildVersion, levelCollectables);
 
                     var bufferedContent = buffer.ToArray();
@@ -422,8 +416,7 @@ namespace SatisfactorySaveParser
                 {
                     
                     // write object content (entities and components)
-                    var levelObjects = Levels[i].ContainedObjectInstances.Select(instanceName =>
-                        Entries.First(entry => entry.InstanceName.Equals(instanceName))).ToList();
+                    var levelObjects = Levels[i].Entries;
                     var entities = levelObjects.Where(e => e is SaveEntity).Cast<SaveEntity>().ToArray();
                     var components = levelObjects.Where(e => e is SaveComponent).Cast<SaveComponent>().ToArray();
                     SaveObjectsContentList(subLevelWriter, buildVersion, entities, components);
@@ -435,7 +428,7 @@ namespace SatisfactorySaveParser
                     buffer.SetLength(0);
                     
                     // write collected objects list
-                    var levelCollectables = Levels[i].ContainedCollectablesInstances;
+                    var levelCollectables = Levels[i].CollectedObjects;
                     SaveCollectablesList(subLevelWriter, buildVersion, levelCollectables);
                     
                     bufferedContent = buffer.ToArray();
@@ -443,13 +436,12 @@ namespace SatisfactorySaveParser
                 }
             }
 
-            // save extra collectables
             SaveCollectablesList(writer, Header.BuildVersion, TrailingCollectedObjects);
         }
 
         private void SaveDataU5AndBelow(BinaryWriter writer, int buildVersion)
         {
-            SaveDataU5AndBelow(writer, buildVersion, Entries, CollectedObjects);
+            SaveDataU5AndBelow(writer, buildVersion, Levels.SelectMany(level => level.Entries).ToList(), Levels.SelectMany(level => level.CollectedObjects).ToList());
         }
         
         private void SaveDataU5AndBelow(BinaryWriter writer, int buildVersion, List<SaveObject> entries, List<ObjectReference> collectedObjects)
