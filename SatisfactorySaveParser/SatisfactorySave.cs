@@ -44,6 +44,13 @@ namespace SatisfactorySaveParser
         ///     List of levels in the save
         /// </summary>
         public List<SaveLevel> Levels { get; set; } = new List<SaveLevel>();
+        
+        private byte[] TrailingBodyData { get; set; }
+        
+        /// <summary>
+        ///     List of object references that do not belong to any particular level
+        /// </summary>
+        public List<ObjectReference> TrailingCollectedObjects { get; set; } = new List<ObjectReference>();
 
         
         /// <summary>
@@ -204,10 +211,18 @@ namespace SatisfactorySaveParser
                 CollectedObjects.AddRange(levelCollectedObjects);
                 level.ContainedCollectablesInstances.AddRange(levelCollectedObjects);
                 
-                log.Info($"Reading level [{sublevelIndex+1}/{Levels.Count}] with {Levels[sublevelIndex].ContainedObjectInstances.Count} objects and {Levels[sublevelIndex].ContainedCollectablesInstances.Count} collectables: {Levels[sublevelIndex].Name}.");
+                log.Info($"Reading level [{sublevelIndex+1}/{sublevelCount+1}] with {Levels[sublevelIndex].ContainedObjectInstances.Count} objects and {Levels[sublevelIndex].ContainedCollectablesInstances.Count} collectables: {Levels[sublevelIndex].Name}.");
                 
                 ParseLevelEntries(levelEntries, reader);
                 LoadLevelCollectedObjects(reader); // skip second collectables
+            }
+
+            // somewhere in the U6/U7 updates can be additional collected objects for a level that is not listed
+            var bytesLeft = reader.BaseStream.Length - reader.BaseStream.Position;
+            if (bytesLeft > 0)
+            {
+                log.Debug($"{bytesLeft} bytes are left at the end for some other collectables.");
+                TrailingCollectedObjects = LoadLevelCollectedObjects(reader);
             }
         }
 
@@ -237,7 +252,6 @@ namespace SatisfactorySaveParser
                         throw new InvalidOperationException($"Unexpected type {type}");
                 }
             }
-
             return levelEntries;
         }
         
@@ -256,7 +270,8 @@ namespace SatisfactorySaveParser
 
         private void ParseLevelEntries(List<SaveObject> levelEntries, BinaryReader reader)
         {
-            reader.ReadInt32(); // skip "objects binary size"
+            var binarySize = reader.ReadInt32(); // skip "objects binary size"
+            long Before = reader.BaseStream.Position;
             var objectCount = reader.ReadInt32();
             Trace.Assert(levelEntries.Count == objectCount);
             
@@ -266,7 +281,10 @@ namespace SatisfactorySaveParser
                 var before = reader.BaseStream.Position;
 
 #if DEBUG
-                //log.Trace($"Reading {len} bytes @ {before} for {levelEntries[i].TypePath}");
+                /*if (i % 10000 == 0)
+                {
+                    log.Trace($"Having {Math.Round(((float)(i+1)/objectCount)*100, 2)}% Reading {len} bytes @ {before} for {levelEntries[i].TypePath}");
+                }*/
 #endif
 
                 levelEntries[i].ParseData(len, reader, Header.BuildVersion);
@@ -277,6 +295,9 @@ namespace SatisfactorySaveParser
                     throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
                 }
             }
+
+            long ReadBytesCount = reader.BaseStream.Position - Before;
+            Debug.Assert(ReadBytesCount == binarySize);
         }
 
         
@@ -407,15 +428,23 @@ namespace SatisfactorySaveParser
                     var components = levelObjects.Where(e => e is SaveComponent).Cast<SaveComponent>().ToArray();
                     SaveObjectsContentList(subLevelWriter, buildVersion, entities, components);
                     
-                    // write collected objects list
-                    var levelCollectables = Levels[i].ContainedCollectablesInstances;
-                    SaveCollectablesList(subLevelWriter, buildVersion, levelCollectables);
-
+                    // the binary size this time however is only for object content. Without the collectables.
                     var bufferedContent = buffer.ToArray();
                     writer.Write(bufferedContent.Length);
                     writer.Write(bufferedContent);
+                    buffer.SetLength(0);
+                    
+                    // write collected objects list
+                    var levelCollectables = Levels[i].ContainedCollectablesInstances;
+                    SaveCollectablesList(subLevelWriter, buildVersion, levelCollectables);
+                    
+                    bufferedContent = buffer.ToArray();
+                    writer.Write(bufferedContent);
                 }
             }
+
+            // save extra collectables
+            SaveCollectablesList(writer, Header.BuildVersion, TrailingCollectedObjects);
         }
 
         private void SaveDataU5AndBelow(BinaryWriter writer, int buildVersion)
