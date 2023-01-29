@@ -286,7 +286,10 @@ namespace SatisfactorySaveParser
             }
 
             long ReadBytesCount = reader.BaseStream.Position - Before;
-            Debug.Assert(ReadBytesCount == binarySize);
+            if (ReadBytesCount != binarySize)
+            {
+                log.Warn("The indicated size does not match the real size! Save is probably corrupt. Attempting to load what's possible.");
+            }
         }
 
         
