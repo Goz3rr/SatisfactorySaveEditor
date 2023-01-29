@@ -58,11 +58,10 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     foreach (StructPropertyViewModel elem in arrayProperty.Elements)
                     {
-                        if (probablyEdited)
-                            ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data.Z -= offset; // Move the spawn point under the map
-
                         // Set WasKilled to true so they don't respawn after deleting them
-                        ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = false;
+                        ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[1]).Value = false;
+                        // Set NumTimesKilled to at least 1 i guess. Better to increment.
+                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value -= 1;
                         // Set KilledOnDayNumber to a huge number (some far away animals respawn if the number is too small)
                         ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)0;
                     }

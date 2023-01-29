@@ -17,12 +17,14 @@ namespace SatisfactorySaveEditor.Cheats
 
         private long pointsRequiredFromTicketCount(int tickets)
         {
-            //equation for ticket count from points is y={x>3:(ceil(x/3)^2)*1000, x<4:1000} where x is ticket count and y is points required. from here: https://satisfactory.gamepedia.com/AWESOME_Sink
-            //OLD ticket cost function for pre-0.3.3 AWESOME sink --TODO update to new ticket cost function once that is determined
+            // see ticket equations https://satisfactory.gamepedia.com/AWESOME_Sink
+            // ticket cost pre-0.3.3 was Pow(Ceiling(tickets / 3.0), 2) * 1000
+            // ticket cost U7 is (Pow(Ceiling(tickets / 3.0)-1, 2) * 500) + 1000
+            // TODO: keep the cost function up to date.
             if (tickets < 4)
                 return 1000;
             else
-                return (long) (Pow(Ceiling(tickets / 3.0), 2) * 1000);
+                return (long) (Pow(Ceiling(tickets / 3.0)-1, 2) * 500) + 1000;
         }
 
         public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
@@ -35,7 +37,17 @@ namespace SatisfactorySaveEditor.Cheats
             }
 
             var pointsTowardsCurrentTicket = sinkSubsystem.FindOrCreateField<Int64PropertyViewModel>("mTotalResourceSinkPoints");
-            var mCurrentPointLevel = sinkSubsystem.FindOrCreateField<IntPropertyViewModel>("mCurrentPointLevel");
+            //var mCurrentPointLevel = sinkSubsystem.FindOrCreateField<IntPropertyViewModel>("mCurrentPointLevel");
+            
+            // how many tickets are currently printable from sink.
+            var numResourceSinkCoupons = sinkSubsystem.FindOrCreateField<IntPropertyViewModel>("mNumResourceSinkCoupons");
+            
+            // which ticket point level (modulo 3) the sink currently is (points, alien DNA).
+            var pointLevels = sinkSubsystem.FindOrCreateField<ArrayPropertyViewModel>("mCurrentPointLevels");
+            
+            // the accumulated points the sink currently has (points, alien DNA).
+            var accumulatedPoints = sinkSubsystem.FindOrCreateField<ArrayPropertyViewModel>("mTotalPoints");
+            
 
             var dialog = new StringPromptWindow
             {
@@ -45,7 +57,8 @@ namespace SatisfactorySaveEditor.Cheats
             cvm.WindowTitle = "Enter earned ticket count";
             cvm.PromptMessage = "Tickets";
             cvm.ValueChosen = "0";
-            cvm.OldValueMessage = $"Sets the AWESOME Sink ticket prices as if you had earned N tickets.\nFor example, entering 0 sets the price for the next ticket back to 1,000\nCurrent tickets earned: {mCurrentPointLevel.Value}\nMore info on AWESOME Sink wiki page";
+            //mCurrentPointLevel.Value
+            cvm.OldValueMessage = $"Sets the AWESOME Sink ticket prices as if you had earned N tickets.\nFor example, entering 0 sets the price for the next ticket back to 1,000\nCurrent tickets earned: {((IntPropertyViewModel)pointLevels.Elements[0]).Value}\nMore info on AWESOME Sink wiki page";
             dialog.ShowDialog();
 
             int requestedTicketCount = 0;
@@ -65,14 +78,15 @@ namespace SatisfactorySaveEditor.Cheats
                     return false;
                 }
 
-                mCurrentPointLevel.Value = requestedTicketCount; //"point level" is 0 if no tickets have been earned, 1 if one ticket has, etc.
+                //mCurrentPointLevel.Value = requestedTicketCount; //"point level" is 0 if no tickets have been earned, 1 if one ticket has, etc.
 
+                ((IntPropertyViewModel)pointLevels.Elements[0]).Value = requestedTicketCount;
+                
                 pointsTowardsCurrentTicket.Value = 0; //reset progress towards the current ticket so the game GUI doesn't get confused
 
-                long calculatedPointsCount = pointsRequiredFromTicketCount(requestedTicketCount);
+                long calculatedPointsCountNextTicket = pointsRequiredFromTicketCount(requestedTicketCount+1);
 
-                MessageBox.Show($"Earned ticket count set to {requestedTicketCount}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                //MessageBox.Show($"Ticket count set to {requestedTicketCount}. The next ticket will take {calculatedPointsCount} points to earn.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Earned ticket count set to {requestedTicketCount}. The next ticket will take {calculatedPointsCountNextTicket} points to earn.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 return true;
             }
             catch (Exception)

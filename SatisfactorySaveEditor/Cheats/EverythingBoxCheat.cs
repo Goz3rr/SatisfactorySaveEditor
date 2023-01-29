@@ -1,16 +1,13 @@
-﻿using SatisfactorySaveEditor.Model;
-using SatisfactorySaveEditor.View;
-using SatisfactorySaveEditor.ViewModel;
-using SatisfactorySaveEditor.ViewModel.Property;
-using SatisfactorySaveParser;
-using SatisfactorySaveParser.Data;
-using SatisfactorySaveParser.PropertyTypes;
-using SatisfactorySaveParser.PropertyTypes.Structs;
-using SatisfactorySaveParser.Structures;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using SatisfactorySaveEditor.Model;
+using SatisfactorySaveEditor.View;
+using SatisfactorySaveEditor.ViewModel;
+using SatisfactorySaveParser;
+using SatisfactorySaveParser.Data;
+using SatisfactorySaveParser.PropertyTypes;
 
 namespace SatisfactorySaveEditor.Cheats
 {
@@ -101,7 +98,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
 
             //Use Mass Dismantle Cheat's crate creation function to package the items into a crate entity
-            MassDismantleCheat.CreateCrateEntityFromInventory(rootItem, inventory, saveGame.Header.BuildVersion);
+            MassDismantleCheat.CreateCrateEntityFromInventory(saveGame.Header.MapName, rootItem, inventory, saveGame.Header.BuildVersion);
 
             //MessageBox.Show("Player name " + playerEntityModel.Title);
             MessageBox.Show($"Crate created.\nNote that normally unstackable items will visually display as being stacked to 1. Use Ctrl+Click to transfer items out of the crate without deleting part of the stack.\n\nSkipped the following items marked as radioactive:\n\n{skipped}", $"Processed {resourceStrings.Count} resource paths");

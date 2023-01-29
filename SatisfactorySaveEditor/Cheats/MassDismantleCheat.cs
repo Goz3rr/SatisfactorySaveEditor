@@ -217,16 +217,16 @@ namespace SatisfactorySaveEditor.Cheats
             MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                CreateCrateEntityFromInventory(rootItem, inventory, saveGame.Header.BuildVersion);
+                CreateCrateEntityFromInventory(saveGame.Header.MapName, rootItem, inventory, saveGame.Header.BuildVersion);
             }
             return true;
         }
 
-        public static SaveEntityModel CreateCrateEntityFromInventory(SaveObjectModel rootItem, ArrayProperty inventory, int buildVersion)
+        public static SaveEntityModel CreateCrateEntityFromInventory(string levelname, SaveObjectModel rootItem, ArrayProperty inventory, int buildVersion)
         {
             inventory = ArrangeInventory(inventory, buildVersion);
             int currentStorageID = GetNextStorageID(0, rootItem);
-            SaveComponent newInventory = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
+            SaveComponent newInventory = new SaveComponent(levelname, "/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
             {
                 ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
                 DataFields = new SerializedFields()
@@ -250,7 +250,7 @@ namespace SatisfactorySaveEditor.Cheats
             };
             rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
             SaveEntity player = (SaveEntity)rootItem.FindChild("Char_Player.Char_Player_C", false).DescendantSelf[0];
-            SaveEntity newSaveObject = new SaveEntity("/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
+            SaveEntity newSaveObject = new SaveEntity(levelname, "/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
             {
                 NeedTransform = true,
                 Rotation = player.Rotation,

@@ -1,6 +1,6 @@
 ﻿
+using System.Windows;
 using SatisfactorySaveEditor.Model;
-
 using SatisfactorySaveParser;
 
 namespace SatisfactorySaveEditor.Cheats
@@ -11,7 +11,12 @@ namespace SatisfactorySaveEditor.Cheats
 
         public bool Apply(SaveObjectModel rootItem, SatisfactorySave saveGame)
         {
-            saveGame.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
+            foreach (var level in saveGame.Levels)
+            {
+                level.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
+            }
+            
+            MessageBox.Show("Restored all slugs on the map.", "Restored Slugs.", MessageBoxButton.OK);
             return true;
         }
     }

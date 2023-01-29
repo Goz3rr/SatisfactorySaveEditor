@@ -85,6 +85,15 @@ namespace SatisfactorySaveParser.PropertyTypes
                             }
                         }
                         break;
+                    case Int64Property.TypeName:
+                        {
+                            msWriter.Write(Elements.Count);
+                            foreach (var prop in Elements.Cast<Int64Property>())
+                            {
+                                msWriter.Write(prop.Value);
+                            }
+                        }
+                        break;
                     case ByteProperty.TypeName:
                         {
                             msWriter.Write(Elements.Count);
@@ -193,6 +202,17 @@ namespace SatisfactorySaveParser.PropertyTypes
                         {
                             var value = reader.ReadInt32();
                             result.Elements.Add(new IntProperty($"Element {i}") { Value = value });
+                        }
+                    }
+                    break;
+                
+                case Int64Property.TypeName:
+                    {
+                        var count = reader.ReadInt32();
+                        for (var i = 0; i < count; i++)
+                        {
+                            var value = reader.ReadInt64();
+                            result.Elements.Add(new Int64Property($"Element {i}") { Value = value });
                         }
                     }
                     break;

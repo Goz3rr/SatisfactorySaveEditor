@@ -1,13 +1,12 @@
-﻿using NLog;
-using SatisfactorySaveParser.Save;
-using SatisfactorySaveParser.Structures;
-using SatisfactorySaveParser.ZLib;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using NLog;
+using SatisfactorySaveParser.Save;
+using SatisfactorySaveParser.Structures;
+using SatisfactorySaveParser.ZLib;
 
 namespace SatisfactorySaveParser
 {
@@ -29,15 +28,16 @@ namespace SatisfactorySaveParser
         public FSaveHeader Header { get; private set; }
 
         /// <summary>
-        ///     Main content of the save game
+        ///     List of levels in the save
         /// </summary>
-        public List<SaveObject> Entries { get; set; } = new List<SaveObject>();
+        public List<SaveLevel> Levels { get; set; } = new List<SaveLevel>();
 
         /// <summary>
-        ///     List of object references of all collected objects in the world (Nut/berry bushes, slugs, etc)
+        ///     List of object references that do not belong to any particular level
         /// </summary>
-        public List<ObjectReference> CollectedObjects { get; set; } = new List<ObjectReference>();
+        public List<ObjectReference> TrailingCollectedObjects { get; set; } = new List<ObjectReference>();
 
+        
         /// <summary>
         ///     Open a savefile from disk
         /// </summary>
@@ -51,7 +51,7 @@ namespace SatisfactorySaveParser
             using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var reader = new BinaryReader(stream))
             {
-                if(stream.Length == 0)
+                if (stream.Length == 0)
                 {
                     throw new Exception("Save file is completely empty");
                 }
@@ -60,7 +60,7 @@ namespace SatisfactorySaveParser
 
                 if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
                 {
-                    LoadData(reader);
+                    LoadDataU5AndBelow(reader);
                 }
                 else
                 {
@@ -95,7 +95,9 @@ namespace SatisfactorySaveParser
                         buffer.Position = 0;
 
 #if DEBUG
-                        File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"), buffer.ToArray());
+                        File.WriteAllBytes(
+                            Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".bin"),
+                            buffer.ToArray());
 #endif
 
 
@@ -104,15 +106,26 @@ namespace SatisfactorySaveParser
                             var dataLength = bufferReader.ReadInt32();
                             Trace.Assert(uncompressedSize == dataLength + 4);
 
-                            LoadData(bufferReader);
+                            if (Header.SaveVersion < FSaveCustomVersion.AddedSublevelStreaming)
+                            {
+                                LoadDataU5AndBelow(bufferReader);
+                            }
+                            else
+                            {
+                                LoadDataU6AndAbove(bufferReader);
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void LoadData(BinaryReader reader)
+        private void LoadDataU5AndBelow(BinaryReader reader)
         {
+            // create a single level to contain the entries. To stay compatible with U6 structure of levels.
+            var defaultLevel = new SaveLevel(Header.MapName);
+            Levels.Add(defaultLevel);
+            
             // Does not need to be a public property because it's equal to Entries.Count
             var totalSaveObjects = reader.ReadUInt32();
             log.Info($"Save contains {totalSaveObjects} object headers");
@@ -124,10 +137,10 @@ namespace SatisfactorySaveParser
                 switch (type)
                 {
                     case SaveEntity.TypeID:
-                        Entries.Add(new SaveEntity(reader));
+                        defaultLevel.Entries.Add(new SaveEntity(defaultLevel.Name, reader));
                         break;
                     case SaveComponent.TypeID:
-                        Entries.Add(new SaveComponent(reader));
+                        defaultLevel.Entries.Add(new SaveComponent(defaultLevel.Name, reader));
                         break;
                     default:
                         throw new InvalidOperationException($"Unexpected type {type}");
@@ -136,10 +149,10 @@ namespace SatisfactorySaveParser
 
             var totalSaveObjectData = reader.ReadInt32();
             log.Info($"Save contains {totalSaveObjectData} object data");
-            Trace.Assert(Entries.Count == totalSaveObjects);
-            Trace.Assert(Entries.Count == totalSaveObjectData);
+            Trace.Assert(defaultLevel.Entries.Count == totalSaveObjects);
+            Trace.Assert(defaultLevel.Entries.Count == totalSaveObjectData);
 
-            for (int i = 0; i < Entries.Count; i++)
+            for (int i = 0; i < defaultLevel.Entries.Count; i++)
             {
                 var len = reader.ReadInt32();
                 var before = reader.BaseStream.Position;
@@ -148,7 +161,7 @@ namespace SatisfactorySaveParser
                 //log.Trace($"Reading {len} bytes @ {before} for {Entries[i].TypePath}");
 #endif
 
-                Entries[i].ParseData(len, reader, Header.BuildVersion);
+                defaultLevel.Entries[i].ParseData(len, reader, Header.BuildVersion);
                 var after = reader.BaseStream.Position;
 
                 if (before + len != after)
@@ -161,13 +174,125 @@ namespace SatisfactorySaveParser
             log.Info($"Save contains {collectedObjectsCount} collected objects");
             for (int i = 0; i < collectedObjectsCount; i++)
             {
-                CollectedObjects.Add(new ObjectReference(reader));
+                defaultLevel.CollectedObjects.Add(new ObjectReference(reader));
             }
+
 
             log.Debug($"Read {reader.BaseStream.Position} of total {reader.BaseStream.Length} bytes");
             Trace.Assert(reader.BaseStream.Position == reader.BaseStream.Length);
         }
 
+        private void LoadDataU6AndAbove(BinaryReader reader)
+        {
+            var sublevelCount = reader.ReadInt32();
+            for (int sublevelIndex = 0;
+                 sublevelIndex <= sublevelCount;
+                 sublevelIndex++) // sublevels and the "persistent level" at the end!
+            {
+                var levelName = (sublevelIndex == sublevelCount)
+                    ? Header.MapName
+                    : reader.ReadLengthPrefixedString(); // use MapName for the persistent level
+                SaveLevel level = new SaveLevel(levelName);
+                Levels.Add(level);
+
+                var levelEntries = LoadLevelEntries(reader, levelName);
+                level.Entries.AddRange(levelEntries);
+                
+                var levelCollectedObjects = LoadLevelCollectedObjects(reader);
+                level.CollectedObjects.AddRange(levelCollectedObjects);
+                
+                log.Info($"Reading level [{sublevelIndex+1}/{sublevelCount+1}] with {Levels[sublevelIndex].Entries.Count} objects and {Levels[sublevelIndex].CollectedObjects.Count} collectables: {Levels[sublevelIndex].Name}.");
+                
+                ParseLevelEntries(levelEntries, reader);
+                LoadLevelCollectedObjects(reader); // skip second collectables
+            }
+
+            // somewhere in the U6/U7 updates can be additional collected objects
+            var bytesLeft = reader.BaseStream.Length - reader.BaseStream.Position;
+            if (bytesLeft > 0)
+            {
+                TrailingCollectedObjects = LoadLevelCollectedObjects(reader);
+            }
+        }
+
+
+        private List<SaveObject> LoadLevelEntries(BinaryReader reader, string levelname)
+        {
+            var binarySize = reader.ReadInt32(); // skip "object header and collectables size"
+            var levelEntries = new List<SaveObject>();
+            var totalSaveObjects = reader.ReadInt32();
+
+            for (int i = 0; i < totalSaveObjects; i++)
+            {
+                var type = reader.ReadInt32();
+                switch (type)
+                {
+                    case SaveEntity.TypeID:
+                        var entity = new SaveEntity(levelname, reader);
+                        levelEntries.Add(entity);
+                        break;
+                    case SaveComponent.TypeID:
+                        var component = new SaveComponent(levelname, reader);
+                        levelEntries.Add(component);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Unexpected type {type}");
+                }
+            }
+            
+            return levelEntries;
+        }
+        
+        private List<ObjectReference> LoadLevelCollectedObjects(BinaryReader reader)
+        {
+            var levelCollectedObjects = new List<ObjectReference>();
+            var collectedObjectsCount = reader.ReadInt32();
+
+            for (int i = 0; i < collectedObjectsCount; i++)
+            {
+                var collected = new ObjectReference(reader);
+                levelCollectedObjects.Add(collected);
+            }
+            return levelCollectedObjects;
+        }
+
+        private void ParseLevelEntries(List<SaveObject> levelEntries, BinaryReader reader)
+        {
+            
+            var binarySize = reader.ReadInt32(); // skip "objects binary size"
+            long Before = reader.BaseStream.Position;
+            var objectCount = reader.ReadInt32();
+            Trace.Assert(levelEntries.Count == objectCount);
+
+            for (int i = 0; i < objectCount; i++)
+            {
+                var len = reader.ReadInt32();
+                var before = reader.BaseStream.Position;
+
+#if DEBUG
+                /*if (i % 10000 == 0)
+                {
+                    log.Trace($"Having {Math.Round(((float)(i+1)/objectCount)*100, 2)}% Reading {len} bytes @ {before} for {levelEntries[i].TypePath}");
+                }*/
+#endif
+
+                levelEntries[i].ParseData(len, reader, Header.BuildVersion);
+                var after = reader.BaseStream.Position;
+
+                if (before + len != after)
+                {
+                    throw new InvalidOperationException($"Expected {len} bytes read but got {after - before}");
+                }
+            }
+
+            long ReadBytesCount = reader.BaseStream.Position - Before;
+            if (ReadBytesCount != binarySize)
+            {
+                log.Warn("The indicated size does not match the real size! Save is probably corrupt. Attempting to load what's possible.");
+            }
+        }
+
+        
         public void Save()
         {
             Save(FileName);
@@ -187,7 +312,7 @@ namespace SatisfactorySaveParser
 
                 if (Header.SaveVersion < FSaveCustomVersion.SaveFileIsCompressed)
                 {
-                    SaveData(writer, Header.BuildVersion);
+                    SaveDataU5AndBelow(writer, Header.BuildVersion);
                 }
                 else
                 {
@@ -196,7 +321,14 @@ namespace SatisfactorySaveParser
                     {
                         bufferWriter.Write(0); // Placeholder size
 
-                        SaveData(bufferWriter, Header.BuildVersion);
+                        if (Header.SaveVersion < FSaveCustomVersion.AddedSublevelStreaming)
+                        {
+                            SaveDataU5AndBelow(bufferWriter, Header.BuildVersion);
+                        }
+                        else
+                        {
+                            SaveDataU6AndAbove(bufferWriter, Header.BuildVersion);
+                        }
 
                         buffer.Position = 0;
                         bufferWriter.Write((int)buffer.Length - 4);
@@ -243,29 +375,121 @@ namespace SatisfactorySaveParser
             }
         }
 
-        private void SaveData(BinaryWriter writer, int buildVersion)
+        private void SaveDataU6AndAbove(BinaryWriter writer, int buildVersion)
         {
-            writer.Write(Entries.Count);
+            writer.Write(Levels.Count-1);
 
-            var entities = Entries.Where(e => e is SaveEntity).ToArray();
+            for (int i = 0; i < Levels.Count; i++)
+            {
+                if (!Levels[i].Name.Equals(Header.MapName))
+                {
+                    writer.WriteLengthPrefixedString(Levels[i].Name);
+                }
+
+                log.Info($"Writing level [{i+1}/{Levels.Count}] with {Levels[i].Entries.Count} objects and {Levels[i].CollectedObjects.Count} collectables: {Levels[i].Name}.");
+
+                using (var buffer = new MemoryStream())
+                using (var subLevelWriter = new BinaryWriter(buffer))
+                {
+                    
+                    // write object headers (entities and components)
+                    var levelObjects = Levels[i].Entries;
+                    var entities = levelObjects.Where(e => e is SaveEntity).Cast<SaveEntity>().ToArray();
+                    var components = levelObjects.Where(e => e is SaveComponent).Cast<SaveComponent>().ToArray();
+                    SaveObjectsHeaderList(subLevelWriter, buildVersion, entities, components);
+                    
+                    // write collected objects list
+                    var levelCollectables = Levels[i].CollectedObjects;
+                    SaveCollectablesList(subLevelWriter, buildVersion, levelCollectables);
+
+                    var bufferedContent = buffer.ToArray();
+                    writer.Write(bufferedContent.Length);
+                    writer.Write(bufferedContent);
+                }
+                
+                // write objects content + collectables.
+                using (var buffer = new MemoryStream())
+                using (var subLevelWriter = new BinaryWriter(buffer))
+                {
+                    
+                    // write object content (entities and components)
+                    var levelObjects = Levels[i].Entries;
+                    var entities = levelObjects.Where(e => e is SaveEntity).Cast<SaveEntity>().ToArray();
+                    var components = levelObjects.Where(e => e is SaveComponent).Cast<SaveComponent>().ToArray();
+                    SaveObjectsContentList(subLevelWriter, buildVersion, entities, components);
+                    
+                    // the binary size this time however is only for object content. Without the collectables.
+                    var bufferedContent = buffer.ToArray();
+                    writer.Write(bufferedContent.Length);
+                    writer.Write(bufferedContent);
+                    buffer.SetLength(0);
+                    
+                    // write collected objects list
+                    var levelCollectables = Levels[i].CollectedObjects;
+                    SaveCollectablesList(subLevelWriter, buildVersion, levelCollectables);
+                    
+                    bufferedContent = buffer.ToArray();
+                    writer.Write(bufferedContent);
+                }
+            }
+
+            SaveCollectablesList(writer, Header.BuildVersion, TrailingCollectedObjects);
+        }
+
+        private void SaveDataU5AndBelow(BinaryWriter writer, int buildVersion)
+        {
+            SaveDataU5AndBelow(writer, buildVersion, Levels.SelectMany(level => level.Entries).ToList(), Levels.SelectMany(level => level.CollectedObjects).ToList());
+        }
+        
+        private void SaveDataU5AndBelow(BinaryWriter writer, int buildVersion, List<SaveObject> entries, List<ObjectReference> collectedObjects)
+        {
+            SaveObjectsList(writer, buildVersion, entries);
+            SaveCollectablesList(writer, buildVersion, collectedObjects);
+        }
+
+        private void SaveCollectablesList(in BinaryWriter writer, in int buildVersion, in List<ObjectReference> collectedObjects)
+        {
+            writer.Write(collectedObjects.Count);
+            foreach (var collectedObject in collectedObjects)
+            {
+                writer.WriteLengthPrefixedString(collectedObject.LevelName);
+                writer.WriteLengthPrefixedString(collectedObject.PathName);
+            }
+        }
+
+        private void SaveObjectsList(in BinaryWriter writer, in int buildVersion, in List<SaveObject> objects)
+        {
+            var entities = objects.Where(e => e is SaveEntity).Cast<SaveEntity>().ToArray();
+            var components = objects.Where(e => e is SaveComponent).Cast<SaveComponent>().ToArray();
+            SaveObjectsHeaderList(writer, buildVersion, entities, components);
+            SaveObjectsContentList(writer, buildVersion, entities, components);
+        }
+
+        private void SaveObjectsHeaderList(in BinaryWriter writer, in int buildVersion, in SaveEntity[] entities, in SaveComponent[] components)
+        {
+            writer.Write(entities.Length + components.Length);
+            
             for (var i = 0; i < entities.Length; i++)
             {
                 writer.Write(SaveEntity.TypeID);
                 entities[i].SerializeHeader(writer);
             }
 
-            var components = Entries.Where(e => e is SaveComponent).ToArray();
             for (var i = 0; i < components.Length; i++)
             {
                 writer.Write(SaveComponent.TypeID);
                 components[i].SerializeHeader(writer);
             }
-
+        }
+        
+        private void SaveObjectsContentList(in BinaryWriter writer, in int buildVersion, in SaveEntity[] entities, in SaveComponent[] components)
+        {
             writer.Write(entities.Length + components.Length);
 
             using (var ms = new MemoryStream())
             using (var dataWriter = new BinaryWriter(ms))
             {
+                
                 for (var i = 0; i < entities.Length; i++)
                 {
                     entities[i].SerializeData(dataWriter, buildVersion);
@@ -286,13 +510,6 @@ namespace SatisfactorySaveParser
 
                     ms.SetLength(0);
                 }
-            }
-
-            writer.Write(CollectedObjects.Count);
-            foreach (var collectedObject in CollectedObjects)
-            {
-                writer.WriteLengthPrefixedString(collectedObject.LevelName);
-                writer.WriteLengthPrefixedString(collectedObject.PathName);
             }
         }
     }
