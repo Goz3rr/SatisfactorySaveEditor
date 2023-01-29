@@ -48,16 +48,18 @@ namespace SatisfactorySaveParser
         /// </summary>
         public string LevelName { get; set; }
 
-        public SaveObject(string typePath, string rootObject, string instanceName)
+        public SaveObject(string levelname, string typePath, string rootObject, string instanceName)
         {
+            LevelName = levelname;
             TypePath = typePath;
             RootObject = rootObject;
             InstanceName = instanceName;
             MetaData = new SaveObjectMetaData();
         }
 
-        protected SaveObject(BinaryReader reader)
+        protected SaveObject(string levelname, BinaryReader reader)
         {
+            LevelName = levelname;
             TypePath = reader.ReadLengthPrefixedString();
             RootObject = reader.ReadLengthPrefixedString();
             InstanceName = reader.ReadLengthPrefixedString();

@@ -1,6 +1,6 @@
 ﻿
+using System.Windows;
 using SatisfactorySaveEditor.Model;
-
 using SatisfactorySaveParser;
 
 namespace SatisfactorySaveEditor.Cheats
@@ -16,6 +16,7 @@ namespace SatisfactorySaveEditor.Cheats
                 level.CollectedObjects.RemoveAll(x => x.PathName.Contains("PersistentLevel.BP_Crystal"));
             }
             
+            MessageBox.Show("Restored all slugs on the map.", "Restored Slugs.", MessageBoxButton.OK);
             return true;
         }
     }

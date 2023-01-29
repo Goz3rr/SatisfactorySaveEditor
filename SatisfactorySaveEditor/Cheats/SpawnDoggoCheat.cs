@@ -1,17 +1,9 @@
-﻿using SatisfactorySaveEditor.Model;
+﻿using System;
+using System.Windows;
+using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.View;
 using SatisfactorySaveEditor.ViewModel;
 using SatisfactorySaveParser;
-using SatisfactorySaveParser.PropertyTypes;
-using SatisfactorySaveParser.PropertyTypes.Structs;
-using SatisfactorySaveParser.Structures;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace SatisfactorySaveEditor.Cheats
 {

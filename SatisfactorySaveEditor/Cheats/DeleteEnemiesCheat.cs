@@ -1,16 +1,14 @@
-﻿using SatisfactorySaveEditor.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows;
+using SatisfactorySaveEditor.Model;
 using SatisfactorySaveEditor.ViewModel.Property;
 using SatisfactorySaveEditor.ViewModel.Struct;
 using SatisfactorySaveParser;
 using SatisfactorySaveParser.PropertyTypes;
 using SatisfactorySaveParser.PropertyTypes.Structs;
 using SatisfactorySaveParser.Structures;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Windows;
-using Vector = SatisfactorySaveParser.PropertyTypes.Structs.Vector;
-using Vector3 = SatisfactorySaveParser.Structures.Vector3;
 
 namespace SatisfactorySaveEditor.Cheats
 {
@@ -91,7 +89,7 @@ namespace SatisfactorySaveEditor.Cheats
             }
             var player = (SaveEntityModel)hostPlayerModel.Items[0];
 
-            SaveComponent healthComponent = new SaveComponent("/Script/FactoryGame.FGHealthComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.HealthComponent")
+            SaveComponent healthComponent = new SaveComponent(saveGame.Header.MapName, "/Script/FactoryGame.FGHealthComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.HealthComponent")
             {
                 DataFields = new SerializedFields(),
                 ParentEntityName = $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}"
@@ -100,14 +98,14 @@ namespace SatisfactorySaveEditor.Cheats
             SaveComponent inventoryComponent;
             using (BinaryReader reader = new BinaryReader(new MemoryStream(bytes)))
             {
-                inventoryComponent = new SaveComponent("/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.mInventory")
+                inventoryComponent = new SaveComponent(saveGame.Header.MapName, "/Script/FactoryGame.FGInventoryComponent", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.mInventory")
                 {
                     DataFields = new SerializedFields()
                     {
                         new ArrayProperty("mInventoryStacks")
                         {
                             Type = StructProperty.TypeName,
-                            Elements = new System.Collections.Generic.List<SerializedProperty>()
+                            Elements = new List<SerializedProperty>()
                             {
                                 SerializedProperty.Parse(reader, saveGame.Header.BuildVersion)
                             }
@@ -115,7 +113,7 @@ namespace SatisfactorySaveEditor.Cheats
                         new ArrayProperty("mArbitrarySlotSizes")
                         {
                             Type = IntProperty.TypeName,
-                            Elements = new System.Collections.Generic.List<SerializedProperty>()
+                            Elements = new List<SerializedProperty>()
                             {
                                 new IntProperty("Element") { Value = 0 }
                             }
@@ -123,7 +121,7 @@ namespace SatisfactorySaveEditor.Cheats
                         new ArrayProperty("mAllowedItemDescriptors")
                         {
                             Type = ObjectProperty.TypeName,
-                            Elements = new System.Collections.Generic.List<SerializedProperty>()
+                            Elements = new List<SerializedProperty>()
                             {
                                 new ObjectProperty("Element") { LevelName = "", PathName = "" }
                             }
@@ -132,7 +130,7 @@ namespace SatisfactorySaveEditor.Cheats
                     ParentEntityName = $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}"
                 };
             }
-            SaveEntity doggo = new SaveEntity("/Game/FactoryGame/Character/Creature/Wildlife/SpaceRabbit/Char_SpaceRabbit.Char_SpaceRabbit_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}")
+            SaveEntity doggo = new SaveEntity(saveGame.Header.MapName, "/Game/FactoryGame/Character/Creature/Wildlife/SpaceRabbit/Char_SpaceRabbit.Char_SpaceRabbit_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}")
             {
                 NeedTransform = true,
                 Rotation = ((SaveEntity)player.Model).Rotation,
@@ -147,10 +145,10 @@ namespace SatisfactorySaveEditor.Cheats
                 ParentObjectName = "",
                 ParentObjectRoot = ""
             };
-            doggo.Components = new System.Collections.Generic.List<SatisfactorySaveParser.Structures.ObjectReference>()
+            doggo.Components = new List<ObjectReference>()
             {
-                new SatisfactorySaveParser.Structures.ObjectReference() {LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.mInventory"},
-                new SatisfactorySaveParser.Structures.ObjectReference() {LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.HealthComponent"}
+                new ObjectReference() {LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.mInventory"},
+                new ObjectReference() {LevelName = "Persistent_Level", PathName = $"Persistent_Level:PersistentLevel.Char_SpaceRabbit_C_{currentDoggoID}.HealthComponent"}
             };
             byte[] emptyDynamicStructData = { 0x05, 0x00, 0x00, 0x00, 0x4e, 0x6f, 0x6e, 0x65 }; // Length prefixed "None"
             using (BinaryReader binaryReader = new BinaryReader(new MemoryStream(emptyDynamicStructData)))
@@ -192,6 +190,7 @@ namespace SatisfactorySaveEditor.Cheats
                 return false;
             }
 
+            
             float offset = -50000;
             var hostPlayerModel = rootItem.FindChild("Char_Player.Char_Player_C", false);
             if (hostPlayerModel == null || hostPlayerModel.Items.Count < 1)
@@ -211,11 +210,13 @@ namespace SatisfactorySaveEditor.Cheats
                 {
                     foreach (StructPropertyViewModel elem in arrayProperty.Elements)
                     {
-                        ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data.Z += offset; // Move the spawn point under the map
+
                         // Set WasKilled to true so they don't respawn after deleting them
-                        ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value = true;
+                        ((BoolPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[1]).Value = true;
+                        // Set NumTimesKilled to at least 1 i guess. Better to increment.
+                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[2]).Value += 1;
                         // Set KilledOnDayNumber to a huge number (some far away animals respawn if the number is too small)
-                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((Vector)((StructProperty)((DynamicStructDataViewModel)elem.StructData).Fields[0].Model).Data).Data) /10000);
+                        ((IntPropertyViewModel)((DynamicStructDataViewModel)elem.StructData).Fields[3]).Value = (int)(Distance(playerPosition, ((SaveEntityModel)animalSpawner).Position) /10000);
                     }
                 });
             }

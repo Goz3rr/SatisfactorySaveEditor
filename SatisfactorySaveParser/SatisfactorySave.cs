@@ -1,15 +1,12 @@
-﻿using NLog;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using NLog;
 using SatisfactorySaveParser.Save;
 using SatisfactorySaveParser.Structures;
 using SatisfactorySaveParser.ZLib;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing;
-using System.IO;
-using System.Linq;
-using SatisfactorySaveParser.Exceptions;
 
 namespace SatisfactorySaveParser
 {
@@ -140,10 +137,10 @@ namespace SatisfactorySaveParser
                 switch (type)
                 {
                     case SaveEntity.TypeID:
-                        defaultLevel.Entries.Add(new SaveEntity(reader));
+                        defaultLevel.Entries.Add(new SaveEntity(defaultLevel.Name, reader));
                         break;
                     case SaveComponent.TypeID:
-                        defaultLevel.Entries.Add(new SaveComponent(reader));
+                        defaultLevel.Entries.Add(new SaveComponent(defaultLevel.Name, reader));
                         break;
                     default:
                         throw new InvalidOperationException($"Unexpected type {type}");
@@ -221,7 +218,7 @@ namespace SatisfactorySaveParser
 
         private List<SaveObject> LoadLevelEntries(BinaryReader reader, string levelname)
         {
-            reader.ReadInt32(); // skip "object header and collectables size"
+            var binarySize = reader.ReadInt32(); // skip "object header and collectables size"
             var levelEntries = new List<SaveObject>();
             var totalSaveObjects = reader.ReadInt32();
 
@@ -231,13 +228,11 @@ namespace SatisfactorySaveParser
                 switch (type)
                 {
                     case SaveEntity.TypeID:
-                        var entity = new SaveEntity(reader);
-                        entity.LevelName = levelname;
+                        var entity = new SaveEntity(levelname, reader);
                         levelEntries.Add(entity);
                         break;
                     case SaveComponent.TypeID:
-                        var component = new SaveComponent(reader);
-                        component.LevelName = levelname;
+                        var component = new SaveComponent(levelname, reader);
                         levelEntries.Add(component);
                         break;
                     default:
@@ -263,13 +258,12 @@ namespace SatisfactorySaveParser
 
         private void ParseLevelEntries(List<SaveObject> levelEntries, BinaryReader reader)
         {
-
+            
             var binarySize = reader.ReadInt32(); // skip "objects binary size"
             long Before = reader.BaseStream.Position;
             var objectCount = reader.ReadInt32();
             Trace.Assert(levelEntries.Count == objectCount);
 
-            
             for (int i = 0; i < objectCount; i++)
             {
                 var len = reader.ReadInt32();

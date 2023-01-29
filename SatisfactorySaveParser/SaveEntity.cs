@@ -51,11 +51,11 @@ namespace SatisfactorySaveParser
         /// </summary>
         public List<ObjectReference> Components { get; set; } = new List<ObjectReference>();
 
-        public SaveEntity(string typePath, string rootObject, string instanceName) : base(typePath, rootObject, instanceName)
+        public SaveEntity(string levelname, string typePath, string rootObject, string instanceName) : base(levelname, typePath, rootObject, instanceName)
         {
         }
-
-        public SaveEntity(BinaryReader reader) : base(reader)
+        
+        public SaveEntity(string levelname, BinaryReader reader) : base(levelname, reader)
         {
             NeedTransform = reader.ReadInt32() == 1;
             Rotation = reader.ReadVector4();

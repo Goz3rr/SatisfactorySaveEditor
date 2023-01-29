@@ -37,13 +37,13 @@ namespace SatisfactorySaveEditor.Cheats
                 if (!InventoryEmpty(inventoryComponent))
                 {
                     currentStorageID = GetNextStorageID(currentStorageID, rootItem);
-                    SaveComponent newInventory = new SaveComponent(inventoryComponent.TypePath, inventoryComponent.RootObject, $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
+                    SaveComponent newInventory = new SaveComponent(saveGame.Header.MapName, inventoryComponent.TypePath, inventoryComponent.RootObject, $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}.inventory")
                     {
                         ParentEntityName = $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}",
                         DataFields = inventoryComponent.DataFields
                     };
                     rootItem.FindChild("FactoryGame.FGInventoryComponent", false).Items.Add(new SaveComponentModel(newInventory));
-                    SaveEntity newSaveObject = new SaveEntity("/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
+                    SaveEntity newSaveObject = new SaveEntity(saveGame.Header.MapName, "/Game/FactoryGame/-Shared/Crate/BP_Crate.BP_Crate_C", "Persistent_Level", $"Persistent_Level:PersistentLevel.BP_Crate_C_{currentStorageID}")
                     {
                         NeedTransform = true,
                         Rotation = ((SaveEntity)player.Model).Rotation,

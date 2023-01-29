@@ -15,11 +15,11 @@ namespace SatisfactorySaveParser
         /// </summary>
         public string ParentEntityName { get; set; }
 
-        public SaveComponent(string typePath, string rootObject, string instanceName) : base(typePath, rootObject, instanceName)
+        public SaveComponent(string levelname, string typePath, string rootObject, string instanceName) : base(levelname, typePath, rootObject, instanceName)
         {
         }
 
-        public SaveComponent(BinaryReader reader) : base(reader)
+        public SaveComponent(string levelname, BinaryReader reader) : base(levelname, reader)
         {
             ParentEntityName = reader.ReadLengthPrefixedString();
         }
