@@ -163,17 +163,16 @@ namespace SatisfactorySaveEditor.Cheats
                             inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mInputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
                         if (item.FindField<ObjectPropertyViewModel>("mOutputInventory") != null)
                             inventory.Elements.AddRange(((ArrayProperty)rootItem.FindChild(item.FindField<ObjectPropertyViewModel>("mOutputInventory").Str2, false).FindField<ArrayPropertyViewModel>("mInventoryStacks").Model).Elements);
-                        // Unlink miners & geysers
-                        if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/Miner") || item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/GeneratorGeoThermal") || item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/OilPump"))
-                        {
-                            string resourceNode = item.FindField<ObjectPropertyViewModel>("mExtractResourceNode").Str2;
-                            rootItem.FindChild(resourceNode, false).FindField<BoolPropertyViewModel>("mIsOccupied", property => property.Value = false);
-                        }
-                        var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_*", false);
                         if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/TradingPost/Build_TradingPost.Build_TradingPost_C"))
+                        {
+                            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_*", false);
                             gameState.FindField<BoolPropertyViewModel>("mIsTradingPostBuilt", property => property.Value = false);
+                        }
                         if (item.Model.TypePath.StartsWith("/Game/FactoryGame/Buildable/Factory/SpaceElevator/Build_SpaceElevator.Build_SpaceElevator_C"))
+                        {
+                            var gameState = rootItem.FindChild("Persistent_Level:PersistentLevel.BP_GameState_C_*", false);
                             gameState.FindField<BoolPropertyViewModel>("mIsSpaceElevatorBuilt", property => property.Value = false);
+                        }
                         rootItem.Remove(item);
                         count++;
                     }
@@ -193,10 +192,15 @@ namespace SatisfactorySaveEditor.Cheats
             {
                 Type = "StructProperty"
             };
-            int countFactory = 0, countBuilding = 0, countCrate = 0;
+            int countFactory = 0, countBuilding = 0, countCrate = 0, countVehicle = 0;
             try
             {
                 countFactory = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Factory", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
+            }
+            catch (NullReferenceException) { }
+            try
+            {
+                countFactory += MassDismantle(rootItem.FindChild("Prototype", true).FindChild("Buildable", true).FindChild("Beams", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
             }
             catch (NullReferenceException) { }
             try
@@ -206,15 +210,20 @@ namespace SatisfactorySaveEditor.Cheats
             catch (NullReferenceException) { }
             try
             {
+                countVehicle = MassDismantle(rootItem.FindChild("Buildable", true).FindChild("Vehicle", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
+            }
+            catch (NullReferenceException) { }
+            try
+            {
                 countCrate = MassDismantle(rootItem.FindChild("-Shared", true).FindChild("BP_Crate.BP_Crate_C", true).DescendantSelfViewModel, inventory, rootItem, saveGame.Header.BuildVersion);
             }
             catch (NullReferenceException) { }
-            if(countFactory + countBuilding + countCrate == 0)
+            if(countFactory + countBuilding + countCrate + countVehicle == 0)
             {
                 MessageBox.Show("Nothing was dismantled. Make sure the coordinates are correct and in clockwise order.", "Mass dismantle", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
-            MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult result = MessageBox.Show($"Dismantled {countFactory} factory buildings, {countBuilding} foundations, {countVehicle} vehicles and {countCrate} crates. Drop the items (including items in storages) in a single crate?", "Dismantled", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 CreateCrateEntityFromInventory(rootItem, inventory, saveGame.Header.BuildVersion);
